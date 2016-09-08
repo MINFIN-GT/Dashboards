@@ -72,6 +72,13 @@
 	                        <li role="menuitem"><a href="#">Separated link</a></li>  -->
 	                    </ul>
 	                </li>
+	                
+	                <li uib-dropdown>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Prestamos <b class="caret"></b></a>
+	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+	                     	<li role="menuitem"><a href="#!/prestamos/ejecucionPresupuestaria">Ejecución Presupuestaría</a></li>
+	                    </ul>
+	                </li>
 	            </ul>
 	        </div>
 	        <div class="collapse navbar-collapse">
