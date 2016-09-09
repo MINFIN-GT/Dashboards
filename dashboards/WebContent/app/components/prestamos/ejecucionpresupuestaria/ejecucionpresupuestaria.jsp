@@ -118,7 +118,7 @@
 	<div class="row">
 		<div class="col-sm-12 col-centered">
 			<div class="panel panel-default div-center" style="width: 600px; height: auto;">
-				<h5 class="text-center">Préstamos Ejecutado por Organización</h5>
+				<h5 class="text-center">Préstamos Ejecutado por Organismo</h5>
 				<h6 class="text-center">-Préstamo Ejecutado-</h6>
 				<div style="width: 380px; height: 330px;" class="div-center">
 				<canvas height="250" width="300" class="chart chart-pie" chart-data="ctrlPEPM.chart_organizaciones['data']"
@@ -126,9 +126,9 @@
 				</canvas>
 				</div>
 				<div class="chart-legend">
-					<ul class="line-legend">
+					<ul class="line-legend" style="text-align: left; padding-left: 10%">
 						<li ng-repeat="year in ctrlPEPM.chart_organizaciones['labels'] track by $index">
-						<div class="img-rounded" style="float: left; margin-right: 5px; width: 15px; height: 15px; background-color : {{ ctrlPEPM.chart_colors[$index] }};"></div>
+							<div class="img-rounded" style="float: left; margin-right: 5px; width: 15px; height: 15px; background-color : {{ ctrlPEPM.chart_colors[$index] }};"></div>
 							{{ ctrlPEPM.chart_organizaciones['labels'][$index] }} - {{ ctrlPEPM.chart_organizaciones['legends'][$index] }} 
 						</li>
 					</ul>
