@@ -18,6 +18,7 @@ function funcPEPM($http, $log) {
 	 */
 	ctrlPEPM.chart_prestamos = [];
 	ctrlPEPM.chart_prestamos['labels'] = [];
+	ctrlPEPM.chart_prestamos['legends'] = [];
 	ctrlPEPM.chart_prestamos['data'] = [];
 	ctrlPEPM.chart_prestamos['series'] = [];
 	ctrlPEPM.chart_prestamos['options'] = {
@@ -46,7 +47,7 @@ function funcPEPM($http, $log) {
 		scaleLabel : function(label) {
 			return numeral(label.value).format('$ 0,0')
 		},
-		tooltipTemplate : "<%if (label){%><%=label %>: <%}%><%= numeral(value).format('$ 0,0.00') +' (' + numeral((circumference / 6.283)*100).format('0.00')+' %)' %>",
+		tooltipTemplate : "<%= numeral(value).format('$ 0,0.00') +' (' + numeral((circumference / 6.283)*100).format('0.00')+' %)' %>",
 		multiTooltipTemplate : "<%= numeral(value).format('$ 0,0.00') %>"
 	};
 
@@ -154,7 +155,7 @@ function funcPEPM($http, $log) {
 					prestamo_anterior = allPrestamos[index].prestamo_nombre;
 
 					var prestamo = {
-						"nombre" : allPrestamos[index].prestamo_nombre,
+						"nombre" : allPrestamos[index].prestamo_nombre + " (" + allPrestamos[index].correlativo + ")",
 						"asignado" : p_asignado,
 						"modificaciones" : p_modificaciones,
 						"vigente" : p_vigente,
@@ -180,8 +181,10 @@ function funcPEPM($http, $log) {
 					indexEntidad++;
 
 					ctrlPEPM.chart_prestamos['labels']
-							.push(ctrlPEPM.prestamos.length);
-
+							.push(allPrestamos[index].correlativo);
+					ctrlPEPM.chart_prestamos['legends']
+							.push(allPrestamos[index].prestamo_nombre);
+					
 					// reiniciamos valores
 					p_asignado = 0.0;
 					p_modificaciones = 0.0;
