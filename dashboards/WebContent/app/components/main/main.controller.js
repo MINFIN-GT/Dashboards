@@ -68,6 +68,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/presidenciales/metas',{
             	template: '<div load-on-demand="\'metasController\'" class="all_page"></div>'
             })
+            .when('/prestamos/ejecucionPresupuestaria',{
+            	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -171,6 +174,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'metasController',     
 	           script: '/app/components/presidenciales/metas/metas.controller.js',
 	           template: '/app/components/presidenciales/metas/metas.jsp'
+	       },
+	       {
+	    	   name: 'prestamosEjecucionPresupuestariaModule',     
+	           script: '/app/components/prestamos/ejecucionpresupuestaria/ejecucionpresupuestaria.controller.js',
+	           template: '/app/components/prestamos/ejecucionpresupuestaria/ejecucionpresupuestaria.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
