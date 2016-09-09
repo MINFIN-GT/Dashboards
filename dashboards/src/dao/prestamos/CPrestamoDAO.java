@@ -140,56 +140,106 @@ public class CPrestamoDAO {
 					CPrestamo prestamo = new CPrestamo();
 
 					for (String campo : campos) {
-						if (campo.equalsIgnoreCase("correlativo"))
+						if (campo.equalsIgnoreCase("correlativo")) {
 							prestamo.setCorrelativo(rs.getInt("correlativo"));
-						if (campo.equalsIgnoreCase("prestamo_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("prestamo_nombre")) {
 							prestamo.setPrestamo_nombre(rs.getString("prestamo_nombre"));
-						if (campo.equalsIgnoreCase("entidad"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("entidad")) {
 							prestamo.setEntidad(rs.getInt("entidad"));
-						if (campo.equalsIgnoreCase("entidad_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("entidad_nombre")) {
 							prestamo.setEntidad_nombre(rs.getString("entidad_nombre"));
-						if (campo.equalsIgnoreCase("unidad_ejecutora"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("unidad_ejecutora")) {
 							prestamo.setUnidad_ejecutora(rs.getInt("unidad_ejecutora"));
-						if (campo.equalsIgnoreCase("unidad_ejecutora_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("unidad_ejecutora_nombre")) {
 							prestamo.setUnidad_ejecutora_nombre(rs.getString("unidad_ejecutora_nombre"));
-						if (campo.equalsIgnoreCase("actividad"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("actividad")) {
 							prestamo.setActividad(rs.getInt("actividad"));
-						if (campo.equalsIgnoreCase("actividad_obra_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("actividad_obra_nombre")) {
 							prestamo.setActividad_obra_nombre(rs.getString("actividad_obra_nombre"));
-						if (campo.equalsIgnoreCase("ejercicio"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("ejercicio")) {
 							prestamo.setEjercicio(rs.getInt("ejercicio"));
-						if (campo.equalsIgnoreCase("fuente"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("fuente")) {
 							prestamo.setFuente(rs.getInt("fuente"));
-						if (campo.equalsIgnoreCase("fuente_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("fuente_nombre")) {
 							prestamo.setFuente_nombre(rs.getString("fuente_nombre"));
-						if (campo.equalsIgnoreCase("obra"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("obra")) {
 							prestamo.setObra(rs.getInt("obra"));
-						if (campo.equalsIgnoreCase("organismo"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("organismo")) {
 							prestamo.setOrganismo(rs.getInt("organismo"));
-						if (campo.equalsIgnoreCase("organismo_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("organismo_nombre")) {
 							prestamo.setOrganismo_nombre(rs.getString("organismo_nombre"));
-						if (campo.equalsIgnoreCase("programa"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("programa")) {
 							prestamo.setPrograma(rs.getInt("programa"));
-						if (campo.equalsIgnoreCase("programa_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("programa_nombre")) {
 							prestamo.setPrograma_nombre(rs.getString("programa_nombre"));
-						if (campo.equalsIgnoreCase("proyecto"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("proyecto")) {
 							prestamo.setProyecto(rs.getInt("proyecto"));
-						if (campo.equalsIgnoreCase("proyecto_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("proyecto_nombre")) {
 							prestamo.setProyecto_nombre(rs.getString("proyecto_nombre"));
-						if (campo.equalsIgnoreCase("renglon"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("renglon")) {
 							prestamo.setRenglon(rs.getInt("renglon"));
-						if (campo.equalsIgnoreCase("renglon_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("renglon_nombre")) {
 							prestamo.setRenglon_nombre(rs.getString("renglon_nombre"));
-						if (campo.equalsIgnoreCase("subprograma"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("subprograma")) {
 							prestamo.setSubprograma(rs.getInt("subprograma"));
-						if (campo.equalsIgnoreCase("subprograma_nombre"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("subprograma_nombre")) {
 							prestamo.setSubprograma_nombre("subprograma_nombre");
-						if (campo.equalsIgnoreCase("asignado"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("asignado")) {
 							prestamo.setAsignado(rs.getDouble("asignado"));
-						if (campo.equalsIgnoreCase("ejecutado"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("ejecutado")) {
 							prestamo.setEjecutado(rs.getDouble("ejecutado"));
-						if (campo.equalsIgnoreCase("vigente"))
+							continue;
+						}
+						if (campo.equalsIgnoreCase("vigente")) {
 							prestamo.setVigente(rs.getDouble("vigente"));
+							continue;
+						}
 
 					}
 

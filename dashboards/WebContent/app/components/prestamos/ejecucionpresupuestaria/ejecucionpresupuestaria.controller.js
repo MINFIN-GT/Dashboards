@@ -36,6 +36,7 @@ function funcPEPM($http, $log) {
 	 */
 	ctrlPEPM.chart_organizaciones = [];
 	ctrlPEPM.chart_organizaciones['labels'] = [];
+	ctrlPEPM.chart_organizaciones['legends'] = [];
 	ctrlPEPM.chart_organizaciones['data'] = [];
 	ctrlPEPM.chart_organizaciones['series'] = [];
 	ctrlPEPM.chart_organizaciones['options'] = {
@@ -99,7 +100,7 @@ function funcPEPM($http, $log) {
 
 			var indexPrestamo = 0;
 			var indexEntidad = 0;
-			
+
 			for (var index = 0; index < allPrestamos.length; index++) {
 
 				var unidad_ejecutora = {
@@ -114,18 +115,18 @@ function funcPEPM($http, $log) {
 
 				ctrlPEPM.prestamos.push(unidad_ejecutora);
 
-				e_asignado += unidad_ejecutora.vigente;
+				e_asignado += unidad_ejecutora.asignado;
 				e_vigente += unidad_ejecutora.vigente;
 				e_ejecutado += unidad_ejecutora.ejecutado;
 				e_modificaciones += unidad_ejecutora.modificaciones;
 
-				p_asignado += unidad_ejecutora.vigente;
+				p_asignado += unidad_ejecutora.asignado;
 				p_vigente += unidad_ejecutora.vigente;
 				p_ejecutado += unidad_ejecutora.ejecutado;
 				p_modificaciones += unidad_ejecutora.modificaciones;
 
 				if (index + 1 >= allPrestamos.length
-						|| (allPrestamos[index + 1] !== null && allPrestamos[index].entidad_nombre !== allPrestamos[index + 1].entidad_nombre)) {
+						|| (allPrestamos[index + 1] !== null && (allPrestamos[index].entidad_nombre !== allPrestamos[index + 1].entidad_nombre || allPrestamos[index].prestamo_nombre !== allPrestamos[index + 1].prestamo_nombre))) {
 					entidad_anterior = allPrestamos[index].entidad_nombre;
 					var entidad = {
 						"nombre" : allPrestamos[index].entidad_nombre,
@@ -167,8 +168,8 @@ function funcPEPM($http, $log) {
 					ctrlPEPM.prestamos_totales[1] += p_modificaciones;
 					ctrlPEPM.prestamos_totales[2] += p_vigente;
 					ctrlPEPM.prestamos_totales[3] += p_ejecutado;
-					ctrlPEPM.prestamos_totales[4] += p_vigente > 0 ? p_ejecutado
-							/ p_vigente * 100
+					ctrlPEPM.prestamos_totales[4] = ctrlPEPM.prestamos_totales[2] > 0 ? ctrlPEPM.prestamos_totales[3]
+							/ ctrlPEPM.prestamos_totales[2] * 100
 							: 0.0;
 
 					data_vigente.push(p_vigente / 1000000);
@@ -177,7 +178,7 @@ function funcPEPM($http, $log) {
 					ctrlPEPM.prestamos.splice(indexPrestamo, 0, prestamo);
 					indexPrestamo = ctrlPEPM.prestamos.length;
 					indexEntidad++;
-					
+
 					ctrlPEPM.chart_prestamos['labels']
 							.push(ctrlPEPM.prestamos.length);
 
@@ -188,6 +189,7 @@ function funcPEPM($http, $log) {
 					p_ejecutado = 0.0;
 					p_porcentaje = 0.0;
 				}
+
 			}
 
 			ctrlPEPM.chart_prestamos['series'] = [ 'vigente', 'ejecutado' ];
@@ -228,6 +230,8 @@ function funcPEPM($http, $log) {
 			for (var i = 0; i < prestamos.length; i++) {
 				ctrlPEPM.chart_organizaciones['labels']
 						.push(prestamos[i].organismo);
+				ctrlPEPM.chart_organizaciones['legends']
+						.push(prestamos[i].organismo_nombre);
 				financiamiento[i] = prestamos[i].ejecutado / 1000000;
 				total += financiamiento[i];
 			}

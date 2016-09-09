@@ -15,7 +15,7 @@
 				<thead>
 					<tr>
 						<th>Préstamos</th>
-						<th>Préstamo Aprobado</th>
+						<th>Aprobado</th>
 						<th>Modificaciones</th>
 						<th>Vigente</th>
 						<th>Ejecución</th>
@@ -83,7 +83,7 @@
 				<thead>
 					<tr>
 						<th class="text-center">Entidad</th>
-						<th class="text-center">Préstamo Aprobado</th>
+						<th class="text-center">Aprobado</th>
 						<th class="text-center">Modificaciones</th>
 						<th class="text-center">Vigente</th>
 						<th class="text-center">Ejecución</th>
@@ -117,7 +117,7 @@
 	
 	<div class="row">
 		<div class="col-sm-12 col-centered">
-			<div class="panel panel-default div-center" style="width: 600px; height: 450px;">
+			<div class="panel panel-default div-center" style="width: 600px; height: auto;">
 				<h5 class="text-center">Préstamos Ejecutado por Organización</h5>
 				<h6 class="text-center">-Préstamo Ejecutado-</h6>
 				<div style="width: 380px; height: 330px;" class="div-center">
@@ -129,7 +129,7 @@
 					<ul class="line-legend">
 						<li ng-repeat="year in ctrlPEPM.chart_organizaciones['labels'] track by $index">
 						<div class="img-rounded" style="float: left; margin-right: 5px; width: 15px; height: 15px; background-color : {{ ctrlPEPM.chart_colors[$index] }};"></div>
-							{{ ctrlPEPM.chart_organizaciones['labels'][$index] }} 
+							{{ ctrlPEPM.chart_organizaciones['labels'][$index] }} - {{ ctrlPEPM.chart_organizaciones['legends'][$index] }} 
 						</li>
 					</ul>
 				</div>

@@ -70,7 +70,8 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             })
             .when('/prestamos/ejecucionPresupuestaria',{
             	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
-            })            /*.when('/salir',{
+            })
+            /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
             		logout: function logout($http){
