@@ -103,10 +103,8 @@ public class CPrestamoDAO {
 				PreparedStatement pstm = conn.prepareStatement(getQuery(tipo));
 				ResultSet rs = pstm.executeQuery();
 
-				System.out.println("------" + tipo.toString() + "------");
 				List<String> campos = new ArrayList<String>();
 				for (int i = 1; i <= pstm.getMetaData().getColumnCount(); i++) {
-					System.out.println(pstm.getMetaData().getColumnClassName(i));
 					campos.add(pstm.getMetaData().getColumnName(i));
 				}
 
