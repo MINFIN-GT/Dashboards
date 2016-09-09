@@ -94,38 +94,6 @@ public class CPrestamoDAO {
 		}
 	}
 
-	private static List<String> getCampos(TIPO tipo) {
-		List<String> campos = new ArrayList<String>();
-
-		switch (tipo) {
-		case ORGANISMOS:
-			campos.add("organismo");
-			campos.add("organismo_nombre");
-			campos.add("ejecutado");
-			break;
-		case ENTIDADES:
-			campos.add("entidad");
-			campos.add("entidad_nombre");
-			campos.add("asignado");
-			campos.add("ejecutado");
-			campos.add("vigente");
-			break;
-		default: // case PRESTAMOS:
-			campos.add("correlativo");
-			campos.add("prestamo_nombre");
-			campos.add("entidad");
-			campos.add("entidad_nombre");
-			campos.add("unidad_ejecutora");
-			campos.add("unidad_ejecutora_nombre");
-			campos.add("asignado");
-			campos.add("ejecutado");
-			campos.add("vigente");
-			break;
-		}
-
-		return campos;
-	}
-
 	public static List<CPrestamo> getAllPrestamos(TIPO tipo) {
 		List<CPrestamo> prestamos = new ArrayList<CPrestamo>();
 
@@ -135,10 +103,19 @@ public class CPrestamoDAO {
 				PreparedStatement pstm = conn.prepareStatement(getQuery(tipo));
 				ResultSet rs = pstm.executeQuery();
 
-				List<String> campos = getCampos(tipo);
+				System.out.println("------" + tipo.toString() + "------");
+				List<String> campos = new ArrayList<String>();
+				for (int i = 1; i <= pstm.getMetaData().getColumnCount(); i++) {
+					System.out.println(pstm.getMetaData().getColumnClassName(i));
+					campos.add(pstm.getMetaData().getColumnName(i));
+				}
+
 				while (rs.next()) {
 					CPrestamo prestamo = new CPrestamo();
 
+					
+					// Posiblemente se camabia la estructura para que sea generica 
+					// donde el metodo reciba la clase pojo y el prepareStatement
 					for (String campo : campos) {
 						if (campo.equalsIgnoreCase("correlativo")) {
 							prestamo.setCorrelativo(rs.getInt("correlativo"));
