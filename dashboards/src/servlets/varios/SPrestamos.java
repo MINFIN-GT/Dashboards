@@ -1,4 +1,4 @@
-package servlets.prestamos;
+package servlets.varios;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +19,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import dao.prestamos.CPrestamoDAO;
-import dao.prestamos.CPrestamoDAO.TIPO;
-import pojo.prestamos.CPrestamo;
+import dao.varios.CPrestamoDAO;
+import dao.varios.CPrestamoDAO.TIPO;
+import pojo.varios.CPrestamo;
 
 /**
  * Servlet implementation class SPrestamo

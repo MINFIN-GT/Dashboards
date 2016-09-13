@@ -1,4 +1,4 @@
-package dao.prestamos;
+package dao.varios;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.utilities.CDatabase;
-import pojo.prestamos.CPrestamo;
+import pojo.varios.CDonacion;
 import utilities.CLogger;
 
-public class CPrestamoDAO {
+public class CDonacionDAO {
 	public static enum TIPO {
-		PRESTAMOS, ENTIDADES, ORGANISMOS
+		DONACIONES, ENTIDADES, ORGANISMOS
 	}
 
-	private static String getQueryPrestamos() {
+	private static String getQueryDonaciones() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select ");
@@ -45,7 +45,7 @@ public class CPrestamoDAO {
 		return sb.toString();
 	}
 
-	private static String getQueryPrestamosByEntidad() {
+	private static String getQueryDonacionesByEntidad() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select ");
@@ -65,7 +65,7 @@ public class CPrestamoDAO {
 		return sb.toString();
 	}
 
-	private static String getQueryPrestamosByOrganismo() {
+	private static String getQueryDonacionesByOrganismo() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("select ");
@@ -86,16 +86,16 @@ public class CPrestamoDAO {
 	private static String getQuery(TIPO tipo) {
 		switch (tipo) {
 		case ORGANISMOS:
-			return getQueryPrestamosByOrganismo();
+			return getQueryDonacionesByOrganismo();
 		case ENTIDADES:
-			return getQueryPrestamosByEntidad();
+			return getQueryDonacionesByEntidad();
 		default: // case PRESTAMOS:
-			return getQueryPrestamos();
+			return getQueryDonaciones();
 		}
 	}
 
-	public static List<CPrestamo> getAllPrestamos(TIPO tipo) {
-		List<CPrestamo> prestamos = new ArrayList<CPrestamo>();
+	public static List<CDonacion> getAllDonaciones(TIPO tipo) {
+		List<CDonacion> donaciones = new ArrayList<CDonacion>();
 
 		if (CDatabase.connect()) {
 			Connection conn = CDatabase.getConnection();
@@ -109,7 +109,7 @@ public class CPrestamoDAO {
 				}
 
 				while (rs.next()) {
-					CPrestamo prestamo = new CPrestamo();
+					CDonacion prestamo = new CDonacion();
 
 					
 					// Posiblemente se camabia la estructura para que sea generica 
@@ -218,19 +218,19 @@ public class CPrestamoDAO {
 
 					}
 
-					prestamos.add(prestamo);
+					donaciones.add(prestamo);
 				}
 				rs.close();
 				pstm.close();
 
 			} catch (Exception e) {
-				CLogger.write("1", CPrestamoDAO.class, e);
+				CLogger.write("1", CDonacionDAO.class, e);
 			} finally {
 				CDatabase.close(conn);
 			}
 		}
 
-		return prestamos;
+		return donaciones;
 	}
 
 }
