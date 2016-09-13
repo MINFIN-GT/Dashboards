@@ -1,6 +1,6 @@
-package pojo.prestamos;
+package pojo.varios;
 
-public class CPrestamo {
+public class CDonacion {
 	private Integer ejercicio;
 	private Integer fuente;
 	private String fuente_nombre;
@@ -27,10 +27,10 @@ public class CPrestamo {
 	private Double vigente;
 	private Double ejecutado;
 
-	public CPrestamo() {
+	public CDonacion() {
 	}
 
-	public CPrestamo(Integer ejercicio, Integer fuente, String fuente_nombre, Integer organismo,
+	public CDonacion(Integer ejercicio, Integer fuente, String fuente_nombre, Integer organismo,
 			String organismo_nombre, Integer correlativo, String prestamo_nombre, Integer entidad,
 			String entidad_nombre, Integer unidad_ejecutora, String unidad_ejecutora_nombre, Integer programa,
 			String programa_nombre, Integer subprograma, String subprograma_nombre, Integer proyecto,
