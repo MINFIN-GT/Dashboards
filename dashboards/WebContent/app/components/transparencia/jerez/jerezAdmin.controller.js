@@ -95,6 +95,7 @@ angular.module('jerezAdminController').controller('adminCtrl', function($log,$sc
 
 angular.module('jerezAdminController')
 .controller('editActivity', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload) {
+	
 	if ($rootScope.id<=0){
 		$rootScope.id=-1; 
 		$rootScope.nombre="";
@@ -119,7 +120,7 @@ angular.module('jerezAdminController')
 	}
 	$rootScope.docFile = null
 	$scope.activeTab=0;
-	
+	$scope.center="opt1";
 	$scope.cancel = function () {
 		$rootScope.render=false;
 	    $uibModalInstance.dismiss('cancel');
@@ -240,6 +241,16 @@ angular.module('jerezAdminController')
 			    file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
 			  });
 		 };	 
+		 
+	$scope.changeCenter=function(){
+		if (this.center == "opt1")
+			$scope.map.center = { latitude: '14.091376', longitude:'-89.766197' };
+		else if (this.center == "opt2")
+			$scope.map.center = { latitude: '14.5743078', longitude:'-90.5274319' };
+		else if (this.center == "opt3")
+			$scope.map.center = { latitude: '14.6287331', longitude:'-90.5111991' };
+		$scope.map.zoom=15;
+	}
 	
 	uiGmapGoogleMapApi.then(function() {
 		$scope.map = { center: { latitude: '14.091376', longitude:'-89.766197' }, 

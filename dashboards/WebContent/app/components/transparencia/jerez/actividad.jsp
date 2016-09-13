@@ -130,6 +130,15 @@
 	</form>
 	</uib-tab> <uib-tab index="1" heading="Coordenadas" select="mapTabSelect()">
 	<div>
+		<div>
+			<label for="singleSelect"> Ir a: </label><br>
+   			 <select name="singleSelect" ng-model="center" ng-change="changeCenter()">
+     		 	<option value="opt1">Jerez, Jutiapa</option>
+     		 	<option value="opt2">CONRED</option>
+     		 	<option value="opt3">MINFIN</option>
+     		 	<option value="opt4">Palacio Nacional</option>
+   			 </select><br>
+		</div>
 		<div class="angular-google-map-container">
 			<ui-gmap-google-map ng-if="$root.render" id="mainmap"
 				center="map.center" zoom="map.zoom" events="map.events"
