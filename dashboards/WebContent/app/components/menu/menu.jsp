@@ -65,7 +65,7 @@
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 		                    <li role="menuitem"><a href="#!/paptn/ejecucionfinanciera">PAPTN - Ejecución Financiera</a></li>
 	                     	<li role="menuitem"><a href="#!/prestamos">Préstamos - Ejecución Presupuestaría</a></li>
-<!-- 	                     	<li role="menuitem"><a href="#!/donaciones">Donaciones - Ejecución Presupuestaría</a></li> -->
+	                     	<li role="menuitem"><a href="#!/donaciones">Donaciones - Ejecución Presupuestaría</a></li>
 	                    </ul>
 	                </li>
 	            </ul>
