@@ -27,10 +27,12 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/transparencia/jerez/documentos',{
             	template: '<div load-on-demand="\'jerezDocumentosController\'" class="all_page"></div>'
             })
-            .when('/prestamos/ejecucionPresupuestaria',{
+            .when('/prestamos',{
             	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
             })
-            ;
+            .when('/donaciones',{
+            	template: '<div load-on-demand="\'donacionesEjecucionPresupuestariaModule\'" class="all_page"></div>'
+            })            ;
     }]);
 
 app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
@@ -67,9 +69,16 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
-	           script: '/app/components/prestamos/ejecucionpresupuestaria/ejecucionpresupuestaria.controller.js',
-	           template: '/app/components/prestamos/ejecucionpresupuestaria/ejecucionpresupuestaria.jsp'
-	       }	       
+	           script: '/app/components/varios/prestamos/ejecucionpresupuestaria.controller.js',
+	           template: '/app/components/varios/prestamos/ejecucionpresupuestaria.jsp'
+	       },
+	       {
+	    	   name: 'donacionesEjecucionPresupuestariaModule',     
+	           script: '/app/components/varios/donaciones/donaciones.controller.js',
+	           template: '/app/components/varios/donaciones/donaciones.jsp'
+	       }
+
+	       
 	   ];
 	   $loadOnDemandProvider.config(modules);
 }]);

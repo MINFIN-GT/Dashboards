@@ -50,19 +50,6 @@
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>PAPTN <b class="caret"></b></a>
-	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                     	<li role="menuitem"><a href="#!/paptn/ejecucionfinanciera">Ejecución Financiera</a></li>
-	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
-	                        <li role="menuitem"><a href="#">Something else here</a></li>
-	                        <li class="divider"></li>
-	                        <li role="menuitem"><a href="#">Separated link</a></li>  -->
-	                    </ul>
-	                </li>
-	                <!-- <li class="active"><a href="/view1">Home</a></li>
-	                <li><a href="/view2">About</a></li>
-	                <li><a href="#">Contact</a></li>  -->
-	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Mapas <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 	                        <li role="menuitem"><a href="#!/maps/geograficogasto">Mapa de Calor del Gasto</a></li>
@@ -74,9 +61,11 @@
 	                </li>
 	                
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Prestamos <b class="caret"></b></a>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Varios <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                     	<li role="menuitem"><a href="#!/prestamos/ejecucionPresupuestaria">Ejecución Presupuestaría</a></li>
+		                    <li role="menuitem"><a href="#!/paptn/ejecucionfinanciera">PAPTN - Ejecución Financiera</a></li>
+	                     	<li role="menuitem"><a href="#!/prestamos">Préstamos - Ejecución Presupuestaría</a></li>
+<!-- 	                     	<li role="menuitem"><a href="#!/donaciones">Donaciones - Ejecución Presupuestaría</a></li> -->
 	                    </ul>
 	                </li>
 	            </ul>
