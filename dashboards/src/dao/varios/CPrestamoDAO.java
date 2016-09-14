@@ -6,12 +6,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.DataAccessObject;
 import db.utilities.CDatabase;
 import pojo.varios.CPrestamo;
 import utilities.CLogger;
 
-public class CPrestamoDAO extends DataAccessObject {
+public class CPrestamoDAO {
 	public static enum TIPO {
 		PRESTAMOS, ENTIDADES, ORGANISMOS
 	}
@@ -22,6 +21,7 @@ public class CPrestamoDAO extends DataAccessObject {
 		sb.append("select ");
 		sb.append("    correlativo");
 		sb.append("    ,prestamo_nombre");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
 		sb.append("    ,unidad_ejecutora");
@@ -34,6 +34,7 @@ public class CPrestamoDAO extends DataAccessObject {
 		sb.append(" group by ");
 		sb.append("    correlativo");
 		sb.append("    ,prestamo_nombre");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
 		sb.append("    ,unidad_ejecutora");
@@ -95,22 +96,121 @@ public class CPrestamoDAO extends DataAccessObject {
 		}
 	}
 
-	public static List<CPrestamo> getAllPrestamos(TIPO tipo) {
+	// CPrestamo prestamo = new CPrestamo(
+	// rs.getInt("ejercicio"),
+	// rs.getInt("fuente"),
+	// rs.getString("fuente_nombre"),
+	// rs.getInt("organismo"),
+	// rs.getString("organismo_nombre"),
+	// rs.getInt("correlativo"),
+	// rs.getString("prestamo_nombre"),
+	// rs.getString("prestamo_sigla"),
+	// rs.getInt("entidad"),
+	// rs.getString("entidad_nombre"),
+	// rs.getInt("unidad_ejecutora"),
+	// rs.getString("unidad_ejecutora_nombre"),
+	// rs.getInt("programa"),
+	// rs.getString("programa_nombre"),
+	// rs.getInt("subprograma"),
+	// rs.getString("subprograma_nombre"),
+	// rs.getInt("proyecto"),
+	// rs.getString("proyecto_nombre"),
+	// rs.getInt("actividad"),
+	// rs.getInt("obra"),
+	// rs.getString("actividad_obra_nombre"),
+	// rs.getInt("renglon"),
+	// rs.getString("renglon_nombre"),
+	// rs.getDouble("asignado"),
+	// rs.getDouble("vigente"),
+	// rs.getDouble("ejecutado")
+	// );
+
+	public static List<CPrestamo> getPrestamos() {
 		List<CPrestamo> prestamos = new ArrayList<CPrestamo>();
 
 		if (CDatabase.connect()) {
 			Connection conn = CDatabase.getConnection();
 			try {
-				PreparedStatement pstm = conn.prepareStatement(getQuery(tipo));
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.PRESTAMOS));
 				ResultSet rs = pstm.executeQuery();
 
-				prestamos = getListPojo(CPrestamo.class, rs);
+				while (rs.next()) {
+					CPrestamo prestamo = new CPrestamo(null, null, null, null, null, rs.getInt("correlativo"),
+							rs.getString("prestamo_nombre"), rs.getString("prestamo_sigla"), rs.getInt("entidad"),
+							rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"),
+							rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null, null, null,
+							null, null, null, rs.getDouble("asignado"), rs.getDouble("vigente"),
+							rs.getDouble("ejecutado"));
+
+					prestamos.add(prestamo);
+				}
 
 				rs.close();
 				pstm.close();
 
 			} catch (Exception e) {
 				CLogger.write("1", CPrestamoDAO.class, e);
+			} finally {
+				CDatabase.close(conn);
+			}
+		}
+
+		return prestamos;
+	}
+
+	public static List<CPrestamo> getPrestamosByEntidad() {
+		List<CPrestamo> prestamos = new ArrayList<CPrestamo>();
+
+		if (CDatabase.connect()) {
+			Connection conn = CDatabase.getConnection();
+			try {
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ENTIDADES));
+				ResultSet rs = pstm.executeQuery();
+
+				while (rs.next()) {
+					CPrestamo prestamo = new CPrestamo(null, null, null, null, null, null, null, null,
+							rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null,
+							null, null, null, null, null, null, null, rs.getDouble("asignado"), rs.getDouble("vigente"),
+							rs.getDouble("ejecutado"));
+
+					prestamos.add(prestamo);
+				}
+
+				rs.close();
+				pstm.close();
+
+			} catch (Exception e) {
+				CLogger.write("2", CPrestamoDAO.class, e);
+			} finally {
+				CDatabase.close(conn);
+			}
+		}
+
+		return prestamos;
+	}
+
+	public static List<CPrestamo> getPrestamosByOrganismo() {
+		List<CPrestamo> prestamos = new ArrayList<CPrestamo>();
+
+		if (CDatabase.connect()) {
+			Connection conn = CDatabase.getConnection();
+			try {
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ORGANISMOS));
+				ResultSet rs = pstm.executeQuery();
+
+				while (rs.next()) {
+					CPrestamo prestamo = new CPrestamo(null, null, null, rs.getInt("organismo"),
+							rs.getString("organismo_nombre"), null, null, null, null, null, null, null, null, null,
+							null, null, null, null, null, null, null, null, null, null, null,
+							rs.getDouble("ejecutado"));
+
+					prestamos.add(prestamo);
+				}
+				rs.close();
+				pstm.close();
+
+			} catch (Exception e) {
+				CLogger.write("3", CPrestamoDAO.class, e);
 			} finally {
 				CDatabase.close(conn);
 			}
