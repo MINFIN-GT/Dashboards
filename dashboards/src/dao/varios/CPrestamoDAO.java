@@ -20,6 +20,7 @@ public class CPrestamoDAO {
 
 		sb.append("select ");
 		sb.append("    correlativo");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,prestamo_nombre");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
@@ -215,7 +216,10 @@ public class CPrestamoDAO {
 							prestamo.setVigente(rs.getDouble("vigente"));
 							continue;
 						}
-
+						if (campo.equalsIgnoreCase("prestamo_sigla")){
+							prestamo.setSigla(rs.getString("prestamo_sigla"));
+							continue;
+						}
 					}
 
 					prestamos.add(prestamo);
