@@ -6,12 +6,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.DataAccessObject;
 import db.utilities.CDatabase;
 import pojo.varios.CDonacion;
 import utilities.CLogger;
 
-public class CDonacionDAO extends DataAccessObject {
+public class CDonacionDAO {
 	public static enum TIPO {
 		DONACIONES, ENTIDADES, ORGANISMOS
 	}
@@ -22,6 +21,7 @@ public class CDonacionDAO extends DataAccessObject {
 		sb.append("select ");
 		sb.append("    correlativo");
 		sb.append("    ,prestamo_nombre");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
 		sb.append("    ,unidad_ejecutora");
@@ -34,6 +34,7 @@ public class CDonacionDAO extends DataAccessObject {
 		sb.append(" group by ");
 		sb.append("    correlativo");
 		sb.append("    ,prestamo_nombre");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
 		sb.append("    ,unidad_ejecutora");
@@ -95,16 +96,116 @@ public class CDonacionDAO extends DataAccessObject {
 		}
 	}
 
-	public static List<CDonacion> getAllDonaciones(TIPO tipo) {
+	// CPrestamo prestamo = new CPrestamo(
+	// rs.getInt("ejercicio"),
+	// rs.getInt("fuente"),
+	// rs.getString("fuente_nombre"),
+	// rs.getInt("organismo"),
+	// rs.getString("organismo_nombre"),
+	// rs.getInt("correlativo"),
+	// rs.getString("prestamo_nombre"),
+	// rs.getString("prestamo_sigla"),
+	// rs.getInt("entidad"),
+	// rs.getString("entidad_nombre"),
+	// rs.getInt("unidad_ejecutora"),
+	// rs.getString("unidad_ejecutora_nombre"),
+	// rs.getInt("programa"),
+	// rs.getString("programa_nombre"),
+	// rs.getInt("subprograma"),
+	// rs.getString("subprograma_nombre"),
+	// rs.getInt("proyecto"),
+	// rs.getString("proyecto_nombre"),
+	// rs.getInt("actividad"),
+	// rs.getInt("obra"),
+	// rs.getString("actividad_obra_nombre"),
+	// rs.getInt("renglon"),
+	// rs.getString("renglon_nombre"),
+	// rs.getDouble("asignado"),
+	// rs.getDouble("vigente"),
+	// rs.getDouble("ejecutado")
+	// );
+
+	public static List<CDonacion> getDonaciones() {
 		List<CDonacion> donaciones = new ArrayList<CDonacion>();
 
 		if (CDatabase.connect()) {
 			Connection conn = CDatabase.getConnection();
 			try {
-				PreparedStatement pstm = conn.prepareStatement(getQuery(tipo));
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.DONACIONES));
 				ResultSet rs = pstm.executeQuery();
 
-				donaciones = getListPojo(CDonacion.class, rs);
+				while (rs.next()) {
+					CDonacion donacion = new CDonacion(null, null, null, null, null, rs.getInt("correlativo"),
+							rs.getString("prestamo_nombre"), rs.getString("prestamo_sigla"), rs.getInt("entidad"),
+							rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"),
+							rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null, null, null,
+							null, null, null, rs.getDouble("asignado"), rs.getDouble("vigente"),
+							rs.getDouble("ejecutado"));
+
+					donaciones.add(donacion);
+				}
+
+				rs.close();
+				pstm.close();
+
+			} catch (Exception e) {
+				CLogger.write("1", CDonacionDAO.class, e);
+			} finally {
+				CDatabase.close(conn);
+			}
+		}
+
+		return donaciones;
+	}
+
+	public static List<CDonacion> getDonacionesByEntidad() {
+		List<CDonacion> donaciones = new ArrayList<CDonacion>();
+
+		if (CDatabase.connect()) {
+			Connection conn = CDatabase.getConnection();
+			try {
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ENTIDADES));
+				ResultSet rs = pstm.executeQuery();
+
+				while (rs.next()) {
+					CDonacion donacion = new CDonacion(null, null, null, null, null, null, null, null,
+							rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null,
+							null, null, null, null, null, null, null, rs.getDouble("asignado"), rs.getDouble("vigente"),
+							rs.getDouble("ejecutado"));
+
+					donaciones.add(donacion);
+				}
+
+				rs.close();
+				pstm.close();
+
+			} catch (Exception e) {
+				CLogger.write("1", CDonacionDAO.class, e);
+			} finally {
+				CDatabase.close(conn);
+			}
+		}
+
+		return donaciones;
+	}
+
+	public static List<CDonacion> getDonacionesByOrganismo() {
+		List<CDonacion> donaciones = new ArrayList<CDonacion>();
+
+		if (CDatabase.connect()) {
+			Connection conn = CDatabase.getConnection();
+			try {
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ORGANISMOS));
+				ResultSet rs = pstm.executeQuery();
+
+				while (rs.next()) {
+					CDonacion donacion = new CDonacion(null, null, null, rs.getInt("organismo"),
+							rs.getString("organismo_nombre"), null, null, null, null, null, null, null, null, null,
+							null, null, null, null, null, null, null, null, null, null, null,
+							rs.getDouble("ejecutado"));
+
+					donaciones.add(donacion);
+				}
 
 				rs.close();
 				pstm.close();

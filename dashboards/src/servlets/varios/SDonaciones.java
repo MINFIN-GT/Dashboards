@@ -20,7 +20,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.varios.CDonacionDAO;
-import dao.varios.CDonacionDAO.TIPO;
 import pojo.varios.CDonacion;
 
 /**
@@ -110,7 +109,7 @@ public class SDonaciones extends HttpServlet {
 
 	private String getAllDonaciones(Map<String, String> map) {
 
-		List<CDonacion> cDonaciones = CDonacionDAO.getAllDonaciones(TIPO.DONACIONES);
+		List<CDonacion> cDonaciones = CDonacionDAO.getDonaciones();
 		List<Donacion> donaciones = new ArrayList<Donacion>();
 
 		for (CDonacion cPrestamo : cDonaciones) {
@@ -144,7 +143,7 @@ public class SDonaciones extends HttpServlet {
 
 	private String getDonacionesByEntidad(Map<String, String> map) {
 
-		List<CDonacion> cDonaciones = CDonacionDAO.getAllDonaciones(TIPO.ENTIDADES);
+		List<CDonacion> cDonaciones = CDonacionDAO.getDonacionesByEntidad();
 		List<Donacion> donaciones = new ArrayList<Donacion>();
 
 		for (CDonacion cPrestamo : cDonaciones) {
@@ -174,7 +173,7 @@ public class SDonaciones extends HttpServlet {
 
 	private String getDonacionesByOrganismo(Map<String, String> map) {
 
-		List<CDonacion> cDonaciones = CDonacionDAO.getAllDonaciones(TIPO.ORGANISMOS);
+		List<CDonacion> cDonaciones = CDonacionDAO.getDonacionesByOrganismo();
 		List<Donacion> donaciones = new ArrayList<Donacion>();
 
 		for (CDonacion cPrestamo : cDonaciones) {
