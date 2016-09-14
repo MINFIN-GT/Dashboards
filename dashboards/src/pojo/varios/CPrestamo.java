@@ -26,6 +26,7 @@ public class CPrestamo {
 	private Double asignado;
 	private Double vigente;
 	private Double ejecutado;
+	private String sigla;
 
 	public CPrestamo() {
 	}
@@ -35,7 +36,7 @@ public class CPrestamo {
 			String entidad_nombre, Integer unidad_ejecutora, String unidad_ejecutora_nombre, Integer programa,
 			String programa_nombre, Integer subprograma, String subprograma_nombre, Integer proyecto,
 			String proyecto_nombre, Integer actividad, Integer obra, String actividad_obra_nombre, Integer renglon,
-			String renglon_nombre, Double asignado, Double vigente, Double ejecutado) {
+			String renglon_nombre, Double asignado, Double vigente, Double ejecutado, String sigla) {
 		this.ejercicio = ejercicio;
 		this.fuente = fuente;
 		this.fuente_nombre = fuente_nombre;
@@ -61,6 +62,7 @@ public class CPrestamo {
 		this.asignado = asignado;
 		this.vigente = vigente;
 		this.ejecutado = ejecutado;
+		this.sigla = sigla;
 	}
 
 	public Integer getEjercicio() {
@@ -261,6 +263,14 @@ public class CPrestamo {
 
 	public void setEjecutado(Double ejecutado) {
 		this.ejecutado = ejecutado;
+	}
+
+	public String getSigla() {
+		return sigla;
+	}
+
+	public void setSigla(String sigla) {
+		this.sigla = sigla;
 	}
 
 }

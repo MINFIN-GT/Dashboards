@@ -155,7 +155,8 @@ function funcPEPM($http, $log) {
 					prestamo_anterior = allPrestamos[index].prestamo_nombre;
 
 					var prestamo = {
-						"nombre" : allPrestamos[index].prestamo_nombre + " (" + allPrestamos[index].correlativo + ")",
+						"nombre" : allPrestamos[index].prestamo_nombre,
+						"sigla": allPrestamos[index].sigla,
 						"asignado" : p_asignado,
 						"modificaciones" : p_modificaciones,
 						"vigente" : p_vigente,
@@ -181,7 +182,7 @@ function funcPEPM($http, $log) {
 					indexEntidad++;
 
 					ctrlPEPM.chart_prestamos['labels']
-							.push(allPrestamos[index].correlativo);
+							.push(allPrestamos[index].sigla);
 					ctrlPEPM.chart_prestamos['legends']
 							.push(allPrestamos[index].prestamo_nombre);
 					

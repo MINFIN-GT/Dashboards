@@ -45,6 +45,8 @@ public class SPrestamos extends HttpServlet {
 		Double vigente;
 		Double ejecutado;
 		Double porcentaje;
+		
+		String sigla;
 	}
 
 	/**
@@ -117,6 +119,7 @@ public class SPrestamos extends HttpServlet {
 			Prestamo prestamo = new Prestamo();
 
 			prestamo.correlativo = cPrestamo.getCorrelativo();
+			prestamo.sigla = cPrestamo.getSigla();
 			prestamo.prestamo_nombre = cPrestamo.getPrestamo_nombre();
 			prestamo.entidad = cPrestamo.getEntidad();
 			prestamo.entidad_nombre = cPrestamo.getEntidad_nombre();
