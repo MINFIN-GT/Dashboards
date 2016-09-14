@@ -20,7 +20,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.varios.CPrestamoDAO;
-import dao.varios.CPrestamoDAO.TIPO;
 import pojo.varios.CPrestamo;
 
 /**
@@ -33,6 +32,7 @@ public class SPrestamos extends HttpServlet {
 	class Prestamo {
 		Integer correlativo;
 		String prestamo_nombre;
+		String prestamo_sigla;
 		Integer entidad;
 		String entidad_nombre;
 		Integer unidad_ejecutora;
@@ -45,8 +45,6 @@ public class SPrestamos extends HttpServlet {
 		Double vigente;
 		Double ejecutado;
 		Double porcentaje;
-		
-		String sigla;
 	}
 
 	/**
@@ -112,15 +110,15 @@ public class SPrestamos extends HttpServlet {
 
 	private String getAllPrestamos(Map<String, String> map) {
 
-		List<CPrestamo> cPrestamos = CPrestamoDAO.getAllPrestamos(TIPO.PRESTAMOS);
+		List<CPrestamo> cPrestamos = CPrestamoDAO.getPrestamos();
 		List<Prestamo> prestamos = new ArrayList<Prestamo>();
 
 		for (CPrestamo cPrestamo : cPrestamos) {
 			Prestamo prestamo = new Prestamo();
 
 			prestamo.correlativo = cPrestamo.getCorrelativo();
-			prestamo.sigla = cPrestamo.getSigla();
 			prestamo.prestamo_nombre = cPrestamo.getPrestamo_nombre();
+			prestamo.prestamo_sigla = cPrestamo.getPrestamo_sigla();
 			prestamo.entidad = cPrestamo.getEntidad();
 			prestamo.entidad_nombre = cPrestamo.getEntidad_nombre();
 			prestamo.unidad_ejecutora = cPrestamo.getUnidad_ejecutora();
@@ -147,7 +145,7 @@ public class SPrestamos extends HttpServlet {
 
 	private String getPrestamosByEntidad(Map<String, String> map) {
 
-		List<CPrestamo> cPrestamos = CPrestamoDAO.getAllPrestamos(TIPO.ENTIDADES);
+		List<CPrestamo> cPrestamos = CPrestamoDAO.getPrestamosByEntidad();
 		List<Prestamo> prestamos = new ArrayList<Prestamo>();
 
 		for (CPrestamo cPrestamo : cPrestamos) {
@@ -177,7 +175,7 @@ public class SPrestamos extends HttpServlet {
 
 	private String getPrestamosByOrganismo(Map<String, String> map) {
 
-		List<CPrestamo> cPrestamos = CPrestamoDAO.getAllPrestamos(TIPO.ORGANISMOS);
+		List<CPrestamo> cPrestamos = CPrestamoDAO.getPrestamosByOrganismo();
 		List<Prestamo> prestamos = new ArrayList<Prestamo>();
 
 		for (CPrestamo cPrestamo : cPrestamos) {

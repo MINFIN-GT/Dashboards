@@ -21,6 +21,7 @@ public class CDonacionDAO {
 		sb.append("select ");
 		sb.append("    correlativo");
 		sb.append("    ,prestamo_nombre");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
 		sb.append("    ,unidad_ejecutora");
@@ -33,6 +34,7 @@ public class CDonacionDAO {
 		sb.append(" group by ");
 		sb.append("    correlativo");
 		sb.append("    ,prestamo_nombre");
+		sb.append("    ,prestamo_sigla");
 		sb.append("    ,entidad");
 		sb.append("    ,entidad_nombre");
 		sb.append("    ,unidad_ejecutora");
@@ -94,132 +96,117 @@ public class CDonacionDAO {
 		}
 	}
 
-	public static List<CDonacion> getAllDonaciones(TIPO tipo) {
+	// CPrestamo prestamo = new CPrestamo(
+	// rs.getInt("ejercicio"),
+	// rs.getInt("fuente"),
+	// rs.getString("fuente_nombre"),
+	// rs.getInt("organismo"),
+	// rs.getString("organismo_nombre"),
+	// rs.getInt("correlativo"),
+	// rs.getString("prestamo_nombre"),
+	// rs.getString("prestamo_sigla"),
+	// rs.getInt("entidad"),
+	// rs.getString("entidad_nombre"),
+	// rs.getInt("unidad_ejecutora"),
+	// rs.getString("unidad_ejecutora_nombre"),
+	// rs.getInt("programa"),
+	// rs.getString("programa_nombre"),
+	// rs.getInt("subprograma"),
+	// rs.getString("subprograma_nombre"),
+	// rs.getInt("proyecto"),
+	// rs.getString("proyecto_nombre"),
+	// rs.getInt("actividad"),
+	// rs.getInt("obra"),
+	// rs.getString("actividad_obra_nombre"),
+	// rs.getInt("renglon"),
+	// rs.getString("renglon_nombre"),
+	// rs.getDouble("asignado"),
+	// rs.getDouble("vigente"),
+	// rs.getDouble("ejecutado")
+	// );
+
+	public static List<CDonacion> getDonaciones() {
 		List<CDonacion> donaciones = new ArrayList<CDonacion>();
 
 		if (CDatabase.connect()) {
 			Connection conn = CDatabase.getConnection();
 			try {
-				PreparedStatement pstm = conn.prepareStatement(getQuery(tipo));
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.DONACIONES));
 				ResultSet rs = pstm.executeQuery();
 
-				List<String> campos = new ArrayList<String>();
-				for (int i = 1; i <= pstm.getMetaData().getColumnCount(); i++) {
-					campos.add(pstm.getMetaData().getColumnName(i));
+				while (rs.next()) {
+					CDonacion donacion = new CDonacion(null, null, null, null, null, rs.getInt("correlativo"),
+							rs.getString("prestamo_nombre"), rs.getString("prestamo_sigla"), rs.getInt("entidad"),
+							rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"),
+							rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null, null, null,
+							null, null, null, rs.getDouble("asignado"), rs.getDouble("vigente"),
+							rs.getDouble("ejecutado"));
+
+					donaciones.add(donacion);
 				}
+
+				rs.close();
+				pstm.close();
+
+			} catch (Exception e) {
+				CLogger.write("1", CDonacionDAO.class, e);
+			} finally {
+				CDatabase.close(conn);
+			}
+		}
+
+		return donaciones;
+	}
+
+	public static List<CDonacion> getDonacionesByEntidad() {
+		List<CDonacion> donaciones = new ArrayList<CDonacion>();
+
+		if (CDatabase.connect()) {
+			Connection conn = CDatabase.getConnection();
+			try {
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ENTIDADES));
+				ResultSet rs = pstm.executeQuery();
 
 				while (rs.next()) {
-					CDonacion prestamo = new CDonacion();
+					CDonacion donacion = new CDonacion(null, null, null, null, null, null, null, null,
+							rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null,
+							null, null, null, null, null, null, null, rs.getDouble("asignado"), rs.getDouble("vigente"),
+							rs.getDouble("ejecutado"));
 
-					
-					// Posiblemente se camabia la estructura para que sea generica 
-					// donde el metodo reciba la clase pojo y el prepareStatement
-					for (String campo : campos) {
-						if (campo.equalsIgnoreCase("correlativo")) {
-							prestamo.setCorrelativo(rs.getInt("correlativo"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("prestamo_nombre")) {
-							prestamo.setPrestamo_nombre(rs.getString("prestamo_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("entidad")) {
-							prestamo.setEntidad(rs.getInt("entidad"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("entidad_nombre")) {
-							prestamo.setEntidad_nombre(rs.getString("entidad_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("unidad_ejecutora")) {
-							prestamo.setUnidad_ejecutora(rs.getInt("unidad_ejecutora"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("unidad_ejecutora_nombre")) {
-							prestamo.setUnidad_ejecutora_nombre(rs.getString("unidad_ejecutora_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("actividad")) {
-							prestamo.setActividad(rs.getInt("actividad"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("actividad_obra_nombre")) {
-							prestamo.setActividad_obra_nombre(rs.getString("actividad_obra_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("ejercicio")) {
-							prestamo.setEjercicio(rs.getInt("ejercicio"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("fuente")) {
-							prestamo.setFuente(rs.getInt("fuente"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("fuente_nombre")) {
-							prestamo.setFuente_nombre(rs.getString("fuente_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("obra")) {
-							prestamo.setObra(rs.getInt("obra"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("organismo")) {
-							prestamo.setOrganismo(rs.getInt("organismo"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("organismo_nombre")) {
-							prestamo.setOrganismo_nombre(rs.getString("organismo_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("programa")) {
-							prestamo.setPrograma(rs.getInt("programa"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("programa_nombre")) {
-							prestamo.setPrograma_nombre(rs.getString("programa_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("proyecto")) {
-							prestamo.setProyecto(rs.getInt("proyecto"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("proyecto_nombre")) {
-							prestamo.setProyecto_nombre(rs.getString("proyecto_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("renglon")) {
-							prestamo.setRenglon(rs.getInt("renglon"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("renglon_nombre")) {
-							prestamo.setRenglon_nombre(rs.getString("renglon_nombre"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("subprograma")) {
-							prestamo.setSubprograma(rs.getInt("subprograma"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("subprograma_nombre")) {
-							prestamo.setSubprograma_nombre("subprograma_nombre");
-							continue;
-						}
-						if (campo.equalsIgnoreCase("asignado")) {
-							prestamo.setAsignado(rs.getDouble("asignado"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("ejecutado")) {
-							prestamo.setEjecutado(rs.getDouble("ejecutado"));
-							continue;
-						}
-						if (campo.equalsIgnoreCase("vigente")) {
-							prestamo.setVigente(rs.getDouble("vigente"));
-							continue;
-						}
-
-					}
-
-					donaciones.add(prestamo);
+					donaciones.add(donacion);
 				}
+
+				rs.close();
+				pstm.close();
+
+			} catch (Exception e) {
+				CLogger.write("1", CDonacionDAO.class, e);
+			} finally {
+				CDatabase.close(conn);
+			}
+		}
+
+		return donaciones;
+	}
+
+	public static List<CDonacion> getDonacionesByOrganismo() {
+		List<CDonacion> donaciones = new ArrayList<CDonacion>();
+
+		if (CDatabase.connect()) {
+			Connection conn = CDatabase.getConnection();
+			try {
+				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ORGANISMOS));
+				ResultSet rs = pstm.executeQuery();
+
+				while (rs.next()) {
+					CDonacion donacion = new CDonacion(null, null, null, rs.getInt("organismo"),
+							rs.getString("organismo_nombre"), null, null, null, null, null, null, null, null, null,
+							null, null, null, null, null, null, null, null, null, null, null,
+							rs.getDouble("ejecutado"));
+
+					donaciones.add(donacion);
+				}
+
 				rs.close();
 				pstm.close();
 

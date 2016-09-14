@@ -8,6 +8,7 @@ public class CPrestamo {
 	private String organismo_nombre;
 	private Integer correlativo;
 	private String prestamo_nombre;
+	private String prestamo_sigla;
 	private Integer entidad;
 	private String entidad_nombre;
 	private Integer unidad_ejecutora;
@@ -26,17 +27,16 @@ public class CPrestamo {
 	private Double asignado;
 	private Double vigente;
 	private Double ejecutado;
-	private String sigla;
 
 	public CPrestamo() {
 	}
 
 	public CPrestamo(Integer ejercicio, Integer fuente, String fuente_nombre, Integer organismo,
-			String organismo_nombre, Integer correlativo, String prestamo_nombre, Integer entidad,
-			String entidad_nombre, Integer unidad_ejecutora, String unidad_ejecutora_nombre, Integer programa,
-			String programa_nombre, Integer subprograma, String subprograma_nombre, Integer proyecto,
+			String organismo_nombre, Integer correlativo, String prestamo_nombre, String prestamo_sigla,
+			Integer entidad, String entidad_nombre, Integer unidad_ejecutora, String unidad_ejecutora_nombre,
+			Integer programa, String programa_nombre, Integer subprograma, String subprograma_nombre, Integer proyecto,
 			String proyecto_nombre, Integer actividad, Integer obra, String actividad_obra_nombre, Integer renglon,
-			String renglon_nombre, Double asignado, Double vigente, Double ejecutado, String sigla) {
+			String renglon_nombre, Double asignado, Double vigente, Double ejecutado) {
 		this.ejercicio = ejercicio;
 		this.fuente = fuente;
 		this.fuente_nombre = fuente_nombre;
@@ -44,6 +44,7 @@ public class CPrestamo {
 		this.organismo_nombre = organismo_nombre;
 		this.correlativo = correlativo;
 		this.prestamo_nombre = prestamo_nombre;
+		this.prestamo_sigla = prestamo_sigla;
 		this.entidad = entidad;
 		this.entidad_nombre = entidad_nombre;
 		this.unidad_ejecutora = unidad_ejecutora;
@@ -62,7 +63,6 @@ public class CPrestamo {
 		this.asignado = asignado;
 		this.vigente = vigente;
 		this.ejecutado = ejecutado;
-		this.sigla = sigla;
 	}
 
 	public Integer getEjercicio() {
@@ -169,6 +169,14 @@ public class CPrestamo {
 		this.programa_nombre = programa_nombre;
 	}
 
+	public String getPrestamo_sigla() {
+		return prestamo_sigla;
+	}
+
+	public void setPrestamo_sigla(String prestamo_sigla) {
+		this.prestamo_sigla = prestamo_sigla;
+	}
+
 	public Integer getSubprograma() {
 		return subprograma;
 	}
@@ -263,14 +271,6 @@ public class CPrestamo {
 
 	public void setEjecutado(Double ejecutado) {
 		this.ejecutado = ejecutado;
-	}
-
-	public String getSigla() {
-		return sigla;
-	}
-
-	public void setSigla(String sigla) {
-		this.sigla = sigla;
 	}
 
 }
