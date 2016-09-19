@@ -69,13 +69,13 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
-	           script: '/app/components/varios/prestamos/ejecucionpresupuestaria.controller.js',
-	           template: '/app/components/varios/prestamos/ejecucionpresupuestaria.jsp'
+	           script: '/app/components/creditopublico/prestamos/prestamos.controller.js',
+	           template: '/app/components/creditopublico/prestamos/ejecucionpresupuestaria.jsp' 
 	       },
 	       {
 	    	   name: 'donacionesEjecucionPresupuestariaModule',     
-	           script: '/app/components/varios/donaciones/donaciones.controller.js',
-	           template: '/app/components/varios/donaciones/donaciones.jsp'
+	           script: '/app/components/creditopublico/donaciones/donaciones.controller.js',
+	           template: '/app/components/creditopublico/donaciones/donaciones.jsp'
 	       }
 
 	       

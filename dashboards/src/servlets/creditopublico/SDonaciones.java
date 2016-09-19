@@ -1,4 +1,4 @@
-package servlets.varios;
+package servlets.creditopublico;
 
 import java.io.BufferedReader;
 import java.io.IOException;

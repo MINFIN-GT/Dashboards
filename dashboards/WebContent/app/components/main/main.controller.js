@@ -173,20 +173,20 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	           script: '/app/components/transparencia/jerez/jerezCompras.controller.js',
 	           template: '/app/components/transparencia/jerez/jerezCompras.jsp'
 	       },
-	       {
+	       { 
 	    	   name: 'metasController',     
 	           script: '/app/components/presidenciales/metas/metas.controller.js',
 	           template: '/app/components/presidenciales/metas/metas.jsp'
 	       },
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
-	           script: '/app/components/varios/prestamos/ejecucionpresupuestaria.controller.js',
-	           template: '/app/components/varios/prestamos/ejecucionpresupuestaria.jsp'
+	           script: '/app/components/creditopublico/prestamos/prestamos.controller.js',
+	           template: '/app/components/creditopublico/prestamos/prestamos.jsp'
 	       },
 	       {
 	    	   name: 'donacionesEjecucionPresupuestariaModule',     
-	           script: '/app/components/varios/donaciones/donaciones.controller.js',
-	           template: '/app/components/varios/donaciones/donaciones.jsp'
+	           script: '/app/components/creditopublico/donaciones/donaciones.controller.js',
+	           template: '/app/components/creditopublico/donaciones/donaciones.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
