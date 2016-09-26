@@ -67,7 +67,7 @@
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span><b class="caret"></b></a>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>PAPTN<b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 		                    <li role="menuitem"><a href="#!/paptn/ejecucionfinanciera">PAPTN - Ejecución Financiera</a></li>
 	                    </ul>
