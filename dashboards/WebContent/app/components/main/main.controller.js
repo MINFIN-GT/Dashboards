@@ -44,6 +44,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/dashboards/proyecciongasto',{
             	template: '<div load-on-demand="\'proyecciongastoController\'" class="all_page"></div>'
             })
+            .when('/transparencia/estados_de_calamidad',{
+            	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
+            })
             .when('/transparencia/jerez',{
             	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
             })
