@@ -107,7 +107,6 @@
 					</tr>
 				</tbody>
 			</table>
-			<div style="width: 90%; margin: 0 auto;">Ejecución de Préstamos a nivel de Entidad</div>
 		</div>
 	</div>
 	

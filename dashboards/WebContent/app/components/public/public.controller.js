@@ -81,7 +81,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
 	           script: '/app/components/creditopublico/prestamos/prestamos.controller.js',
-	           template: '/app/components/creditopublico/prestamos/ejecucionpresupuestaria.jsp' 
+	           template: '/app/components/creditopublico/prestamos/prestamos.jsp' 
 	       },
 	       {
 	    	   name: 'donacionesEjecucionPresupuestariaModule',     
