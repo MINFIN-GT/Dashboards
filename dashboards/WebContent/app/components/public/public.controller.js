@@ -30,6 +30,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/transparencia/jerez/documentos',{
             	template: '<div load-on-demand="\'jerezDocumentosController\'" class="all_page"></div>'
             })
+            .when('/transparencia/jerez/compras',{
+            	template: '<div load-on-demand="\'jerezComprasController\'" class="all_page"></div>'
+            })
             .when('/prestamos',{
             	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
             })
@@ -69,6 +72,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'jerezDocumentosController',     
 	           script: '/app/components/transparencia/jerez/jerezDocumentos.controller.js',
 	           template: '/app/components/transparencia/jerez/jerezDocumentos.jsp'
+	       },
+	       {
+	    	   name: 'jerezComprasController',     
+	           script: '/app/components/transparencia/jerez/jerezCompras.controller.js',
+	           template: '/app/components/transparencia/jerez/jerezCompras.jsp'
 	       },
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
