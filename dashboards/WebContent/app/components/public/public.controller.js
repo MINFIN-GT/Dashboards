@@ -12,6 +12,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 	   		.when('/paptn/ejecucionfinanciera',{
             	template: '<div load-on-demand="\'paptn_ejecucionfinancieraController\'" class="all_page"></div>'
             })
+             .when('/transparencia/estados_de_calamidad',{
+            	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
+            })
             .when('/transparencia/jerez',{
             	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
             })

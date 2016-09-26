@@ -59,13 +59,17 @@
 	                        <li role="menuitem"><a href="#">Separated link</a></li>  -->
 	                    </ul>
 	                </li>
-	                
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Varios <b class="caret"></b></a>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Crédito Público <b class="caret"></b></a>
+	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+		                    <li role="menuitem"><a href="#!/prestamos">Préstamos - Ejecución Presupuestaría</a></li>
+<!-- 	                     	<li role="menuitem"><a href="#!/donaciones">Donaciones - Ejecución Presupuestaría</a></li> -->
+	                    </ul>
+	                </li>
+	                <li uib-dropdown>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span><b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 		                    <li role="menuitem"><a href="#!/paptn/ejecucionfinanciera">PAPTN - Ejecución Financiera</a></li>
-	                     	<li role="menuitem"><a href="#!/prestamos">Préstamos - Ejecución Presupuestaría</a></li>
-<!-- 	                     	<li role="menuitem"><a href="#!/donaciones">Donaciones - Ejecución Presupuestaría</a></li> -->
 	                    </ul>
 	                </li>
 	            </ul>
