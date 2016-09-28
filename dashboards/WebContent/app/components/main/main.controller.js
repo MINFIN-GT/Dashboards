@@ -45,7 +45,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             	template: '<div load-on-demand="\'proyecciongastoController\'" class="all_page"></div>'
             })
             .when('/transparencia/estados_de_calamidad',{
-            	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
+            	template: '<div load-on-demand="\'estadoscalamidadController\'" class="all_page"></div>'
             })
             .when('/transparencia/jerez',{
             	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
@@ -140,6 +140,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'proyecciongastoController',
 	    	   script: '/app/components/proyecciongasto/proyecciongasto.controller.js',
 	    	   template: '/app/components/proyecciongasto/proyecciongasto.jsp'
+	       },
+	       {
+	    	   name: 'estadoscalamidadController',     
+	           script: '/app/components/transparencia/estadoscalamidad.controller.js',
+	           template: '/app/components/transparencia/estadoscalamidad.jsp'
 	       },
 	       {
 	    	   name: 'jerezController',     
