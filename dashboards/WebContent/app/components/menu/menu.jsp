@@ -42,7 +42,7 @@
 	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-search" aria-hidden="true"></span>Transparencia <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                     	<li role="menuitem"><a href="#!/transparencia/jerez">Jerez, Jutiapa</a></li>
+	                     	<li role="menuitem"><a href="#!/transparencia/estados_de_calamidad">Estados de Calamidad</a></li>
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
 	                        <li class="divider"></li>
