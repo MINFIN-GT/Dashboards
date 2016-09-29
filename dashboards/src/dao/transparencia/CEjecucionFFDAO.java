@@ -159,12 +159,13 @@ public class CEjecucionFFDAO {
 				Connection conn = CDatabase.getConnection();
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
-				pstm1 = conn.prepareStatement("select avg(porcentaje_ejecucion) porcentaje_ejecucion "
-						+ "from seg_actividad "
+				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(ejecutado) ejecutado, sum(meta) meta, "
+						+ "sum(meta_avanzado) meta_avanzado "
+						+ "from calamidad_ejecucion "
 						+ "where ejercicio="+now.getYear()+" and programa="+programa+" and subprograma="+subprograma);		
 				ResultSet rs = pstm1.executeQuery();	
 				if (rs.next()){
-					ret = rs.getDouble(1);
+					ret = rs.getDouble("meta")>0?rs.getDouble("meta_avanzado")/rs.getDouble("meta"):0.0;
 				}
 				pstm1.close();
 				rs.close();				
@@ -174,6 +175,6 @@ public class CEjecucionFFDAO {
 		catch(Exception e){
 			CLogger.write("4", CEjecucionFFDAO.class, e);
 		}
-		return ret;
+		return ret*100;
 	}
 }
