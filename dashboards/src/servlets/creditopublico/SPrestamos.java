@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -23,178 +22,92 @@ import dao.varios.CPrestamoDAO;
 import pojo.varios.CPrestamo;
 
 /**
- * Servlet implementation class SPrestamo
+ * Servlet implementation class SEjecucionFF
  */
 @WebServlet("/SPrestamos")
 public class SPrestamos extends HttpServlet {
-	private static final long serialVersionUID = -649446665821218039L;
+	private static final long serialVersionUID = 1L;
+		
+	class stData{
+			String codigo;
+	    	String nombre;
+	    	double asignado;
+	    	double modificaciones;
+	     	double ejecutado;
+	    	double vigente;
+	    	double ejecucion_financiera;
 
-	class Prestamo {
-		Integer correlativo;
-		String prestamo_nombre;
-		String prestamo_sigla;
-		Integer entidad;
-		String entidad_nombre;
-		Integer unidad_ejecutora;
-		String unidad_ejecutora_nombre;
-		Integer organismo;
-		String organismo_nombre;
+	    }
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public SPrestamos() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-		Double asignado;
-		Double modificaciones;
-		Double vigente;
-		Double ejecutado;
-		Double porcentaje;
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
-	 * @see HttpServlet#HttpServlet()
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	public SPrestamos() {
-		super();
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-
 		Gson gson = new Gson();
-
-		Type type = new TypeToken<Map<String, String>>() {
-		}.getType();
-
+		Type type = new TypeToken<Map<String, String>>(){}.getType();
 		StringBuilder sb = new StringBuilder();
-		BufferedReader br = request.getReader();
-
-		String str;
-
-		while ((str = br.readLine()) != null) {
-			sb.append(str);
-		}
-
+	    BufferedReader br = request.getReader();
+	    String str;
+	    while( (str = br.readLine()) != null ){
+	        sb.append(str);
+	    };
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
-
-		String response_text = "";
-
-		String tipo = map.get("tipo").toString();
-
-		if (tipo.compareToIgnoreCase("PRESTAMOS") == 0) {
-			response_text = getAllPrestamos(map);
-		} else if (tipo.compareToIgnoreCase("ENTIDADES") == 0) {
-			response_text = getPrestamosByEntidad(map);
-		} else if (tipo.compareToIgnoreCase("ORGANISMOS") == 0) {
-			response_text = getPrestamosByOrganismo(map);
-		}
-
-		response.setHeader("Content-Encoding", "gzip");
-		response.setCharacterEncoding("UTF-8");
-		OutputStream output = response.getOutputStream();
-		GZIPOutputStream gz = new GZIPOutputStream(output);
-		gz.write(response_text.getBytes("UTF-8"));
-		gz.close();
-		output.close();
+		Integer entidad = map.get("entidad")!=null ? Integer.parseInt(map.get("entidad")) : null;
+		String sigla = map.get("prestamo");
+		Integer unidad_ejecutora = map.get("unidad_ejecutora")!=null ? Integer.parseInt(map.get("unidad_ejecutora")) : null;
+		Integer programa = map.get("programa")!=null ? Integer.parseInt(map.get("programa")) : null;
+		Integer subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : null;
+		Integer proyecto = map.get("proyecto")!=null ? Integer.parseInt(map.get("proyecto")) : null;
+		Integer actividad = map.get("actividad")!=null ? Integer.parseInt(map.get("actividad")) : null;
+		Integer nivel = map.get("level")!=null ? Integer.parseInt(map.get("level")) : null;
+		String tipo = map.get("tipo");
+		ArrayList<stData> stDatos=new ArrayList<stData>();
+		ArrayList<CPrestamo> valores=null; 
+		if (tipo.compareTo("entidad")==0){
+			valores = CPrestamoDAO.getEntidadesEjecucion(nivel,entidad,sigla,unidad_ejecutora,programa,subprograma,proyecto,actividad);
+		}else{
+			valores = CPrestamoDAO.getPrestamosEjecucion(nivel,sigla,entidad,unidad_ejecutora,programa,subprograma,proyecto,actividad);
+		}			
+		if(valores!=null && valores.size()>0){
+			for(CPrestamo cvalor : valores){
+				stData sttemp = new stData();
+				sttemp.codigo = cvalor.getCodigo();
+				sttemp.nombre = cvalor.getNombre();
+				sttemp.asignado = cvalor.getAsignado();
+				sttemp.modificaciones=cvalor.getModificaciones();
+				sttemp.ejecutado =  cvalor.getEjecutado();
+				sttemp.vigente = cvalor.getVigente();
+				sttemp.ejecucion_financiera = (sttemp.vigente>0) ? (sttemp.ejecutado/sttemp.vigente)*100.00 : 0.00;
+				stDatos.add(sttemp);
+			}
+			response.setHeader("Content-Encoding", "gzip");
+			response.setCharacterEncoding("UTF-8");
+			String response_text=new GsonBuilder().serializeNulls().create().toJson(stDatos);
+            response_text = String.join("", "\"datos\":",response_text);    
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");	        
+	        OutputStream output = response.getOutputStream();
+			GZIPOutputStream gz = new GZIPOutputStream(output);
+	        gz.write(response_text.getBytes("UTF-8"));
+            gz.close();
+            output.close();
+		}		
 	}
-
-	private String getAllPrestamos(Map<String, String> map) {
-
-		List<CPrestamo> cPrestamos = CPrestamoDAO.getPrestamos();
-		List<Prestamo> prestamos = new ArrayList<Prestamo>();
-
-		for (CPrestamo cPrestamo : cPrestamos) {
-			Prestamo prestamo = new Prestamo();
-
-			prestamo.correlativo = cPrestamo.getCorrelativo();
-			prestamo.prestamo_nombre = cPrestamo.getPrestamo_nombre();
-			prestamo.prestamo_sigla = cPrestamo.getPrestamo_sigla();
-			prestamo.entidad = cPrestamo.getEntidad();
-			prestamo.entidad_nombre = cPrestamo.getEntidad_nombre();
-			prestamo.unidad_ejecutora = cPrestamo.getUnidad_ejecutora();
-			prestamo.unidad_ejecutora_nombre = cPrestamo.getUnidad_ejecutora_nombre();
-
-			prestamo.asignado = cPrestamo.getAsignado().doubleValue();
-			prestamo.ejecutado = cPrestamo.getEjecutado().doubleValue();
-			prestamo.vigente = cPrestamo.getVigente().doubleValue();
-
-			prestamo.modificaciones = prestamo.vigente.doubleValue() - prestamo.asignado.doubleValue();
-			prestamo.porcentaje = prestamo.vigente.doubleValue() > 0
-					? prestamo.ejecutado.doubleValue() / prestamo.vigente.doubleValue() * 100 : 0.0;
-
-			prestamos.add(prestamo);
-		}
-
-		String response_text = new GsonBuilder().serializeNulls().create().toJson(prestamos);
-		response_text = String.join("", "\"prestamos\":", response_text);
-
-		response_text = String.join("", "{\"success\":true,", response_text, "}");
-
-		return response_text;
-	}
-
-	private String getPrestamosByEntidad(Map<String, String> map) {
-
-		List<CPrestamo> cPrestamos = CPrestamoDAO.getPrestamosByEntidad();
-		List<Prestamo> prestamos = new ArrayList<Prestamo>();
-
-		for (CPrestamo cPrestamo : cPrestamos) {
-			Prestamo prestamo = new Prestamo();
-
-			prestamo.entidad = cPrestamo.getEntidad();
-			prestamo.entidad_nombre = cPrestamo.getEntidad_nombre();
-
-			prestamo.asignado = cPrestamo.getAsignado().doubleValue();
-			prestamo.ejecutado = cPrestamo.getEjecutado().doubleValue();
-			prestamo.vigente = cPrestamo.getVigente().doubleValue();
-
-			prestamo.modificaciones = prestamo.vigente.doubleValue() - prestamo.asignado.doubleValue();
-			prestamo.porcentaje = prestamo.vigente.doubleValue() > 0
-					? prestamo.ejecutado.doubleValue() / prestamo.vigente.doubleValue() * 100 : 0.0;
-
-			prestamos.add(prestamo);
-		}
-
-		String response_text = new GsonBuilder().serializeNulls().create().toJson(prestamos);
-		response_text = String.join("", "\"prestamos\":", response_text);
-
-		response_text = String.join("", "{\"success\":true,", response_text, "}");
-
-		return response_text;
-	}
-
-	private String getPrestamosByOrganismo(Map<String, String> map) {
-
-		List<CPrestamo> cPrestamos = CPrestamoDAO.getPrestamosByOrganismo();
-		List<Prestamo> prestamos = new ArrayList<Prestamo>();
-
-		for (CPrestamo cPrestamo : cPrestamos) {
-			Prestamo prestamo = new Prestamo();
-
-			prestamo.organismo = cPrestamo.getOrganismo();
-			prestamo.organismo_nombre = cPrestamo.getOrganismo_nombre();
-
-			prestamo.ejecutado = cPrestamo.getEjecutado().doubleValue();
-
-			prestamos.add(prestamo);
-		}
-
-		String response_text = new GsonBuilder().serializeNulls().create().toJson(prestamos);
-		response_text = String.join("", "\"prestamos\":", response_text);
-
-		response_text = String.join("", "{\"success\":true,", response_text, "}");
-
-		return response_text;
-	}
-
+	
+	
 }

@@ -74,9 +74,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/prestamos',{
             	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
             })
-            .when('/donaciones',{
-            	template: '<div load-on-demand="\'donacionesEjecucionPresupuestariaModule\'" class="all_page"></div>'
-            })
+
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -188,13 +186,8 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
-	           script: '/app/components/creditopublico/prestamos/prestamos.controller.js',
+	           script:   '/app/components/creditopublico/prestamos/prestamos.controller.js',
 	           template: '/app/components/creditopublico/prestamos/prestamos.jsp'
-	       },
-	       {
-	    	   name: 'donacionesEjecucionPresupuestariaModule',     
-	           script: '/app/components/creditopublico/donaciones/donaciones.controller.js',
-	           template: '/app/components/creditopublico/donaciones/donaciones.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

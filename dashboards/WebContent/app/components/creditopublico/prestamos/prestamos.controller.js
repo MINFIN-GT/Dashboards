@@ -1,255 +1,230 @@
-var modulePEPM = angular.module('prestamosEjecucionPresupuestariaModule',
-		[ 'dashboards' ]);
-var controlPEPM = modulePEPM.controller('pepm_Controller', funcPEPM);
+/**
+ * 
+ */
 
-function funcPEPM($http, $log) {
-	ctrlPEPM = this;
-
-	ctrlPEPM.chart_colors = [ '#4682B4', '#F7464A', '#dcdcdc', '#97bbcd',
-			'#ebb45c', '#949fb1', '#4d5360' ];
-
-	Chart.defaults.global.colours = [ '#4682B4', '#F7464A', '#dcdcdc',
-			'#97bbcd', '#ebb45c', '#949fb1', '#4d5360' ];
-
-	ctrlPEPM.lastupdate;
-
-	/**
-	 * CHART_PRESTAMOS (BARRAS)
-	 */
-	ctrlPEPM.chart_prestamos = [];
-	ctrlPEPM.chart_prestamos['labels'] = [];
-	ctrlPEPM.chart_prestamos['legends'] = [];
-	ctrlPEPM.chart_prestamos['data'] = [];
-	ctrlPEPM.chart_prestamos['series'] = [];
-	ctrlPEPM.chart_prestamos['options'] = {
-		bezierCurve : false,
-		datasetStrokeWidth : 6,
-		pointDotRadius : 6,
-		scaleLabel : function(label) {
-			return numeral(label.value).format('$ 0,0')
-		},
-		tooltipTemplate : "<%if (label){%><%=label %>: <%}%><%= numeral(value).format('$ 0,0.00') %>",
-		multiTooltipTemplate : "<%= numeral(value).format('$ 0,0.00') %>"
-	};
-
-	/**
-	 * CHART_ORGANIZACIONES (PIE)
-	 */
-	ctrlPEPM.chart_organizaciones = [];
-	ctrlPEPM.chart_organizaciones['labels'] = [];
-	ctrlPEPM.chart_organizaciones['legends'] = [];
-	ctrlPEPM.chart_organizaciones['data'] = [];
-	ctrlPEPM.chart_organizaciones['series'] = [];
-	ctrlPEPM.chart_organizaciones['options'] = {
-		bezierCurve : false,
-		datasetStrokeWidth : 6,
-		pointDotRadius : 6,
-		scaleLabel : function(label) {
-			return numeral(label.value).format('$ 0,0')
-		},
-		tooltipTemplate : "<%= numeral(value).format('$ 0,0.00') +' (' + numeral((circumference / 6.283)*100).format('0.00')+' %)' %>",
-		multiTooltipTemplate : "<%= numeral(value).format('$ 0,0.00') %>"
-	};
-
-	$http.post('/SPrestamos', {
-		tipo : 'PRESTAMOS'
-	}).then(successPrestamos, errorCallback);
-
-	$http.post('/SPrestamos', {
-		tipo : 'ENTIDADES'
-	}).then(successEntidades, errorCallback);
-
-	$http.post('/SPrestamos', {
-		tipo : 'ORGANISMOS'
-	}).then(successOrganizaciones, errorCallback);
-
-	$http.post('/SLastupdate', {
-		dashboard : 'ejecucionpresupuestaria'
-	}).then(successLastUpdate, errorCallback);
-
-	function errorCallback(response) {
-		$log.error(response);
-	}
-
-	function successPrestamos(response) {
-		if (response.data.success) {
-
-			var allPrestamos = response.data.prestamos;
-
-			var count = [];
-			var data_vigente = [];
-			var data_ejecucion = [];
-			var chartPrestamo = [ data_vigente, data_ejecucion ];
-
-			ctrlPEPM.prestamos = [];
-			ctrlPEPM.prestamos_totales = [ 0.0, 0.0, 0.0, 0.0, 0.0 ];
-
-			var data_vigente = [];
-			var data_ejecucion = [];
-
-			var p_asignado = 0.0;
-			var p_modificaciones = 0.0;
-			var p_vigente = 0.0;
-			var p_ejecutado = 0.0;
-			var p_porcentaje = 0.0;
-
-			var e_asignado = 0.0;
-			var e_modificaciones = 0.0;
-			var e_vigente = 0.0;
-			var e_ejecutado = 0.0;
-			var e_porcentaje = 0.0;
-
-			var indexPrestamo = 0;
-			var indexEntidad = 0;
-
-			for (var index = 0; index < allPrestamos.length; index++) {
-
-				var unidad_ejecutora = {
-					"nombre" : allPrestamos[index].unidad_ejecutora_nombre,
-					"asignado" : allPrestamos[index].asignado,
-					"modificaciones" : allPrestamos[index].modificaciones,
-					"vigente" : allPrestamos[index].vigente,
-					"ejecutado" : allPrestamos[index].ejecutado,
-					"porcentaje" : allPrestamos[index].porcentaje,
-					"nivel" : 2
-				};
-
-				ctrlPEPM.prestamos.push(unidad_ejecutora);
-
-				e_asignado += unidad_ejecutora.asignado;
-				e_vigente += unidad_ejecutora.vigente;
-				e_ejecutado += unidad_ejecutora.ejecutado;
-				e_modificaciones += unidad_ejecutora.modificaciones;
-
-				p_asignado += unidad_ejecutora.asignado;
-				p_vigente += unidad_ejecutora.vigente;
-				p_ejecutado += unidad_ejecutora.ejecutado;
-				p_modificaciones += unidad_ejecutora.modificaciones;
-
-				if (index + 1 >= allPrestamos.length
-						|| (allPrestamos[index + 1] !== null && (allPrestamos[index].entidad_nombre !== allPrestamos[index + 1].entidad_nombre || allPrestamos[index].prestamo_nombre !== allPrestamos[index + 1].prestamo_nombre))) {
-					entidad_anterior = allPrestamos[index].entidad_nombre;
-					var entidad = {
-						"nombre" : allPrestamos[index].entidad_nombre,
-						"asignado" : e_asignado,
-						"modificaciones" : e_modificaciones,
-						"vigente" : e_vigente,
-						"ejecutado" : e_ejecutado,
-						"porcentaje" : e_vigente > 0 ? e_ejecutado / e_vigente
-								* 100 : 0.0,
-						"nivel" : 1
-					};
-
-					ctrlPEPM.prestamos.splice(indexEntidad, 0, entidad);
-					indexEntidad = ctrlPEPM.prestamos.length;
-
-					e_asignado = 0.0;
-					e_modificaciones = 0.0;
-					e_vigente = 0.0;
-					e_ejecutado = 0.0;
-					e_porcentaje = 0.0;
+angular.module('prestamosEjecucionPresupuestariaModule',['dashboards','smart-table']).controller('prestamosController',['$scope','$routeParams','$http','$document','$timeout',
+	   function($scope,$routeParams,$http, $document, $timeout){			
+			this.lastupdate = '';
+			
+			$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
+			    if(response.data.success){
+			    	this.lastupdate = response.data.lastupdate;
 				}
-
-				if (index + 1 >= allPrestamos.length
-						|| (allPrestamos[index + 1] !== null && allPrestamos[index].prestamo_nombre !== allPrestamos[index + 1].prestamo_nombre)) {
-					prestamo_anterior = allPrestamos[index].prestamo_nombre;
-
-					var prestamo = {
-						"nombre" : allPrestamos[index].prestamo_nombre,
-						"sigla": allPrestamos[index].prestamo_sigla,
-						"asignado" : p_asignado,
-						"modificaciones" : p_modificaciones,
-						"vigente" : p_vigente,
-						"ejecutado" : p_ejecutado,
-						"porcentaje" : p_vigente > 0 ? p_ejecutado / p_vigente
-								* 100 : 0.0,
-						"nivel" : 0
-					};
-
-					ctrlPEPM.prestamos_totales[0] += p_asignado;
-					ctrlPEPM.prestamos_totales[1] += p_modificaciones;
-					ctrlPEPM.prestamos_totales[2] += p_vigente;
-					ctrlPEPM.prestamos_totales[3] += p_ejecutado;
-					ctrlPEPM.prestamos_totales[4] = ctrlPEPM.prestamos_totales[2] > 0 ? ctrlPEPM.prestamos_totales[3]
-							/ ctrlPEPM.prestamos_totales[2] * 100
-							: 0.0;
-
-					data_vigente.push(p_vigente / 1000000);
-					data_ejecucion.push(p_ejecutado / 1000000);
-
-					ctrlPEPM.prestamos.splice(indexPrestamo, 0, prestamo);
-					indexPrestamo = ctrlPEPM.prestamos.length;
-					indexEntidad++;
-
-					ctrlPEPM.chart_prestamos['labels']
-							.push(allPrestamos[index].prestamo_sigla);
-					ctrlPEPM.chart_prestamos['legends']
-							.push(allPrestamos[index].prestamo_nombre);
-					
-					// reiniciamos valores
-					p_asignado = 0.0;
-					p_modificaciones = 0.0;
-					p_vigente = 0.0;
-					p_ejecutado = 0.0;
-					p_porcentaje = 0.0;
+			}.bind(this)
+			);
+			
+			var current_year = moment().year();		
+			this.prestamo_ejecucion_financiera=0;
+			this.prestamo_vigente=0;
+			this.prestamo_asignado=0;
+			this.prestamo_modificaciones=0;
+			this.prestamo_ejecutado=0;
+			this.prestamo_level = 1;
+			this.prestamo_nombre="";
+			this.prestamo_sigla="";
+			this.prestamo_entidad;
+			this.prestamo_entidad_nombre="";
+			this.prestamo_unidad_ejecutora_nombre="";
+			this.prestamo_unidad_ejecutora=null;
+			this.prestamo_programa_nombre="";
+			this.prestamo_programa=null;
+			this.prestamo_subprograma_nombre="";
+			this.prestamo_subprograma=null;
+			this.prestamo_proyecto_nombre="";
+			this.prestamo_proyecto=null;
+			this.prestamo_actividad_nombre="";
+			this.prestamo_actividad=null;
+			this.prestamo_renglon_nombre="";
+			this.prestamo_renglon=null;
+			
+			this.entidad_ejecucion_financiera=0;
+			this.entidad_asignado=0;
+			this.entidad_modificaciones=0;
+			this.entidad_vigente=0;
+			this.entidad_ejecutado=0;
+			this.entidad_level = 1;
+			this.entidad_prestamo_nombre="";
+			this.entidad_prestamo_sigla="";
+			this.entidad=null;
+			this.entidad_nombre="";
+			this.entidad_unidad_ejecutora_nombre="";
+			this.entidad_unidad_ejecutora=null;
+			this.entidad_programa_nombre="";
+			this.entidad_programa=null;
+			this.entidad_subprograma_nombre="";
+			this.entidad_subprograma=null;
+			this.entidad_proyecto_nombre="";
+			this.entidad_proyecto=null;
+			this.entidad_actividad_nombre="";
+			this.entidad_actividad=null;
+			this.entidad_renglon_nombre="";
+			this.entidad_renglon=null;
+						
+			this.entidad_ejecucion_data=[];
+			this.entidad_ejecucion_data_original=[];
+			this.entidad_ejecucion_totales=[0.0, 0.0, 0.0, 0.0, 0.0];
+			
+			this.prestamo_ejecucion_data=[];
+			this.prestamo_ejecucion_data_original=[];
+			this.prestamo_ejecucion_totales=[0.0, 0.0, 0.0, 0.0, 0.0];
+			
+						
+			this.entidad_clickRow = function(codigo, nombre){
+				switch(this.entidad_level){
+					case 1: this.entidad = codigo; this.entidad_nombre = nombre;
+							this.entidad_prestamo_sigla=null; this.entidad_unidad_ejecutora=null; this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto = null; this.entidad_actividad=null; this.entidad_renglon=null;
+							break;
+					case 2:	this.entidad_prestamo_sigla = codigo; this.entidad_prestamo_nombre = nombre;
+							this.entidad_unidad_ejecutora=null; this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto = null; this.entidad_actividad=null; this.entidad_renglon=null;
+							break;
+					case 3: this.entidad_unidad_ejecutora = codigo; this.entidad_unidad_ejecutora_nombre = nombre; 
+							this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto = null; this.entidad_actividad=null; this.entidad_renglon=null;
+							break;
+					case 4: this.entidad_programa = codigo; this.entidad_programa_nombre = nombre; 
+							this.entidad_subprograma=null; this.entidad_proyecto = null; this.entidad_actividad=null; this.entidad_renglon=null;
+							break;		
+					case 5: this.entidad_subprograma = codigo; this.entidad_subprograma_nombre = nombre; 
+							this.entidad_proyecto = null; this.entidad_actividad=null; this.entidad_renglon=null;
+							break;
+					case 6: this.entidad_proyecto=codigo; this.entidad_proyecto_nombre = nombre;
+							this.entidad_actividad=null;this.entidad_renglon=null;
+							break;
+					case 7: this.entidad_actividad=codigo; this.entidad_actividad_nombre = nombre; 
+							this.entidad_renglon=null;
+							break;	
+					case 8: this.entidad_renglon=codigo; this.entidad_renglon_nombre=nombre;
+							break;
 				}
+				this.entidad_level = this.entidad_level<8 ? this.entidad_level+1 : this.entidad_level;
+				this.entidad_goLevel(this.entidad_level);
+			};
+			
+			this.entidad_goLevel=function(entidad_level){			
+				this.entidad_level = entidad_level;
+				switch(this.entidad_level){
+					case 1: this.entidad=null; this.entidad_prestamo_sigla=null; this.entidad_unidad_ejecutora=null; this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto=null; this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 2: this.entidad_prestamo_sigla=null; this.entidad_unidad_ejecutora=null; this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto=null; this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 3: this.entidad_unidad_ejecutora=null; this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto=null; this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 4: this.entidad_programa=null; this.entidad_subprograma=null; this.entidad_proyecto=null; this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 5: this.entidad_subprograma=null; this.entidad_proyecto=null; this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 6: this.entidad_proyecto=null; this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 7: this.entidad_actividad=null; this.entidad_renglon=null; break;
+					case 8: this.entidad_renglon=null;
+				}
+				var data = { tipo: "entidad", level:this.entidad_level, ejercicio:current_year, entidad: this.entidad, prestamo:this.entidad_prestamo_sigla, unidad_ejecutora: this.entidad_unidad_ejecutora,
+							programa:this.entidad_programa, subprograma:this.entidad_subprograma, proyecto:this.entidad_proyecto, actividad:this.entidad_actividad, renglon:this.entidad_renglon};				
+    			this.entidad_showloading = true;
+				$http.post('/SPrestamos', data).then(function(response){
+	    			if(response.data.success){
+	    				this.entidad_ejecucion_data_original = response.data.datos;
+	    		
+	    		this.entidad_ejecucion_data = this.entidad_ejecucion_data_original.length > 0 ? this.entidad_ejecucion_data_original : [];
+	    				this.entidad_ejecucion_totales[0] = 0;
+    					this.entidad_ejecucion_totales[1] = 0;
+    					this.entidad_ejecucion_totales[2] = 0;
+    					this.entidad_ejecucion_totales[3] = 0;
+    					this.entidad_ejecucion_totales[4] = 0;
 
-			}
+    					for (i=0; i<this.entidad_ejecucion_data.length; i++){
+	    					this.entidad_ejecucion_totales[0] += this.entidad_ejecucion_data[i].asignado;
+	    					this.entidad_ejecucion_totales[2] += this.entidad_ejecucion_data[i].vigente;
+	    					this.entidad_ejecucion_totales[3] += this.entidad_ejecucion_data[i].ejecutado;
+	    				}
+    					this.entidad_ejecucion_totales[1] = this.entidad_ejecucion_totales[2]-this.entidad_ejecucion_totales[0];
+	    				this.entidad_ejecucion_totales[4] = this.entidad_ejecucion_totales[2]>0?(this.entidad_ejecucion_totales[3]/this.entidad_ejecucion_totales[2]*100):0.0;
 
-			ctrlPEPM.chart_prestamos['series'] = [ 'vigente', 'ejecutado' ];
-			ctrlPEPM.chart_prestamos['data'].push(data_vigente);
-			ctrlPEPM.chart_prestamos['data'].push(data_ejecucion);
+	    				if (this.entidad_level==1){
+	    					this.entidad_asignado=this.entidad_ejecucion_totales[0];
+	    					this.entidad_modificaciones=this.entidad_ejecucion_totales[1];
+	    					this.entidad_vigente=this.entidad_ejecucion_totales[2];
+	    					this.entidad_ejecutado=this.entidad_ejecucion_totales[3];
+	    					this.entidad_ejecucion_financiera = this.entidad_ejecucion_totales[4];
+	    				}
+	    			}		
+	    			this.entidad_showloading = false;		
+	    		}.bind(this), function errorCallback(response){	 		
+			 	});		
+			};
+			
+			this.prestamo_clickRow = function(codigo, nombre){
+				switch(this.prestamo_level){
+					case 1: this.prestamo_sigla = codigo; this.prestamo_nombre = nombre;
+							this.prestamo_entidad=null; this.prestamo_unidad_ejecutora=null; this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto = null; this.prestamo_actividad=null; this.prestamo_renglon=null;
+							break;
+					case 2:	this.prestamo_entidad = codigo; this.prestamo_entidad_nombre = nombre;
+							this.prestamo_unidad_ejecutora=null; this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto = null; this.prestamo_actividad=null; this.prestamo_renglon=null;
+							break;
+					case 3: this.prestamo_unidad_ejecutora = codigo; this.prestamo_unidad_ejecutora_nombre = nombre; 
+							this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto = null; this.prestamo_actividad=null; this.prestamo_renglon=null;
+							break;
+					case 4: this.prestamo_programa = codigo; this.prestamo_programa_nombre = nombre; 
+							this.prestamo_subprograma=null; this.prestamo_proyecto = null; this.prestamo_actividad=null; this.prestamo_renglon=null;
+							break;		
+					case 5: this.prestamo_subprograma = codigo; this.prestamo_subprograma_nombre = nombre; 
+							this.prestamo_proyecto = null; this.prestamo_actividad=null; this.prestamo_renglon=null;
+							break;
+					case 6: this.prestamo_proyecto=codigo; this.prestamo_proyecto_nombre = nombre;
+							this.prestamo_actividad=null;this.prestamo_renglon=null;
+							break;
+					case 7: this.prestamo_actividad=codigo; this.prestamo_actividad_nombre = nombre; 
+							this.prestamo_renglon=null;
+							break;	
+					case 8: this.prestamo_renglon=codigo; this.prestamo_renglon_nombre=nombre;
+							break;
+				}
+				this.prestamo_level = this.prestamo_level<8 ? this.prestamo_level+1 : this.prestamo_level;
+				this.prestamo_goLevel(this.prestamo_level);
+			};
+			
+			this.prestamo_goLevel=function(prestamo_level){			
+				this.prestamo_level = prestamo_level;
+				switch(this.prestamo_level){
+					case 1: this.prestamo_sigla=null; this.prestamo_entidad=null; this.prestamo_unidad_ejecutora=null; this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto=null; this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 2: this.prestamo_entidad=null; this.prestamo_unidad_ejecutora=null; this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto=null; this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 3: this.prestamo_unidad_ejecutora=null; this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto=null; this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 4: this.prestamo_programa=null; this.prestamo_subprograma=null; this.prestamo_proyecto=null; this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 5: this.prestamo_subprograma=null; this.prestamo_proyecto=null; this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 6: this.prestamo_proyecto=null; this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 7: this.prestamo_actividad=null; this.prestamo_renglon=null; break;
+					case 8: this.prestamo_renglon=null;
+				}
+				var data = { tipo: "prestamo", level:this.prestamo_level, ejercicio:current_year, prestamo: this.prestamo_sigla, entidad:this.prestamo_entidad, unidad_ejecutora: this.prestamo_unidad_ejecutora,
+							programa:this.prestamo_programa, subprograma:this.prestamo_subprograma, proyecto:this.prestamo_proyecto, actividad:this.prestamo_actividad, renglon:this.prestamo_renglon};				
+    			this.prestamo_showloading = true;
+				$http.post('/SPrestamos', data).then(function(response){
+	    			if(response.data.success){
+	    				this.prestamo_ejecucion_data_original = response.data.datos;
+	    		
+	    		this.prestamo_ejecucion_data = this.prestamo_ejecucion_data_original.length > 0 ? this.prestamo_ejecucion_data_original : [];
+	    				this.prestamo_ejecucion_totales[0] = 0;
+    					this.prestamo_ejecucion_totales[1] = 0;
+    					this.prestamo_ejecucion_totales[2] = 0;
+    					this.prestamo_ejecucion_totales[3] = 0;
+    					this.prestamo_ejecucion_totales[4] = 0;
+
+    					for (i=0; i<this.prestamo_ejecucion_data.length; i++){
+	    					this.prestamo_ejecucion_totales[0] += this.prestamo_ejecucion_data[i].asignado;
+	    					this.prestamo_ejecucion_totales[2] += this.prestamo_ejecucion_data[i].vigente;
+	    					this.prestamo_ejecucion_totales[3] += this.prestamo_ejecucion_data[i].ejecutado;
+	    				}
+    					this.prestamo_ejecucion_totales[1] = this.prestamo_ejecucion_totales[2]-this.prestamo_ejecucion_totales[0];
+	    				this.prestamo_ejecucion_totales[4] = this.prestamo_ejecucion_totales[2]>0?(this.prestamo_ejecucion_totales[3]/this.prestamo_ejecucion_totales[2]*100):0.0;
+
+	    				if (this.prestamo_level==1){
+	    					this.prestamo_asignado=this.prestamo_ejecucion_totales[0];
+	    					this.prestamo_modificaciones=this.prestamo_ejecucion_totales[1];
+	    					this.prestamo_vigente=this.prestamo_ejecucion_totales[2];
+	    					this.prestamo_ejecutado=this.prestamo_ejecucion_totales[3];
+	    					this.prestamo_ejecucion_financiera = this.prestamo_ejecucion_totales[4];
+	    				}
+	    			}		
+	    			this.prestamo_showloading = false;		
+	    		}.bind(this), function errorCallback(response){	 		
+			 	});		
+			};
+		
+		this.prestamo_goLevel(1);
+		this.entidad_goLevel(1);
+		
 		}
-	}
-
-	function successEntidades(response) {
-		if (response.data.success) {
-
-			ctrlPEPM.tabla_entidades = response.data.prestamos;
-
-			ctrlPEPM.tabla_entidades_totales = [ 0.0, 0.0, 0.0, 0.0, 0.0 ];
-
-			for ( var index in ctrlPEPM.tabla_entidades) {
-				ctrlPEPM.tabla_entidades_totales[0] += ctrlPEPM.tabla_entidades[index].asignado;
-				ctrlPEPM.tabla_entidades_totales[1] += ctrlPEPM.tabla_entidades[index].modificaciones;
-				ctrlPEPM.tabla_entidades_totales[2] += ctrlPEPM.tabla_entidades[index].vigente;
-				ctrlPEPM.tabla_entidades_totales[3] += ctrlPEPM.tabla_entidades[index].ejecutado;
-				ctrlPEPM.tabla_entidades_totales[4] += ctrlPEPM.tabla_entidades[index].porcentaje;
-			}
-
-			ctrlPEPM.tabla_entidades_totales[4] = (ctrlPEPM.tabla_entidades_totales[3]
-					/ ctrlPEPM.tabla_entidades_totales[2] * 100);
-
-		}
-
-	}
-
-	function successOrganizaciones(response) {
-		if (response.data.success) {
-
-			var prestamos = response.data.prestamos;
-
-			var total = 0.0;
-			var financiamiento = [];
-			for (var i = 0; i < prestamos.length; i++) {
-				ctrlPEPM.chart_organizaciones['labels']
-						.push(prestamos[i].organismo);
-				ctrlPEPM.chart_organizaciones['legends']
-						.push(prestamos[i].organismo_nombre);
-				financiamiento[i] = prestamos[i].ejecutado / 1000000;
-				total += financiamiento[i];
-			}
-
-			ctrlPEPM.chart_organizaciones['data'] = financiamiento;
-
-			ctrlPEPM.chart_organizaciones['total'] = (total);
-		}
-	}
-
-	function successLastUpdate(response) {
-		if (response.data.success) {
-			ctrlPEPM.lastupdate = response.data.lastupdate;
-		}
-	}
-
-}
+	]);
