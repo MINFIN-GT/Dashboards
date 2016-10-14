@@ -1,145 +1,171 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-<div ng-controller="pepm_Controller as ctrlPEPM" class="maincontainer" id="title" class="all_page">
-	<h3>Ejeución de Prestamos</h3>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <div ng-controller="prestamosController as control" class="maincontainer" id="title" class="all_page">
+	<h3>Tablero de Seguimiento a Prestamos</h3>
 	<br/>
-	
-	<h4 style="width: 300px;">Por Préstamo y Entidad</h4>
-	<br/>
-	
+	<div><h4>Presupuesto de prestamos</h4></div>
 	<div class="row">
-		<div class="col-sm-12 col-centered">
-			<table class="table table-hover" style="width: 90%; margin: 0 auto;">
-				<thead>
-					<tr>
-						<th>Préstamos</th>
-						<th>Aprobado</th>
-						<th>Modificaciones</th>
-						<th>Vigente</th>
-						<th>Ejecución</th>
-						<th>% de Ejecución</th>
-					</tr>
-				</thead>
-				<tbody data-ng-repeat="prestamos in ctrlPEPM.prestamos track by $index">
-					<tr ng-style="(prestamos.nivel==0) ? { 'font-weight' : 'bold' } : {}">
-						<td class="text-nowrap" ng-if="prestamos.nivel === 0" style="padding-left: 0px; font-weight: bold;">{{ prestamos.nombre + " [" + prestamos.sigla + "]" }}</td>
-						<td class="text-nowrap" ng-if="prestamos.nivel === 1" style="padding-left: 20px; font-size: medium;">{{ prestamos.nombre }}</td>
-						<td class="text-nowrap" ng-if="prestamos.nivel === 2" style="padding-left: 40px; font-size: small;">{{ prestamos.nombre }}</td>
-						<td class="text-right text-nowrap">{{ prestamos.asignado | currency:"Q&nbsp;":2 }}</td>
-						<td class="text-right text-nowrap">{{ prestamos.modificaciones | currency:"Q&nbsp;":2  }}</td>
-						<td class="text-right text-nowrap">{{ prestamos.vigente | currency:"Q&nbsp;":2  }}</td>
-						<td class="text-right text-nowrap">{{ prestamos.ejecutado | currency:"Q&nbsp;":2  }}</td>
-						<td class="text-center text-nowrap" text-nowrap>{{ prestamos.porcentaje | number:2}}&nbsp;%</td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr style="font-weight: bold;">
-						<td class="text-right text-nowrap"><strong>Totales</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.prestamos_totales[0] | currency:"Q&nbsp;":2  }}</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.prestamos_totales[1] | currency:"Q&nbsp;":2 }}</strong></td>
-						<td class="text-center text-nowrap"><strong>{{ ctrlPEPM.prestamos_totales[2] | currency:"Q&nbsp;":2 }}</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.prestamos_totales[3] | currency:"Q&nbsp;":2 }}</strong></td>
-						<td class="text-center text-nowrap"><strong>{{ ctrlPEPM.prestamos_totales[4]  | number:2}}&nbsp;%</strong></td>
-					</tr>				</tfoot>
-			</table>
-		</div>
-	</div>
-	
-	<br/><br/>
-	
-	<div class="row">
-		<div class="col-sm-12 col-centered">
-			<div class="panel panel-default div-center" style="width: 650px;">
-				<h5 class="text-center">Ejecución por Préstamo</h5>
-				<h6 class="text-center">-Millones de quetzales-</h6>
-				<div style="width: 600px; height: 350px;" class="div-center">
-					<canvas id="ejecucion_ejes" height="350" width="600" class="chart chart-bar" chart-data="ctrlPEPM.chart_prestamos['data']"
-										  chart-labels="ctrlPEPM.chart_prestamos['labels']" chart-legend="false" chart-series="ctrlPEPM.chart_prestamos['series']" 
-										  chart-options="ctrlPEPM.chart_prestamos['options']"
-										  chart-click="ctrlPEPM.onClick_chart_prestamos">
-					</canvas>
-				</div>
-				<div class="chart-legend">
-						<ul class="line-legend">
-							<li ng-repeat="year in ctrlPEPM.chart_prestamos['series'] track by $index">
-							<div class="img-rounded" style="float: left; margin-right: 5px; width: 15px; height: 15px; background-color : {{ ctrlPEPM.chart_colors[$index] }};"></div>
-								{{ ctrlPEPM.chart_prestamos['series'][$index] }} 
-							</li>
-						</ul>
-				</div>
+		<div>
+			<div style="padding: 15px;">
+				<div class="panel panel-default">
+					<div>
+						<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(1, false)" ng-disabled="control.showloading"><b>Por Prestamo</b></a> 
+						<span ng-hide="control.prestamo_level<2">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(2, false)" ng-disabled="control.showloading">{{ control.prestamo_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<3">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(3, false)" ng-disabled="control.showloading">{{ control.prestamo_entidad_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<4">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(4, false)" ng-disabled="control.showloading">{{ control.prestamo_unidad_ejecutora_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<5">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(5, false)" ng-disabled="control.showloading">{{ control.prestamo_programa_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<6">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(6, false)" ng-disabled="control.showloading">{{ control.prestamo_subprograma_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<7">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(7, false)" ng-disabled="control.showloading">{{ control.prestamo_proyecto_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<8">/ 
+							<a href class="btn btn-default no-border" ng-click="control.prestamo_goLevel(8, false)" ng-disabled="control.showloading">{{ control.prestamo_actividad_nombre }}</a>
+						</span>
+						<span ng-hide="control.prestamo_level<9">/ &nbsp;{{ control.prestamo_renglon_nombre }}</span>
+					</div>
+			  		<div style="position: relative;">
+						<table class="table table-striped" st-table="control.prestamo_ejecucion_data" 
+							   st-safe-src="control.prestamo_ejecucion_data_original" >
+							 <thead>
+								<tr>
+									<th></th>
+									<th st-sort="codigo">Código</th>
+									<th st-sort="nombre">Nombre</th>
+									<th st-sort="vigente" style="text-align: right; ">Asignado</th>		
+									<th st-sort="modificaciones" style="text-align: right; ">Modificaciones</th>									
+									<th st-sort="vigente" style="text-align: right; ">Vigente</th>	
+									<th st-sort="ejecutado" style="text-align: right;">Ejecutado</th>
+									<th st-sort="eje_financiera" style="text-align: right;">% Ejecución Financiera</th>
+								</tr>
+							</thead>
+							<tfoot>
+							    <tr style="font-weight: bold;">
+							    	<td/>
+							    	<td/>
+							    	<td class="text-right"><strong>Totales</strong></td>
+									<td class="text-right"><strong>{{ control.prestamo_ejecucion_totales[0] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.prestamo_ejecucion_totales[1] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.prestamo_ejecucion_totales[2] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.prestamo_ejecucion_totales[3] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.prestamo_ejecucion_totales[4] | number:2 }}&nbsp;%</strong></td>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr ng-repeat="data in control.prestamo_ejecucion_data">
+									<td><button ng-show="control.prestamo_level<8" class="btn btn-primary" ng-click="control.prestamo_clickRow(data.codigo,data.nombre)"></button></td>
+									<td class="text-nowrap"><strong>{{data.codigo}}</strong></td>
+									<td title="{{data.nombre}}" style="max-width: 350px; overflow: hidden;" class="text-nowrap"><strong>{{data.nombre}}</strong></td>
+									<td class="text-right">{{ data.asignado | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.modificaciones | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.vigente | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.ejecutado | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.ejecucion_financiera | number:2}}&nbsp;%</td>
+								</tr>
+							</tbody>
+						</table>	
+						<div class="grid_loading" ng-hide="!control.prestamo_showloading">
+				  			<div class="msg">
+				      			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  			<br /><br />
+						  			<b>Cargando, por favor espere...</b>
+					  			</span>
+							</div>
+			  			</div>					
+					</div>
+				</div >
+				<div class="panel panel-default">
+					<div>
+						<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(1, false)" ng-disabled="control.showloading"><b>Por Entidad</b></a> 
+						<span ng-hide="control.entidad_level<2">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(2, false)" ng-disabled="control.showloading">{{ control.entidad_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<3">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(3, false)" ng-disabled="control.showloading">{{ control.entidad_prestamo_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<4">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(4, false)" ng-disabled="control.showloading">{{ control.entidad_unidad_ejecutora_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<5">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(5, false)" ng-disabled="control.showloading">{{ control.entidad_programa_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<6">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(6, false)" ng-disabled="control.showloading">{{ control.entidad_subprograma_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<7">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(7, false)" ng-disabled="control.showloading">{{ control.entidad_proyecto_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<8">/ 
+							<a href class="btn btn-default no-border" ng-click="control.entidad_goLevel(8, false)" ng-disabled="control.showloading">{{ control.entidad_actividad_nombre }}</a>
+						</span>
+						<span ng-hide="control.entidad_level<9">/ &nbsp;{{ control.entidad_renglon_nombre }}</span>
+					</div>
+			  		<div style="position: relative;">
+						<table class="table table-striped" st-table="control.entidad_ejecucion_data" 
+							   st-safe-src="control.entidad_ejecucion_data_original" >
+							 <thead>
+								<tr>
+									<th></th>
+									<th st-sort="codigo">Código</th>
+									<th st-sort="nombre">Nombre</th>
+									<th st-sort="vigente" style="text-align: right; ">Asignado</th>		
+									<th st-sort="modificaciones" style="text-align: right; ">Modificaciones</th>									
+									<th st-sort="vigente" style="text-align: right; ">Vigente</th>	
+									<th st-sort="ejecutado" style="text-align: right;">Ejecutado</th>
+									<th st-sort="eje_financiera" style="text-align: right;">% Ejecución Financiera</th>
+								</tr>
+							</thead>
+							<tfoot>
+							    <tr style="font-weight: bold;">
+							    	<td/>
+							    	<td/>
+							    	<td class="text-right"><strong>Totales</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[0] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[1] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[2] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[3] | currency:"Q&nbsp;":2 }}</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[4] | number:2 }}&nbsp;%</strong></td>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr ng-repeat="data in control.entidad_ejecucion_data">
+									<td><button ng-show="control.entidad_level<8" class="btn btn-primary" ng-click="control.entidad_clickRow(data.codigo,data.nombre)"></button></td>
+									<td class="text-nowrap"><strong>{{data.codigo}}</strong></td>
+									<td title="{{data.nombre}}" style="max-width: 350px; overflow: hidden;" class="text-nowrap"><strong>{{data.nombre}}</strong></td>
+									<td class="text-right">{{ data.asignado | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.modificaciones | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.vigente | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.ejecutado | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.ejecucion_financiera | number:2}}&nbsp;%</td>
+								</tr>
+							</tbody>
+						</table>	
+						<div class="grid_loading" ng-hide="!control.entidad_showloading">
+				  			<div class="msg">
+				      			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  			<br /><br />
+						  			<b>Cargando, por favor espere...</b>
+					  			</span>
+							</div>
+			  			</div>					
+					</div>
+				</div >
 			</div>
 		</div>
 	</div>
-	
-	<br/><br/>
-	
 	<div class="row">
 		<div class="col-sm-12">
-			<h5 class="text-center">Ejecución de Préstamos por Entidad</h5>
-			<br/>
-			<table class="table table-hover" style="width: 90%; margin: 0 auto;">
-				<thead>
-					<tr>
-						<th class="text-center">Entidad</th>
-						<th class="text-center">Aprobado</th>
-						<th class="text-center">Modificaciones</th>
-						<th class="text-center">Vigente</th>
-						<th class="text-center">Ejecución</th>
-						<th class="text-center">% de Ejecución</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="entidad in ctrlPEPM.tabla_entidades track by $index">
-						<td class="text-nowrap">{{ ctrlPEPM.tabla_entidades[$index].entidad_nombre }}</td>
-						<td class="text-right text-nowrap">{{ ctrlPEPM.tabla_entidades[$index].asignado | currency:"Q&nbsp;":2 }}</td>
-						<td class="text-right text-nowrap">{{ ctrlPEPM.tabla_entidades[$index].modificaciones | currency:"Q&nbsp;":2 }}</td>
-						<td class="text-right text-nowrap">{{ ctrlPEPM.tabla_entidades[$index].vigente | currency:"Q&nbsp;":2 }}</td>
-						<td class="text-right text-nowrap">{{ ctrlPEPM.tabla_entidades[$index].ejecutado | currency:"Q&nbsp;":2  }}</td>
-						<td class="text-center text-nowrap">{{ ctrlPEPM.tabla_entidades[$index].porcentaje | number:2}}&nbsp;%</td>
-					</tr>
-					<tr>
-						<td class="text-right text-nowrap"><strong>Totales</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.tabla_entidades_totales[0] | currency:"Q&nbsp;":2  }}</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.tabla_entidades_totales[1] | currency:"Q&nbsp;":2 }}</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.tabla_entidades_totales[2] | currency:"Q&nbsp;":2  }}</strong></td>
-						<td class="text-right text-nowrap"><strong>{{ ctrlPEPM.tabla_entidades_totales[3] | currency:"Q&nbsp;":2  }}</strong></td>
-						<td class="text-center text-nowrap"><strong>{{ ctrlPEPM.tabla_entidades_totales[4] | number:2 }}&nbsp;%</strong></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+			<div class="col-sm-6">Última actualización: {{ control.lastupdate }}</div>
+		</div>		
 	</div>
-	
-	<br/><br/>
-	
-	<div class="row">
-		<div class="col-sm-12 col-centered">
-			<div class="panel panel-default div-center" style="width: 600px; height: auto;">
-				<h5 class="text-center">Préstamos por Organismo Cooperante</h5>
-				<h6 class="text-center">-Monto en millones de Quetzales-</h6>
-				<div style="width: 380px; height: 330px;" class="div-center">
-				<canvas height="250" width="300" class="chart chart-pie" chart-data="ctrlPEPM.chart_organizaciones['data']"
-					chart-labels="ctrlPEPM.chart_organizaciones['labels']" chart-legend="false" chart-series="ctrlPEPM.chart_organizaciones['series']" chart-options="ctrlPEPM.chart_organizaciones['options']">
-				</canvas>
-				</div>
-				<div class="chart-legend">
-					<ul class="line-legend" style="text-align: left; padding-left: 10%">
-						<li ng-repeat="year in ctrlPEPM.chart_organizaciones['labels'] track by $index">
-							<div class="img-rounded" style="float: left; margin-right: 5px; width: 15px; height: 15px; background-color : {{ ctrlPEPM.chart_colors[$index] }};"></div>
-							{{ ctrlPEPM.chart_organizaciones['legends'][$index] }} 
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<br/>
-	
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="col-sm-6">Última actualización: {{ ctrlPEPM.lastupdate }}</div>
-		</div>
-	</div>
-
 </div>
+
