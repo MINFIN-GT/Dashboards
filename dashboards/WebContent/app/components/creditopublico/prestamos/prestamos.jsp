@@ -1,7 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+        
     <div ng-controller="prestamosController as control" class="maincontainer" id="title" class="all_page">
+    
 	<h3>Tablero de Seguimiento a Prestamos</h3>
+	
+	<div class="row">
+		<div class="col-sm-3">
+		</div>
+		<div class="col-sm-6" style="position:relative; height:400px;">
+			<ui-gmap-google-map center="control.map.center" options="control.map.options" zoom="control.map.zoom">
+
+		        <ui-gmap-polygon static="true" ng-repeat="p in control.polygons" path="p.path" stroke="p.stroke" visible="p.visible"
+		            geodesic="p.geodesic" fill="p.fill" fit="false" editable="p.editable" draggable="p.draggable" events="p.events">
+		        </ui-gmap-polygon>
+	
+			</ui-gmap-google-map>
+		</div>
+	</div>
+	
 	<br/>
 	<div><h4>Presupuesto de prestamos</h4></div>
 	<div class="row">

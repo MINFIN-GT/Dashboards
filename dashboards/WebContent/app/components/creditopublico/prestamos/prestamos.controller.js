@@ -1,10 +1,15 @@
-/**
- * 
- */
-
-angular.module('prestamosEjecucionPresupuestariaModule',['dashboards','smart-table']).controller('prestamosController',['$scope','$routeParams','$http','$document','$timeout',
-	   function($scope,$routeParams,$http, $document, $timeout){			
+angular.module('prestamosEjecucionPresupuestariaModule',['dashboards','smart-table'])
+.controller('prestamosController',['$scope','$routeParams','$http','$document','$timeout','uiGmapGoogleMapApi','$log',
+	   function($scope,$routeParams,$http, $document, $timeout, uiGmapGoogleMapApi, $log){			
 			this.lastupdate = '';
+			
+			this.map = {
+				center: {
+					latitude: 15.035009229644448,
+					longitude: -90.7093818359375
+				},
+				zoom: 8	
+			}
 			
 			$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
 			    if(response.data.success){
@@ -226,5 +231,47 @@ angular.module('prestamosEjecucionPresupuestariaModule',['dashboards','smart-tab
 		this.prestamo_goLevel(1);
 		this.entidad_goLevel(1);
 		
-		}
-	]);
+			this.map = {
+					center: {
+						latitude: 15.035009229644448,
+						longitude: -90.7093818359375
+					},
+					zoom: 7
+				};
+			
+			this.polygons = [];
+						
+			for(var muniID in municipios){
+				var muni = municipios[muniID];  
+				for(var i = 0; i < muni.length; i++){			
+					this.polygons.push(  	
+			        {
+			          id: muni[i].propiedad,
+			          path: muni[i].coordenadas,
+			          stroke: {
+			            color: '#6060FB',
+			            weight: 1
+			          },
+			          editable: false,
+			          draggable: false,
+			          geodesic: false,
+			          visible: true,
+			          fill: {
+			            color: '#ff0000',
+			            opacity: 0.8
+			          },
+			          events:{
+					  	click: function(){
+						  	var prop = this.events.data;
+						  	
+						  	$log.info(prop);      
+						},
+						data: muni[i].propiedad
+		        	  },
+			        });
+			      
+			    }
+			}
+					
+	}
+]);
