@@ -17,6 +17,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         			}
         		}
         	})*/
+		   .when('/dashboards/newejecucionpresupuestaria/:reset_grid?',{
+		   	template: '<div load-on-demand="\'newEjecucionPresupuestariaModule\'" class="all_page"></div>'
+		   })
             .when('/dashboards/ejecucionpresupuestaria/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionpresupuestariaController\'" class="all_page"></div>'
             })
@@ -188,6 +191,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
 	           script:   '/app/components/creditopublico/prestamos/prestamos.controller.js',
 	           template: '/app/components/creditopublico/prestamos/prestamos.jsp'
+	       },
+	       {
+	    	   name: 'newEjecucionPresupuestariaModule',
+	    	   script: '/app/components/ejecucionpresupuestaria/newejecucionpresupuestaria.controller.js',
+	    	   template: '/app/components/ejecucionpresupuestaria/newejecucionpresupuestaria.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
