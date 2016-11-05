@@ -16,6 +16,8 @@
 	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Tableros <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+	                     	<li role="menuitem"><a href="#!/dashboards/newejecucionpresupuestaria">New Ejecución Presupuestaria</a></li>
+
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionpresupuestaria">Ejecución Presupuestaria</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionrenglon">Ejecución Presupuestaria por Renglón</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionprograma">Ejecución programática (Entidad)</a></li>

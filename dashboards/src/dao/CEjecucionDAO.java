@@ -13,7 +13,7 @@ import utilities.CLogger;
 
 public class CEjecucionDAO { 
 	
-	public static ArrayList<CEjecucion> getEntidadesEjecucion(int mes, String fuentes, String clase_registro, String gruposGasto, boolean todosgrupos){
+	public static ArrayList<CEjecucion> getEntidadesEjecucion(int mes, String fuentes, String clase_registro, String gruposGasto, boolean todosgrupos){		
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -167,6 +167,7 @@ public class CEjecucionDAO {
 				CDatabase.close(conn);
 			}
 		}
+		
 		return entidades.size()>0 ? entidades : null;
 	}
 	
