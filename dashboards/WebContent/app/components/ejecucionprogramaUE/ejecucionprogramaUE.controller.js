@@ -10,7 +10,7 @@ angular.module('ejecucionprogramaUEController',['dashboards']).controller('ejecu
 			this.tributarias = [11,12,13,14,15,16,21,22,29];
 			this.showloading = false;
 			this.nmonth = "Enero";
-			this.chartType = "Line";
+			this.chartType = "line";
 			this.chartTitle = "Administración Central"
 			this.selectedRow = null;
 			this.row_selected = [];

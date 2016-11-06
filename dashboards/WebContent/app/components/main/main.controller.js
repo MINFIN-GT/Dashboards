@@ -3,7 +3,7 @@
  */
 var app = angular.module('dashboards',['ngRoute','ui.bootstrap','chart.js', 'loadOnDemand','ngAnimate', 'ngTouch', 
                                        'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning',
-                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping']);
+                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 	   $locationProvider.hashPrefix('!');
@@ -22,6 +22,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 		   })
             .when('/dashboards/ejecucionpresupuestaria/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionpresupuestariaController\'" class="all_page"></div>'
+            })
+            .when('/dashboards/ejecucionfisica/:reset_grid?',{
+            	template: '<div load-on-demand="\'ejecucionfisicaController\'" class="all_page"></div>'
             })
             .when('/dashboards/ejecucionrenglon/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionrenglonController\'" class="all_page"></div>'
@@ -101,6 +104,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'ejecucionpresupuestariaController',
 	    	   script: '/app/components/ejecucionpresupuestaria/ejecucionpresupuestaria.controller.js',
 	    	   template: '/app/components/ejecucionpresupuestaria/ejecucionpresupuestaria.jsp'
+	       },
+	       {
+	    	   name: 'ejecucionfisicaController',
+	    	   script: '/app/components/ejecucionfisica/ejecucionfisica.controller.js',
+	    	   template: '/app/components/ejecucionfisica/ejecucionfisica.jsp'
 	       },
 	       {
 	    	   name: 'ejecucionrenglonController',

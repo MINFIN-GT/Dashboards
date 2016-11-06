@@ -15,8 +15,9 @@
 <script type="text/javascript" src="/assets/libs/angular/angular-animate.min.js"></script>
 <script type="text/javascript" src="/assets/libs/angular/angular-touch.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/ui-bootstrap-tpls-1.2.1.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/moment.min.js"></script>
 <script type="text/javascript" src="/assets/libs/Chart.min.js"></script>
-<script type="text/javascript" src="/assets/libs/angular-chart-0.10.2.min.js"></script>
+<script type="text/javascript" src="/assets/libs/angular-chart.min.js"></script>
 <script type="text/javascript" src="/assets/libs/ui-grid.min.js"></script>  
 <script type="text/javascript" src="/assets/libs/maps/angular-simple-logger.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/maps/lodash.js"></script> 
@@ -24,7 +25,6 @@
 <script type="text/javascript" src="/assets/libs/loadOnDemand.js"></script>
 <script type="text/javascript" src="/assets/libs/numeral.min.js"></script>
 <script type="text/javascript" src="/assets/libs/numeral.es.js"></script> 
-<script type="text/javascript" src="/assets/libs/moment.min.js"></script>
 <script type="text/javascript" src="/assets/libs/ng-device-detector.min.js"></script>
 <script type="text/javascript" src="/assets/libs/re-tree.min.js"></script>
 <script type="text/javascript" src="/assets/libs/angular-timeline.js"></script>
