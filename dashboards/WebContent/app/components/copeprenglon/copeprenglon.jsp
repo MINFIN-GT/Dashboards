@@ -105,9 +105,9 @@
 			<div class="row">
 				<div class="col-sm-12" style="text-align: right;">
 					<div class="btn-group" role="group" aria-label="">
-						<a class="btn btn-default" href ng-click="ejecucion.chartType='Line'" ng-disabled="ejecucion.showloading" role="button">Lineas</a>
-						<a class="btn btn-default" href ng-click="ejecucion.chartType='Bar'" ng-disabled="ejecucion.showloading" role="button">Barras</a>
-						<a class="btn btn-default" href ng-click="ejecucion.chartType='Radar'" ng-disabled="ejecucion.showloading" role="button">Radar</a>
+						<a class="btn btn-default" href ng-click="ejecucion.chartType='line'" ng-disabled="ejecucion.showloading" role="button">Lineas</a>
+						<a class="btn btn-default" href ng-click="ejecucion.chartType='bar'" ng-disabled="ejecucion.showloading" role="button">Barras</a>
+						<a class="btn btn-default" href ng-click="ejecucion.chartType='radar'" ng-disabled="ejecucion.showloading" role="button">Radar</a>
 					</div>
 				</div>
 			</div>

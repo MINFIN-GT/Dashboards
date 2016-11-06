@@ -12,7 +12,7 @@ angular.module('copeprenglonController',['dashboards']).controller('copeprenglon
 			
 			this.showloading = false;
 			this.nmonth = "Enero";
-			this.chartType = "Line";
+			this.chartType = "line";
 			this.chartTitle = "Administración Central"
 			this.selectedRow = null;
 			this.row_selected = [];
