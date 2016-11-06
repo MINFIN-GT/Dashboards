@@ -183,7 +183,8 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 		                    ticks: {
 		                        autoSkip: false,
 		                        maxRotation: 90,
-		                        minRotation: 90
+		                        minRotation: 90,
+		                        fontSize: 10
 		                    }
 		                }]
 		            },
@@ -200,12 +201,12 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			                	      if(dataset.hidden === true && dataset._meta[Object.keys(dataset._meta)[0]].hidden !== false){ continue; }
 			                	      var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
 			                	      if(dataset.data[i] !== null){
-			                	    	  //ctx.save();
-			                	    	  //ctx.beginPath();
-			                	    	  //ctx.translate( model.x - 1, model.y + 20)
-			                	    	  //ctx.rotate(270*Math.PI/180);
-			                	    	  ctx.fillText(dataset.data[i]+' %', model.x - 1, model.y + 20);
-			                	    	  //ctx.restore();
+			                	    	  ctx.save();
+			                	    	  ctx.beginPath();
+			                	    	  ctx.translate( model.x + 7, model.y + 35)
+			                	    	  ctx.rotate(270*Math.PI/180);
+			                	    	  ctx.fillText(dataset.data[i]+' %', 0, 0);
+			                	    	  ctx.restore();
 			                	      }
 			                	    }
 			                	  });
