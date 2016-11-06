@@ -191,7 +191,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 		                onComplete: function() {
 		                	if(this.config.type=='bar' || this.config.type=='line'){
 			                	var ctx = this.chart.ctx;
-			                	  ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'normal', Chart.defaults.global.defaultFontFamily);
+			                	  ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'bold', Chart.defaults.global.defaultFontFamily);
 			                	  ctx.fillStyle = this.chart.config.options.defaultFontColor;
 			                	  ctx.textAlign = 'center';
 			                	  ctx.textBaseline = 'bottom';
@@ -200,9 +200,10 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			                	      if(dataset.hidden === true && dataset._meta[Object.keys(dataset._meta)[0]].hidden !== false){ continue; }
 			                	      var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
 			                	      if(dataset.data[i] !== null){
-			                	    	  //var nctx = document.createElement('canvas').getContext('2d');
-			                	    	  //ctx.translate(ctx.width/2,ctx.height/2)
-			                	    	  //ctx.rotate(10*Math.PI/180);
+			                	    	  //ctx.save();
+			                	    	  //ctx.beginPath();
+			                	    	  //ctx.translate( model.x - 1, model.y + 20)
+			                	    	  //ctx.rotate(270*Math.PI/180);
 			                	    	  ctx.fillText(dataset.data[i]+' %', model.x - 1, model.y + 20);
 			                	    	  //ctx.restore();
 			                	      }
