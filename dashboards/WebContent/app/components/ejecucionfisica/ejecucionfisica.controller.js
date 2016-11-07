@@ -36,7 +36,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			
 			this.ejecucion_financiera=0.0, this.ejecucion_fisica=0.0;
 			
-			this.chart_colours = ['#5B9BD5', '#A9D18E', '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
+			this.chart_colours = [ '#A9D18E', '#5B9BD5', '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
 			
 			
 	    	$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
@@ -113,7 +113,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 				    enableRowHeaderSelection: false,
 				    showGridFooter:true,
 				    columnDefs: [
-				      { name: 'entidad', displayName: 'Código', cellClass: 'grid-align-right', type: 'number' },
+				      { name: 'entidad', minWidth: 125, width: 125, displayName: 'Código', cellClass: 'grid-align-right', type: 'number' },
 				      { name: 'nombre', minWidth: 500, width: 500, displayName: 'Nombre' },
 				      { name: 'porcentaje_ejecucion_financiera', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'Ejecución Presupuestaria', enableFiltering: false,
 						  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_ejecucion_financiera | number:2 }}&nbsp%</div>',
