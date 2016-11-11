@@ -212,7 +212,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 app.config(['uiGmapGoogleMapApiProvider',function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyBPq-t4dJ1GV1kdtXoVZfG7PtfEAHrhr00',
-        v: '3.23', //defaults to latest 3.X anyhow
+        v: '3.', //defaults to latest 3.X anyhow
         libraries: 'weather,geometry,visualization'
     });
 }]);
