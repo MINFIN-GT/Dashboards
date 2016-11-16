@@ -79,7 +79,15 @@
 	</div>
 	
 	<br/>
-	<div style="text-align: center;"><p>Ejecución:  <span class="glyphicon glyphicon-certificate dot_4 "></span> Baja  |  <span class="glyphicon glyphicon-certificate dot_2 "></span> Media  |  <span class="glyphicon glyphicon-certificate dot_3"></span> Optima</p></div>
+	<div style="text-align: center;">
+		<p>Gasto:  
+			<span tooltip-placement="top" uib-tooltip=" 0 - 1 por millar" class="glyphicon glyphicon-certificate" style="color: #ff0000"></span> Bajo  |  
+			<span tooltip-placement="top" uib-tooltip=" 1 - 3 por millar" class="glyphicon glyphicon-certificate" style="color: #ffdab9"></span> Medio Bajo  |  
+			<span tooltip-placement="top" uib-tooltip=" 3 - 5 por millar" class="glyphicon glyphicon-certificate" style="color: #ffff00"></span> Medio  |  
+			<span tooltip-placement="top" uib-tooltip=" 5 - 10 por millar" class="glyphicon glyphicon-certificate" style="color: #98fb98"></span> Medio Óptimo  |  
+			<span tooltip-placement="top" uib-tooltip=" mayor a 1 por ciento" class="glyphicon glyphicon-certificate" style="color: #008000"></span> Óptimo
+		</p>
+	</div>
 	
 	<div class="row">
 			<div class="col-sm-6">Última actualización: {{ mapsGG.lastupdate }}</div>
