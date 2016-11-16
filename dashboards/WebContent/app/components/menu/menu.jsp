@@ -3,15 +3,18 @@
     
     <nav ng-class="{'showbar' : !hidebar, 'hidebar': hidebar}" class="navbar navbar-inverse navbar-fixed-top">
 	    <div class="container">
-	        <input type="checkbox" id="navbar-toggle-cbox">
+	    
+	        <input type="checkbox" id="navbar-toggle-cbox" />	       
 	        <div class="navbar-header">
 	            <label for="navbar-toggle-cbox" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	                <span class="sr-only">Toggle navigation</span>
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	            </label>
 	            <a class="navbar-brand" href="/main.jsp"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+		    </div>
+		    
+		    <div class="collapse navbar-collapse" id="navBar">
 	            <ul class="nav navbar-nav">
 	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Tableros <b class="caret"></b></a>
@@ -74,11 +77,9 @@
 	                    </ul>
 	                </li>
 	            </ul>
-	        </div>
-	        <div class="collapse navbar-collapse">
-	        	<ul class="nav navbar-nav navbar-right">
-		          <li><a href="/SLogout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Salir</a></li>
-		          <li><a><span class="glyphicon glyphicon-chevron-up" aria-hidden="true" ng-click="hideBarFromMenu()"></span> </a></li>
+	            <ul class="nav navbar-nav navbar-right">
+		            <li><a href="/SLogout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Salir</a></li>
+		            <li><a><span class="glyphicon glyphicon-chevron-up" aria-hidden="true" ng-click="hideBarFromMenu()"></span> </a></li>
 		        </ul>
 	        </div>
 	    </div>
