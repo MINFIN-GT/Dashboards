@@ -1,12 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<div id="gastogeograficomap" ng-controller="mapsGastoGeograficoController as mapsGG" class="all_page">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div ng-controller="mapsGastoGeograficoController as mapsGG" class="maincontainer" id="gastogeograficomap" class="all_page">
 
 	<script type="text/ng-template" id="infoGastoGeografico.jsp">
 		<%@ include file="/app/components/maps/gastogeografico_h/infoGastoGeografico.jsp"%>
     </script>
     
     <h4>Gasto Geográfico</h4>
+
 	<div class="row">
 		<div class="col-sm-12">
 			<button type="button" class="btn btn-default no-border" style="font-size: 18px;" ng-click="mapsGG.panel_fuentes = !mapsGG.panel_fuentes" ng-disabled="mapsGG.showloading">{{ mapsGG.fuentes}} [ {{ mapsGG.fuentes_descripcion }} ]</button>
@@ -42,6 +42,7 @@
 		    </div>
 		</div>
 	</div>
+
 	<div class="row" style="margin-bottom: 10px;">
 		<div class="col-sm-12">
 			<div class="btn-group" uib-dropdown>
@@ -70,17 +71,18 @@
 	<div style="position: relative; height: 700px;" id="title">
 	
 		<ui-gmap-google-map center="mapsGG.map.center" options="mapsGG.map.options" zoom="mapsGG.map.zoom">
-			<!-- polygon example --> 
-			<ui-gmap-polygon ng-repeat="p in mapsGG.map.polygons" 
-				static="true" path="p.path" stroke="p.stroke" visible="p.visible" geodesic="p.geodesic" fill="p.fill" fit="false" editable="p.editable" draggable="p.draggable" events="p.events">
+
+			<ui-gmap-polygon ng-repeat="p in mapsGG.map.polygons" static="true" 
+				path="p.path" stroke="p.stroke" visible="p.visible" geodesic="p.geodesic" fill="p.fill" fit="false" editable="p.editable" draggable="p.draggable" events="p.events">
 			</ui-gmap-polygon> 
+
 		</ui-gmap-google-map>
 
 	</div>
 	
 	<br/>
 	<div style="text-align: center;">
-		<p>Gasto:  
+		<p>
 			<span tooltip-placement="top" uib-tooltip=" 0 - 1 por millar" class="glyphicon glyphicon-certificate" style="color: #ff0000"></span> Bajo  |  
 			<span tooltip-placement="top" uib-tooltip=" 1 - 3 por millar" class="glyphicon glyphicon-certificate" style="color: #ffdab9"></span> Medio Bajo  |  
 			<span tooltip-placement="top" uib-tooltip=" 3 - 5 por millar" class="glyphicon glyphicon-certificate" style="color: #ffff00"></span> Medio  |  
