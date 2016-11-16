@@ -43,8 +43,8 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	me.mes = 1;
 	me.nmonth = "Enero";
 
-	me.muniMap = [];
-
+	me.map = null;
+	
 	me.fuentes = "Fuentes de Financiamiento";
 	me.fuentes_descripcion = "Todas";
 	me.fuentes_array = [];
@@ -263,6 +263,8 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	}
 
 	function obtenerGasto(response) {
+		me.map = null;
+
 		if (response.data.success) {
 
 			uiGmapGoogleMapApi
@@ -276,7 +278,9 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 							options : {
 								streetViewControl : false,
 								scrollwheel : false
-							}
+							},
+							draw : null,
+							polygons : []
 						};
 
 						var general = response.data.geograficos[0];
@@ -294,7 +298,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 								// $log.info(response.data.geograficos[j].nombre,porcentaje);
 
 								for (var i = 0; i < muni.length; i++) {
-									me.muniMap
+									me.map.polygons
 											.push({
 												id : muni[i].propiedad,
 												path : muni[i].coordenadas,
@@ -302,7 +306,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 													color : '#6060FB',
 													weight : 1
 												},
-												editable : false,
+												editable : true,
 												draggable : false,
 												geodesic : false,
 												visible : true,
@@ -323,7 +327,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 																	controller : 'modalInfoGeograficoController',
 																	controllerAs : 'infoCtrl',
 																	backdrop : 'static',
-																	size: 'sm',
+																	size : 'sm',
 																	resolve : {
 																		data : this.events.data
 																	}
@@ -336,7 +340,6 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 							}
 						}
 					});
-			me.muniMap = [];
 		}
 	}
 }

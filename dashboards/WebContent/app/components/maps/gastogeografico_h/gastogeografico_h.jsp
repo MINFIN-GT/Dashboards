@@ -71,7 +71,7 @@
 	
 		<ui-gmap-google-map center="mapsGG.map.center" options="mapsGG.map.options" zoom="mapsGG.map.zoom">
 			<!-- polygon example --> 
-			<ui-gmap-polygon ng-repeat="p in mapsGG.muniMap" 
+			<ui-gmap-polygon ng-repeat="p in mapsGG.map.polygons" 
 				static="true" path="p.path" stroke="p.stroke" visible="p.visible" geodesic="p.geodesic" fill="p.fill" fit="false" editable="p.editable" draggable="p.draggable" events="p.events">
 			</ui-gmap-polygon> 
 		</ui-gmap-google-map>
