@@ -1,12 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <div class="modal-header">
-	<h3 class="modal-title">Detalle de Gasto del Municipio </h3>
+	<h3 class="modal-title">Detalle de Gasto</h3>
 </div>
 <div class="modal-body" id="modal-body">
-	<div style="width: 800px; height: 200px;">
-	<h4>{{infoCtrl.data.nombre}}</h4>
-	Gasto: {{infoCtrl.data.gasto | currency: 'Q'}}
+	Municipio:<br />
+	<div style="text-align: center; width: 100%;">
+		<h4>{{infoCtrl.data.nombre}}</h4>
+	</div>
+	Gasto:<br />
+	<div style="text-align: center; width: 100%;">
+		<b>{{infoCtrl.data.gasto | currency: 'Q. '}}</b>
 	</div>
 </div>
 <div class="modal-footer">

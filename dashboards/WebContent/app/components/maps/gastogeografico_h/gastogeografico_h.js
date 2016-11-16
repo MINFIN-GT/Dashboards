@@ -219,8 +219,6 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 			fuentes : me.getFuentes()
 		};
 
-		$log.info(data);
-
 		$http.post('/SGastoGeografico', data).then(obtenerGasto, errorCallback);
 
 		me.showloading = false;
@@ -284,7 +282,6 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 						};
 
 						var general = response.data.geograficos[0];
-						$log.info(general);
 
 						for (var j = 1; j < response.data.geograficos.length; j++) {
 
@@ -314,7 +311,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 													color : (muni.CODIGO != 2000 ? getColor(
 															porcentaje, $log)
 															: '#a7d0e1'),
-													opacity : 0.7
+													opacity : 0.8
 												},
 												events : {
 													click : function() {
