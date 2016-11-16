@@ -1,21 +1,29 @@
 package pojo;
 
 public class CGastoGeografico {
-	private Integer ejercicio;
-	private Integer geografico;
 	private Integer mes;
-	private Integer puntos;
-	private String latitud;
-	private String longitud;
+	private Integer ejercicio;
+
+	private Integer geografico;
+	private String nombreGeografico;
 	
-	public CGastoGeografico(Integer ejercicio, Integer geografico, Integer mes, Integer puntos, String latitud,
-			String longitud) {
+	private Double gasto;
+
+	public CGastoGeografico(Integer mes, Integer ejercicio, Integer geografico, String nombreGeografico, Double gasto) {
+		super();
+		this.mes = mes;
 		this.ejercicio = ejercicio;
 		this.geografico = geografico;
+		this.nombreGeografico = nombreGeografico;
+		this.gasto = gasto;
+	}
+
+	public Integer getMes() {
+		return mes;
+	}
+
+	public void setMes(Integer mes) {
 		this.mes = mes;
-		this.puntos = puntos;
-		this.latitud = latitud;
-		this.longitud = longitud;
 	}
 
 	public Integer getEjercicio() {
@@ -34,38 +42,21 @@ public class CGastoGeografico {
 		this.geografico = geografico;
 	}
 
-	public Integer getMes() {
-		return mes;
+	public String getNombreGeografico() {
+		return nombreGeografico;
 	}
 
-	public void setMes(Integer mes) {
-		this.mes = mes;
+	public void setNombreGeografico(String nombreGeografico) {
+		this.nombreGeografico = nombreGeografico;
 	}
 
-	public Integer getPuntos() {
-		return puntos;
+	public Double getGasto() {
+		return gasto;
 	}
 
-	public void setPuntos(Integer puntos) {
-		this.puntos = puntos;
+	public void setGasto(Double gasto) {
+		this.gasto = gasto;
 	}
-
-	public String getLatitud() {
-		return latitud;
-	}
-
-	public void setLatitud(String latitud) {
-		this.latitud = latitud;
-	}
-
-	public String getLongitud() {
-		return longitud;
-	}
-
-	public void setLongitud(String longitud) {
-		this.longitud = longitud;
-	}
-	
 	
 	
 }
