@@ -2,13 +2,14 @@
  * 
  */
 
-angular.module('ejecucionpresupuestariaController',['dashboards']).controller('ejecucionpresupuestariaController',['$scope','$routeParams','$http','$interval', 
+angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.contextMenu']).controller('ejecucionpresupuestariaController',['$scope','$routeParams','$http','$interval', 
        'uiGridTreeViewConstants','uiGridConstants','i18nService','$timeout','uiGridGroupingConstants',
 	   function($scope,$routeParams,$http, $interval, uiGridTreeViewConstants, uiGridConstants, i18nService, $timeout, uiGridGroupingConstants){
 			i18nService.setCurrentLang('es');
 			var current_year = moment().year();
 			
 			this.tributarias = [11,12,13,14,15,16,21,22,29];
+			this.titulo = "Entidades";
 			
 			this.showloading = false;
 			this.nmonth = "Enero";
@@ -19,12 +20,22 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 			this.loadAttempted = false;
 			this.level=1; //1 Entidades, 2 Unidad Ejecutora, 3 Renglon
 			this.month=1;
-			this.entidad = 0;
-			this.unidad_ejecutora = 0;
-			this.renglon = 0;
+			this.entidad = null;
+			this.unidad_ejecutora = null;
+			this.programa = null;
+			this.subprograma = null;
+			this.proyecto = null;
+			this.actividad = null;
+			this.obra = null;
+			this.renglon = null;
 			this.entidad_nombre = "";
 			this.unidad_ejecutora_nombre = "";
+			this.programa_nombre="";
+			this.subprograma_nombre="";
+			this.proyecto_nombre="";
+			this.actividad_obra_nombre = "";
 			this.renglon_nombre = "";
+			
 			this.fuentes = "Fuentes de Financiamiento";
 			this.fuentes_descripcion ="Todas";
 			this.fuentes_array=[];
@@ -103,15 +114,42 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 				this.level = level;
 				this.showloading=true;
 				this.loadAttempted=false;
-				var data = { action: 'entidadesData',ano:current_year, nmes:this.nmonth, mes: this.month, level: this.level, 
-						entidad: this.entidad, ue: this.unidad_ejecutora, fuentes: this.getFuentes(), 
+				var data = { action: 'entidadesData', ano:current_year, nmes:this.nmonth, mes: this.month, level: this.level, 
+						entidad: this.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
+						proyecto: this.proyecto, actividad: this.actividad, obra: this.obra,
+						fuentes: this.getFuentes(), 
 						grupos: this.getGrupos(), todosgrupos: this.todosgrupos, t: (new Date()).getTime() };
 				this.chartData=[];
 	    		this.chartSeries=[];
 	    		this.chartTitle = '';
+	    		if(this.level<7){
+	    			this.actividad = null;
+	    			this.obra = null;
+	    			this.actividad_obra_nombre = "";
+	    		}
+	    		if(this.level<6){
+	    			this.proyecto = null;
+	    			this.proyecto_nombre = "";
+	    		}
+	    		if(this.level<5){
+	    			this.subprograma = null;
+	    			this.subprograma_nombre = "";
+	    		}
+	    		if(this.level<4){
+	    			this.programa = null;
+	    			this.programa_nombre = "";
+	    		}
+	    		if(this.level<3){
+	    			this.unidad_ejecutora = null;
+	    			this.unidad_ejecutora_nombre = "";
+	    		}
+	    		if(this.level<2){
+	    			this.entidad = null;
+	    			this.entidad_nombre = "";
+	    		}
 	    		$http.post('/SEjecucion', data).then(function(response){
 					    if(response.data.success){
-					    	if(!mantain_select)
+					    	//if(!mantain_select)
 					    		this.row_selected=[];
 					    	var ano1=0, ano2=0, ano3=0, ano4=0, ano5=0, ejecutado=0, vigente=0, ejecutado_acumulado=0;
 					    	for(var i=0; i<response.data.entidades.length; i++){
@@ -123,17 +161,17 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 					    		ejecutado+= response.data.entidades[i].ejecutado;
 					    		ejecutado_acumulado += response.data.entidades[i].ejecutado_acumulado;
 					    		vigente+= response.data.entidades[i].vigente;
-					    		if(response.data.entidades[i].parent!=null && this.level==3)
+					    		if(response.data.entidades[i].parent!=null && this.level==7)
 					    			response.data.entidades[i].$$treeLevel = response.data.entidades[i].parent;
 					    	}
 					    	this.entidades_gridOptions.data = response.data.entidades;
 					    	this.total_ejecucion = (ejecutado_acumulado/vigente)*100;
 					    	this.indicador_total_ejecucion = (this.total_ejecucion*100.00)/(8.33*this.month);
-					    	if(this.indicador_total_ejecucion<50)
+					    	if(this.indicador_total_ejecucion<=50)
 					    		this.indicador_total_ejecucion = 4;
-							else if(this.indicador_total_ejecucion<75)
+							else if(this.indicador_total_ejecucion<=75)
 								this.indicador_total_ejecucion = 2;
-							else if(this.indicador_total_ejecucion<100)
+							else if(this.indicador_total_ejecucion<=100)
 								this.indicador_total_ejecucion = 3;
 							else
 								this.indicador_total_ejecucion = 1;
@@ -141,12 +179,31 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 					    		switch(this.level){
 						    		case 1:
 								    	this.chartTitle = 'Administración Central';
+								    	this.titulo = 'Entidades';
 								    	break;
 						    		case 2:
 						    			this.chartTitle = this.entidad_nombre;
+						    			this.titulo = 'Unidades Ejecutoras';
 						    			break;
 						    		case 3:
 						    			this.chartTitle = this.unidad_ejecutora_nombre;
+						    			this.titulo = 'Programas';
+						    			break;
+						    		case 4:
+						    			this.chartTitle = this.programa_nombre;
+						    			this.titulo = 'Subprogramas';
+						    			break;
+						    		case 5:
+						    			this.chartTitle = this.subprograma_nombre;
+						    			this.titulo = 'Proyectos';
+						    			break;
+						    		case 6:
+						    			this.chartTitle = this.proyecto_nombre;
+						    			this.titulo = 'Actividades / Obras';
+						    			break;
+						    		case 7:
+						    			this.chartTitle = this.actividad_obra_nombre;
+						    			this.titulo = 'Renglones';
 						    			break;
 					    		}
 					    		this.selectedRow=null;
@@ -181,48 +238,50 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 				    showColumnFooter: true,
 				    enableRowHeaderSelection: false,
 				    showGridFooter:true,
+				    headerRowHeight: 50,
 				    columnDefs: [
-				      { name: 'goLevel', width: 50, displayName: '', cellClass: 'grid-align-center', cellTemplate:'<button class="btn btn-primary" ng-click="grid.appScope.ejecucion.clickRow(row)"></button>', 
-				    	  enableFiltering: false, enableSorting: false, pinnedLeft: true },           
+				      { name: 'goToLevel', width: 57, displayName: '   ', cellClass: 'grid-align-center', type: 'number', cellTemplate:'<div class="btn-group" style="min-width: 60px; margin: 3px;"><label class="btn btn-primary" style="font-size: 5px; width: 30px; padding: 5px;" ng-click="grid.appScope.ejecucion.clickRow(row)">&nbsp;</label><label class="btn btn-success" style="font-size: 5px; width: 20px; padding: 5px;" context-menu="grid.appScope.ejecucion.contextMenuOptions(row)" context-menu-on="click">&nbsp;</label></div>', 
+				    	  enableFiltering: false, enableSorting: false, pinnedLeft: true },    
 				      { name: 'entidad', width: 100, displayName: 'Código', cellClass: 'grid-align-right', type: 'number', pinnedLeft:true },
 				      { name: 'nombre', width: '30%', displayName: 'Nombre', pinnedLeft:true },
-				      { name: 'ano1', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-5), enableFiltering: false,
+				      { name: 'ano1', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-5), enableFiltering: false,
 				    	  cellClass: 'grid-align-right',
+				    	  headerCellClass: 'grid-align-center',
 				    	  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano1 | currency:"Q " : 0 }}</div>' },
-				      { name: 'ano2', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-4), enableFiltering: false,
+				      { name: 'ano2', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-4), enableFiltering: false,
 				    	  cellClass: 'grid-align-right',
 				    	  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano2 | currency:"Q " : 0 }}</div>'},
-				      { name: 'ano3', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-3), enableFiltering: false,
+				      { name: 'ano3', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-3), enableFiltering: false,
 					      cellClass: 'grid-align-right',
 					      footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 					      footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano3 | currency:"Q " : 0 }}</div>'},
-					  { name: 'ano4', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-2), enableFiltering: false,
+					  { name: 'ano4', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-2), enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano4 | currency:"Q " : 0 }}</div>'},
-					  { name: 'ano5', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-1), enableFiltering: false,
+					  { name: 'ano5', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-1), enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano5 | currency:"Q " : 0 }}</div>'},
-				      { name: 'aprobado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Cuota Aprobada', enableFiltering: false,
+				      { name: 'aprobado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Cuota Aprobada del mes', enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.aprobado | currency:"Q " : 0 }}</div>'},
-					  { name: 'aprobado_acumulado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Cuota Apr. Ac.', enableFiltering: false,
+					  { name: 'aprobado_acumulado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Cuota Aprobada Acumulada', enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.aprobado_acumulado | currency:"Q " : 0 }}</div>'},
-					  { name: 'ejecutado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecutado', enableFiltering: false,
+					  { name: 'ejecutado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecutado del mes', enableFiltering: false,
 					      cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ejecutado | currency:"Q " : 0 }}</div>'},
-					  { name: 'ejecutado_acumulado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Eje. Acumulado', enableFiltering: false,
+					  { name: 'ejecutado_acumulado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecutadado Acumulado', enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ejecutado_acumulado | currency:"Q " : 0 }}</div>'},
-					  { name: 'vigente', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Vigente', enableFiltering: false,
+					  { name: 'vigente', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Vigente hasta el mes', enableFiltering: false,
 							  cellClass: 'grid-align-right',  
 							  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 							  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.vigente | currency:"Q " : 0 }}</div>' },	  
@@ -247,7 +306,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 					    	  this.grid.appScope.ejecucion.aprobado=0, this.grid.appScope.ejecucion.aprobado_acumulado=0;
 					    	  this.grid.appScope.ejecucion.ejecutado=0, this.grid.appScope.ejecucion.ejecutado_acumulado=0, this.grid.appScope.ejecucion.vigente=0;
 					    	  for(var i=0; i<rows.length; i++){
-					    		  if(rows[i].entity.parent==null || this.grid.appScope.ejecucion.level<3){
+					    		  if(rows[i].entity.parent==null || this.grid.appScope.ejecucion.level<7){
 					    			  this.grid.appScope.ejecucion.ano1 += rows[i].entity.ano1;
 					    			  this.grid.appScope.ejecucion.ano2 += rows[i].entity.ano2;
 					    			  this.grid.appScope.ejecucion.ano3 += rows[i].entity.ano3;
@@ -262,11 +321,11 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 					    	  }
 					    	  this.grid.appScope.ejecucion.total_ejecucion = (this.grid.appScope.ejecucion.ejecutado_acumulado/this.grid.appScope.ejecucion.vigente)*100;
 					    	  this.grid.appScope.ejecucion.indicador_total_ejecucion = (this.grid.appScope.ejecucion.total_ejecucion*100.00)/(8.33*this.grid.appScope.ejecucion.month);
-						    	if(this.grid.appScope.ejecucion.indicador_total_ejecucion<50)
+						    	if(this.grid.appScope.ejecucion.indicador_total_ejecucion<=50)
 						    		this.grid.appScope.ejecucion.indicador_total_ejecucion = 4;
-								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<75)
+								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<=75)
 									this.grid.appScope.ejecucion.indicador_total_ejecucion = 2;
-								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<100)
+								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<=100)
 									this.grid.appScope.ejecucion.indicador_total_ejecucion = 3;
 								else
 									this.grid.appScope.ejecucion.indicador_total_ejecucion = 1;
@@ -283,8 +342,17 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 						    		  this.chartSeries=[];
 						    		  this.chartTitle = row.entity.nombre;
 						    	  }
-						    	  else
-						    		  this.chartTitle = (this.level==1) ? 'Entidades' : (this.level==2 ? 'Unidades Ejecutoras' : 'Renglones');
+						    	  else{
+						    		  switch(this.level){
+						    		  	case 1: this.chartTitle = 'Entidades'; this.titulo= 'Entidades'; break;
+						    		  	case 2: this.chartTitle = 'Unidades Ejecutoras'; this.titulo='Unidades Ejecutoras'; break;
+						    		  	case 3: this.chartTitle = 'Programas'; this.titulo='Programas'; break;
+						    		  	case 4: this.chartTitle = 'Subprogramas'; this.titulo = 'Subprogramas'; break;
+						    		  	case 5: this.chartTitle = 'Proyectos'; this.titulo='Proyectos'; break;
+						    		  	case 6: this.chartTitle = 'Actividades / Obras'; this.titulo='Actividades / Obras'; break;
+						    		  	case 7: this.chartTitle = 'Renglones'; this.titulo='Renglones'; break;
+						    		  }
+						    	  }
 						    	  this.chartData.push([row.entity.ano1/1000000, row.entity.ano2/1000000, row.entity.ano3/1000000, row.entity.ano4/1000000, row.entity.ano5/1000000, row.entity.ejecutado/1000000]);
 						    	  this.chartSeries.push(row.entity.nombre);
 					     }
@@ -296,14 +364,30 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 				    		 switch(this.row_selected.length){
 				    		 	case 0:
 				    		 		this.chartData.push(this.chartData_start);
-				    		 		this.chartTitle = this.level==1 ? 'Administración Central' : (this.level==2 ? this.entidad_nombre : this.unidad_ejecutora_nombre);
+				    		 		switch(this.level){
+						    		  	case 1: this.chartTitle = 'Entidades'; this.titulo= 'Entidades'; break;
+						    		  	case 2: this.chartTitle = 'Unidades Ejecutoras'; this.titulo='Unidades Ejecutoras'; break;
+						    		  	case 3: this.chartTitle = 'Programas'; this.titulo='Programas'; break;
+						    		  	case 4: this.chartTitle = 'Subprogramas'; this.titulo = 'Subprogramas'; break;
+						    		  	case 5: this.chartTitle = 'Proyectos'; this.titulo='Proyectos'; break;
+						    		  	case 6: this.chartTitle = 'Actividades / Obras'; this.titulo='Actividades / Obras'; break;
+						    		  	case 7: this.chartTitle = 'Renglones'; this.titulo='Renglones'; break;
+				    		 		}
 				    		 		this.chartSeries[0] = 'Ejercicios';
 				    		 		break;
 				    		 	case 1:
 				    		 		this.chartTitle = this.chartSeries[0];
 					    			break;
 					    		default:
-					    			this.chartTitle = (this.level==1) ? 'Entidades' : (this.level==2 ? 'Unidades Ejecutoras' : 'Renglones');
+					    			switch(this.level){
+						    		  	case 1: this.chartTitle = 'Entidades'; this.titulo= 'Entidades'; break;
+						    		  	case 2: this.chartTitle = 'Unidades Ejecutoras'; this.titulo='Unidades Ejecutoras'; break;
+						    		  	case 3: this.chartTitle = 'Programas'; this.titulo='Programas'; break;
+						    		  	case 4: this.chartTitle = 'Subprogramas'; this.titulo = 'Subprogramas'; break;
+						    		  	case 5: this.chartTitle = 'Proyectos'; this.titulo='Proyectos'; break;
+						    		  	case 6: this.chartTitle = 'Actividades / Obras'; this.titulo='Actividades / Obras'; break;
+						    		  	case 7: this.chartTitle = 'Renglones'; this.titulo='Renglones'; break;
+					    			}
 					    			break;
 				    		 }
 				    		 
@@ -458,16 +542,74 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 			this.clickRow = function(row){
 				this.showloading=true;
 				this.loadAttempted=false;
-				if(this.level==1){
-					this.entidad = row.entity.entidad;
-					this.entidad_nombre = row.entity.nombre;
+				row.setSelected(false);
+				switch(this.level){
+					case 1:	this.entidad = row.entity.entidad;
+							this.entidad_nombre = row.entity.nombre; break;
+					case 2:
+						this.unidad_ejecutora = row.entity.entidad;
+						this.unidad_ejecutora_nombre = row.entity.nombre; break;
+					case 3:
+						this.programa = row.entity.entidad;
+						this.programa_nombre = row.entity.nombre; break;
+					case 4:
+						this.subprograma = row.entity.entidad;
+						this.subprograma_nombre = row.entity.nombre; break;
+					case 5:
+						this.proyecto = row.entity.entidad;
+						this.proyecto_nombre = row.entity.nombre; break;
+					case 6:
+						this.actividad = row.entity.entidad;
+						this.obra = row.entity.obra;
+						this.actividad_obra_nombre = row.entity.nombre; break;
 				}
-				else if(this.level==2){
-					this.unidad_ejecutora = row.entity.entidad;
-					this.unidad_ejecutora_nombre = row.entity.nombre;
-				}
-				this.level = this.level<3 ? this.level+1 : this.level;
+				this.level = this.level<7 ? this.level+1 : this.level;
 				this.goLevel(this.level, false);
+			}
+			
+			this.clickGo = function(row, toLevel){
+				this.showloading=true;
+				this.loadAttempted=false;
+				row.setSelected(false);
+				switch(this.level){
+					case 1:	this.entidad = row.entity.entidad;
+							this.entidad_nombre = row.entity.nombre; break;
+					case 2:
+						this.unidad_ejecutora = row.entity.entidad;
+						this.unidad_ejecutora_nombre = row.entity.nombre; break;
+					case 3:
+						this.programa = row.entity.entidad;
+						this.programa_nombre = row.entity.nombre; break;
+					case 4:
+						this.subprograma = row.entity.entidad;
+						this.subprograma_nombre = row.entity.nombre; break;
+					case 5:
+						this.proyecto = row.entity.entidad;
+						this.proyecto_nombre = row.entity.nombre; break;
+					case 6:
+						this.actividad = row.entity.entidad;
+						this.obra = row.entity.obra;
+						this.actividad_obra_nombre = row.entity.nombre; break;
+				}
+				this.level = toLevel;
+				this.goLevel(this.level, false);
+			}
+			
+			this.contextMenuOptions = function(row){
+				var ret = [];
+				if(this.level<2)
+					ret.push(['Unidades Ejecutoras', function(){ $scope.ejecucion.clickGo(row,2);  }]);
+				if(this.level<3)
+					ret.push(['Programas', function(){ $scope.ejecucion.clickGo(row,3); }]);
+				if(this.level<4)
+					ret.push(['Subprogramas', function(){ $scope.ejecucion.clickGo(row,4); }]);
+				if(this.level<5)
+					ret.push(['Proyectos', function(){ $scope.ejecucion.clickGo(row,5); } ]);
+				if(this.level<6)
+					ret.push(['Actividades / Obras', function(){ $scope.ejecucion.clickGo(row,6); } ]);
+				if(this.level<7)
+					ret.push(['Renglones', function(){ $scope.ejecucion.clickGo(row,7); }]);
+				return ret;
 			}
 		}
 	]);

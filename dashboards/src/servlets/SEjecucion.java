@@ -96,29 +96,30 @@ public class SEjecucion extends HttpServlet {
 			String fuentes = map.get("fuentes");
 			String grupos = map.get("grupos");
 			String nmes = map.get("nmes");
-			int unidad_ejecutora = map.get("ue")!=null ? Integer.parseInt(map.get("ue")) : 0;
+			Integer unidad_ejecutora = map.get("ue")!=null ? Integer.parseInt(map.get("ue")) : null;
+			Integer programa = map.get("programa")!=null ? Integer.parseInt(map.get("programa")) : null;
+			Integer subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : null;
+			Integer proyecto = map.get("proyecto")!=null ? Integer.parseInt(map.get("proyecto")) : null;
+			Integer actividad = map.get("actividad")!=null ? Integer.parseInt(map.get("actividad")) : null;
+			Integer obra = map.get("obra")!=null ? Integer.parseInt(map.get("obra")) : null;
 			ArrayList<stentidad> stentidades=new ArrayList<stentidad>();
 			boolean todosgrupos = map.get("todosgrupos")!=null && map.get("todosgrupos").compareTo("1")==0;
 			ArrayList<CEjecucion> entidades=null; 
 			
-			int acumulado = map.get("acumulado")!=null ? Integer.parseInt(map.get("acumulado")) : 0;
-			if (acumulado==0)
 				switch(level){
-					case 1: entidades = CEjecucionDAO.getEntidadesEjecucion(mes,fuentes,"1,2,3,4",grupos, todosgrupos); break;
-					case 2: entidades = CEjecucionDAO.getUnidadesEjecutorasEjecucion(entidad,mes,fuentes,"1,2,3,4",grupos, todosgrupos); break;
-					case 3: entidades = CEjecucionDAO.getRenglonesEjecucion(entidad,unidad_ejecutora, mes, ano,fuentes, "1,2,3,4",grupos); break;
+					case 1: entidades = CEjecucionDAO.getEntidadesEjecucion(mes,fuentes,grupos, todosgrupos); break;
+					case 2: entidades = CEjecucionDAO.getUnidadesEjecutorasEjecucion(entidad,mes,fuentes,grupos, todosgrupos); break;
+					case 3: entidades = CEjecucionDAO.getProgramasEjecucion(entidad, unidad_ejecutora, mes, fuentes, grupos); break;
+					case 4: entidades = CEjecucionDAO.getSubProgramasEjecucion(entidad, unidad_ejecutora,programa, mes, fuentes, grupos); break;
+					case 5: entidades = CEjecucionDAO.getProyectosEjecucion(entidad, unidad_ejecutora,programa, subprograma, mes, fuentes, grupos); break;
+					case 6: entidades = CEjecucionDAO.getActividadesObrasEjecucion(entidad, unidad_ejecutora,programa, subprograma, proyecto, mes, fuentes, grupos); break;
+					case 7: entidades = CEjecucionDAO.getRenglonesEjecucion(entidad, unidad_ejecutora,programa, subprograma, proyecto, actividad, obra, mes, fuentes, grupos); break;
 				}
-			else
-				switch(level){
-				case 1: entidades = CEjecucionDAO.getEntidadesEjecucionAcumulada(mes,fuentes,"1,2,3,4",grupos, todosgrupos); break;
-				case 2: entidades = CEjecucionDAO.getUnidadesEjecutorasEjecucionAcumulada(entidad,mes,fuentes,"1,2,3,4",grupos, todosgrupos); break;
-				case 3: entidades = CEjecucionDAO.getRenglonesEjecucionAcumulada(entidad,unidad_ejecutora, mes,ano, fuentes, "1,2,3,4",grupos); break;
-			}
 			
 			if(entidades!=null && entidades.size()>0){
 				for(CEjecucion centidad : entidades){
 					stentidad sttemp = new stentidad();
-					sttemp.parent = centidad.getParent();
+					sttemp.parent = centidad.getParents()[centidad.getParents().length-1];
 					sttemp.entidad = centidad.getEntidad();
 					sttemp.nombre = centidad.getNombre();
 					sttemp.ano1 = centidad.getAno1();
@@ -139,11 +140,11 @@ public class SEjecucion extends HttpServlet {
 					sttemp.vigente = centidad.getVigente();
 					sttemp.ejecucion_anual = (sttemp.vigente>0) ? (sttemp.ejecutado_acumulado/sttemp.vigente)*100.00 : 0.00;
 					double semaforo = (sttemp.ejecucion_anual*100.00)/(8.33*mes);
-					if(semaforo<50)
+					if(semaforo<=50)
 						sttemp.icono_ejecucion_anual = 4;
-					else if(semaforo<75)
+					else if(semaforo<=75)
 						sttemp.icono_ejecucion_anual = 2;
-					else if(semaforo<100)
+					else if(semaforo<=100)
 						sttemp.icono_ejecucion_anual = 3;
 					else
 						sttemp.icono_ejecucion_anual = 1;

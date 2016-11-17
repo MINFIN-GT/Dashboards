@@ -73,7 +73,7 @@ public class SEjesTabla extends HttpServlet {
 		if(entidades!=null && entidades.size()>0){
 			for(CEjecucion centidad : entidades){
 				stentidad temp= new stentidad();
-				temp.eje = centidad.getParent();
+				temp.eje = centidad.getParents()[centidad.getParents().length-1];
 				temp.linea = centidad.getEntidad();
 				temp.eje_nombre = centidad.getNombre();
 				temp.linea_nombre = centidad.getNombre_2();

@@ -2,7 +2,7 @@ package pojo;
 
 public class CEjecucion {
 
-	private Integer parent;
+	private Integer[] parents;
 	private Integer entidad;
 	private String nombre;
 	private String nombre_2;
@@ -23,11 +23,11 @@ public class CEjecucion {
 	private Double ejecutado_acumulado;
 	private Double vigente;
 	
-	public CEjecucion(Integer parent, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
+	public CEjecucion(Integer[] parents, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
 			Double cierre_estimado, Double aprobado, Double aprobado_acumulado,Double ejecutado, Double ejecutado_acumulado,
 			Double vigente) {
 		super();
-		this.parent = parent;
+		this.parents = parents;
 		this.entidad = entidad;
 		this.nombre = nombre;
 		this.ano1 = ano1;
@@ -42,11 +42,32 @@ public class CEjecucion {
 		this.ejecutado_acumulado = ejecutado_acumulado;
 		this.vigente = vigente;
 	}
-	// para el acumulado
+	
 	public CEjecucion(Integer parent, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
+			Double cierre_estimado, Double aprobado, Double aprobado_acumulado,Double ejecutado, Double ejecutado_acumulado,
+			Double vigente) {
+		super();
+		this.parents = new Integer[] { parent };
+		this.entidad = entidad;
+		this.nombre = nombre;
+		this.ano1 = ano1;
+		this.ano2 = ano2;
+		this.ano3 = ano3;
+		this.ano4 = ano4;
+		this.ano5 = ano5;
+		this.cierre_estimado = cierre_estimado;
+		this.aprobado = aprobado;
+		this.aprobado_acumulado = aprobado_acumulado;
+		this.ejecutado = ejecutado;
+		this.ejecutado_acumulado = ejecutado_acumulado;
+		this.vigente = vigente;
+	}
+	
+	// para el acumulado
+	public CEjecucion(Integer[] parents, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
 			Double cierre_estimado,  Double aprobado_sin_anticipo, Double anticipo, Double aprobado_acumulado, Double solicitado_acumulado, Double ejecutado_acumulado, Double vigente) {
 		super();
-		this.parent = parent;
+		this.parents = parents;
 		this.entidad = entidad;
 		this.nombre = nombre;
 		this.ano1 = ano1;
@@ -70,7 +91,7 @@ public class CEjecucion {
 			Double cierre_estimado, Double aprobado, Double aprobado_acumulado,Double ejecutado, Double ejecutado_acumulado,
 			Double vigente) {
 		super();
-		this.parent = parent;
+		this.parents = new Integer[] { parent };
 		this.entidad = entidad;
 		this.nombre = nombre;
 		this.nombre_2 = nombre_2;
@@ -88,12 +109,12 @@ public class CEjecucion {
 		this.vigente = vigente;
 	}
 	
-	public Integer getParent(){
-		return parent;
+	public Integer[] getParents(){
+		return parents;
 	}
 	
-	public void setParent(Integer parent){
-		this.parent = parent;
+	public void setParent(Integer parents[]){
+		this.parents = parents;
 	}
 
 	public Integer getEntidad() {
