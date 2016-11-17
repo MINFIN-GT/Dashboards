@@ -21,9 +21,6 @@
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionpresupuestaria">Ejecución Presupuestaria</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionfisica">Ejecución Física</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionrenglon">Ejecución Presupuestaria por Renglón</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionprograma">Ejecución programática (Entidad)</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionprogramaUE">Ejecución programática (Unidad Ejecutora) </a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copep">Cuotas COPEP</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copeprenglon">Cuotas COPEP por Renglón</a></li>
 	                     	<!--  <li role="menuitem"><a href="#!/dashboards/proyecciongasto">Test</a></li> -->
@@ -56,7 +53,7 @@
 	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Mapas <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                        <li role="menuitem"><a href="#!/maps/geograficogasto">Mapa de Calor del Gasto</a></li>
+	                        <li role="menuitem"><a href="#!/maps/geograficogasto">Mapa del Gasto</a></li>
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
 	                        <li class="divider"></li>

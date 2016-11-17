@@ -17,29 +17,17 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         			}
         		}
         	})*/
-		   .when('/dashboards/newejecucionpresupuestaria/:reset_grid?',{
-		   	template: '<div load-on-demand="\'newEjecucionPresupuestariaModule\'" class="all_page"></div>'
-		   })
-            .when('/dashboards/ejecucionpresupuestaria/:reset_grid?',{
+		    .when('/dashboards/ejecucionpresupuestaria/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionpresupuestariaController\'" class="all_page"></div>'
             })
             .when('/dashboards/ejecucionfisica/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionfisicaController\'" class="all_page"></div>'
-            })
-            .when('/dashboards/ejecucionrenglon/:reset_grid?',{
-            	template: '<div load-on-demand="\'ejecucionrenglonController\'" class="all_page"></div>'
             })
             .when('/dashboards/copep/:reset_grid?',{
             	template: '<div load-on-demand="\'copepController\'" class="all_page"></div>'
             })
             .when('/dashboards/copeprenglon/:reset_grid?',{
             	template: '<div load-on-demand="\'copeprenglonController\'" class="all_page"></div>'
-            })
-            .when('/dashboards/ejecucionprograma/:reset_grid?',{
-            	template: '<div load-on-demand="\'ejecucionprogramaController\'" class="all_page"></div>'
-            })
-            .when('/dashboards/ejecucionprogramaUE/:reset_grid?',{
-            	template: '<div load-on-demand="\'ejecucionprogramaUEController\'" class="all_page"></div>'
             })
             .when('/paptn/ejecucionfinanciera',{
             	template: '<div load-on-demand="\'paptn_ejecucionfinancieraController\'" class="all_page"></div>'
@@ -111,11 +99,6 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   template: '/app/components/ejecucionfisica/ejecucionfisica.jsp'
 	       },
 	       {
-	    	   name: 'ejecucionrenglonController',
-	    	   script: '/app/components/ejecucionrenglon/ejecucionrenglon.controller.js',
-	    	   template: '/app/components/ejecucionrenglon/ejecucionrenglon.jsp'
-	       },
-	       {
 	    	   name: 'copepController',
 	    	   script: '/app/components/copep/copep.controller.js',
 	    	   template: '/app/components/copep/copep.jsp'
@@ -124,16 +107,6 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'copeprenglonController',
 	    	   script: '/app/components/copeprenglon/copeprenglon.controller.js',
 	    	   template: '/app/components/copeprenglon/copeprenglon.jsp'
-	       },
-	       {
-	    	   name: 'ejecucionprogramaController',
-	    	   script: '/app/components/ejecucionprograma/ejecucionprograma.controller.js',
-	    	   template: '/app/components/ejecucionprograma/ejecucionprograma.jsp'
-	       },
-	       {
-	    	   name: 'ejecucionprogramaUEController',
-	    	   script: '/app/components/ejecucionprogramaUE/ejecucionprogramaUE.controller.js',
-	    	   template: '/app/components/ejecucionprogramaUE/ejecucionprogramaUE.jsp'
 	       },
 	       {
 	           name: 'paptn_ejecucionfinancieraController',     
@@ -199,11 +172,6 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
 	           script:   '/app/components/creditopublico/prestamos/prestamos.controller.js',
 	           template: '/app/components/creditopublico/prestamos/prestamos.jsp'
-	       },
-	       {
-	    	   name: 'newEjecucionPresupuestariaModule',
-	    	   script: '/app/components/ejecucionpresupuestaria/newejecucionpresupuestaria.controller.js',
-	    	   template: '/app/components/ejecucionpresupuestaria/newejecucionpresupuestaria.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

@@ -21,9 +21,9 @@ public class CPaptnDAO {
 				pstm1.setInt(1, mes);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
-					CEjecucion entidad = new CEjecucion(null, results.getInt("entidad"), results.getString("nombre"), results.getDouble("gp_ejecucion"), 
+					CEjecucion entidad = new CEjecucion((Integer)null, results.getInt("entidad"), results.getString("nombre"), results.getDouble("gp_ejecucion"), 
 							results.getDouble("gp_vigente"), results.getDouble("gp_porcentaje"), results.getDouble("paptn_ejecucion"), results.getDouble("paptn_vigente"), 
-							results.getDouble("paptn_porcentaje"), null, null, null, null,null);
+							results.getDouble("paptn_porcentaje"), null, null, null, null,null); 
 					entidades.add(entidad);
 				}
 				results.close();

@@ -56,8 +56,8 @@
 			  </div>
 		</div>
 		<br/>
-		<div style="text-align: center;"><p>Ejecución:  <span class="glyphicon glyphicon-certificate dot_4 "></span> Baja  |  <span class="glyphicon glyphicon-certificate dot_2 "></span> Media  |  <span class="glyphicon glyphicon-certificate dot_3"></span> Optima  |  <span class="glyphicon glyphicon-certificate dot_1"></span> Sobre Ejecución</p></div>
-		<div class="text-center">Ejecución Esperada: {{ (100/12)*ejecucion.month | currency:"":2 }} %</div>
+		<div style="text-align: center;"><p>Ejecución:  <span uib-tooltip="Menor al 50% del valor esperado" class="glyphicon glyphicon-certificate dot_4 "></span> Baja  |  <span uib-tooltip="Entre el 50% y el 75% del valor esperado" class="glyphicon glyphicon-certificate dot_2 "></span> Media  |  <span uib-tooltip="Entre el 75% y el 100% del valor esperado" class="glyphicon glyphicon-certificate dot_3"></span> Optima  |  <span uib-tooltip="Más del 100% del valor esperado" class="glyphicon glyphicon-certificate dot_1"></span> Sobre Ejecución</p></div>
+			<div class="text-center">Ejecución Esperada: {{ (100/12)*ejecucion.month | currency:"":2 }} %</div>
 		<div class="row">
 			<div class="col-sm-6">Última actualización: {{ ejecucion.lastupdate }}</div>
 		</div>

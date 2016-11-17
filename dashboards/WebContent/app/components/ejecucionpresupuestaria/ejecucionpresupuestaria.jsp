@@ -62,43 +62,56 @@
 	    <span ng-show="ejecucion.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
     </div>
 </div>
+<div class="row" style="margin-bottom: 10px;">
+	<div class="col-sm-12" style="text-align: center; font-size: 20px; font-weight: bold;">{{ ejecucion.titulo }}</div>
+</div>
 <div class="row">
 	<div ui-i18n="es" class="col-sm-12">
-		<div style="height: 35px;">
-			<div style="float: left;"><a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(1, false)" ng-disabled="ejecucion.showloading">ADMINISTRACIÓN CENTRAL</a> <span ng-hide="ejecucion.level<2">/ <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(2, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.entidad_nombre }}</a></span><span ng-hide="ejecucion.level<3">/&nbsp;{{ ejecucion.unidad_ejecutora_nombre }}</span></div>
-			<div style="text-align: right;"><div class="btn-group" role="group" aria-label="">
-												<a class="btn btn-default" href="#!/dashboards/ejecucionpresupuestaria/gt1" role="button" uib-tooltip="Reiniciar la vista de la tabla" tooltip-placement="left"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></a>
-												<a class="btn btn-default" href ng-click="ejecucion.exportXLS()" role="button" uib-tooltip="Exportar a formato Excel" tooltip-placement="left"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></a>
-											</div>
+		<div class="row" style="margin-bottom: 10px;">
+			<div class="col-sm-11" style="float: left;">
+				<a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(1, false)" ng-disabled="ejecucion.showloading">ADMINISTRACIÓN CENTRAL</a>
+				<span ng-hide="ejecucion.entidad==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(2, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.entidad_nombre }}</a></span>
+				<span ng-hide="ejecucion.unidad_ejecutora==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(3, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.unidad_ejecutora_nombre }}</a></span>
+				<span ng-hide="ejecucion.programa==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(4, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.programa_nombre }}</a></span>
+				<span ng-hide="ejecucion.subprograma==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(5, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.subprograma_nombre }}</a></span>
+				<span ng-hide="ejecucion.proyecto==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(6, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.proyecto_nombre }}</a></span>
+				<span ng-hide="ejecucion.actividad==null && ejecucion.obra==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(7, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.actividad_obra_nombre }}</a></span>
+			</div>
+			<div class="col-sm-1"><div class="btn-group" role="group" aria-label="">
+													<a class="btn btn-default" href="#!/dashboards/ejecucionpresupuestaria/gt1" role="button" uib-tooltip="Reiniciar la vista de la tabla" tooltip-placement="left"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></a>
+													<a class="btn btn-default" href ng-click="ejecucion.exportXLS()" role="button" uib-tooltip="Exportar a formato Excel" tooltip-placement="left"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></a>
+												</div>
 			</div>
 		</div>
-		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state ui-grid-move-columns ui-grid-resize-columns ui-grid-selection ui-grid-pinning ui-grid-tree-view class="grid" style="height: 700px;">
-			  <div class="grid_loading" ng-hide="!ejecucion.showloading">
-			  	<div class="msg">
-			      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
-					  <br /><br />
-					  <b>Cargando, por favor espere...</b>
-				  </span>
-				</div>
-			  </div>
-		</div>
-		<br/>
-		<div style="text-align: center;"><p>Ejecución:  <span class="glyphicon glyphicon-certificate dot_4 "></span> Baja  |  <span class="glyphicon glyphicon-certificate dot_2 "></span> Media  |  <span class="glyphicon glyphicon-certificate dot_3"></span> Optima  |  <span class="glyphicon glyphicon-certificate dot_1"></span> Sobre Ejecución</p></div>
-		<div class="text-center">Ejecución Esperada: {{ (100/12)*ejecucion.month | currency:"":2 }} %</div>
 		<div class="row">
-			<div class="col-sm-6">Última actualización: {{ ejecucion.lastupdate }}</div>
-			<div class="col-sm-6" ng-hide="ejecucion.level!=3">
-				<div style="text-align: right;" >* Renglones con vigente o gasto mayor a 0</div>
-				<div style="text-align: right;">** Cuota Aprobada no esta a nivel de renglón</div>	
+			<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state ui-grid-move-columns ui-grid-resize-columns ui-grid-selection ui-grid-pinning ui-grid-tree-view class="grid" style="height: 710px;">
+				  <div class="grid_loading" ng-hide="!ejecucion.showloading">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				  </div>
 			</div>
-		</div>
+			<br/>
+			<div style="text-align: center;"><p>Ejecución:  <span uib-tooltip="Menor al 50% del valor esperado" class="glyphicon glyphicon-certificate dot_4 "></span> Baja  |  <span uib-tooltip="Entre el 50% y el 75% del valor esperado" class="glyphicon glyphicon-certificate dot_2 "></span> Media  |  <span uib-tooltip="Entre el 75% y el 100% del valor esperado" class="glyphicon glyphicon-certificate dot_3"></span> Optima  |  <span uib-tooltip="Más del 100% del valor esperado" class="glyphicon glyphicon-certificate dot_1"></span> Sobre Ejecución</p></div>
+			<div class="text-center">Ejecución Esperada: {{ (100/12)*ejecucion.month | currency:"":2 }} %</div>
+			<br/>
+			<br/>
+			<div class="row">
+				<div class="col-sm-12">
+					<div style="text-align: right;" ng-hide="ejecucion.level!=7">* Renglones con vigente o gasto mayor a 0</div>
+					<div style="text-align: right;" ng-hide="ejecucion.level<3">** Cuota Aprobada solo existe a nivel de Unidades Ejecutoras</div>	
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12" style="text-align: center">Última actualización: {{ ejecucion.lastupdate }}</div>
+			</div>
 	</div>
 </div>
-<br/>
-<br/>
-<br/>
 <div class="row" style="width: 90%; margin: auto">
-		<div class="col-sm-12">
+		<div class="col-sm-12" style="margin-top: 20px;">
 			<h4>{{ ejecucion.chartTitle }}</h4>
 			<h5>Gasto en millones de quetzales</h5>
 			<div class="row">
@@ -119,3 +132,4 @@
 <br/>
 <br/>
 <br/>
+</div>
