@@ -1,13 +1,13 @@
-var modGastoGeografico = angular.module('mapsGastoGeograficoController', [
-		'dashboards', 'ngAnimate', 'ngSanitize', 'ui.bootstrap' ]);
+var modGastoGeneral = angular.module('mapsGastoGeneralModule', [ 'dashboards',
+		'ngAnimate', 'ngSanitize', 'ui.bootstrap' ]);
 
 // Control principal
-modGastoGeografico.controller('mapsGastoGeograficoController',
-		fnGastosGeograficoCtrl);
+modGastoGeneral
+		.controller('mapsGastoGeneralController', fnGastosGeograficoCtrl);
 
 // Control modal Info
-modGastoGeografico
-		.controller('modalInfoGeograficoController', fnInfoGeografico);
+modGastoGeneral.controller('modalInfoGastoGeneralController',
+		fnInfoGastoGeneral);
 
 function randomFrom(min, max) {
 	return Math.random() * (max - min) + min;
@@ -44,7 +44,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	me.nmonth = "Enero";
 
 	me.map = null;
-	
+
 	me.fuentes = "Fuentes de Financiamiento";
 	me.fuentes_descripcion = "Todas";
 	me.fuentes_array = [];
@@ -219,7 +219,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 			fuentes : me.getFuentes()
 		};
 
-		$http.post('/SGastoGeografico', data).then(obtenerGasto, errorCallback);
+		$http.post('/SGastoGeneral', data).then(obtenerGasto, errorCallback);
 
 		me.showloading = false;
 		me.loadAttempted = true;
@@ -261,27 +261,49 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	}
 
 	function obtenerGasto(response) {
-		me.map = null;
 
-		if (response.data.success) {
+		uiGmapGoogleMapApi
+				.then(function() {
+					me.map = {
+						center : {
+							latitude : 15.605009229644448,
+							longitude : -89.8793818359375
+						},
+						zoom : 8,
+						options : {
+							streetViewControl : false,
+							scrollwheel : false
+						},
+						draw : null,
+						polygons : []
+					};
 
-			uiGmapGoogleMapApi
-					.then(function() {
-						me.map = {
-							center : {
-								latitude : 15.605009229644448,
-								longitude : -89.8793818359375
-							},
-							zoom : 8,
-							options : {
-								streetViewControl : false,
-								scrollwheel : false
-							},
-							draw : null,
-							polygons : []
-						};
+					if (response.data.success) {
 
 						var general = response.data.geograficos[0];
+
+						// Se agrega Bélice sin ninguna funcion
+						if (response.data.geograficos.length > 0) {
+							var general = response.data.geograficos[0];
+
+							// Se agrega Bélice sin ninguna funcion
+							me.map.polygons.push({
+								id : municipios["2000"][0].propiedad.CODIGO,
+								path : municipios["2000"][0].coordenadas,
+								stroke : {
+									color : '#6060FB',
+									weight : 1
+								},
+								editable : false,
+								draggable : false,
+								geodesic : false,
+								visible : true,
+								fill : {
+									color : '#BDBDBD',
+									opacity : 0.8
+								}
+							});
+						}
 
 						for (var j = 1; j < response.data.geograficos.length; j++) {
 
@@ -297,7 +319,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 								for (var i = 0; i < muni.length; i++) {
 									me.map.polygons
 											.push({
-												id : muni[i].propiedad,
+												id : muni[i].propiedad.CODIGO,
 												path : muni[i].coordenadas,
 												stroke : {
 													color : '#6060FB',
@@ -320,8 +342,8 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 																	animation : 'true',
 																	ariaLabelledBy : 'modal-title',
 																	ariaDescribedBy : 'modal-body',
-																	templateUrl : 'infoGastoGeografico.jsp',
-																	controller : 'modalInfoGeograficoController',
+																	templateUrl : 'infoGastoGeneral.jsp',
+																	controller : 'modalInfoGastoGeneralController',
 																	controllerAs : 'infoCtrl',
 																	backdrop : 'static',
 																	size : 'sm',
@@ -331,17 +353,18 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 																});
 													},
 													data : response.data.geograficos[j]
-												},
+												}
 											});
 								}
+
 							}
 						}
-					});
-		}
+					}
+				});
 	}
 }
 
-function fnInfoGeografico($uibModalInstance, $log, data) {
+function fnInfoGastoGeneral($uibModalInstance, $log, data) {
 	var me = this;
 	me.data = data;
 

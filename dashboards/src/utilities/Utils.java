@@ -55,6 +55,7 @@ public class Utils {
 	}
 
 	public static void writeJSon(HttpServletResponse response, String jsonText) throws IOException {
+		response.setContentType("application/json");
 		response.setHeader("Content-Encoding", "gzip");
 		response.setCharacterEncoding("UTF-8");
 

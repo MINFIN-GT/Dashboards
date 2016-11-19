@@ -32,8 +32,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/paptn/ejecucionfinanciera',{
             	template: '<div load-on-demand="\'paptn_ejecucionfinancieraController\'" class="all_page"></div>'
             })
-            .when('/maps/geograficogasto',{
-            	template: '<div load-on-demand="\'mapsGastoGeograficoController\'" class="all_page"></div>'
+            .when('/maps/gastoGeneral',{
+            	template: '<div load-on-demand="\'mapsGastoGeneralModule\'" class="all_page"></div>'
+            })
+            .when('/maps/gastoCodedesMunis',{
+            	template: '<div load-on-demand="\'mapsGastoCodedesMunisModule\'" class="all_page"></div>'
             })
             .when('/dashboards/proyecciongasto',{
             	template: '<div load-on-demand="\'proyecciongastoController\'" class="all_page"></div>'
@@ -114,9 +117,14 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	           template: '/app/components/paptn/ejecucionfinanciera/ejecucionfinanciera.jsp'
 	       },
 	       {
-	    	   name: 'mapsGastoGeograficoController',
-	    	   script: '/app/components/maps/gastogeografico_h/gastogeografico_h.js',
-	    	   template: '/app/components/maps/gastogeografico_h/gastogeografico_h.jsp'
+	    	   name: 'mapsGastoGeneralModule',
+	    	   script: '/app/components/maps/gastoGeneral/gastoGeneral.controller.js',
+	    	   template: '/app/components/maps/gastoGeneral/gastoGeneral.jsp'
+	       },
+	       {
+	    	   name: 'mapsGastoCodedesMunisModule',
+	    	   script: '/app/components/maps/gastoCodedesMunis/gastoCodedesMunis.controller.js',
+	    	   template: '/app/components/maps/gastoCodedesMunis/gastoCodedesMunis.jsp'
 	       },
 	       {
 	    	   name: 'proyecciongastoController',

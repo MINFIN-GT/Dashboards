@@ -51,4 +51,39 @@ public class CGastoGeograficoDAO {
 		}
 		return geograficos.size() > 0 ? geograficos : null;
 	}
+
+	public static ArrayList<CGastoGeografico> getGastosCodedesMunis(int mes, int ejercicio, String renglones) {
+		final ArrayList<CGastoGeografico> geograficos = new ArrayList<CGastoGeografico>();
+		if (CDatabase.connect()) {
+			try {
+
+				String query = "select  muni.nombre, gasto.* from( select geografico,  "
+						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
+						+ "from mv_ejecucion_presupuestaria_geografico "
+						+ "where renglon in (" + renglones + ") "
+						+ " group by geografico ) gasto left join cg_geograficos muni "
+						+ "on ( muni.geografico = gasto.geografico and muni.ejercicio = ?)";
+
+				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
+
+				pstm.setInt(1, mes);
+				pstm.setInt(2, ejercicio);
+
+				ResultSet results = pstm.executeQuery();
+				while (results.next()) {
+					CGastoGeografico gg = new CGastoGeografico(mes, ejercicio, results.getInt("geografico"),
+							results.getString("nombre"), results.getDouble("gasto"));
+
+					geograficos.add(gg);
+				}
+				results.close();
+				pstm.close();
+			} catch (Exception e) {
+				CLogger.write("1", CGastoGeograficoDAO.class, e);
+			} finally {
+				CDatabase.close();
+			}
+		}
+		return geograficos.size() > 0 ? geograficos : null;
+	}
 }

@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div ng-controller="mapsGastoGeograficoController as mapsGG" class="maincontainer" id="gastogeograficomap" class="all_page">
+<div ng-controller="mapsGastoGeneralController as mapsGG" class="maincontainer" id="gastogeograficomap" class="all_page">
 
-	<script type="text/ng-template" id="infoGastoGeografico.jsp">
-		<%@ include file="/app/components/maps/gastogeografico_h/infoGastoGeografico.jsp"%>
+	<script type="text/ng-template" id="infoGastoGeneral.jsp">
+		<%@ include file="/app/components/maps/gastoGeneral/infoGastoGeneral.jsp"%>
     </script>
     
-    <h4>Gasto Geográfico</h4>
+    <h4>Gasto por Geográfico</h4>
 
 	<div class="row">
 		<div class="col-sm-12">
