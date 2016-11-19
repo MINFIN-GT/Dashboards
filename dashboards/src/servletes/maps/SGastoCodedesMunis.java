@@ -1,4 +1,4 @@
-package servlets;
+package servletes.maps;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import utilities.Utils;
 /**
  * Servlet implementation class SGastoGeografico
  */
-@WebServlet("/SGastoGeografico")
-public class SGastoGeografico extends HttpServlet {
+@WebServlet("/SGastoCodedesMunis")
+public class SGastoCodedesMunis extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	class stgeografico {
@@ -30,7 +30,7 @@ public class SGastoGeografico extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public SGastoGeografico() {
+	public SGastoCodedesMunis() {
 		super();
 	}
 
@@ -58,8 +58,8 @@ public class SGastoGeografico extends HttpServlet {
 			int mes = Utils.String2Int(map.get("mes"), 1);
 			int ejercicio = Utils.String2Int(map.get("ejercicio"), 1);
 
-			ArrayList<CGastoGeografico> geograficos = CGastoGeograficoDAO.getGastoGeograficoPuntos(mes, ejercicio,
-					map.get("fuentes"), map.get("grupos"));
+			ArrayList<CGastoGeografico> geograficos = CGastoGeograficoDAO.getGastosCodedesMunis(mes, ejercicio,
+					map.get("renglon"));
 
 			if (geograficos != null && geograficos.size() > 0) {
 
