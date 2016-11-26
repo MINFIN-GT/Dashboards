@@ -1,11 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>    
+    .activo{
+    	border: none; 
+    	width: 200px; 
+    	height: 40px; 
+    	color: #000000; 
+    	font-size: 24px; 
+    	display: block; 
+    	font-weight: 200; 
+    	padding-top: 3px; 
+    	background-color: #BDBDBD;
+    }
+</style>
+
 <div ng-controller="mapsGastoGeneralController as mapsGG" class="maincontainer" id="gastogeograficomap" class="all_page">
 
 	<script type="text/ng-template" id="infoGastoGeneral.jsp">
 		<%@ include file="/app/components/maps/gastoGeneral/infoGastoGeneral.jsp"%>
     </script>
     
-    <h4>Gasto por Geográfico</h4>
+    <h4>Presupuesto Ejecutado por Geográfico</h4>
 
 	<div class="row">
 		<div class="col-sm-12">
@@ -67,6 +81,17 @@
 		    <span ng-show="mapsGG.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
 	    </div>
 	</div>
+	
+	<div class="row">
+		<div class="col-sm-offset-4 col-sm-4 text-center">
+			<div class="btn-group">
+				<label class="btn btn-success activo" ng-model="mapsGG.mostrarPerCapita" uib-btn-radio="false" ng-click="mapsGG.cambiarTipo()">General</label>
+			    <label class="btn btn-success activo" ng-model="mapsGG.mostrarPerCapita" uib-btn-radio="true" ng-click="mapsGG.cambiarTipo()">Per Cápita</label>
+			</div>
+		</div>
+	</div>
+	
+	<br />
 	
 	<div style="position: relative; height: 700px;" id="title">
 	

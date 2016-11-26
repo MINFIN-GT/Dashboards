@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.CGastoGeograficoDAO;
-import pojo.CGastoGeografico;
+import dao.maps.CGastoGeograficoDAO;
+import pojo.maps.CGastoGeografico;
 import utilities.Utils;
 
 /**

@@ -45,6 +45,8 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 
 	me.map = null;
 
+	me.mostrarPerCapita = false;
+
 	me.fuentes = "Fuentes de Financiamiento";
 	me.fuentes_descripcion = "Todas";
 	me.fuentes_array = [];
@@ -61,6 +63,8 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	me.lastupdate = "";
 
 	me.tributarias = [ 11, 12, 13, 14, 15, 16, 21, 22, 29 ];
+
+	me.geograficos = [];
 
 	me.mesClick = function(mes) {
 		me.mes = mes;
@@ -226,6 +230,10 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 
 	};
 
+	me.cambiarTipo = function() {
+		dibujarMapa();
+	}
+
 	function loadFuentes(response) {
 
 		if (response.data.success) {
@@ -262,8 +270,18 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 
 	function obtenerGasto(response) {
 
+		if (response.data.success) {
+			me.geograficos = response.data.geograficos;
+
+			dibujarMapa();
+		}
+	}
+
+	function dibujarMapa() {
+
 		uiGmapGoogleMapApi
 				.then(function() {
+
 					me.map = {
 						center : {
 							latitude : 15.605009229644448,
@@ -278,95 +296,153 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 						polygons : []
 					};
 
-					if (response.data.success) {
+					var general;
 
-						var general = response.data.geograficos[0];
+					// Se agrega Bélice sin ninguna funcion
+					if (me.geograficos.length > 0) {
 
 						// Se agrega Bélice sin ninguna funcion
-						if (response.data.geograficos.length > 0) {
-							var general = response.data.geograficos[0];
-
-							// Se agrega Bélice sin ninguna funcion
-							me.map.polygons.push({
-								id : municipios["2000"][0].propiedad.CODIGO,
-								path : municipios["2000"][0].coordenadas,
-								stroke : {
-									color : '#6060FB',
-									weight : 1
-								},
-								editable : false,
-								draggable : false,
-								geodesic : false,
-								visible : true,
-								fill : {
-									color : '#BDBDBD',
-									opacity : 0.8
-								}
-							});
-						}
-
-						for (var j = 1; j < response.data.geograficos.length; j++) {
-
-							// municipios es una variable que se encuentra en
-							// assets/data/municipios.js
-							var muni = municipios[response.data.geograficos[j].geografico];
-
-							if (muni != null) {
-								var porcentaje = response.data.geograficos[j].gasto
-										/ general.gasto * 100;
-								// $log.info(response.data.geograficos[j].nombre,porcentaje);
-
-								for (var i = 0; i < muni.length; i++) {
-									me.map.polygons
-											.push({
-												id : muni[i].propiedad.CODIGO,
-												path : muni[i].coordenadas,
-												stroke : {
-													color : '#6060FB',
-													weight : 1
-												},
-												editable : true,
-												draggable : false,
-												geodesic : false,
-												visible : true,
-												fill : {
-													color : (muni.CODIGO != 2000 ? getColor(
-															porcentaje, $log)
-															: '#a7d0e1'),
-													opacity : 0.8
-												},
-												events : {
-													click : function() {
-														$uibModal
-																.open({
-																	animation : 'true',
-																	ariaLabelledBy : 'modal-title',
-																	ariaDescribedBy : 'modal-body',
-																	templateUrl : 'infoGastoGeneral.jsp',
-																	controller : 'modalInfoGastoGeneralController',
-																	controllerAs : 'infoCtrl',
-																	backdrop : 'static',
-																	size : 'sm',
-																	resolve : {
-																		data : this.events.data
-																	}
-																});
-													},
-													data : response.data.geograficos[j]
-												}
-											});
-								}
-
+						me.map.polygons.push({
+							id : municipios["2000"][0].propiedad.CODIGO,
+							path : municipios["2000"][0].coordenadas,
+							stroke : {
+								color : '#6060FB',
+								weight : 1
+							},
+							editable : false,
+							draggable : false,
+							geodesic : false,
+							visible : true,
+							fill : {
+								color : '#BDBDBD',
+								opacity : 0.8
 							}
+						});
+
+						general = me.geograficos[0];
+
+					}
+
+					for (var j = 1; j < me.geograficos.length; j++) {
+
+						// municipios es una variable que se encuentra en
+						// assets/data/municipios.js
+						var muni = municipios[me.geograficos[j].geografico];
+
+						if (muni != null) {
+
+							var porcentaje = 0;
+							if (!me.mostrarPerCapita)
+								porcentaje = me.geograficos[j].gasto
+										/ general.gasto * 100;
+							else
+								porcentaje = me.geograficos[j].gastoPerCapita
+										/ general.gastoPerCapita * 100;
+							// $log.info(response.data.geograficos[j].nombre,porcentaje);
+
+							for (var i = 0; i < muni.length; i++) {
+								me.map.polygons
+										.push({
+											id : muni[i].propiedad.CODIGO,
+											path : muni[i].coordenadas,
+											stroke : {
+												color : '#6060FB',
+												weight : 1
+											},
+											editable : true,
+											draggable : false,
+											geodesic : false,
+											visible : true,
+											fill : {
+												color : (muni.CODIGO != 2000 ? getColor(
+														porcentaje, $log)
+														: '#a7d0e1'),
+												opacity : 0.8
+											},
+											events : {
+												click : function() {
+													var data = {
+														action : "gastomunicipio",
+														mes : me.mes,
+														ejercicio : 2016,
+														geografico : this.events.data.geografico,
+														nivel : 1,
+														gasto : JSON
+																.stringify(this.events.data)
+													};
+
+													$http
+															.post(
+																	'/SGastoGeneral',
+																	data)
+															.success(
+																	obtenerGastoMunicipio);
+
+												},
+												data : me.geograficos[j]
+											}
+										});
+							}
+
 						}
 					}
 				});
 	}
+
+	function obtenerGastoMunicipio(data, status, headers, config) {
+		$uibModal.open({
+			animation : 'true',
+			ariaLabelledBy : 'modal-title',
+			ariaDescribedBy : 'modal-body',
+			templateUrl : 'infoGastoGeneral.jsp',
+			controller : 'modalInfoGastoGeneralController',
+			controllerAs : 'infoCtrl',
+			backdrop : 'static',
+			resolve : {
+				data : JSON.parse(config.data.gasto),
+				gasto : data
+			}
+		});
+
+	}
+
 }
 
-function fnInfoGastoGeneral($uibModalInstance, $log, data) {
+function fnInfoGastoGeneral($uibModalInstance, $http, $log, data, gasto) {
 	var me = this;
 	me.data = data;
+	me.gasto = gasto;
+
+	me.entidad = 11130009;
+	me.unidad_ejecutora = 208;
+	me.programa = 14;
+	me.subprograma = 0;
+	me.proyecto = 0;
+
+	$log.info(me.data.geografico);
+
+	me.getGasto = function(nivel) {
+
+		var newData = {
+			action : "gastomunicipio",
+			mes : me.mes,
+			ejercicio : 2016,
+			geografico : me.data.geografico,
+			nivel : nivel,
+			entidad : me.entidad,
+			unidad_ejecutora : me.unidad_ejecutora,
+			programa : me.programa,
+			subprograma : me.subprograma,
+			proyecto : me.proyecto
+		};
+
+		$http.post('/SGastoGeneral', newData).success(obtenerGastoMunicipio);
+
+	};
+
+	function obtenerGastoMunicipio(data, status, headers, config) {
+		$log.info(data);
+	}
 
 	me.ok = function() {
 		$uibModalInstance.close('ok');
