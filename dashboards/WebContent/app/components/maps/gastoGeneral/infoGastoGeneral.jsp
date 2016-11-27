@@ -8,7 +8,7 @@
 	<div style="text-align: center; width: 100%;">
 		<h4>{{infoCtrl.data.nombre}}</h4>
 	</div>
-	Gasto:<br />
+	Ejecución:<br />
 	<div style="text-align: center; width: 100%;">
 		<b>{{infoCtrl.data.gasto | currency: 'Q. '}}</b>
 	</div>
