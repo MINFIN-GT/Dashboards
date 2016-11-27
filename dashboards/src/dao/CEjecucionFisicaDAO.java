@@ -21,7 +21,8 @@ public class CEjecucionFisicaDAO {
 				if(!conn.isClosed()){
 					DateTime now = new DateTime();    
 					
-					PreparedStatement pstm1 =  conn.prepareStatement("select t1.ejercicio, t1.entidad, t1.entidad_nombre, (sum(ejecucion_porcentaje*vigente)/sum(vigente))*100 ejecucion_fisica_ponderada, t2.ejecucion_financiera_porcentaje*100 ejecucion_financiera_porcentaje " + 
+					PreparedStatement pstm1 =  conn.prepareStatement("select t1.ejercicio, t2.entidad, es.sigla, e.entidad_nombre, (sum(ejecucion_porcentaje*vigente)/sum(vigente))*100 ejecucion_fisica_ponderada, t2.ejecucion_financiera_porcentaje*100 ejecucion_financiera_porcentaje, " + 
+							" sum(t2.ejecucion_financiera) ejecucion_financiera, sum(t2.vigente_financiero) vigente_financiero "+
 							"from " + 
 							"( " + 
 							"select ef.ejercicio, ef.entidad, entidad_nombre, " + 
@@ -55,19 +56,24 @@ public class CEjecucionFisicaDAO {
 							"ef.subprograma, ef.subprograma_nombre, ef.proyecto, ef.proyecto_nombre, ef.actividad, ef.obra, ef.actividad_obra_nombre, ep.vigente " + 
 							") t1, " + 
 							"( " + 
-							" select ejercicio,entidad, sum(ano_actual) ejecucion_financiera, sum( case when mes = ? then vigente else 0 end) vigente_financiero, sum(ano_actual)/sum( case when mes = 11 then vigente else 0 end) ejecucion_financiera_porcentaje " + 
+							" select ejercicio,entidad, sum(ano_actual) ejecucion_financiera, sum( case when mes = ? then vigente else 0 end) vigente_financiero, sum(ano_actual)/sum( case when mes = ? then vigente else 0 end) ejecucion_financiera_porcentaje " + 
 							" from mv_ejecucion_presupuestaria  " + 
 							" group by ejercicio, entidad " + 
-							") t2 " + 
+							") t2, mv_estructura e, entidad_sigla es " + 
 							"where t1.entidad = t2.entidad " + 
-							"and t1.ejercicio = t2.ejercicio " + 
-							"group by t1.ejercicio, t1.entidad, t1.entidad_nombre");
+							"and t1.ejercicio = t2.ejercicio " +
+							"and e.ejercicio = t1.ejercicio " +
+							"and e.entidad = t1.entidad "+
+							"and e.entidad = es.entidad "+
+							"group by t1.ejercicio, t1.entidad, e.entidad_nombre, es.sigla ");
 					pstm1.setInt(1, now.getMonthOfYear());
+					pstm1.setInt(2, now.getMonthOfYear());
 					ResultSet results=pstm1.executeQuery();
 					while (results.next()){
 						CEjecucionFisica entidad = new CEjecucionFisica(null, results.getInt("entidad"), 
-								results.getString("entidad_nombre"), results.getDouble("ejecucion_financiera_porcentaje"), 
-								results.getDouble("ejecucion_fisica_ponderada"));
+								results.getString("entidad_nombre"), results.getString("sigla"), results.getDouble("ejecucion_financiera_porcentaje"), 
+								results.getDouble("ejecucion_fisica_ponderada"), results.getDouble("ejecucion_financiera"), 
+								results.getDouble("vigente_financiero"));
 						entidades.add(entidad);
 					}
 					results.close();

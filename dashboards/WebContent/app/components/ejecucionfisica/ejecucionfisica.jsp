@@ -20,7 +20,7 @@
 			<br/>
 			<div class="chart-legend">
 					<ul class="line-legend">
-						<li ng-repeat="serie in ejecucion.chartSeries track by $index">
+						<li ng-repeat="serie in ejecucion.chartSeries track by $index" style="font-size: 16px;">
 							<div class="img-rounded" style="float: left; margin-right: 5px; width: 15px; height: 15px; background-color : {{ ejecucion.chart_colours[$index] }};"></div>
 							{{ ejecucion.chartSeries[$index] }} 
 						</li>
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<br/>
-		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state class="grid" style="height: 660px;">
+		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state class="grid" style="height: 700px;">
 			  <div class="grid_loading" ng-hide="!ejecucion.showloading">
 			  	<div class="msg">
 			      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
@@ -58,8 +58,10 @@
 		<br/>
 		<div style="text-align: center;"><p>Ejecución:  <span uib-tooltip="Menor al 50% del valor esperado" class="glyphicon glyphicon-certificate dot_4 "></span> Baja  |  <span uib-tooltip="Entre el 50% y el 75% del valor esperado" class="glyphicon glyphicon-certificate dot_2 "></span> Media  |  <span uib-tooltip="Entre el 75% y el 100% del valor esperado" class="glyphicon glyphicon-certificate dot_3"></span> Optima  |  <span uib-tooltip="Más del 100% del valor esperado" class="glyphicon glyphicon-certificate dot_1"></span> Sobre Ejecución</p></div>
 			<div class="text-center">Ejecución Esperada: {{ (100/12)*ejecucion.month | currency:"":2 }} %</div>
+		<br/>
+		<br/>
 		<div class="row">
-			<div class="col-sm-6">Última actualización: {{ ejecucion.lastupdate }}</div>
+			<div class="col-sm-12 text-center">Última actualización: {{ ejecucion.lastupdate }}</div>
 		</div>
 	</div>
 </div>
