@@ -534,8 +534,8 @@ public class CEjecucionDAO {
 				ArrayList<CEjecucion> subgrupos=new ArrayList<CEjecucion>();
 				ArrayList<CEjecucion> renglones=new ArrayList<CEjecucion>();
 				
-				Double g_ano1=0.0, g_ano2=0.0,g_ano3=0.0,g_ano4=0.0,g_ano5=0.0, g_ejecutado=0.0, g_acumulado=0.0;
-				Double sg_ano1=0.0, sg_ano2=0.0, sg_ano3=0.0, sg_ano4=0.0, sg_ano5=0.0, sg_ejecutado=0.0, sg_acumulado=0.0;
+				Double g_ano1=0.0, g_ano2=0.0,g_ano3=0.0,g_ano4=0.0,g_ano5=0.0, g_ejecutado=0.0, g_acumulado=0.0, g_vigente=0.0;
+				Double sg_ano1=0.0, sg_ano2=0.0, sg_ano3=0.0, sg_ano4=0.0, sg_ano5=0.0, sg_ejecutado=0.0, sg_acumulado=0.0, sg_vigente=0.0;
 				CEjecucion egrupo=null, esubgrupo=null;
 				boolean cambio_grupo=false;
 				while (results.next()){
@@ -543,28 +543,28 @@ public class CEjecucionDAO {
 						if(grupo_actual>-1){
 							lista.add(egrupo);
 							g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
-							g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado;
-							sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0;
+							g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
 							esubgrupo.setAno1(sg_ano1); esubgrupo.setAno2(sg_ano2); esubgrupo.setAno3(sg_ano3); esubgrupo.setAno4(sg_ano4); esubgrupo.setAno5(sg_ano5); 
-							esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado);
+							esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado); esubgrupo.setVigente(sg_vigente);
 							subgrupos.add(esubgrupo);
 							subgrupos.addAll(renglones);
 							lista.addAll(subgrupos);
 							egrupo.setAno1(g_ano1); egrupo.setAno2(g_ano2); egrupo.setAno3(g_ano3); egrupo.setAno4(g_ano4); egrupo.setAno5(g_ano5); 
-							egrupo.setEjecutado(g_ejecutado); egrupo.setEjecutado_acumulado(g_acumulado);
+							egrupo.setEjecutado(g_ejecutado); egrupo.setEjecutado_acumulado(g_acumulado); egrupo.setVigente(g_vigente);
 							subgrupos.clear();
 							renglones.clear();
 							cambio_grupo = true;
+							sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0;
 						}
 						grupo_actual = results.getInt("grupo");
 						egrupo = new CEjecucion(0,grupo_actual, results.getString("grupo_nombre"), 0.0, 
 								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0);
-						g_ano1=0.0; g_ano2=0.0; g_ano3=0.0; g_ano4=0.0; g_ano5=0.0; g_ejecutado=0.0; g_acumulado=0.0;
+						g_ano1=0.0; g_ano2=0.0; g_ano3=0.0; g_ano4=0.0; g_ano5=0.0; g_ejecutado=0.0; g_acumulado=0.0; g_vigente=0.0;
 					}
 					if(subgrupo_actual!=results.getInt("subgrupo")){
 						if(subgrupo_actual>0 && !cambio_grupo){
 							esubgrupo.setAno1(sg_ano1); esubgrupo.setAno2(sg_ano2); esubgrupo.setAno3(sg_ano3); esubgrupo.setAno4(sg_ano4); esubgrupo.setAno5(sg_ano5); 
-							esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado);
+							esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado); esubgrupo.setVigente(sg_vigente);
 							subgrupos.add(esubgrupo);
 							subgrupos.addAll(renglones);
 							renglones.clear();
@@ -575,8 +575,8 @@ public class CEjecucionDAO {
 						esubgrupo = new CEjecucion(1,subgrupo_actual, results.getString("subgrupo_nombre"), 0.0, 
 								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0);
 						g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
-						g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado;
-						sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0;
+						g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
+						sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0;
 						
 					}
 					CEjecucion renglon = new CEjecucion((Integer)null, results.getInt("renglon"), results.getString("renglon_nombre"), results.getDouble("ano_1"), 
@@ -590,19 +590,20 @@ public class CEjecucionDAO {
 					sg_ano5 += results.getDouble("ano_5");
 					sg_ejecutado += results.getDouble("ejecutado");
 					sg_acumulado += results.getDouble("ejecutado_acumulado");
+					sg_vigente += results.getDouble("vigente");
 					renglones.add(renglon);
 				}
 				lista.add(egrupo);
 				g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
-				g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado;
+				g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
 				sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0;
 				esubgrupo.setAno1(sg_ano1); esubgrupo.setAno2(sg_ano2); esubgrupo.setAno3(sg_ano3); esubgrupo.setAno4(sg_ano4); esubgrupo.setAno5(sg_ano5); 
-				esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado);
+				esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado); esubgrupo.setVigente(sg_vigente);
 				subgrupos.add(esubgrupo);
 				subgrupos.addAll(renglones);
 				lista.addAll(subgrupos);
 				egrupo.setAno1(g_ano1); egrupo.setAno2(g_ano2); egrupo.setAno3(g_ano3); egrupo.setAno4(g_ano4); egrupo.setAno5(g_ano5); 
-				egrupo.setEjecutado(g_ejecutado); egrupo.setEjecutado_acumulado(g_acumulado);
+				egrupo.setEjecutado(g_ejecutado); egrupo.setEjecutado_acumulado(g_acumulado); egrupo.setVigente(g_vigente);
 				
 				results.close();
 				pstm1.close();

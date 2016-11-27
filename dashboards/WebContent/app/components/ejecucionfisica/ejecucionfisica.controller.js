@@ -33,8 +33,9 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			this.total_ejecucion_fisica = 0;
 			this.total_ejecucion_financiera = 0;
 			this.indicador_total_ejecucion = 0;
+			this.total_spi=0;
 			
-			this.ejecucion_financiera=0.0, this.ejecucion_fisica=0.0;
+			this.ejecucion_financiera=0.0, this.ejecucion_fisica=0.0, this.vigente_financiero=0.0;
 			
 			this.chart_colours = [ '#A9D18E', '#5B9BD5', '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'];
 			
@@ -58,17 +59,20 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					    if(response.data.success){
 					    	if(!mantain_select)
 					    		this.row_selected=[];
-					    	var ejecucion_financiera=0.0, ejecucion_fisica=0.0;
+					    	//var ejecucion_financiera=0.0, ejecucion_fisica=0.0, vigente_financiero=0.0;
 					    	var serie_presupuestaria=[];
 					    	var serie_fisica=[];
+					    	var spi=0.0;
 					    	for(var i=0; i<response.data.entidades.length; i++){
-					    		this.ejecucion_financiera += response.data.entidades[i].porcentaje_ejecucion_financiera;
+					    		this.ejecucion_financiera += response.data.entidades[i].ejecutado_financiero;
+					    		this.vigente_financiero += response.data.entidades[i].vigente_financiero;
 					    		this.ejecucion_fisica += response.data.entidades[i].porcentaje_ejecucion_fisica;
+					    		spi += response.data.entidades[i].spi;
 					    	}
 					    	response.data.entidades.sort(this.compareEntidades);
 					    	
 					    	for(var i=0; i<response.data.entidades.length; i++){
-					    		this.chartLabels.push(response.data.entidades[i].nombre)
+					    		this.chartLabels.push(response.data.entidades[i].sigla)
 					    		serie_presupuestaria.push(Math.round(response.data.entidades[i].porcentaje_ejecucion_financiera*100)/100);
 					    		serie_fisica.push(Math.round(response.data.entidades[i].porcentaje_ejecucion_fisica*100)/100);
 					    	}
@@ -77,9 +81,10 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					    	this.chartData.push(serie_fisica);
 					    	this.entidades_gridOptions.data = response.data.entidades;
 					    	
-					    	this.total_ejecucion_financiera = (this.ejecucion_financiera / response.data.entidades.length);
+					    	this.total_ejecucion_financiera = (this.ejecucion_financiera / this.vigente_financiero )*100;
 					    	this.total_ejecucion_fisica = (this.ejecucion_fisica / response.data.entidades.length);
 					    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/(8.33*this.month))*100;
+					    	this.total_spi = (spi) / response.data.entidades.length;
 					    	
 					    	if(this.indicador_total_ejecucion<50)
 					    		this.indicador_total_ejecucion = 4;
@@ -114,14 +119,17 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 				    showGridFooter:true,
 				    columnDefs: [
 				      { name: 'entidad', minWidth: 125, width: 125, displayName: 'Código', cellClass: 'grid-align-right', type: 'number' },
-				      { name: 'nombre', minWidth: 500, width: 500, displayName: 'Nombre' },
+				      { name: 'nombre', displayName: 'Nombre' },
 				      { name: 'porcentaje_ejecucion_financiera', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'Ejecución Presupuestaria', enableFiltering: false,
-						  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_ejecucion_financiera | number:2 }}&nbsp%</div>',
+						  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_ejecucion_financiera | number:2 }}&nbsp;%</div>',
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number'},
 				      { name: 'porcentaje_ejecucion_fisica', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'Ejecución Física', enableFiltering: false,
-						  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_ejecucion_fisica | number:2 }}&nbsp%</div>',
+						  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_ejecucion_fisica | number:2 }}&nbsp;%</div>',
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number'},
-						  { name: 'icono_ejecucion_anual', minWidth: 250, width: 250, displayName: 'Sémaforo de Ejecución Física', enableFiltering: false, enableSorting: false,
+					  { name: 'spi', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'SPI', enableFiltering: false,
+							  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_spi | number:2 }}&nbsp;%</div>',
+							  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number'},
+						  { name: 'icono_ejecucion_anual', minWidth: 200, width: 200, displayName: 'Sémaforo de Ejecución Física', enableFiltering: false, enableSorting: false,
 							    cellClass: 'grid-align-center', type: 'number', cellTemplate: '<div class="glyphicon glyphicon-certificate dot_{{ row.entity.icono_ejecucion_anual }}"></div>',
 							    footerCellClass: 'grid-align-center',
 							    footerCellTemplate: '<div class="ui-grid-cell-contents"><span class="glyphicon glyphicon-certificate dot_{{ grid.appScope.ejecucion.indicador_total_ejecucion }}"></span></div>'
@@ -164,7 +172,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					scaleLabel: function(label){ return  label.value+' %'; },
 					//tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= numeral(value).format('$ 0,0.00') %>",
 					//multiTooltipTemplate: "<%= numeral(value).format('$ 0,0.00') %>",
-					legendTemplate: "<div class=\"chart-legend\"><ul class=\"line-legend\"><% for (var i=0; i<datasets.length; i++){%><li><div class=\"img-rounded\" style=\"float: left; margin-right: 5px; width: 15px; height: 15px; background-color:<%=datasets[i].strokeColor%>\"></div><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+					legendTemplate: "<div class=\"chart-legend\"><ul class=\"line-legend\"><% for (var i=0; i<datasets.length; i++){%><li style=\"font-size: 12px;\"><div class=\"img-rounded\" style=\"float: left; margin-right: 5px; width: 15px; height: 15px; background-color:<%=datasets[i].strokeColor%>\"></div><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
 					tooltips:{
 						enabled:false
 					},
@@ -184,7 +192,8 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 		                        autoSkip: false,
 		                        maxRotation: 90,
 		                        minRotation: 90,
-		                        fontSize: 10
+		                        fontSize: 16,
+		                        fontWeight: 'bold'
 		                    }
 		                }]
 		            },
@@ -192,7 +201,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 		                onComplete: function() {
 		                	if(this.config.type=='bar' || this.config.type=='line'){
 			                	var ctx = this.chart.ctx;
-			                	  ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, 'bold', Chart.defaults.global.defaultFontFamily);
+			                	  ctx.font = Chart.helpers.fontString(16, 'bold', Chart.defaults.global.defaultFontFamily);
 			                	  ctx.fillStyle = this.chart.config.options.defaultFontColor;
 			                	  ctx.textAlign = 'center';
 			                	  ctx.textBaseline = 'bottom';
