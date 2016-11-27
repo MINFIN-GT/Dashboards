@@ -5,7 +5,7 @@
 		<%@ include file="/app/components/maps/gastoGeneral/infoGastoGeneral.jsp"%>
     </script>
     
-    <h4>Gasto por Geográfico</h4>
+    <h4>Ejecución por Geográfico</h4>
 
 	<div class="row">
 		<div class="col-sm-12">

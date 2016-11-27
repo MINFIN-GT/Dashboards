@@ -53,8 +53,8 @@
 	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Mapas <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                        <li role="menuitem"><a href="#!/maps/gastoGeneral">Mapa del Gasto</a></li>
-	                        <li role="menuitem"><a href="#!/maps/gastoCodedesMunis">Mapa del Gasto CODEDES y Munis</a></li>
+	                        <li role="menuitem"><a href="#!/maps/gastoGeneral">Mapa de Ejecución</a></li>
+	                        <li role="menuitem"><a href="#!/maps/gastoCodedesMunis">Mapa CODEDES y Municipalidades</a></li>
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
 	                        <li class="divider"></li>
