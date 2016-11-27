@@ -20,7 +20,7 @@
 		<%@ include file="/app/components/maps/gastoCodedesMunis/infoGastoCodedesMunis.jsp"%>
     </script>
     
-    <h4>Gasto CODEDES y Municipalidades por Geográfico</h4>
+    <h4>Ejecución CODEDES y Municipalidades por Geográfico</h4>
     
 
 	<div class="row" style="margin-bottom: 10px;">
