@@ -1,18 +1,17 @@
-package dao;
+package dao.maps;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import db.utilities.CDatabase;
-import pojo.CGastoGeografico;
+import pojo.maps.CGastoGeografico;
 import utilities.CLogger;
 import utilities.Utils;
 
 public class CGastoGeograficoDAO {
 
-	public static ArrayList<CGastoGeografico> getGastoGeograficoPuntos(int mes, int ejercicio, String fuentes,
-			String grupos) {
+	public static ArrayList<CGastoGeografico> getGastoGeneral(int mes, int ejercicio, String fuentes, String grupos) {
 		final ArrayList<CGastoGeografico> geograficos = new ArrayList<CGastoGeografico>();
 		if (CDatabase.connect()) {
 			try {
@@ -22,12 +21,13 @@ public class CGastoGeograficoDAO {
 					where += " and ";
 				where += (Utils.isNullOrEmpty(grupos) ? "grupo is null " : "grupo in (" + grupos + ") ");
 
-				String query = "select  muni.nombre, gasto.* from( select geografico,  "
+				String query = "select  geo.nombre, muni.poblacion, gasto.* from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
 						+ "from mv_ejecucion_presupuestaria_geografico "
-						+ (Utils.isNullOrEmpty(where) ? "" : "where " + where)
-						+ " group by geografico ) gasto left join cg_geograficos muni "
-						+ "on ( muni.geografico = gasto.geografico and muni.ejercicio = ?)";
+						+ (Utils.isNullOrEmpty(where) ? "" : "where " + where) + " group by geografico ) gasto "
+						+ "left join municipio_demografia muni " + "on ( muni.codigo_municipio = gasto.geografico ) "
+						+ "left join cg_geograficos geo "
+						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? )";
 
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
 
@@ -37,7 +37,7 @@ public class CGastoGeograficoDAO {
 				ResultSet results = pstm.executeQuery();
 				while (results.next()) {
 					CGastoGeografico gg = new CGastoGeografico(mes, ejercicio, results.getInt("geografico"),
-							results.getString("nombre"), results.getDouble("gasto"));
+							results.getString("nombre"), results.getDouble("gasto"), results.getDouble("poblacion"));
 
 					geograficos.add(gg);
 				}
@@ -57,12 +57,12 @@ public class CGastoGeograficoDAO {
 		if (CDatabase.connect()) {
 			try {
 
-				String query = "select  muni.nombre, gasto.* from( select geografico,  "
+				String query = "select  geo.nombre, muni.poblacion, gasto.* from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
-						+ "from mv_ejecucion_presupuestaria_geografico "
-						+ "where renglon in (" + renglones + ") "
-						+ " group by geografico ) gasto left join cg_geograficos muni "
-						+ "on ( muni.geografico = gasto.geografico and muni.ejercicio = ?)";
+						+ "from mv_ejecucion_presupuestaria_geografico " + "where renglon in (" + renglones + ") "
+						+ " group by geografico ) gasto " + "left join municipio_demografia muni "
+						+ "on ( muni.codigo_municipio = gasto.geografico ) " + "left join cg_geograficos geo "
+						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? )";
 
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
 
@@ -72,7 +72,7 @@ public class CGastoGeograficoDAO {
 				ResultSet results = pstm.executeQuery();
 				while (results.next()) {
 					CGastoGeografico gg = new CGastoGeografico(mes, ejercicio, results.getInt("geografico"),
-							results.getString("nombre"), results.getDouble("gasto"));
+							results.getString("nombre"), results.getDouble("gasto"), results.getDouble("poblacion"));
 
 					geograficos.add(gg);
 				}
@@ -86,4 +86,5 @@ public class CGastoGeograficoDAO {
 		}
 		return geograficos.size() > 0 ? geograficos : null;
 	}
+
 }

@@ -3,17 +3,13 @@ var modGastoCodedesMunis = angular.module('mapsGastoCodedesMunisModule', [
 
 // Control principal
 modGastoCodedesMunis.controller('mapsGastoCodedesMunisController',
-		fnGastosGeograficoCtrl);
+		fnGastosCodenesMunisCtrl);
 
 // Control modal Info
 modGastoCodedesMunis.controller('modalInfoGastoCodedesMunisController',
 		fnInfoGastoCodedesMunis);
 
-function randomFrom(min, max) {
-	return Math.random() * (max - min) + min;
-}
-
-function getColor(porcentaje, $log) {
+function getColorCM(porcentaje, $log) {
 	var color = {};
 	color["V"] = "#008000";
 	color["VA"] = "#98fb98";
@@ -36,7 +32,7 @@ function getColor(porcentaje, $log) {
 	}
 }
 
-function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
+function fnGastosCodenesMunisCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	var me = this;
 
 	me.mostrarCodedes = true;
@@ -225,7 +221,7 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 												geodesic : false,
 												visible : true,
 												fill : {
-													color : (muni.CODIGO != 2000 ? getColor(
+													color : (muni.CODIGO != 2000 ? getColorCM(
 															porcentaje, $log)
 															: '#a7d0e1'),
 													opacity : 0.8
