@@ -100,4 +100,17 @@ public class Utils {
 
 	}
 
+	public static long String2Long(String value, long defaultValue) {
+
+		try {
+			long val = Long.parseLong(value);
+
+			return val;
+
+		} catch (NumberFormatException e) {
+
+			return defaultValue;
+		}
+
+	}
 }

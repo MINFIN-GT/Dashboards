@@ -1,4 +1,4 @@
-package pojo;
+package pojo.maps;
 
 public class CGastoGeografico {
 	private Integer mes;
@@ -8,14 +8,16 @@ public class CGastoGeografico {
 	private String nombreGeografico;
 	
 	private Double gasto;
+	private Double poblacion; 
 
-	public CGastoGeografico(Integer mes, Integer ejercicio, Integer geografico, String nombreGeografico, Double gasto) {
+	public CGastoGeografico(Integer mes, Integer ejercicio, Integer geografico, String nombreGeografico, Double gasto, Double poblacion) {
 		super();
 		this.mes = mes;
 		this.ejercicio = ejercicio;
 		this.geografico = geografico;
 		this.nombreGeografico = nombreGeografico;
 		this.gasto = gasto;
+		this.poblacion = poblacion;
 	}
 
 	public Integer getMes() {
@@ -56,6 +58,14 @@ public class CGastoGeografico {
 
 	public void setGasto(Double gasto) {
 		this.gasto = gasto;
+	}
+
+	public Double getPoblacion() {
+		return poblacion;
+	}
+
+	public void setPoblacion(Double poblacion) {
+		this.poblacion = poblacion;
 	}
 	
 	
