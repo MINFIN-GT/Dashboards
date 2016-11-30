@@ -31,7 +31,7 @@ public class SGastoGeneral extends HttpServlet {
 		double poblacion;
 		double gastoPerCapita;
 	}
-	
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -98,7 +98,7 @@ public class SGastoGeneral extends HttpServlet {
 
 				Utils.writeJSon(response, response_text);
 			}
-		}else if (action.compareTo("gastomunicipio") == 0) {
+		} else if (action.compareTo("gastomunicipio") == 0) {
 			int geografico = Utils.String2Int(map.get("geografico"), 0);
 			int nivel = Utils.String2Int(map.get("nivel"), 0);
 			long entidad = Utils.String2Long(map.get("entidad"), 0);
@@ -107,8 +107,10 @@ public class SGastoGeneral extends HttpServlet {
 			int subprograma = Utils.String2Int(map.get("subprograma"), 0);
 			int proyecto = Utils.String2Int(map.get("proyecto"), 0);
 
-			List<CGastoMunicipio> gastoMunicipios = CGastoMunicipioDAO.getGastosMunicipio(mes, ejercicio, geografico, nivel, entidad, unidad_ejecutora, programa, subprograma, proyecto);
-									
+			List<CGastoMunicipio> gastoMunicipios = CGastoMunicipioDAO.getGastosMunicipio(mes, ejercicio, geografico,
+					nivel, map.get("fuentes"), map.get("grupos"), entidad, unidad_ejecutora, programa, subprograma,
+					proyecto);
+
 			String response_text = Utils.getJSonString("gasto", gastoMunicipios);
 
 			Utils.writeJSon(response, response_text);

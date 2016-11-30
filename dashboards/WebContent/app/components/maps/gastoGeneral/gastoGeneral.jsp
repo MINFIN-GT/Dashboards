@@ -83,7 +83,7 @@
 	</div>
 	
 	<div class="row">
-		<div class="col-sm-offset-4 col-sm-4 text-center">
+		<div class="col-sm-12 text-center">
 			<div class="btn-group">
 				<label class="btn btn-success activo" ng-model="mapsGG.mostrarPerCapita" uib-btn-radio="false" ng-click="mapsGG.cambiarTipo()">General</label>
 			    <label class="btn btn-success activo" ng-model="mapsGG.mostrarPerCapita" uib-btn-radio="true" ng-click="mapsGG.cambiarTipo()">Per Cápita</label>

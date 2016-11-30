@@ -14,7 +14,7 @@ public class CGastoMunicipioDAO {
 		ENTIDADES, UNIDADES, PROGRAMAS, SUBPROGRAMAS, PROYECTOS, ACTIVIDADES_OBRAS
 	}
 
-	private static String getQuery(TIPO tipo) {
+	private static String getQuery(TIPO tipo, String fuentes, String grupos) {
 		String selectJoin = "";
 		String optionJoin = "";
 		String selectGroupEjecucion = "";
@@ -82,7 +82,7 @@ public class CGastoMunicipioDAO {
 			selectGroupEstructura = " entidad, entidad_nombre " + selectGroupEstructura;
 			break;
 		}
-
+		
 		String query = "select  " 
 				+ selectJoin 
 				+ "	,a.ejecutado " 
@@ -99,6 +99,8 @@ public class CGastoMunicipioDAO {
 				+ "	where ejercicio = ? "
 				+ "	and geografico = ? " 
 				+ "	and mes <= ? " 
+				+ (Utils.isNullOrEmpty(fuentes) ? "and fuente is null " : "and fuente in (" + fuentes + ") ")
+				+ (Utils.isNullOrEmpty(grupos) ? "and grupo is null " : "and grupo in (" + grupos + ") ")
 				+ whereEjecucion 
 				+ "	group by  " 
 				+ selectGroupEjecucion
@@ -116,12 +118,12 @@ public class CGastoMunicipioDAO {
 				+ "on (  " 
 				+ optionJoin 
 				+ ") "
-				+ "where e.entidad_nombre is not null";
+				+ "where e.entidad_nombre is not null ";
 
 		return query;
 	}
 
-	public static ArrayList<CGastoMunicipio> getGastosMunicipio(int mes, int ejercicio, int geografico, int nivel,
+	public static ArrayList<CGastoMunicipio> getGastosMunicipio(int mes, int ejercicio, int geografico, int nivel, String fuentes, String grupos,
 			Number... estructuras) {
 		ArrayList<CGastoMunicipio> geograficos = new ArrayList<CGastoMunicipio>();
 
@@ -149,7 +151,7 @@ public class CGastoMunicipioDAO {
 					break;
 				}
 
-				String query = getQuery(tipo);
+				String query = getQuery(tipo, fuentes, grupos);
 
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
 				
