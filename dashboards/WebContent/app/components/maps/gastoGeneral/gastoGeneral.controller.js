@@ -2,37 +2,14 @@ var modGastoGeneral = angular.module('mapsGastoGeneralModule', [ 'dashboards',
 		'ngAnimate', 'ngSanitize', 'ui.bootstrap' ]);
 
 // Control principal
-modGastoGeneral
-		.controller('mapsGastoGeneralController', fnGastosGeograficoCtrl);
+modGastoGeneral.controller('mapsGastoGeneralController',
+		mapsGastoGeneralController);
 
 // Control modal Info
 modGastoGeneral.controller('modalInfoGastoGeneralController',
-		fnInfoGastoGeneral);
+		modalInfoGastoGeneralController);
 
-function getColor(porcentaje, $log) {
-	var color = {};
-	color["V"] = "#008000";
-	color["VA"] = "#98fb98";
-	color["A"] = "#ffff00";
-	color["AR"] = "#ffdab9";
-	color["R"] = "#ff0000";
-
-	if (porcentaje >= 0 && porcentaje < 0.1) {
-		return color["R"];
-	} else if (porcentaje >= 0.1 && porcentaje < 0.3) {
-		return color["AR"];
-	} else if (porcentaje >= 0.3 && porcentaje < 0.5) {
-		return color["A"];
-	} else if (porcentaje >= 0.5 && porcentaje < 1) {
-		return color["VA"];
-	} else if (porcentaje >= 1) {
-		return color["V"];
-	} else {
-		$log.info(porcentaje);
-	}
-}
-
-function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
+function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	var me = this;
 
 	me.showloading = false;
@@ -61,6 +38,29 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	me.tributarias = [ 11, 12, 13, 14, 15, 16, 21, 22, 29 ];
 
 	me.geograficos = [];
+
+	function getColor(porcentaje, $log) {
+		var color = {};
+		color["V"] = "#008000";
+		color["VA"] = "#98fb98";
+		color["A"] = "#ffff00";
+		color["AR"] = "#ffdab9";
+		color["R"] = "#ff0000";
+
+		if (porcentaje >= 0 && porcentaje < 0.1) {
+			return color["R"];
+		} else if (porcentaje >= 0.1 && porcentaje < 0.3) {
+			return color["AR"];
+		} else if (porcentaje >= 0.3 && porcentaje < 0.5) {
+			return color["A"];
+		} else if (porcentaje >= 0.5 && porcentaje < 1) {
+			return color["VA"];
+		} else if (porcentaje >= 1) {
+			return color["V"];
+		} else {
+			$log.info(porcentaje);
+		}
+	}
 
 	me.mesClick = function(mes) {
 		me.mes = mes;
@@ -361,6 +361,9 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 														action : "gastomunicipio",
 														mes : me.mes,
 														ejercicio : 2016,
+														grupos : me.getGrupos(),
+														fuentes : me
+																.getFuentes(),
 														geografico : this.events.data.geografico,
 														nivel : 1,
 														gasto : JSON
@@ -395,23 +398,28 @@ function fnGastosGeograficoCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 			controllerAs : 'infoCtrl',
 			backdrop : 'static',
 			resolve : {
-				mes : config.data.mes,
-				data : JSON.parse(config.data.gasto),
+				param : config.data,
+				info : JSON.parse(config.data.gasto),
 				gasto : data
 			}
 		});
-
 	}
-
 }
 
-function fnInfoGastoGeneral($uibModalInstance, $http, $log, mes, data, gasto) {
+function modalInfoGastoGeneralController($uibModalInstance, $http, $log, param,
+		info, gasto) {
 	var me = this;
-	me.mes = mes;
-	me.data = data;
+
+	me.mes = param.mes;
+	me.fuentes = param.fuentes;
+	me.grupos = param.grupos;
+
+	me.info = info;
 	me.gasto = gasto.gasto;
+
 	me.nivel = 1;
 
+	// nivel por omision para cargar todas las entidades
 	me.niveles = [ 0 ];
 
 	me.getGasto = function(codigo) {
@@ -428,7 +436,9 @@ function fnInfoGastoGeneral($uibModalInstance, $http, $log, mes, data, gasto) {
 			action : "gastomunicipio",
 			mes : me.mes,
 			ejercicio : 2016,
-			geografico : me.data.geografico,
+			fuentes : me.fuentes,
+			grupos : me.grupos,
+			geografico : me.info.geografico,
 			nivel : me.nivel,
 			entidad : 0,
 			unidad_ejecutora : 0,

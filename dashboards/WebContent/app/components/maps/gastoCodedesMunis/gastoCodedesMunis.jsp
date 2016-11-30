@@ -47,18 +47,18 @@
 		    <span ng-show="mapsCM.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
 	    </div>
 	</div>
-	<div class="row" style="margin-bottom: 10px;">
-		<div class="col-sm-3">	    
-		</div>	    
-		<div class="col-sm-6" style="text-align: center;">	    
-			 <div class="btn-group">
+	
+	<div class="row">
+		<div class="col-sm-12 text-center">
+			<div class="btn-group">
 	        	<label class="btn btn-primary activo" ng-model="mapsCM.mostrarCodedes" ng-click="mapsCM.cambiarRenglon()" uib-btn-checkbox>CODEDE</label>
     	    	<label class="btn btn-success activo" ng-model="mapsCM.mostrarMunis" ng-click="mapsCM.cambiarRenglon()" uib-btn-checkbox>Municipalidad</label>
     		</div>
 		</div>
 	</div>
-										
-	
+		
+	<br />
+		
 	<div style="position: relative; height: 700px;" id="title">
 	
 		<ui-gmap-google-map center="mapsCM.map.center" options="mapsCM.map.options" zoom="mapsCM.map.zoom">

@@ -3,36 +3,14 @@ var modGastoCodedesMunis = angular.module('mapsGastoCodedesMunisModule', [
 
 // Control principal
 modGastoCodedesMunis.controller('mapsGastoCodedesMunisController',
-		fnGastosCodenesMunisCtrl);
+		mapsGastoCodedesMunisController);
 
 // Control modal Info
 modGastoCodedesMunis.controller('modalInfoGastoCodedesMunisController',
-		fnInfoGastoCodedesMunis);
+		modalInfoGastoCodedesMunisController);
 
-function getColorCM(porcentaje, $log) {
-	var color = {};
-	color["V"] = "#008000";
-	color["VA"] = "#98fb98";
-	color["A"] = "#ffff00";
-	color["AR"] = "#ffdab9";
-	color["R"] = "#ff0000";
-
-	if (porcentaje >= 0 && porcentaje < 0.2) {
-		return color["R"];
-	} else if (porcentaje >= 0.2 && porcentaje < 0.4) {
-		return color["AR"];
-	} else if (porcentaje >= 0.4 && porcentaje < 0.6) {
-		return color["A"];
-	} else if (porcentaje >= 0.6 && porcentaje < 0.8) {
-		return color["VA"];
-	} else if (porcentaje >= 0.8) {
-		return color["V"];
-	} else {
-		$log.info(porcentaje);
-	}
-}
-
-function fnGastosCodenesMunisCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
+function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
+		$log) {
 	var me = this;
 
 	me.mostrarCodedes = true;
@@ -47,6 +25,29 @@ function fnGastosCodenesMunisCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 	me.map = null;
 
 	me.lastupdate = "";
+
+	function getColorCM(porcentaje, $log) {
+		var color = {};
+		color["V"] = "#008000";
+		color["VA"] = "#98fb98";
+		color["A"] = "#ffff00";
+		color["AR"] = "#ffdab9";
+		color["R"] = "#ff0000";
+
+		if (porcentaje >= 0 && porcentaje < 0.2) {
+			return color["R"];
+		} else if (porcentaje >= 0.2 && porcentaje < 0.4) {
+			return color["AR"];
+		} else if (porcentaje >= 0.4 && porcentaje < 0.6) {
+			return color["A"];
+		} else if (porcentaje >= 0.6 && porcentaje < 0.8) {
+			return color["VA"];
+		} else if (porcentaje >= 0.8) {
+			return color["V"];
+		} else {
+			$log.info(porcentaje);
+		}
+	}
 
 	$http.post('/SLastupdate', {
 		dashboard : 'ejecucionpresupuestaria',
@@ -255,7 +256,7 @@ function fnGastosCodenesMunisCtrl($uibModal, $http, uiGmapGoogleMapApi, $log) {
 
 }
 
-function fnInfoGastoCodedesMunis($uibModalInstance, $log, data) {
+function modalInfoGastoCodedesMunisController($uibModalInstance, $log, data) {
 	var me = this;
 	me.data = data;
 
