@@ -34,6 +34,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			this.total_ejecucion_financiera = 0;
 			this.indicador_total_ejecucion = 0;
 			this.total_spi=0;
+			this.level = 1;
 			
 			this.ejecucion_financiera=0.0, this.ejecucion_fisica=0.0, this.vigente_financiero=0.0;
 			
@@ -118,6 +119,8 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 				    enableRowHeaderSelection: false,
 				    showGridFooter:true,
 				    columnDefs: [
+				      { name: 'goToLevel', width: 57, displayName: '   ', cellClass: 'grid-align-center', type: 'number', cellTemplate:'<div class="btn-group" style="min-width: 60px; margin: 3px;"><label class="btn btn-primary" style="font-size: 5px; width: 30px; padding: 5px;" ng-click="grid.appScope.ejecucion.clickRow(row)">&nbsp;</label><label class="btn btn-success" style="font-size: 5px; width: 20px; padding: 5px;" context-menu="grid.appScope.ejecucion.contextMenuOptions(row)" context-menu-on="click">&nbsp;</label></div>', 
+					    	  enableFiltering: false, enableSorting: false, pinnedLeft: true },
 				      { name: 'entidad', minWidth: 125, width: 125, displayName: 'Código', cellClass: 'grid-align-right', type: 'number' },
 				      { name: 'nombre', displayName: 'Nombre' },
 				      { name: 'porcentaje_ejecucion_financiera', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'Ejecución Presupuestaria', enableFiltering: false,
@@ -233,6 +236,80 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 				if(a.porcentaje_ejecucion_financiera > b.porcentaje_ejecucion_financiera)
 					return -1;
 				return 0;
+			}
+			
+			this.clickRow = function(row){
+				this.showloading=true;
+				this.loadAttempted=false;
+				row.setSelected(false);
+				switch(this.level){
+					case 1:	this.entidad = row.entity.entidad;
+							this.entidad_nombre = row.entity.nombre; break;
+					case 2:
+						this.unidad_ejecutora = row.entity.entidad;
+						this.unidad_ejecutora_nombre = row.entity.nombre; break;
+					case 3:
+						this.programa = row.entity.entidad;
+						this.programa_nombre = row.entity.nombre; break;
+					case 4:
+						this.subprograma = row.entity.entidad;
+						this.subprograma_nombre = row.entity.nombre; break;
+					case 5:
+						this.proyecto = row.entity.entidad;
+						this.proyecto_nombre = row.entity.nombre; break;
+					case 6:
+						this.actividad = row.entity.entidad;
+						this.obra = row.entity.obra;
+						this.actividad_obra_nombre = row.entity.nombre; break;
+				}
+				this.level = this.level<7 ? this.level+1 : this.level;
+				this.goLevel(this.level, false);
+			}
+			
+			this.contextMenuOptions = function(row){
+				var ret = [];
+				if(this.level<2)
+					ret.push(['Unidades Ejecutoras', function(){ $scope.ejecucion.clickGo(row,2);  }]);
+				if(this.level<3)
+					ret.push(['Programas', function(){ $scope.ejecucion.clickGo(row,3); }]);
+				if(this.level<4)
+					ret.push(['Subprogramas', function(){ $scope.ejecucion.clickGo(row,4); }]);
+				if(this.level<5)
+					ret.push(['Proyectos', function(){ $scope.ejecucion.clickGo(row,5); } ]);
+				if(this.level<6)
+					ret.push(['Actividades / Obras', function(){ $scope.ejecucion.clickGo(row,6); } ]);
+				if(this.level<7)
+					ret.push(['Renglones', function(){ $scope.ejecucion.clickGo(row,7); }]);
+				return ret;
+			}
+			
+			
+			this.clickGo = function(row, toLevel){
+				this.showloading=true;
+				this.loadAttempted=false;
+				row.setSelected(false);
+				switch(this.level){
+					case 1:	this.entidad = row.entity.entidad;
+							this.entidad_nombre = row.entity.nombre; break;
+					case 2:
+						this.unidad_ejecutora = row.entity.entidad;
+						this.unidad_ejecutora_nombre = row.entity.nombre; break;
+					case 3:
+						this.programa = row.entity.entidad;
+						this.programa_nombre = row.entity.nombre; break;
+					case 4:
+						this.subprograma = row.entity.entidad;
+						this.subprograma_nombre = row.entity.nombre; break;
+					case 5:
+						this.proyecto = row.entity.entidad;
+						this.proyecto_nombre = row.entity.nombre; break;
+					case 6:
+						this.actividad = row.entity.entidad;
+						this.obra = row.entity.obra;
+						this.actividad_obra_nombre = row.entity.nombre; break;
+				}
+				this.level = toLevel;
+				this.goLevel(this.level, false);
 			}
 		}
 	]);
