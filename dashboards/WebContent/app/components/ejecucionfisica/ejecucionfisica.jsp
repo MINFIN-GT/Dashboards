@@ -6,7 +6,7 @@
 <br/>
 <br/>
 		<div class="col-sm-12">
-			<h4>ADMINISTRACIÓN CENTRAL</h4>
+			<h4>{{ ejecucion.chartTitle }}&nbsp;</h4>
 			<h5>Ejecución Presupuestaria vs Ejecución Física (Promedio Ponderado)</h5>
 			<div class="row">
 				<div class="col-sm-12" style="text-align: right;">
@@ -40,12 +40,12 @@
 		<div style="height: 35px;">
 			<div style="float: left;"><a href class="btn btn-default no-border" ng-disabled="ejecucion.showloading">ADMINISTRACIÓN CENTRAL</a> </div>
 			<div style="text-align: right;"><div class="btn-group" role="group" aria-label="">
-												<a class="btn btn-default" href="#!/dashboards/ejecucionfisica/gt1" role="button" uib-tooltip="Reiniciar la vista de la tabla" tooltip-placement="left"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></a>
+												<button type="button" class="btn btn-default" ng-click="ejecucion.resetView()" uib-tooltip="Reiniciar la vista de la tabla" tooltip-placement="left"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
 											</div>
 			</div>
 		</div>
 		<br/>
-		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state class="grid" style="height: 700px;">
+		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state ui-grid-selection class="grid" style="height: 700px;">
 			  <div class="grid_loading" ng-hide="!ejecucion.showloading">
 			  	<div class="msg">
 			      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
