@@ -23,6 +23,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/dashboards/ejecucionfisica/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionfisicaController\'" class="all_page"></div>'
             })
+            .when('/dashboards/ejecucionfisicaentidad/:reset_grid?/:entidad?/:nombre?',{
+            	template: '<div load-on-demand="\'ejecucionfisicaentidadController\'" class="all_page"></div>'
+            })
             .when('/dashboards/copep/:reset_grid?',{
             	template: '<div load-on-demand="\'copepController\'" class="all_page"></div>'
             })
@@ -100,6 +103,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'ejecucionfisicaController',
 	    	   script: '/app/components/ejecucionfisica/ejecucionfisica.controller.js',
 	    	   template: '/app/components/ejecucionfisica/ejecucionfisica.jsp'
+	       },
+	       {
+	    	   name: 'ejecucionfisicaentidadController',
+	    	   script: '/app/components/ejecucionfisicaentidad/ejecucionfisicaentidad.controller.js',
+	    	   template: '/app/components/ejecucionfisicaentidad/ejecucionfisicaentidad.jsp'
 	       },
 	       {
 	    	   name: 'copepController',
@@ -220,8 +228,10 @@ app.controller('MainController',['$scope','$document','deviceDetector','$rootSco
 	$scope.device = deviceDetector;
 	
 	$rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-		$window.ga('create', 'UA-74443600-1', 'auto');
-    	$window.ga('send', 'pageview', $location.path());
+		if (location.hostname !== "localhost" || location.hostname !== "127.0.0.1"){
+			$window.ga('create', 'UA-74443600-1', 'auto');
+    		$window.ga('send', 'pageview', $location.path());
+		}
     });
 }]);
 

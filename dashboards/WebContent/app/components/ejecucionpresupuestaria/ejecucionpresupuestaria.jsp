@@ -68,17 +68,17 @@
 <div class="row">
 	<div ui-i18n="es" class="col-sm-12">
 		<div class="row" style="margin-bottom: 10px;">
-			<div class="col-sm-11" style="float: left;">
+			<div class="col-sm-10" style="float: left;">
 				<a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(1, false)" ng-disabled="ejecucion.showloading">ADMINISTRACIÓN CENTRAL</a>
-				<span ng-hide="ejecucion.entidad==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(2, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.entidad_nombre }}</a></span>
-				<span ng-hide="ejecucion.unidad_ejecutora==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(3, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.unidad_ejecutora_nombre }}</a></span>
-				<span ng-hide="ejecucion.programa==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(4, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.programa_nombre }}</a></span>
-				<span ng-hide="ejecucion.subprograma==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(5, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.subprograma_nombre }}</a></span>
-				<span ng-hide="ejecucion.proyecto==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(6, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.proyecto_nombre }}</a></span>
-				<span ng-hide="ejecucion.actividad==null && ejecucion.obra==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(7, false)" ng-disabled="ejecucion.showloading">{{ ejecucion.actividad_obra_nombre }}</a></span>
+				<span ng-hide="ejecucion.entidad==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(2, false)" ng-disabled="ejecucion.showloading">[ {{ejecucion.entidad}} ] {{ ejecucion.entidad_nombre }}</a></span>
+				<span ng-hide="ejecucion.unidad_ejecutora==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(3, false)" ng-disabled="ejecucion.showloading">[ {{ejecucion.unidad_ejecutora}} ] {{ ejecucion.unidad_ejecutora_nombre }}</a></span>
+				<span ng-hide="ejecucion.programa==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(4, false)" ng-disabled="ejecucion.showloading">[ {{ejecucion.programa}} ] {{ ejecucion.programa_nombre }}</a></span>
+				<span ng-hide="ejecucion.subprograma==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(5, false)" ng-disabled="ejecucion.showloading">[ {{ejecucion.subprograma}} ] {{ ejecucion.subprograma_nombre }}</a></span>
+				<span ng-hide="ejecucion.proyecto==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(6, false)" ng-disabled="ejecucion.showloading">[ {{ejecucion.proyecto}} ] {{ ejecucion.proyecto_nombre }}</a></span>
+				<span ng-hide="ejecucion.actividad==null && ejecucion.obra==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(7, false)" ng-disabled="ejecucion.showloading">[ {{ ejecucion.actividad }} , {{ ejecucion.obra }} ] {{ ejecucion.actividad_obra_nombre }}</a></span>
 			</div>
-			<div class="col-sm-1"><div class="btn-group" role="group" aria-label="">
-													<a class="btn btn-default" href="#!/dashboards/ejecucionpresupuestaria/gt1" role="button" uib-tooltip="Reiniciar la vista de la tabla" tooltip-placement="left"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></a>
+			<div class="col-sm-2 text-right"><div class="btn-group" role="group" aria-label="">
+													<a class="btn btn-default" href ng-click="ejecucion.resetView()" role="button" uib-tooltip="Reiniciar la vista de la tabla" tooltip-placement="left"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></a>
 													<a class="btn btn-default" href ng-click="ejecucion.exportXLS()" role="button" uib-tooltip="Exportar a formato Excel" tooltip-placement="left"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></a>
 												</div>
 			</div>

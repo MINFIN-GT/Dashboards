@@ -167,9 +167,9 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    	this.entidades_gridOptions.data = response.data.entidades;
 					    	this.total_ejecucion = (ejecutado_acumulado/vigente)*100;
 					    	this.indicador_total_ejecucion = (this.total_ejecucion*100.00)/(8.33*this.month);
-					    	if(this.indicador_total_ejecucion<=50)
+					    	if(this.indicador_total_ejecucion<50)
 					    		this.indicador_total_ejecucion = 4;
-							else if(this.indicador_total_ejecucion<=75)
+							else if(this.indicador_total_ejecucion<75)
 								this.indicador_total_ejecucion = 2;
 							else if(this.indicador_total_ejecucion<=100)
 								this.indicador_total_ejecucion = 3;
@@ -321,9 +321,9 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    	  }
 					    	  this.grid.appScope.ejecucion.total_ejecucion = (this.grid.appScope.ejecucion.ejecutado_acumulado/this.grid.appScope.ejecucion.vigente)*100;
 					    	  this.grid.appScope.ejecucion.indicador_total_ejecucion = (this.grid.appScope.ejecucion.total_ejecucion*100.00)/(8.33*this.grid.appScope.ejecucion.month);
-						    	if(this.grid.appScope.ejecucion.indicador_total_ejecucion<=50)
+						    	if(this.grid.appScope.ejecucion.indicador_total_ejecucion<50)
 						    		this.grid.appScope.ejecucion.indicador_total_ejecucion = 4;
-								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<=75)
+								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<75)
 									this.grid.appScope.ejecucion.indicador_total_ejecucion = 2;
 								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<=100)
 									this.grid.appScope.ejecucion.indicador_total_ejecucion = 3;
@@ -402,8 +402,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				    	  var grid_data = { action: 'getstate', grid:'ejecucionpresupuestaria_1', t: (new Date()).getTime()};
 				    	  $http.post('/SSaveGridState', grid_data).then(function(response){
 					    	  if(response.data.success && response.data.state!='')
-					    		  $scope.gridApi.saveState.restore( $scope, response.data.state);
-					    	    
+					    	  $scope.gridApi.saveState.restore( $scope, response.data.state);
 					    	  $scope.gridApi.colMovable.on.columnPositionChanged($scope, this.saveState);
 						      $scope.gridApi.colResizable.on.columnSizeChanged($scope, this.saveState);
 						      $scope.gridApi.core.on.columnVisibilityChanged($scope, this.saveState);
@@ -610,6 +609,13 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				if(this.level<7)
 					ret.push(['Renglones', function(){ $scope.ejecucion.clickGo(row,7); }]);
 				return ret;
+			}
+			
+			this.resetView = function(){
+				if($location.path()=='/dashboards/ejecucionpresupuestaria/gt1')
+					$route.reload();
+				else
+					$location.path('/dashboards/ejecucionpresupuestaria/gt1');
 			}
 		}
 	]);
