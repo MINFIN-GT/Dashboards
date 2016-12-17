@@ -33,7 +33,6 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			this.total_ejecucion_fisica = 0;
 			this.total_ejecucion_financiera = 0;
 			this.indicador_total_ejecucion = 0;
-			this.total_spi=0;
 			this.level = 1;
 			
 			this.ejecucion_financiera=0.0, this.ejecucion_fisica=0.0, this.vigente_financiero=0.0;
@@ -63,12 +62,10 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					    	//var ejecucion_financiera=0.0, ejecucion_fisica=0.0, vigente_financiero=0.0;
 					    	var serie_presupuestaria=[];
 					    	var serie_fisica=[];
-					    	var spi=0.0;
 					    	for(var i=0; i<response.data.entidades.length; i++){
 					    		this.ejecucion_financiera += response.data.entidades[i].ejecutado_financiero;
 					    		this.vigente_financiero += response.data.entidades[i].vigente_financiero;
 					    		this.ejecucion_fisica += response.data.entidades[i].porcentaje_ejecucion_fisica;
-					    		spi += response.data.entidades[i].spi;
 					    	}
 					    	response.data.entidades.sort(this.compareEntidades);
 					    	
@@ -85,7 +82,6 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					    	this.total_ejecucion_financiera = (this.ejecucion_financiera / this.vigente_financiero )*100;
 					    	this.total_ejecucion_fisica = (this.ejecucion_fisica / response.data.entidades.length);
 					    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*this.month))*100;
-					    	this.total_spi = (spi) / response.data.entidades.length;
 					    	
 					    	if(this.indicador_total_ejecucion<50)
 					    		this.indicador_total_ejecucion = 4;
@@ -131,10 +127,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 				      { name: 'porcentaje_ejecucion_fisica', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'Ejecución Física', enableFiltering: false,
 						  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_ejecucion_fisica | number:2 }}&nbsp;%</div>',
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number'},
-					  { name: 'spi', maxWidth: 200, width: 200, cellFilter: 'number: 2', displayName: 'SPI', enableFiltering: false,
-							  cellClass: 'grid-align-right',  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.total_spi | number:2 }}&nbsp;%</div>',
-							  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number'},
-						  { name: 'icono_ejecucion_anual', minWidth: 200, width: 200, displayName: 'Sémaforo de Ejecución Física', enableFiltering: false, enableSorting: false,
+					  { name: 'icono_ejecucion_anual', minWidth: 200, width: 200, displayName: 'Sémaforo de Ejecución Física', enableFiltering: false, enableSorting: false,
 							    cellClass: 'grid-align-center', type: 'number', cellTemplate: '<div class="glyphicon glyphicon-certificate dot_{{ row.entity.icono_ejecucion_anual }}"></div>',
 							    footerCellClass: 'grid-align-center',
 							    footerCellTemplate: '<div class="ui-grid-cell-contents"><span class="glyphicon glyphicon-certificate dot_{{ grid.appScope.ejecucion.indicador_total_ejecucion }}"></span></div>'

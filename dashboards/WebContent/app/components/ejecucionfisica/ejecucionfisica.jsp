@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<br/>
-		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state ui-grid-selection class="grid" style="height: 700px;">
+		<div ui-grid="ejecucion.entidades_gridOptions" ui-grid-save-state ui-grid-selection ui-grid-move-columns ui-grid-resize-columns class="grid" style="height: 700px;">
 			  <div class="grid_loading" ng-hide="!ejecucion.showloading">
 			  	<div class="msg">
 			      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
