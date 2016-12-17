@@ -139,10 +139,10 @@ public class SEjecucion extends HttpServlet {
 					sttemp.ejecutado_acumulado = centidad.getEjecutado_acumulado() != null ? centidad.getEjecutado_acumulado() : 0;
 					sttemp.vigente = centidad.getVigente();
 					sttemp.ejecucion_anual = (sttemp.vigente>0) ? (sttemp.ejecutado_acumulado/sttemp.vigente)*100.00 : 0.00;
-					double semaforo = (sttemp.ejecucion_anual*100.00)/(8.33*mes);
-					if(semaforo<=50)
+					double semaforo = (sttemp.ejecucion_anual*100.00)/((100.00/12.00)*mes);
+					if(semaforo<50)
 						sttemp.icono_ejecucion_anual = 4;
-					else if(semaforo<=75)
+					else if(semaforo<75)
 						sttemp.icono_ejecucion_anual = 2;
 					else if(semaforo<=100)
 						sttemp.icono_ejecucion_anual = 3;

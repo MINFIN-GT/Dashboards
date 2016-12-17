@@ -166,7 +166,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    	}
 					    	this.entidades_gridOptions.data = response.data.entidades;
 					    	this.total_ejecucion = (ejecutado_acumulado/vigente)*100;
-					    	this.indicador_total_ejecucion = (this.total_ejecucion*100.00)/(8.33*this.month);
+					    	this.indicador_total_ejecucion = (this.total_ejecucion*100.00)/((100/12)*this.month);
 					    	if(this.indicador_total_ejecucion<50)
 					    		this.indicador_total_ejecucion = 4;
 							else if(this.indicador_total_ejecucion<75)
@@ -320,7 +320,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    		  }
 					    	  }
 					    	  this.grid.appScope.ejecucion.total_ejecucion = (this.grid.appScope.ejecucion.ejecutado_acumulado/this.grid.appScope.ejecucion.vigente)*100;
-					    	  this.grid.appScope.ejecucion.indicador_total_ejecucion = (this.grid.appScope.ejecucion.total_ejecucion*100.00)/(8.33*this.grid.appScope.ejecucion.month);
+					    	  this.grid.appScope.ejecucion.indicador_total_ejecucion = (this.grid.appScope.ejecucion.total_ejecucion*100.00)/((100/12)*this.grid.appScope.ejecucion.month);
 						    	if(this.grid.appScope.ejecucion.indicador_total_ejecucion<50)
 						    		this.grid.appScope.ejecucion.indicador_total_ejecucion = 4;
 								else if(this.grid.appScope.ejecucion.indicador_total_ejecucion<75)

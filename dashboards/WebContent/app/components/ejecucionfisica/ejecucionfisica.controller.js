@@ -84,7 +84,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					    	
 					    	this.total_ejecucion_financiera = (this.ejecucion_financiera / this.vigente_financiero )*100;
 					    	this.total_ejecucion_fisica = (this.ejecucion_fisica / response.data.entidades.length);
-					    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/(8.33*this.month))*100;
+					    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*this.month))*100;
 					    	this.total_spi = (spi) / response.data.entidades.length;
 					    	
 					    	if(this.indicador_total_ejecucion<50)
