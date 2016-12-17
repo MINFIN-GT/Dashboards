@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
@@ -42,7 +41,6 @@ public class SEjecucionFisica extends HttpServlet {
     	double porcentaje_ejecucion_fisica;
     	double ejecutado_financiero;
     	double vigente_financiero;
-    	double spi;
     	int icono_ejecucion_anual;
     }
 	
@@ -129,7 +127,6 @@ public class SEjecucionFisica extends HttpServlet {
 			sttemp.porcentaje_ejecucion_fisica = centidad.getPorcentaje_ejecucion_fisica();
 			sttemp.ejecutado_financiero = centidad.getEjecutado_financiero();
 			sttemp.vigente_financiero = centidad.getVigente_financiero();
-			sttemp.spi = (new BigDecimal((sttemp.porcentaje_ejecucion_fisica*100.00)/((100.00/12.00)*now.getMonthOfYear())).setScale(2,BigDecimal.ROUND_HALF_DOWN)).doubleValue(); 
 			double semaforo = ((sttemp.porcentaje_ejecucion_fisica)/((100.00/12.00)*now.getMonthOfYear()))*100.00;
 			if(semaforo<50)
 				sttemp.icono_ejecucion_anual = 4;
