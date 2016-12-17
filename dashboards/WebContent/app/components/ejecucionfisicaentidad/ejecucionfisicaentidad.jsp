@@ -40,48 +40,48 @@
 						<td rowspan="3" style="min-width: 200px; vertical-align: middle;">{{ meta.descripcion }}</td>
 						<td rowspan="3" style="vertical-align: middle;">{{ meta.unidad_medida }}</td>
 						<td>Ejecutado</td>
-						<td>{{ meta.ejecucion_1}}</td>
-						<td>{{ meta.ejecucion_2}}</td>
-						<td>{{ meta.ejecucion_3}}</td>
-						<td>{{ meta.ejecucion_4}}</td>
-						<td>{{ meta.ejecucion_5}}</td>
-						<td>{{ meta.ejecucion_6}}</td>
-						<td>{{ meta.ejecucion_7}}</td>
-						<td>{{ meta.ejecucion_8}}</td>
-						<td>{{ meta.ejecucion_9}}</td>
-						<td>{{ meta.ejecucion_10}}</td>
-						<td>{{ meta.ejecucion_11}}</td>
-						<td>{{ meta.ejecucion_12}}</td>						
+						<td style="text-align: right;">{{ meta.ejecucion_1 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_2 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_3 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_4 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_5 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_6 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_7 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_8 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_9 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_10 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_11 | number}}</td>
+						<td style="text-align: right;">{{ meta.ejecucion_12 | number}}</td>						
 					</tr>
 					<tr>
 						<td>Vigente</td>
-						<td>{{ meta.vigente_1 }}</td>
-						<td>{{ meta.vigente_2 }}</td>
-						<td>{{ meta.vigente_3 }}</td>
-						<td>{{ meta.vigente_4 }}</td>
-						<td>{{ meta.vigente_5 }}</td>
-						<td>{{ meta.vigente_6 }}</td>
-						<td>{{ meta.vigente_7 }}</td>
-						<td>{{ meta.vigente_8 }}</td>
-						<td>{{ meta.vigente_9 }}</td>
-						<td>{{ meta.vigente_10 }}</td>
-						<td>{{ meta.vigente_11 }}</td>
-						<td>{{ meta.vigente_12 }}</td>						
+						<td style="text-align: right;">{{ meta.vigente_1  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_2  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_3  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_4  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_5  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_6  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_7  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_8  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_9  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_10  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_11  | number}}</td>
+						<td style="text-align: right;">{{ meta.vigente_12  | number}}</td>						
 					</tr>
 					<tr ng-repeat-end>
 						<td>Modificación</td>
-						<td>{{ meta.modificacion_1 }}</td>
-						<td>{{ meta.modificacion_2 }}</td>
-						<td>{{ meta.modificacion_3 }}</td>
-						<td>{{ meta.modificacion_4 }}</td>
-						<td>{{ meta.modificacion_5 }}</td>
-						<td>{{ meta.modificacion_6 }}</td>
-						<td>{{ meta.modificacion_7 }}</td>
-						<td>{{ meta.modificacion_8 }}</td>
-						<td>{{ meta.modificacion_9 }}</td>
-						<td>{{ meta.modificacion_10 }}</td>
-						<td>{{ meta.modificacion_11 }}</td>
-						<td>{{ meta.modificacion_12 }}</td>						
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_1 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_1  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_2 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_2  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_3 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_3  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_4 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_4  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_5 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_5  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_6 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_6  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_7 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_7  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_8 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_8  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_9 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_9  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_10 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_10  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_11 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_11  | number}}</td>
+						<td style="text-align: right;" ng-style="{ color: meta.modificacion_12 >= 0 ? 'green' : 'red' }">{{ meta.modificacion_12  | number}}</td>						
 					</tr>
 				</tbody>
 			</table>
@@ -126,12 +126,15 @@
 </div>
 <br/>
 <br/>
+<div class="row" style="margin-bottom: 10px;">
+	<div class="col-sm-12" style="text-align: center; font-size: 16px; font-weight: bold;">{{ ejecucion.titulo }}</div>
+</div>
 <br/>
 <div class="row">
 	<div ui-i18n="es" class="col-sm-12">
 		<div class="row" style="margin-bottom: 10px;">
 			<div class="col-sm-11" style="float: left;">
-				<a href class="btn btn-default no-border" ng-click="" ng-disabled="ejecucion.showloading">ADMINISTRACIÓN CENTRAL</a>
+				<a href="#!/dashboards/ejecucionfisica" class="btn btn-default no-border" ng-disabled="ejecucion.showloading">ADMINISTRACIÓN CENTRAL</a>
 				<span ng-hide="ejecucion.entidad.id==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(2, false)" ng-disabled="ejecucion.showloading">[ {{ ejecucion.entidad.id }} ] {{ ejecucion.entidad.nombre }}</a></span>
 				<span ng-hide="ejecucion.unidad_ejecutora==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(3, false)" ng-disabled="ejecucion.showloading">[ {{ ejecucion.unidad_ejecutora}} ] {{ ejecucion.unidad_ejecutora_nombre }}</a></span>
 				<span ng-hide="ejecucion.programa==null"> / <a href class="btn btn-default no-border" ng-click="ejecucion.goLevel(4, false)" ng-disabled="ejecucion.showloading">[ {{ ejecucion.programa}} ] {{ ejecucion.programa_nombre }}</a></span>

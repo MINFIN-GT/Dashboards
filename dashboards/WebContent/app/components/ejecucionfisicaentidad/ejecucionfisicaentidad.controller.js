@@ -27,6 +27,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 			this.proyecto = null;
 			this.actividad = null;
 			this.obra = null;
+			this.titulo = "";
 			
 			this.lastupdate = "";
 			
@@ -58,6 +59,24 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 			this.goLevel=function(level, mantain_select){
 			
 				this.level = level;
+				
+				switch(this.level){
+		    		case 2:
+		    			this.titulo = 'Unidades Ejecutoras';
+		    			break;
+		    		case 3:
+		    			this.titulo = 'Programas';
+		    			break;
+		    		case 4:
+		    			this.titulo = 'Subprogramas';
+		    			break;
+		    		case 5:
+		    			this.titulo = 'Proyectos';
+		    			break;
+		    		case 6:
+		    			this.titulo = 'Actividades / Obras';
+		    			break;
+		    	}
 				
 				if(this.level<7){
 	    			this.actividad = null;
@@ -97,6 +116,9 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 						    	var serie_presupuestaria=[];
 						    	var serie_fisica=[];
 						    	var spi=0.0;
+						    	this.ejecucion_financiera = 0;
+						    	this.vigente_financiero = 0;
+						    	this.ejecucion_fisica = 0;
 						    	for(var i=0; i<response.data.entidades.length; i++){
 						    		this.ejecucion_financiera += response.data.entidades[i].ejecutado_financiero;
 						    		this.vigente_financiero += response.data.entidades[i].vigente_financiero;
@@ -110,7 +132,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 						    	
 						    	this.total_ejecucion_financiera = (this.ejecucion_financiera / this.vigente_financiero )*100;
 						    	this.total_ejecucion_fisica = (this.ejecucion_fisica / response.data.entidades.length);
-						    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/(8.33*this.month))*100;
+						    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*this.month))*100;
 						    	this.total_spi = (spi) / response.data.entidades.length;
 						    	
 						    	if(this.indicador_total_ejecucion<50)

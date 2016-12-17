@@ -129,13 +129,13 @@ public class SEjecucionFisica extends HttpServlet {
 			sttemp.porcentaje_ejecucion_fisica = centidad.getPorcentaje_ejecucion_fisica();
 			sttemp.ejecutado_financiero = centidad.getEjecutado_financiero();
 			sttemp.vigente_financiero = centidad.getVigente_financiero();
-			sttemp.spi = (new BigDecimal((sttemp.porcentaje_ejecucion_fisica*100)/((100/12)*now.getMonthOfYear())).setScale(2,BigDecimal.ROUND_HALF_DOWN)).doubleValue(); 
-			double semaforo = ((sttemp.porcentaje_ejecucion_fisica)/(8.33*now.getMonthOfYear()))*100;
+			sttemp.spi = (new BigDecimal((sttemp.porcentaje_ejecucion_fisica*100.00)/((100.00/12.00)*now.getMonthOfYear())).setScale(2,BigDecimal.ROUND_HALF_DOWN)).doubleValue(); 
+			double semaforo = ((sttemp.porcentaje_ejecucion_fisica)/((100.00/12.00)*now.getMonthOfYear()))*100.00;
 			if(semaforo<50)
 				sttemp.icono_ejecucion_anual = 4;
 			else if(semaforo<75)
 				sttemp.icono_ejecucion_anual = 2;
-			else if(semaforo<100)
+			else if(semaforo<=100)
 				sttemp.icono_ejecucion_anual = 3;
 			else
 				sttemp.icono_ejecucion_anual = 1;
