@@ -15,7 +15,7 @@ import utilities.CLogger;
 
 public class CEjecucionFisicaDAO {
 	
-	public static ArrayList<CEjecucionFisicaMensualizada> getEjecucionFisicaMensual(Integer level,Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
+	public static ArrayList<CEjecucionFisicaMensualizada> getEjecucionFisicaMensual(Integer level,Integer ejercicio, Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
 			Integer proyecto, Integer actividad, Integer obra){		
 		final ArrayList<CEjecucionFisicaMensualizada> entidades=new ArrayList<CEjecucionFisicaMensualizada>();
 		if(CDatabase.connect()){
@@ -106,7 +106,8 @@ public class CEjecucionFisicaDAO {
 				 	" 	 		sum(case when mes<=12 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=12 then modificacion else 0 end)) ejecucion_porcentaje_12       " + 
 				 	" 	 		from mv_ejecucion_fisica       " + 
 				 	" 	 		where mes <= ?    " + 
-				 	"			and entidad = ? "+
+				 	"			and ejercicio = ? " +		
+				 	"			and entidad = ? " +
 				 	" 		   	group by ejercicio, entidad, entidad_nombre, unidad_ejecutora,        " + 
 				 	" 		 	programa,  subprograma,  proyecto,  actividad, obra, codigo_meta   " + 
 				 	" 		) t1     " + 
@@ -145,7 +146,8 @@ public class CEjecucionFisicaDAO {
 				 	" 	sum(case when mes=12 then vigente else 0 end) vigente_12       " + 
 				 	"  	from mv_ejecucion_presupuestaria     " + 
 				 	"  	where mes <= ?     " + 
-				 	"	and entidad = ? "+	
+				 	"   and ejercicio = ? " +
+				 	"	and entidad = ? " +	
 				 	"  	group by ejercicio, entidad,entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra " + 
 				 	"  ) ep       " + 
 				 	"  on ( ef.entidad = ep.entidad " + 
@@ -164,10 +166,12 @@ public class CEjecucionFisicaDAO {
 				 	(actividad!=null ? " and ef.actividad = "+actividad : "")+
 				 	(obra!=null ? " and ef.obra = "+obra : "")+
 				 	"  group by "+group);
-					pstm1.setInt(1, now.getMonthOfYear());
-					pstm1.setInt(2, entidad);
-					pstm1.setInt(3, now.getMonthOfYear());
-					pstm1.setInt(4, entidad);
+					pstm1.setInt(1, ejercicio<now.getYear() ? 12 : now.getMonthOfYear());
+					pstm1.setInt(2, ejercicio);
+					pstm1.setInt(3, entidad);
+					pstm1.setInt(4, ejercicio<now.getYear() ? 12 : now.getMonthOfYear());
+					pstm1.setInt(5, ejercicio);
+					pstm1.setInt(6, entidad);
 					ResultSet results=pstm1.executeQuery();
 					while (results.next()){
 						 CEjecucionFisicaMensualizada ejecucion = new CEjecucionFisicaMensualizada(
@@ -215,7 +219,7 @@ public class CEjecucionFisicaDAO {
 		return entidades;
 	}
 	
-	public static ArrayList<CEjecucionFisica> getEjecucion(Integer level,Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
+	public static ArrayList<CEjecucionFisica> getEjecucion(Integer level,Integer ejercicio,Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
 			Integer proyecto, Integer actividad, Integer obra){		
 		final ArrayList<CEjecucionFisica> entidades=new ArrayList<CEjecucionFisica>();
 		if(CDatabase.connect()){
@@ -240,7 +244,7 @@ public class CEjecucionFisicaDAO {
 					 case 2: //Devuelve todas las unidades_ejecutoras
 					 	select = "ep.unidad_ejecutora id, est.nombre";
 					 	select_estructura = "unidad_ejecutora, unidad_ejecutora_nombre nombre";
-					 	where_estructura = " where entidad = "+entidad;
+					 	where_estructura = " and entidad = "+entidad;
 					 	groupby_estructura = "unidad_ejecutora, unidad_ejecutora_nombre";
 					 	where = " ep.entidad="+entidad+" and ep.unidad_ejecutora = est.unidad_ejecutora ";
 					 	groupby="ep.unidad_ejecutora, est.nombre, est.sigla";
@@ -248,7 +252,7 @@ public class CEjecucionFisicaDAO {
 					 case 3: //Devuelve todas las programas
 					 	select = "ep.programa id, est.nombre";
 					 	select_estructura = "programa, programa_nombre nombre";
-					 	where_estructura = " where entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora;
+					 	where_estructura = " and entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora;
 					 	groupby_estructura = "programa, programa_nombre";
 					 	where = " ep.entidad="+entidad+" and ep.unidad_ejecutora="+unidad_ejecutora+" and ep.programa = est.programa ";
 					 	groupby="ep.programa, est.nombre, est.sigla";
@@ -256,7 +260,7 @@ public class CEjecucionFisicaDAO {
 					 case 4: //Devuelve todas las subprogramas
 					 	select = "ep.subprograma id, est.nombre";
 					 	select_estructura = "subprograma, subprograma_nombre nombre";
-					 	where_estructura = " where entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora+" and programa = "+ programa;
+					 	where_estructura = " and entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora+" and programa = "+ programa;
 					 	groupby_estructura = "subprograma, subprograma_nombre";
 					 	where = " ep.entidad="+entidad+" and ep.unidad_ejecutora="+unidad_ejecutora+" and ep.programa = "+programa+" and ep.subprograma = est.subprograma ";
 					 	groupby="ep.subprograma, est.nombre, est.sigla";
@@ -264,7 +268,7 @@ public class CEjecucionFisicaDAO {
 					 case 5: //Devuelve todas las proyectos
 					 	select = "ep.proyecto id, est.nombre";
 					 	select_estructura = "proyecto, proyecto_nombre nombre";
-					 	where_estructura = " where entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora+" and programa = "+ programa+" and subprograma = "+subprograma;
+					 	where_estructura = " and entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora+" and programa = "+ programa+" and subprograma = "+subprograma;
 					 	groupby_estructura = "proyecto, proyecto_nombre";
 					 	where = " ep.entidad="+entidad+" and ep.unidad_ejecutora="+unidad_ejecutora+" and ep.programa = "+programa+" and ep.subprograma = "+subprograma+" and ep.proyecto = est.proyecto ";
 					 	groupby="ep.proyecto, est.nombre, est.sigla";
@@ -272,15 +276,14 @@ public class CEjecucionFisicaDAO {
 					 case 6: //Actividad /Obra
 					 	select = "ep.actividad id, ep.obra obra, est.nombre";
 					 	select_estructura = "actividad, obra, actividad_obra_nombre nombre";
-					 	where_estructura = " where entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora+" and programa = "+ programa+" and subprograma = "+subprograma+" and proyecto = "+proyecto;
+					 	where_estructura = " and entidad = "+entidad+" and unidad_ejecutora = "+unidad_ejecutora+" and programa = "+ programa+" and subprograma = "+subprograma+" and proyecto = "+proyecto;
 					 	groupby_estructura = "actividad, obra, actividad_obra_nombre";
 					 	where = " ep.entidad="+entidad+" and ep.unidad_ejecutora="+unidad_ejecutora+" and ep.programa = "+programa+" and ep.subprograma = "+subprograma+" and ep.proyecto="+proyecto+" and ep.actividad = est.actividad and ep.obra = est.obra ";
 					 	groupby="ep.actividad, ep.obra, est.nombre, est.sigla";
 					 	break;
 					}
 						DateTime now = new DateTime();    
-						PreparedStatement pstm1 =  conn.prepareStatement("SELECT ep.ejercicio,   " + 
-					 	select + ",   " + 
+						PreparedStatement pstm1 =  conn.prepareStatement("SELECT " +select + ",   " + 
 					 	"est.sigla,   " + 
 					 	"ifnull(sum(ep.ejecucion_presupuestaria),0) ejecucion_presupuestaria,    " + 
 					 	"ifnull(sum(ep.vigente_presupuestario),0) vigente_presupuestario,    " + 
@@ -288,22 +291,22 @@ public class CEjecucionFisicaDAO {
 					 	"sum(ep.vigente_presupuestario),0) ejecucion_fisica_ponderada   " + 
 					 	"FROM    " + 
 					 	"(   " + 
-					 	"	select t1.ejercicio, t1.entidad, t1.unidad_ejecutora, t1.programa, t1.subprograma, t1.proyecto, t1.actividad, t1.obra, " + 
+					 	"	select t1.entidad, t1.unidad_ejecutora, t1.programa, t1.subprograma, t1.proyecto, t1.actividad, t1.obra, " + 
 					 	"	avg(ejecucion_fisica_porcentaje) ejecucion_fisica_porcentaje " + 
 					 	"	from ( " + 
-					 	"		SELECT e.ejercicio, e.entidad, e.unidad_ejecutora, e.programa, e.subprograma, e.proyecto, e.actividad, e.obra, e.codigo_meta, " + 
+					 	"		SELECT e.entidad, e.unidad_ejecutora, e.programa, e.subprograma, e.proyecto, e.actividad, e.obra, e.codigo_meta, " + 
 					 	"       	sum(e.ejecucion)/(avg(e.cantidad)+sum(e.modificacion)) ejecucion_fisica_porcentaje " + 
 					 	" 		FROM mv_ejecucion_fisica e " + 
-					 	" 		WHERE e.mes <= ?  " + 
+					 	" 		WHERE e.ejercicio = ? and e.mes <= ?  " + 
 					 	"       	group by e.ejercicio, e.entidad, e.unidad_ejecutora, e.programa, e.subprograma, e.proyecto, e.actividad, e.obra, e.codigo_meta " + 
 					 	"	) t1 	 " + 
-					 	"	group by t1.ejercicio,  t1.entidad,  t1.unidad_ejecutora,  t1.programa,  t1.subprograma,  t1.proyecto,  t1.actividad,  t1.obra   " +
+					 	"	group by t1.entidad,  t1.unidad_ejecutora,  t1.programa,  t1.subprograma,  t1.proyecto,  t1.actividad,  t1.obra   " +
 					 	") ef left outer join  (   " + 
-					 	"	select ejercicio, entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra, sum(ano_actual) ejecucion_presupuestaria,   " + 
+					 	"	select entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra, sum(ano_actual) ejecucion_presupuestaria,   " + 
 					 	"	sum(case when mes=? then vigente else 0 end) vigente_presupuestario   " + 
 					 	"	from mv_ejecucion_presupuestaria   " + 
-					 	"	where mes<=?   " + 
-					 	"	group by ejercicio, entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra   " +  
+					 	"	where ejercicio=? and mes<=?   " + 
+					 	"	group by entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra   " +  
 					 	") ep    " + 
 					 	"on (   " + 
 					 	"	ep.entidad = ef.entidad   " + 
@@ -314,17 +317,20 @@ public class CEjecucionFisicaDAO {
 					 	"	and ep.actividad = ef.actividad   " + 
 					 	"	and ep.obra = ef.obra   " + 
 					 	"), (   " + 
-					 	"	select ejercicio, "+select_estructura+", sigla   " + 
+					 	"	select "+select_estructura+", sigla   " + 
 					 	"	from mv_estructura  " + 
-					 	where_estructura +
-					 	"	group by ejercicio, "+groupby_estructura+", sigla    " + 
+					 	" 	where ejercicio = ? "+ where_estructura +
+					 	"	group by "+groupby_estructura+", sigla    " + 
 					 	") est   " + 
-					 	"where est.ejercicio = ep.ejercicio    " + 
-					 	"and "+where+" " + 
-					 	"group by ep.ejercicio, "+groupby+", est.sigla");
-					pstm1.setInt(1, now.getMonthOfYear());
-					pstm1.setInt(2, now.getMonthOfYear());
-					pstm1.setInt(3, now.getMonthOfYear());
+					 	"where "+where+" " + 
+					 	"group by "+groupby+", est.sigla");
+					int mes=(ejercicio<now.getYear()) ? 12 : now.getMonthOfYear();
+					pstm1.setInt(1, ejercicio);
+					pstm1.setInt(2, mes);
+					pstm1.setInt(3, mes);
+					pstm1.setInt(4, ejercicio);
+					pstm1.setInt(5, mes);
+					pstm1.setInt(6, ejercicio);
 					ResultSet results=pstm1.executeQuery();
 					while (results.next()){
 						 CEjecucionFisica tentidad = new CEjecucionFisica(level==6 ? results.getInt("obra") : null, results.getInt("id"), 
@@ -356,7 +362,6 @@ public class CEjecucionFisicaDAO {
 			Connection conn = CDatabase.getConnection();
 			try{
 				if(!conn.isClosed()){
-					DateTime now = new DateTime();    
 					PreparedStatement pstm1 =  conn.prepareStatement("select ef.*, m.descripcion, m.fecha_inicio, m.fecha_fin " + 
 							"from ( " + 
 							"select ef.ejercicio, ef.entidad, ef.unidad_ejecutora, ef.programa, ef.subprograma, ef.proyecto,  " + 
@@ -409,16 +414,16 @@ public class CEjecucionFisicaDAO {
 							"group by ef.ejercicio,  ef.entidad,  ef.unidad_ejecutora,  ef.programa,  ef.subprograma,  ef.proyecto,  ef.actividad, " + 
 							"ef.codigo_meta " + 
 							") ef, sf_meta m " + 
-							"where ef.entidad = m.entidad " + 
+							"where ef.ejercicio = m.ejercicio " +
+							"and ef.entidad = m.entidad " + 
 							"and ef.unidad_ejecutora = m.unidad_ejecutora " + 
 							"and ef.programa = m.programa " + 
 							"and ef.subprograma = m.subprograma " + 
 							"and ef.proyecto = m.proyecto " + 
 							"and ef.actividad = m.actividad " + 
 							"and ef.obra = m.obra " + 
-							"and ef.codigo_meta = m.codigo_meta "
-							+ "order by ef.codigo_meta ");
-					pstm1.setInt(1, now.getYear());
+							"and ef.codigo_meta = m.codigo_meta ");
+					pstm1.setInt(1, ejercicio);
 					pstm1.setInt(2, entidad);
 					pstm1.setInt(3, unidad_ejecutora);
 					pstm1.setInt(4, programa);

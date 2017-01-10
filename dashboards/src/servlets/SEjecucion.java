@@ -90,7 +90,7 @@ public class SEjecucion extends HttpServlet {
 		String action = map.get("action");
 		if(action.compareTo("entidadesData")==0){
 			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : 0;
-			int ano = map.get("ano")!=null ? Integer.parseInt(map.get("ano")) : 0;
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : 0;
 			int level = map.get("level")!=null ? Integer.parseInt(map.get("level")) : 0;
 			int entidad = map.get("entidad")!=null ? Integer.parseInt(map.get("entidad")) : 0;
 			String fuentes = map.get("fuentes");
@@ -107,13 +107,13 @@ public class SEjecucion extends HttpServlet {
 			ArrayList<CEjecucion> entidades=null; 
 			
 				switch(level){
-					case 1: entidades = CEjecucionDAO.getEntidadesEjecucion(mes,fuentes,grupos, todosgrupos); break;
-					case 2: entidades = CEjecucionDAO.getUnidadesEjecutorasEjecucion(entidad,mes,fuentes,grupos, todosgrupos); break;
-					case 3: entidades = CEjecucionDAO.getProgramasEjecucion(entidad, unidad_ejecutora, mes, fuentes, grupos); break;
-					case 4: entidades = CEjecucionDAO.getSubProgramasEjecucion(entidad, unidad_ejecutora,programa, mes, fuentes, grupos); break;
-					case 5: entidades = CEjecucionDAO.getProyectosEjecucion(entidad, unidad_ejecutora,programa, subprograma, mes, fuentes, grupos); break;
-					case 6: entidades = CEjecucionDAO.getActividadesObrasEjecucion(entidad, unidad_ejecutora,programa, subprograma, proyecto, mes, fuentes, grupos); break;
-					case 7: entidades = CEjecucionDAO.getRenglonesEjecucion(entidad, unidad_ejecutora,programa, subprograma, proyecto, actividad, obra, mes, fuentes, grupos); break;
+					case 1: entidades = CEjecucionDAO.getEntidadesEjecucion(ejercicio,mes,fuentes,grupos, todosgrupos); break;
+					case 2: entidades = CEjecucionDAO.getUnidadesEjecutorasEjecucion(entidad,ejercicio,mes,fuentes,grupos, todosgrupos); break;
+					case 3: entidades = CEjecucionDAO.getProgramasEjecucion(entidad, unidad_ejecutora, ejercicio,mes, fuentes, grupos); break;
+					case 4: entidades = CEjecucionDAO.getSubProgramasEjecucion(entidad, unidad_ejecutora,programa, ejercicio, mes, fuentes, grupos); break;
+					case 5: entidades = CEjecucionDAO.getProyectosEjecucion(entidad, unidad_ejecutora,programa, subprograma, ejercicio, mes, fuentes, grupos); break;
+					case 6: entidades = CEjecucionDAO.getActividadesObrasEjecucion(entidad, unidad_ejecutora,programa, subprograma, proyecto, ejercicio, mes, fuentes, grupos); break;
+					case 7: entidades = CEjecucionDAO.getRenglonesEjecucion(entidad, unidad_ejecutora,programa, subprograma, proyecto, actividad, obra, ejercicio, mes, fuentes, grupos); break;
 				}
 			
 			if(entidades!=null && entidades.size()>0){
@@ -181,8 +181,8 @@ public class SEjecucion extends HttpServlet {
 								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
 								{"","","","","","","","","","","","","ejecutado_acumulado,vigente"}
 								};
-						extra_lines=new String[][]{{"Año",ano+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
-						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria", headers , ano, extra_lines);
+						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
+						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria", headers , ejercicio, extra_lines);
 					}else if (map.get("excel").compareTo("2")==0){						
 						excel = new CExcel("Ejecucion_Presupuestaria_Acumulada", level==3);
 						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Solicitada", "Cuota Aprobada","Anticipos","Aproabada+Anticipos", "Ejecutado", "Vigente", "% Anual"},
@@ -191,8 +191,8 @@ public class SEjecucion extends HttpServlet {
 								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
 								{"","","","","","","","","","","","","","ejecutado_acumulado,vigente"}
 								};
-						extra_lines=new String[][]{{"Año",ano+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
-						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria Acumulada", headers , ano, extra_lines);
+						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
+						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria Acumulada", headers , ejercicio, extra_lines);
 					}
 					wb.write(outByteStream);
 					byte [] outArray = Base64.encode(outByteStream.toByteArray());

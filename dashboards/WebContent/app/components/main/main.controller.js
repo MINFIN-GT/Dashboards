@@ -23,7 +23,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/dashboards/ejecucionfisica/:reset_grid?',{
             	template: '<div load-on-demand="\'ejecucionfisicaController\'" class="all_page"></div>'
             })
-            .when('/dashboards/ejecucionfisicaentidad/:reset_grid?/:entidad?/:nombre?',{
+            .when('/dashboards/ejecucionfisicaentidad/:reset_grid?/:ejercicio?/:entidad?/:nombre?',{
             	template: '<div load-on-demand="\'ejecucionfisicaentidadController\'" class="all_page"></div>'
             })
             .when('/dashboards/copep/:reset_grid?',{

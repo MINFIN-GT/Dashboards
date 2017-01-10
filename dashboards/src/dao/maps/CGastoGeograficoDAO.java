@@ -24,7 +24,7 @@ public class CGastoGeograficoDAO {
 				String query = "select  geo.nombre, muni.poblacion, gasto.* from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
 						+ "from mv_ejecucion_presupuestaria_geografico "
-						+ (Utils.isNullOrEmpty(where) ? "" : "where " + where) + " group by geografico ) gasto "
+						+ "where ejercicio = ? " + ((Utils.isNullOrEmpty(where) ? "" : "and  " + where)) + " group by geografico ) gasto "
 						+ "left join municipio_demografia muni " + "on ( muni.codigo_municipio = gasto.geografico ) "
 						+ "left join cg_geograficos geo "
 						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? )";
@@ -59,8 +59,8 @@ public class CGastoGeograficoDAO {
 
 				String query = "select  geo.nombre, muni.poblacion, gasto.* from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
-						+ "from mv_ejecucion_presupuestaria_geografico " + "where renglon in (" + renglones + ") "
-						+ " group by geografico ) gasto " + "left join municipio_demografia muni "
+						+ "from mv_ejecucion_presupuestaria_geografico where ejercicio = ? and renglon in (" + renglones + ") "
+						+ " group by geografico ) gasto left join municipio_demografia muni "
 						+ "on ( muni.codigo_municipio = gasto.geografico ) " + "left join cg_geograficos geo "
 						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? )";
 
@@ -68,6 +68,7 @@ public class CGastoGeograficoDAO {
 
 				pstm.setInt(1, mes);
 				pstm.setInt(2, ejercicio);
+				pstm.setInt(3, ejercicio);
 
 				ResultSet results = pstm.executeQuery();
 				while (results.next()) {

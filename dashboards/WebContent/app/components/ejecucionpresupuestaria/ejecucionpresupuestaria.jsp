@@ -59,6 +59,15 @@
 	        <li role="menuitem"><a href ng-click="ejecucion.mesClick(12)">Diciembre</a></li>
 	      </ul>
 	    </div>
+	    <div class="btn-group" uib-dropdown>
+	      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="ejecucion.showloading" style="width: 100px; text-align: left; font-size: 24px;">
+	        {{ ejecucion.ano }} <span class="caret"></span>
+	      </button>
+	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+	        <li role="menuitem"><a href ng-click="ejecucion.anoClick(2017)">2017</a></li>
+	        <li role="menuitem"><a href ng-click="ejecucion.anoClick(2016)">2016</a></li>
+	      </ul>
+	    </div>
 	    <span ng-show="ejecucion.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
     </div>
 </div>

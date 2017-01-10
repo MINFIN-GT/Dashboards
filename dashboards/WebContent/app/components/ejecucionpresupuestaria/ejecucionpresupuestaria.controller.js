@@ -20,6 +20,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 			this.loadAttempted = false;
 			this.level=1; //1 Entidades, 2 Unidad Ejecutora, 3 Renglon
 			this.month=1;
+			this.ano = moment().year();
 			this.entidad = null;
 			this.unidad_ejecutora = null;
 			this.programa = null;
@@ -114,7 +115,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				this.level = level;
 				this.showloading=true;
 				this.loadAttempted=false;
-				var data = { action: 'entidadesData', ano:current_year, nmes:this.nmonth, mes: this.month, level: this.level, 
+				var data = { action: 'entidadesData', ejercicio: this.ano, nmes:this.nmonth, mes: this.month, level: this.level, 
 						entidad: this.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
 						proyecto: this.proyecto, actividad: this.actividad, obra: this.obra,
 						fuentes: this.getFuentes(), 
@@ -441,6 +442,11 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				this.goLevel(this.level, true);
 			}
 			
+			this.anoClick=function(ano){
+				this.ano=ano;
+				this.goLevel(this.level, true);
+			}
+			
 			this.chartOptions= {
 					bezierCurve : false,
 					datasetStrokeWidth : 6,
@@ -522,7 +528,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 			}.bind(this);
 			
 			this.exportXLS=function(){
-				var data = { action: 'entidadesData',ano:current_year,nmes:this.nmonth, mes: this.month, level: this.level, 
+				var data = { action: 'entidadesData', ejercicio: this.ano,nmes:this.nmonth, mes: this.month, level: this.level, 
 						entidad: this.entidad, ue: this.unidad_ejecutora, fuentes: this.getFuentes(), 
 						grupos: this.getGrupos(), todosgrupos: this.todosgrupos, excel: 1, t: (new Date()).getTime() };
 				$http.post('/SEjecucion', data).then(function successCallback(response) {
