@@ -15,6 +15,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 	me.showloading = false;
 	me.mes = 1;
 	me.nmonth = "Enero";
+	me.ejercicio = moment().year();
 
 	me.map = null;
 
@@ -107,6 +108,10 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 		}
 
 	};
+	
+	me.anoClick =  function(n_ano){
+		this.ejercicio = n_ano;
+	}
 
 	function errorCallback(response) {
 
@@ -214,7 +219,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 		var data = {
 			action : "gastogeografico",
 			mes : me.mes,
-			ejercicio : 2016,
+			ejercicio : me.ejercicio,
 			grupos : me.getGrupos(),
 			fuentes : me.getFuentes()
 		};
@@ -238,7 +243,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 
 		if (!me.fuentes_loaded) {
 			$http.post('/SGrupoGasto', {
-				ejercicio : 2016,
+				ejercicio : me.ejercicio,
 				t : (new Date()).getTime()
 			}).then(loadGrupoGasto, errorCallback);
 		}
@@ -360,7 +365,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 													var data = {
 														action : "gastomunicipio",
 														mes : me.mes,
-														ejercicio : 2016,
+														ejercicio : me.ejercicio,
 														grupos : me.getGrupos(),
 														fuentes : me
 																.getFuentes(),
@@ -399,6 +404,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 			backdrop : 'static',
 			resolve : {
 				param : config.data,
+				ejercicio: me.ejercicio,
 				info : JSON.parse(config.data.gasto),
 				gasto : data
 			}
@@ -406,7 +412,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 	}
 }
 
-function modalInfoGastoGeneralController($uibModalInstance, $http, $log, param,
+function modalInfoGastoGeneralController($uibModalInstance, $http, $log, param,ejercicio,
 		info, gasto) {
 	var me = this;
 
@@ -416,6 +422,7 @@ function modalInfoGastoGeneralController($uibModalInstance, $http, $log, param,
 
 	me.info = info;
 	me.gasto = gasto.gasto;
+	me.ejercicio = ejercicio;
 
 	me.nivel = 1;
 
@@ -435,7 +442,7 @@ function modalInfoGastoGeneralController($uibModalInstance, $http, $log, param,
 		var newData = {
 			action : "gastomunicipio",
 			mes : me.mes,
-			ejercicio : 2016,
+			ejercicio : me.ejercicio,
 			fuentes : me.fuentes,
 			grupos : me.grupos,
 			geografico : me.info.geografico,

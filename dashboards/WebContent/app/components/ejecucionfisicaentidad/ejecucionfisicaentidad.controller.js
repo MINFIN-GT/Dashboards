@@ -17,6 +17,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 			this.loadAttempted = false;
 			
 			this.month= moment().month()+1;
+			this.ano = $routeParams.ejercicio;
 			
 			this.entidad = {};
 			this.entidad.nombre = $routeParams.nombre;
@@ -31,7 +32,6 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 			
 			this.lastupdate = "";
 			
-			var ano_actual = moment().year();
 			this.chartLabels=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 	    	this.chartSeries = ['Ejecución Presupuestaria', 'Ejecución Física'];
 			this.chartData = [];
@@ -104,7 +104,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 	    			this.showloading=true;
 					this.loadAttempted=false;
 					
-		    		var data_e = { action: 'entidadesData', level: this.level, 
+		    		var data_e = { action: 'entidadesData', level: this.level, ejercicio: this.ano,
 							entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
 							proyecto: this.proyecto, actividad: this.actividad, obra: this.obra,
 							t: (new Date()).getTime() };
@@ -130,7 +130,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 						    	
 						    	this.total_ejecucion_financiera = (this.ejecucion_financiera / this.vigente_financiero )*100;
 						    	this.total_ejecucion_fisica = (this.ejecucion_fisica / response.data.entidades.length);
-						    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*this.month))*100;
+						    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*( this.ano<moment().year() ? 12 : this.month)))*100;
 						    	
 						    	if(this.indicador_total_ejecucion<50)
 						    		this.indicador_total_ejecucion = 4;
@@ -164,6 +164,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 	    			      resolve: {
 	    			        estructura: function () {
 	    			          return {
+	    			        	  ejercicio: this.ano,
 	    			        	  entidad: this.entidad,
 	    			        	  unidad_ejecutora: this.unidad_ejecutora,
 	    			        	  programa: this.programa,
@@ -237,8 +238,9 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 					    		  	case 5: this.proyecto = row.entity.entidad; break;
 					    		  	case 6: this.actividad = row.entity.entidad; break;
 					    		  };
-					    		  $http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level, entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
-										proyecto: this.proyecto, actividad: this.actividad, obra: this.obra, t: (new Date()).getTime() }).
+					    		  $http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level, ejercicio: this.ano,
+					    			  entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
+					    			  proyecto: this.proyecto, actividad: this.actividad, obra: this.obra, t: (new Date()).getTime() }).
 					    			then(function(response){
 									    if(response.data.success){
 									    	var serie_presupuestaria=[];
@@ -268,7 +270,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 					    		  	case 5: this.proyecto = null; break;
 					    		  	case 6: this.actividad = null; break;
 					    		  };
-					    		  var data = { action: 'ejecucionMensualizada', level: this.level-1, 
+					    		  var data = { action: 'ejecucionMensualizada', level: this.level-1, ejercicio: this.ano,
 											entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
 											proyecto: this.proyecto, actividad: this.actividad, obra: this.obra,
 											t: (new Date()).getTime() };
@@ -402,7 +404,8 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 					this.showloading=true;
 					this.loadAttempted=false;
 					row.setSelected(false);
-					$http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level, entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
+					$http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level, ejercicio: this.ano, 
+						entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
 						proyecto: this.proyecto, actividad: this.actividad, obra: this.obra, t: (new Date()).getTime() }).
 	    			then(function(response){
 					    if(response.data.success){
@@ -429,7 +432,8 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 				$event.stopPropagation();
 			}
 			
-			$http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level-1, entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
+			$http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level-1, ejercicio: this.ano, 
+				entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
 				proyecto: this.proyecto, actividad: this.actividad, obra: this.obra, t: (new Date()).getTime() }).
 			then(function(response){
 			    if(response.data.success){
@@ -451,7 +455,33 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 		 	}
 			);
 			
-			
+			this.anoClick=function(n_ano){
+				this.ano = n_ano;
+				this.goLevel(this.level<7 ? this.level : 6, false);
+				
+				$http.post('/SEjecucionFisica', { action: 'ejecucionMensualizada', level: this.level-1, ejercicio: this.ano, 
+					entidad: $routeParams.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
+					proyecto: this.proyecto, actividad: this.actividad, obra: this.obra, t: (new Date()).getTime() }).
+				then(function(response){
+				    if(response.data.success){
+				    	var serie_presupuestaria=[];
+				    	var serie_fisica=[];
+				    	
+				    	for(var i=1; i<13; i++){
+				    		serie_presupuestaria.push(Math.round(response.data.ejecucion[0]['ejecucion_presupuestaria_'+i]*100)/100);
+				    		serie_fisica.push(Math.round(response.data.ejecucion[0]['ejecucion_porcentaje_'+i]*100)/100);
+				    	}
+				    	this.chartData=[];
+				    	this.chartData.push(serie_presupuestaria);
+				    	this.chartData.push(serie_fisica);
+				    }
+				    this.showloading=false;
+				    this.loadAttempted=true;
+			 	}.bind(this), function errorCallback(response){
+			 		
+			 	}
+				);
+			}
 			
 		}
 	]);
@@ -461,7 +491,7 @@ angular.module('ejecucionfisicaentidadController',['dashboards','ui.bootstrap'])
 		$scope.loading_metas=true;
 		$scope.metas = [];
 
-		$http.post('/SEjecucionFisica', { action: 'metas', entidad: estructura.entidad.id, ue: estructura.unidad_ejecutora,  
+		$http.post('/SEjecucionFisica', { action: 'metas', ejercicio: estructura.ejercicio, entidad: estructura.entidad.id, ue: estructura.unidad_ejecutora,  
 			programa: estructura.programa, subprograma: estructura.subprograma,
 			proyecto: estructura.proyecto, actividad: estructura.actividad, obra: estructura.obra, t: (new Date()).getTime() }).
 		then(function(response){

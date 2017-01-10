@@ -24,7 +24,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			
 			this.lastupdate = "";
 			
-			var ano_actual = moment().year();
+			this.ano = moment().year();
 			this.chartLabels = [];
 			this.chartSeries = ['Ejecución Presupuestaria', 'Ejecución Física'];
 			this.chartData = [];
@@ -52,11 +52,12 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			
 				this.showloading=true;
 				this.loadAttempted=false;
-				var data = { action: 'entidadesData', level: 1, t: (new Date()).getTime() };
+				var data = { action: 'entidadesData', level: 1, ejercicio: this.ano, t: (new Date()).getTime() };
 				this.chartData=[];
 	    		this.chartTitle = 'ADMINISTRACIÓN CENTRAL';
 	    		$http.post('/SEjecucionFisica', data).then(function(response){
 					    if(response.data.success){
+					    	this.chartLabels = [];
 					    	if(!mantain_select)
 					    		this.row_selected=[];
 					    	//var ejecucion_financiera=0.0, ejecucion_fisica=0.0, vigente_financiero=0.0;
@@ -81,7 +82,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					    	
 					    	this.total_ejecucion_financiera = (this.ejecucion_financiera / this.vigente_financiero )*100;
 					    	this.total_ejecucion_fisica = (this.ejecucion_fisica / response.data.entidades.length);
-					    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*this.month))*100;
+					    	this.indicador_total_ejecucion = ((this.total_ejecucion_fisica)/((100/12)*( this.ano<moment().year() ? 12 : this.month)))*100;
 					    	
 					    	if(this.indicador_total_ejecucion<50)
 					    		this.indicador_total_ejecucion = 4;
@@ -272,7 +273,7 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 			}
 			
 			this.clickRow = function(row){
-				$location.path('/dashboards/ejecucionfisicaentidad/1/'+row.entity.entidad+'/'+row.entity.nombre)
+				$location.path('/dashboards/ejecucionfisicaentidad/1/'+this.ano+'/'+row.entity.entidad+'/'+row.entity.nombre)
 			}
 			
 			this.resetView = function(){
@@ -280,6 +281,11 @@ angular.module('ejecucionfisicaController',['dashboards']).controller('ejecucion
 					$route.reload();
 				else
 					$location.path('/dashboards/ejecucionfisica/gt1');
+			}
+			
+			this.anoClick=function(n_ano){
+				this.ano = n_ano;
+				this.goLevel(this.level, true);
 			}
 		}
 	]);

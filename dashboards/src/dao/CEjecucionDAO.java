@@ -5,15 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.joda.time.DateTime;
-
 import db.utilities.CDatabase;
 import pojo.CEjecucion;
 import utilities.CLogger;
 
 public class CEjecucionDAO { 
 	
-	public static ArrayList<CEjecucion> getEntidadesEjecucion(int mes, String fuentes, String gruposGasto, boolean todosgrupos){		
+	public static ArrayList<CEjecucion> getEntidadesEjecucion(int ejercicio,int mes, String fuentes, String gruposGasto, boolean todosgrupos){		
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -31,7 +29,8 @@ public class CEjecucionDAO {
 								", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 								", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 								"from mv_ejecucion_presupuestaria ep " + 
-								"where ep.mes <= ? " + 
+								"where ep.ejercicio = ? "+
+								"and ep.mes <= ? " + 
 								"and ep.fuente IN ("+fuentes+") "+
 								"and ep.grupo IN ("+gruposGasto+") "+
 								"group by ep.entidad " + 
@@ -46,7 +45,8 @@ public class CEjecucionDAO {
 								"	, avg(ep.anticipo) anticipo_cuota " + 
 								"	, avg(ep.aprobado) aprobado_cuota " + 
 								"	from mv_ejecucion_presupuestaria ep  " + 
-								"	where ep.mes <= ? " + 
+								"	where ep.ejercicio = ? " +
+								"   and ep.mes <= ? " + 
 								"   and ep.fuente IN ("+fuentes+") "+
 								"   and ep.grupo IN ("+gruposGasto+") "+
 								"	group by ep.ejercicio, ep.mes, ep.entidad, ep.unidad_ejecutora " + 
@@ -60,6 +60,7 @@ public class CEjecucionDAO {
 								"( " + 
 								"	select e.entidad, e.entidad_nombre " + 
 								"	from mv_estructura e " + 
+								"   where e.ejercicio = ? " +
 								"	group by e.entidad, e.entidad_nombre " + 
 								") e " + 
 								"where a.entidad = e.entidad");		
@@ -71,12 +72,15 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
+				pstm1.setInt(9, ejercicio);
 				pstm1.setInt(10, mes);
 				pstm1.setInt(11, mes);
 				pstm1.setInt(12, mes);
 				pstm1.setInt(13, mes);
 				pstm1.setInt(14, mes);
+				pstm1.setInt(15, ejercicio);
+				pstm1.setInt(16, mes);
+				pstm1.setInt(17, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion entidad = new CEjecucion((Integer)null, results.getInt("entidad"), results.getString("entidad_nombre"), results.getDouble("ano_1"), 
@@ -101,7 +105,7 @@ public class CEjecucionDAO {
 		return entidades.size()>0 ? entidades : null;
 	}
 	
-	public static ArrayList<CEjecucion> getUnidadesEjecutorasEjecucion(int entidad, int mes, String fuentes, String gruposGasto, boolean todosgrupos){
+	public static ArrayList<CEjecucion> getUnidadesEjecutorasEjecucion(int entidad, int ejercicio, int mes, String fuentes, String gruposGasto, boolean todosgrupos){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -119,7 +123,8 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 						"from mv_ejecucion_presupuestaria ep " + 
-						"where ep.mes <= ? " + 
+						"where ep.ejercicio = ? " +
+						"and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
 						"and ep.grupo IN ("+gruposGasto+") "+
 						"and ep.entidad = ? "+
@@ -135,7 +140,8 @@ public class CEjecucionDAO {
 						"	, avg(ep.anticipo) anticipo_cuota " + 
 						"	, avg(ep.aprobado) aprobado_cuota " + 
 						"	from mv_ejecucion_presupuestaria ep  " + 
-						"	where ep.mes <= ? " +
+						"	where ep.ejercicio = ? " +
+						"   and ep.mes <= ? " +
 						"	and ep.entidad  = ? "+
 						"   and ep.fuente IN ("+fuentes+") "+
 						"   and ep.grupo IN ("+gruposGasto+") "+
@@ -150,7 +156,7 @@ public class CEjecucionDAO {
 						"( " + 
 						"	select e.unidad_ejecutora, e.unidad_ejecutora_nombre " + 
 						"	from mv_estructura e " +
-						"	where e.entidad = ? "+
+						"	where e.ejercicio = ? and e.entidad = ? "+
 						"	group by e.unidad_ejecutora, e.unidad_ejecutora_nombre " + 
 						") e " + 
 						"where a.unidad_ejecutora = e.unidad_ejecutora");				
@@ -162,15 +168,18 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
-				pstm1.setInt(10, entidad);
-				pstm1.setInt(11, mes);
+				pstm1.setInt(9, ejercicio);
+				pstm1.setInt(10, mes);
+				pstm1.setInt(11, entidad);
 				pstm1.setInt(12, mes);
 				pstm1.setInt(13, mes);
 				pstm1.setInt(14, mes);
 				pstm1.setInt(15, mes);
-				pstm1.setInt(16, entidad);
-				pstm1.setInt(17, entidad);
+				pstm1.setInt(16, ejercicio);
+				pstm1.setInt(17, mes);
+				pstm1.setInt(18, entidad);
+				pstm1.setInt(19, ejercicio);
+				pstm1.setInt(20, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(entidad, results.getInt("unidad_ejecutora"), results.getString("unidad_ejecutora_nombre"), results.getDouble("ano_1"), 
@@ -195,7 +204,7 @@ public class CEjecucionDAO {
 		return entidades.size()>0 ? entidades : null;
 	}
 	
-	public static ArrayList<CEjecucion> getProgramasEjecucion(int entidad, Integer unidad_ejecutora, int mes, String fuentes, String gruposGasto){
+	public static ArrayList<CEjecucion> getProgramasEjecucion(int entidad, Integer unidad_ejecutora, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -213,7 +222,8 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 						"from mv_ejecucion_presupuestaria ep " + 
-						"where ep.mes <= ? " + 
+						"where ep.ejercicio =? "+
+						"and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
 						"and ep.grupo IN ("+gruposGasto+") "+
 						"and ep.entidad = ? "+
@@ -223,7 +233,7 @@ public class CEjecucionDAO {
 						"( " + 
 						"	select e.programa, e.programa_nombre " + 
 						"	from mv_estructura e " +
-						"	where e.entidad = ? "+
+						"	where e.ejercicio = ?  and e.entidad = ? "+
 						(unidad_ejecutora!=null ? "and e.unidad_ejecutora = "+unidad_ejecutora : "") +
 						"	group by e.programa, e.programa_nombre " + 
 						") e " + 
@@ -236,9 +246,11 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
-				pstm1.setInt(10, entidad);
+				pstm1.setInt(9, ejercicio);
+				pstm1.setInt(10, mes);
 				pstm1.setInt(11, entidad);
+				pstm1.setInt(12, ejercicio);
+				pstm1.setInt(13, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora}, results.getInt("programa"), results.getString("programa_nombre"), results.getDouble("ano_1"), 
@@ -262,7 +274,7 @@ public class CEjecucionDAO {
 	}
 	
 	public static ArrayList<CEjecucion> getSubProgramasEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
-			int mes, String fuentes, String gruposGasto){
+			int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -280,7 +292,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 						"from mv_ejecucion_presupuestaria ep " + 
-						"where ep.mes <= ? " + 
+						"where ep.ejercicio = ? and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
 						"and ep.grupo IN ("+gruposGasto+") "+
 						"and ep.entidad = ? "+
@@ -291,7 +303,7 @@ public class CEjecucionDAO {
 						"( " + 
 						"	select e.subprograma, e.subprograma_nombre " + 
 						"	from mv_estructura e " +
-						"	where e.entidad = ? "+
+						"	where e.ejercicio = ? and e.entidad = ? "+
 						(unidad_ejecutora!=null ? " and e.unidad_ejecutora = "+unidad_ejecutora : "") +
 						(programa!=null ? " and e.programa = "+programa : "") +
 						"	group by e.subprograma, e.subprograma_nombre " + 
@@ -305,9 +317,11 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
+				pstm1.setInt(9, ejercicio);
+				pstm1.setInt(10, mes);
 				pstm1.setInt(10, entidad);
-				pstm1.setInt(11, entidad);
+				pstm1.setInt(11, ejercicio);
+				pstm1.setInt(12, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora, programa}, results.getInt("subprograma"), results.getString("subprograma_nombre"), results.getDouble("ano_1"), 
@@ -331,7 +345,7 @@ public class CEjecucionDAO {
 	}
 	
 	public static ArrayList<CEjecucion> getProyectosEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
-			Integer subprograma, int mes, String fuentes, String gruposGasto){
+			Integer subprograma, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -349,7 +363,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 						"from mv_ejecucion_presupuestaria ep " + 
-						"where ep.mes <= ? " + 
+						"where ep.ejercicio = ?  and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
 						"and ep.grupo IN ("+gruposGasto+") "+
 						"and ep.entidad = ? "+
@@ -361,7 +375,7 @@ public class CEjecucionDAO {
 						"( " + 
 						"	select e.proyecto, e.proyecto_nombre " + 
 						"	from mv_estructura e " +
-						"	where e.entidad = ? "+
+						"	where e.ejercicio = ? and e.entidad = ? "+
 						(unidad_ejecutora!=null ? " and e.unidad_ejecutora = "+unidad_ejecutora : "") +
 						(programa!=null ? " and e.programa = "+programa : "") +
 						(subprograma!=null ? " and e.subprograma = "+subprograma : "") +
@@ -376,9 +390,11 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
-				pstm1.setInt(10, entidad);
+				pstm1.setInt(9, ejercicio);
+				pstm1.setInt(10, mes);
 				pstm1.setInt(11, entidad);
+				pstm1.setInt(12, ejercicio);
+				pstm1.setInt(13, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora, programa, subprograma}, results.getInt("proyecto"), results.getString("proyecto_nombre"), results.getDouble("ano_1"), 
@@ -402,7 +418,7 @@ public class CEjecucionDAO {
 	}	
 	
 	public static ArrayList<CEjecucion> getActividadesObrasEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
-			Integer subprograma, Integer proyecto, int mes, String fuentes, String gruposGasto){
+			Integer subprograma, Integer proyecto, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -420,7 +436,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 						"from mv_ejecucion_presupuestaria ep " + 
-						"where ep.mes <= ? " + 
+						"where ep.ejercicio = ? and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
 						"and ep.grupo IN ("+gruposGasto+") "+
 						"and ep.entidad = ? "+
@@ -433,7 +449,7 @@ public class CEjecucionDAO {
 						"( " + 
 						"	select e.actividad, e.obra, e.actividad_obra_nombre " + 
 						"	from mv_estructura e " +
-						"	where e.entidad = ? "+
+						"	where e.ejercicio = ? and e.entidad = ? "+
 						(unidad_ejecutora!=null ? " and e.unidad_ejecutora = "+unidad_ejecutora : "") +
 						(programa!=null ? " and e.programa = "+programa : "") +
 						(subprograma!=null ? " and e.subprograma = "+subprograma : "") +
@@ -449,9 +465,11 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
+				pstm1.setInt(9, ejercicio);
+				pstm1.setInt(10, mes);
 				pstm1.setInt(10, entidad);
-				pstm1.setInt(11, entidad);
+				pstm1.setInt(12, ejercicio);
+				pstm1.setInt(13, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					Integer actividad = results.getInt("actividad");
@@ -477,7 +495,7 @@ public class CEjecucionDAO {
 	}
 
 	public static ArrayList<CEjecucion> getRenglonesEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
-			Integer subprograma, Integer proyecto, Integer actividad, Integer obra, int mes, String fuentes, String gruposGasto){
+			Integer subprograma, Integer proyecto, Integer actividad, Integer obra, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> lista=new ArrayList<CEjecucion>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -495,7 +513,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
 						"from mv_ejecucion_presupuestaria ep " + 
-						"where ep.mes <= ? " + 
+						"where ep.ejercicio = ?  and  ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
 						"and ep.grupo IN ("+gruposGasto+") "+
 						"and ep.entidad = ? "+
@@ -525,9 +543,10 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, mes);
-				pstm1.setInt(10, entidad);
-				pstm1.setInt(11, (new DateTime()).getYear());
+				pstm1.setInt(9, ejercicio);
+				pstm1.setInt(10, mes);
+				pstm1.setInt(11, entidad);
+				pstm1.setInt(12, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
 				int grupo_actual=-1;
 				int subgrupo_actual =-1;
