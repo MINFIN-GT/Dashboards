@@ -44,6 +44,15 @@
 		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(12)">Diciembre</a></li>
 		      </ul>
 		    </div>
+		    <div class="btn-group" uib-dropdown>
+		      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="mapsCM.showloading" style="width: 100px; text-align: left; font-size: 24px;">
+		        {{ mapsCM.ejercicio }} <span class="caret"></span>
+		      </button>
+		      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+		        <li role="menuitem"><a href ng-click="mapsCM.anoClick(2017)">2017</a></li>
+		        <li role="menuitem"><a href ng-click="mapsCM.anoClick(2016)">2016</a></li>
+		      </ul>
+		    </div>
 		    <span ng-show="mapsCM.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
 	    </div>
 	</div>

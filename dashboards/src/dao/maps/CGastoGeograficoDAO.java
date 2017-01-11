@@ -16,23 +16,22 @@ public class CGastoGeograficoDAO {
 		if (CDatabase.connect()) {
 			try {
 
-				String where = (Utils.isNullOrEmpty(fuentes) ? "fuente is null " : "fuente in (" + fuentes + ") ");
-				if (!Utils.isNullOrEmpty(where))
-					where += " and ";
-				where += (Utils.isNullOrEmpty(grupos) ? "grupo is null " : "grupo in (" + grupos + ") ");
-
-				String query = "select  geo.nombre, muni.poblacion, gasto.* from( select geografico,  "
+				String query = "select  geo.nombre, muni.poblacion, geo.geografico, gasto.gasto from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
 						+ "from mv_ejecucion_presupuestaria_geografico "
-						+ "where ejercicio = ? " + ((Utils.isNullOrEmpty(where) ? "" : "and  " + where)) + " group by geografico ) gasto "
-						+ "left join municipio_demografia muni " + "on ( muni.codigo_municipio = gasto.geografico ) "
-						+ "left join cg_geograficos geo "
-						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? )";
+						+ "where ejercicio = ? "
+						+ (!Utils.isNullOrEmpty(fuentes) ? "and fuente in ("+fuentes+") " : "")
+						+ (!Utils.isNullOrEmpty(grupos) ? "and grupo in ("+grupos+") " : "")
+						+ "group by geografico ) gasto "
+						+ "right outer join cg_geograficos geo on ( geo.geografico = gasto.geografico) "
+						+ "left outer join municipio_demografia muni on ( muni.codigo_municipio = gasto.geografico ) "
+						+ "where geo.ejercicio = ? ";
 
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
 
 				pstm.setInt(1, mes);
 				pstm.setInt(2, ejercicio);
+				pstm.setInt(3, ejercicio);
 
 				ResultSet results = pstm.executeQuery();
 				while (results.next()) {
@@ -57,12 +56,13 @@ public class CGastoGeograficoDAO {
 		if (CDatabase.connect()) {
 			try {
 
-				String query = "select  geo.nombre, muni.poblacion, gasto.* from( select geografico,  "
+				String query = "select  geo.nombre, muni.poblacion, geo.geografico, gasto.gasto from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
 						+ "from mv_ejecucion_presupuestaria_geografico where ejercicio = ? and renglon in (" + renglones + ") "
-						+ " group by geografico ) gasto left join municipio_demografia muni "
-						+ "on ( muni.codigo_municipio = gasto.geografico ) " + "left join cg_geograficos geo "
-						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? )";
+						+ " group by geografico ) gasto right outer join cg_geograficos geo "
+						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? ) left outer join municipio_demografia muni "
+						+ "on ( muni.codigo_municipio = geo.geografico ) ";
+						
 
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
 
