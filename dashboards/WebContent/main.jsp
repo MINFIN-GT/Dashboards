@@ -14,7 +14,7 @@
 	<div id="mainview">
 		<div ng-view></div>
     </div>
-    <div class="footer">- Minfin 2016 -</div>
+    <div class="footer">- Minfin 2017 -</div>
 </body>
 </html>
 
