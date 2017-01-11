@@ -9,7 +9,7 @@ modGastoGeneral.controller('mapsGastoGeneralController',
 modGastoGeneral.controller('modalInfoGastoGeneralController',
 		modalInfoGastoGeneralController);
 
-function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) {
+function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 	var me = this;
 
 	me.showloading = false;
@@ -40,7 +40,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 
 	me.geograficos = [];
 
-	function getColor(porcentaje, $log) {
+	function getColor(porcentaje) {
 		var color = {};
 		color["V"] = "#008000";
 		color["VA"] = "#98fb98";
@@ -59,7 +59,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 		} else if (porcentaje >= 1) {
 			return color["V"];
 		} else {
-			$log.info(porcentaje);
+			return '#BDBDBD';
 		}
 	}
 
@@ -110,7 +110,8 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 	};
 	
 	me.anoClick =  function(n_ano){
-		this.ejercicio = n_ano;
+		me.ejercicio = n_ano;
+		me.cargarGastos();
 	}
 
 	function errorCallback(response) {
@@ -226,12 +227,12 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 
 		$http.post('/SGastoGeneral', data).then(obtenerGasto, errorCallback);
 
-		me.showloading = false;
 		me.loadAttempted = true;
 
 	};
 
 	me.cambiarTipo = function() {
+		me.showloading = true;
 		dibujarMapa();
 	}
 
@@ -273,13 +274,12 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 
 		if (response.data.success) {
 			me.geograficos = response.data.geograficos;
-
 			dibujarMapa();
 		}
 	}
 
 	function dibujarMapa() {
-
+		
 		uiGmapGoogleMapApi
 				.then(function() {
 
@@ -339,8 +339,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 							else
 								porcentaje = me.geograficos[j].gastoPerCapita
 										/ general.gastoPerCapita * 100;
-							// $log.info(response.data.geograficos[j].nombre,porcentaje);
-
+							
 							for (var i = 0; i < muni.length; i++) {
 								me.map.polygons
 										.push({
@@ -356,7 +355,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 											visible : true,
 											fill : {
 												color : (muni.CODIGO != 2000 ? getColor(
-														porcentaje, $log)
+														porcentaje)
 														: '#a7d0e1'),
 												opacity : 0.8
 											},
@@ -390,6 +389,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 
 						}
 					}
+					me.showloading = false;
 				});
 	}
 
@@ -412,7 +412,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi, $log) 
 	}
 }
 
-function modalInfoGastoGeneralController($uibModalInstance, $http, $log, param,ejercicio,
+function modalInfoGastoGeneralController($uibModalInstance, $http, param,ejercicio,
 		info, gasto) {
 	var me = this;
 

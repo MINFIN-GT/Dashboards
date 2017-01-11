@@ -19,6 +19,7 @@ function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
 	me.showloading = false;
 	me.mes = 1;
 	me.nmonth = "Enero";
+	me.ejercicio = moment().year();
 
 	me.renglones = [ 444, 448, 523, 532 ]
 
@@ -26,7 +27,7 @@ function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
 
 	me.lastupdate = "";
 
-	function getColorCM(porcentaje, $log) {
+	function getColorCM(porcentaje) {
 		var color = {};
 		color["V"] = "#008000";
 		color["VA"] = "#98fb98";
@@ -45,7 +46,7 @@ function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
 		} else if (porcentaje >= 0.8) {
 			return color["V"];
 		} else {
-			$log.info(porcentaje);
+			return '#BDBDBD';
 		}
 	}
 
@@ -112,6 +113,11 @@ function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
 		}
 
 	};
+	
+	me.anoClick =  function(n_ano){
+		me.ejercicio = n_ano;
+		me.cargarGastos();
+	}
 
 	me.cambiarRenglon = function() {
 		me.cargarGastos();
@@ -144,15 +150,14 @@ function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
 
 		var data = {
 			action : "gastogeografico",
+			ejercicio: me.ejercicio,
 			mes : me.mes,
-			ejercicio : 2016,
 			renglon : me.getRenglones()
 		};
 
 		$http.post('/SGastoCodedesMunis', data).then(obtenerGasto,
 				errorCallback);
 
-		me.showloading = false;
 		me.loadAttempted = true;
 
 	};
@@ -251,6 +256,7 @@ function mapsGastoCodedesMunisController($uibModal, $http, uiGmapGoogleMapApi,
 							}
 						}
 					}
+					me.showloading = false;
 				});
 	}
 
