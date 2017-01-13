@@ -6,7 +6,8 @@ angular.module('copepController',['dashboards']).controller('copepController',['
        'uiGridTreeViewConstants','uiGridConstants','i18nService','$timeout','uiGridGroupingConstants',
 	   function($scope,$routeParams,$http, $interval, uiGridTreeViewConstants, uiGridConstants, i18nService, $timeout, uiGridGroupingConstants){
 			i18nService.setCurrentLang('es');
-			var current_year = moment().year();
+			
+			this.ejercicio = moment().year();
 			
 			this.tributarias = [11,12,13,14,15,16,21,22,29];
 			
@@ -102,7 +103,7 @@ angular.module('copepController',['dashboards']).controller('copepController',['
 				this.level = level;
 				this.showloading=true;
 				this.loadAttempted=false;
-				var data = { action: 'entidadesData', ano:current_year,nmes:this.nmonth, mes: this.month, 
+				var data = { action: 'entidadesData', ejercicio: this.ejercicio, nmes:this.nmonth, mes: this.month, 
 						level: this.level, entidad: this.entidad, ue: this.unidad_ejecutora, 
 						fuentes: this.getFuentes(), grupos: this.getGrupos(), todosgrupos: this.todosgrupos, acumulado:1, t: (new Date()).getTime() };
 				this.row_selected=[];
@@ -186,23 +187,23 @@ angular.module('copepController',['dashboards']).controller('copepController',['
 				    	  enableFiltering: false, enableSorting: false, pinnedLeft: true },           
 				      { name: 'entidad', width: 100, displayName: 'Código', cellClass: 'grid-align-right', type: 'number', pinnedLeft:true },
 				      { name: 'nombre', width: '30%', displayName: 'Nombre', pinnedLeft:true },
-				      { name: 'ano1', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-5), enableFiltering: false,
+				      { name: 'ano1', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(this.ejercicio-5), enableFiltering: false,
 				    	  cellClass: 'grid-align-right',
 				    	  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano1 | currency:"Q " : 0 }}</div>' },
-				      { name: 'ano2', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-4), enableFiltering: false,
+				      { name: 'ano2', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(this.ejercicio-4), enableFiltering: false,
 				    	  cellClass: 'grid-align-right', 
 				    	  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano2 | currency:"Q " : 0 }}</div>' },
-				      { name: 'ano3', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-3), enableFiltering: false,
+				      { name: 'ano3', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(this.ejercicio-3), enableFiltering: false,
 					      cellClass: 'grid-align-right', 
 					      footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano3 | currency:"Q " : 0 }}</div>' },
-					  { name: 'ano4', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-2), enableFiltering: false,
+					  { name: 'ano4', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(this.ejercicio-2), enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano4 | currency:"Q " : 0 }}</div>' },
-					  { name: 'ano5', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(current_year-1), enableFiltering: false,
+					  { name: 'ano5', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución '+(this.ejercicio-1), enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano5 | currency:"Q " : 0 }}</div>' },
@@ -250,6 +251,16 @@ angular.module('copepController',['dashboards']).controller('copepController',['
 				      $scope.gridApi.core.on.rowsRendered( $scope, function() {
 				    	  var rows = $scope.gridApi.core.getVisibleRows($scope.gridApi.grid);
 				    	  if(rows.length>0){
+				    		  for(var i=0; i<$scope.gridApi.grid.columns.length; i++){
+				    			  switch($scope.gridApi.grid.columns[i].field){
+				    			  	case 'ano1': $scope.gridApi.grid.columns[i].displayName= 'Ejecución '+(this.grid.appScope.ejecucion.ejercicio-5); break;
+				    			  	case 'ano2': $scope.gridApi.grid.columns[i].displayName= 'Ejecución '+(this.grid.appScope.ejecucion.ejercicio-4); break;
+				    			  	case 'ano3': $scope.gridApi.grid.columns[i].displayName= 'Ejecución '+(this.grid.appScope.ejecucion.ejercicio-3); break;
+				    			  	case 'ano4': $scope.gridApi.grid.columns[i].displayName= 'Ejecución '+(this.grid.appScope.ejecucion.ejercicio-2); break;
+				    			  	case 'ano5': $scope.gridApi.grid.columns[i].displayName= 'Ejecución '+(this.grid.appScope.ejecucion.ejercicio-1); break;
+				    			  }
+				    		  }
+				    		  
 				    		  this.grid.appScope.ejecucion.ano1=0, this.grid.appScope.ejecucion.ano2=0, this.grid.appScope.ejecucion.ano3=0, this.grid.appScope.ejecucion.ano4=0, this.grid.appScope.ejecucion.ano5=0;
 				  			  this.grid.appScope.ejecucion.solicitado_acumulado=0, this.grid.appScope.ejecucion.aprobado_sin_anticipo=0;
 				  	    	  this.grid.appScope.ejecucion.ejecutado_acumulado=0, this.grid.appScope.ejecucion.aprobado_acumulado=0, this.grid.appScope.ejecucion.anticipo=0, this.grid.appScope.ejecucion.vigente=0;
@@ -368,6 +379,11 @@ angular.module('copepController',['dashboards']).controller('copepController',['
 				this.goLevel(this.level, true);
 			}
 			
+			this.anoClick=function(ano){
+				this.ejercicio=ano;
+				this.goLevel(this.level, true);
+			}
+			
 			this.chartOptions= {
 					bezierCurve : false,
 					datasetStrokeWidth : 6,
@@ -449,7 +465,7 @@ angular.module('copepController',['dashboards']).controller('copepController',['
 			}.bind(this);
 			
 			this.exportXLS=function(){
-				var data = { action: 'entidadesData', ano:current_year, nmes:this.nmonth, 
+				var data = { action: 'entidadesData', ejercicio: this.ejercicio, nmes:this.nmonth, 
 						mes: this.month, level: this.level, entidad: this.entidad, ue: this.unidad_ejecutora, 
 						fuentes: this.getFuentes(), grupos: this.getGrupos(), todosgrupos: this.todosgrupos, excel: 2,acumulado:1, t: (new Date()).getTime() };
 				$http.post('/SEjecucion', data).then(function successCallback(response) {

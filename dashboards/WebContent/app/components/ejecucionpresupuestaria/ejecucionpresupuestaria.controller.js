@@ -6,7 +6,6 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
        'uiGridTreeViewConstants','uiGridConstants','i18nService','$timeout','uiGridGroupingConstants',
 	   function($scope,$routeParams,$http, $interval, uiGridTreeViewConstants, uiGridConstants, i18nService, $timeout, uiGridGroupingConstants){
 			i18nService.setCurrentLang('es');
-			var current_year = moment().year();
 			
 			this.tributarias = [11,12,13,14,15,16,21,22,29];
 			this.titulo = "Entidades";
@@ -245,24 +244,24 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				    	  enableFiltering: false, enableSorting: false, pinnedLeft: true },    
 				      { name: 'entidad', width: 100, displayName: 'Código', cellClass: 'grid-align-right', type: 'number', pinnedLeft:true },
 				      { name: 'nombre', width: '30%', displayName: 'Nombre', pinnedLeft:true },
-				      { name: 'ano1', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-5), enableFiltering: false,
+				      { name: 'ano1', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(this.ano-5), enableFiltering: false,
 				    	  cellClass: 'grid-align-right',
 				    	  headerCellClass: 'grid-align-center',
 				    	  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano1 | currency:"Q " : 0 }}</div>' },
-				      { name: 'ano2', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-4), enableFiltering: false,
+				      { name: 'ano2', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(this.ano-4), enableFiltering: false,
 				    	  cellClass: 'grid-align-right',
 				    	  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 				    	  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano2 | currency:"Q " : 0 }}</div>'},
-				      { name: 'ano3', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-3), enableFiltering: false,
+				      { name: 'ano3', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(this.ano-3), enableFiltering: false,
 					      cellClass: 'grid-align-right',
 					      footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 					      footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano3 | currency:"Q " : 0 }}</div>'},
-					  { name: 'ano4', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-2), enableFiltering: false,
+					  { name: 'ano4', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(this.ano-2), enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano4 | currency:"Q " : 0 }}</div>'},
-					  { name: 'ano5', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(current_year-1), enableFiltering: false,
+					  { name: 'ano5', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Ejecución del mes / '+(this.ano-1), enableFiltering: false,
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ano5 | currency:"Q " : 0 }}</div>'},
@@ -303,6 +302,15 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				      $scope.gridApi.core.on.rowsRendered( $scope, function() {
 				    	  var rows = $scope.gridApi.core.getVisibleRows($scope.gridApi.grid);
 				    	  if(rows.length>0){
+				    		  for(var i=0; i<$scope.gridApi.grid.columns.length; i++){
+				    			  switch($scope.gridApi.grid.columns[i].field){
+				    			  	case 'ano1': $scope.gridApi.grid.columns[i].displayName= 'Ejecución del mes / '+(this.grid.appScope.ejecucion.ano-5); break;
+				    			  	case 'ano2': $scope.gridApi.grid.columns[i].displayName= 'Ejecución del mes / '+(this.grid.appScope.ejecucion.ano-4); break;
+				    			  	case 'ano3': $scope.gridApi.grid.columns[i].displayName= 'Ejecución del mes / '+(this.grid.appScope.ejecucion.ano-3); break;
+				    			  	case 'ano4': $scope.gridApi.grid.columns[i].displayName= 'Ejecución del mes / '+(this.grid.appScope.ejecucion.ano-2); break;
+				    			  	case 'ano5': $scope.gridApi.grid.columns[i].displayName= 'Ejecución del mes / '+(this.grid.appScope.ejecucion.ano-1); break;
+				    			  }
+				    		  }
 				    		  this.grid.appScope.ejecucion.ano1=0, this.grid.appScope.ejecucion.ano2=0, this.grid.appScope.ejecucion.ano3=0, this.grid.appScope.ejecucion.ano4=0, this.grid.appScope.ejecucion.ano5=0;
 					    	  this.grid.appScope.ejecucion.aprobado=0, this.grid.appScope.ejecucion.aprobado_acumulado=0;
 					    	  this.grid.appScope.ejecucion.ejecutado=0, this.grid.appScope.ejecucion.ejecutado_acumulado=0, this.grid.appScope.ejecucion.vigente=0;
