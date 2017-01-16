@@ -319,9 +319,9 @@ public class CEjecucionDAO {
 				pstm1.setInt(8, mes);
 				pstm1.setInt(9, ejercicio);
 				pstm1.setInt(10, mes);
-				pstm1.setInt(10, entidad);
-				pstm1.setInt(11, ejercicio);
-				pstm1.setInt(12, entidad);
+				pstm1.setInt(11, entidad);
+				pstm1.setInt(12, ejercicio);
+				pstm1.setInt(13, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora, programa}, results.getInt("subprograma"), results.getString("subprograma_nombre"), results.getDouble("ano_1"), 
