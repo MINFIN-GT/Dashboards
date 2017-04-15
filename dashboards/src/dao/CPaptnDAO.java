@@ -23,7 +23,7 @@ public class CPaptnDAO {
 				while (results.next()){
 					CEjecucion entidad = new CEjecucion((Integer)null, results.getInt("entidad"), results.getString("nombre"), results.getDouble("gp_ejecucion"), 
 							results.getDouble("gp_vigente"), results.getDouble("gp_porcentaje"), results.getDouble("paptn_ejecucion"), results.getDouble("paptn_vigente"), 
-							results.getDouble("paptn_porcentaje"), null, null, null, null,null); 
+							results.getDouble("paptn_porcentaje"), null, null, null, null,null, null); 
 					entidades.add(entidad);
 				}
 				results.close();
@@ -53,7 +53,7 @@ public class CPaptnDAO {
 					CEjecucion entidad = new CEjecucion(results.getInt("eje"), results.getInt("linea"), results.getString("eje_nombre"), 
 							results.getString("linea_nombre"), results.getString("eje_nombre_corto"), results.getDouble("aprobado"), 
 							results.getDouble("modificaciones"), results.getDouble("vigente"), results.getDouble("ejecucion"), results.getDouble("porcentaje"), 
-							null, null, null, null, null,null);
+							null, null, null, null, null,null, null);
 					entidades.add(entidad);
 				}
 				results.close();

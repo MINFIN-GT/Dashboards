@@ -22,10 +22,11 @@ public class CEjecucion {
 	private Double ejecutado;
 	private Double ejecutado_acumulado;
 	private Double vigente;
+	private Double asignado;
 	
 	public CEjecucion(Integer[] parents, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
 			Double cierre_estimado, Double aprobado, Double aprobado_acumulado,Double ejecutado, Double ejecutado_acumulado,
-			Double vigente) {
+			Double vigente, Double asignado) {
 		super();
 		this.parents = parents;
 		this.entidad = entidad;
@@ -41,11 +42,12 @@ public class CEjecucion {
 		this.ejecutado = ejecutado;
 		this.ejecutado_acumulado = ejecutado_acumulado;
 		this.vigente = vigente;
+		this.asignado = asignado;
 	}
 	
 	public CEjecucion(Integer parent, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
 			Double cierre_estimado, Double aprobado, Double aprobado_acumulado,Double ejecutado, Double ejecutado_acumulado,
-			Double vigente) {
+			Double vigente, Double asignado) {
 		super();
 		this.parents = new Integer[] { parent };
 		this.entidad = entidad;
@@ -61,11 +63,13 @@ public class CEjecucion {
 		this.ejecutado = ejecutado;
 		this.ejecutado_acumulado = ejecutado_acumulado;
 		this.vigente = vigente;
+		this.asignado = asignado;
 	}
 	
 	// para el acumulado
 	public CEjecucion(Integer[] parents, Integer entidad, String nombre, Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
-			Double cierre_estimado,  Double aprobado_sin_anticipo, Double anticipo, Double aprobado_acumulado, Double solicitado_acumulado, Double ejecutado_acumulado, Double vigente) {
+			Double cierre_estimado,  Double aprobado_sin_anticipo, Double anticipo, Double aprobado_acumulado, Double solicitado_acumulado, Double ejecutado_acumulado, 
+			Double vigente, Double asignado) {
 		super();
 		this.parents = parents;
 		this.entidad = entidad;
@@ -85,11 +89,12 @@ public class CEjecucion {
 		this.vigente = vigente;
 		this.aprobado_sin_anticipo = aprobado_sin_anticipo;
 		this.anticipo = anticipo;
+		this.asignado = asignado;
 	}
 	
 	public CEjecucion(Integer parent, Integer entidad, String nombre, String nombre_2, String nombre_3,Double ano1, Double ano2, Double ano3, Double ano4, Double ano5,
 			Double cierre_estimado, Double aprobado, Double aprobado_acumulado,Double ejecutado, Double ejecutado_acumulado,
-			Double vigente) {
+			Double vigente, Double asignado) {
 		super();
 		this.parents = new Integer[] { parent };
 		this.entidad = entidad;
@@ -107,6 +112,7 @@ public class CEjecucion {
 		this.ejecutado = ejecutado;
 		this.ejecutado_acumulado = ejecutado_acumulado;
 		this.vigente = vigente;
+		this.asignado = asignado;
 	}
 	
 	public Integer[] getParents(){
@@ -267,6 +273,14 @@ public class CEjecucion {
 
 	public void setVigente(Double vigente) {
 		this.vigente = vigente;
+	}
+	
+	public Double getAsignado() {
+		return asignado;
+	}
+
+	public void setAsignado(Double asignado) {
+		this.asignado = asignado;
 	}
 	
 }
