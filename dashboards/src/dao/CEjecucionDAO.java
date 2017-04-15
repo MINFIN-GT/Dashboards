@@ -27,7 +27,8 @@ public class CEjecucionDAO {
 								", sum(case when (ep.mes = ?) then ep.ano_5 else 0 end) ano_5 " + 
 								", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 								", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
-								", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+								", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " +
+								", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 								"from mv_ejecucion_presupuestaria ep " + 
 								"where ep.ejercicio = ? "+
 								"and ep.mes <= ? " + 
@@ -72,15 +73,16 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
 				pstm1.setInt(11, mes);
 				pstm1.setInt(12, mes);
 				pstm1.setInt(13, mes);
 				pstm1.setInt(14, mes);
-				pstm1.setInt(15, ejercicio);
-				pstm1.setInt(16, mes);
-				pstm1.setInt(17, ejercicio);
+				pstm1.setInt(15, mes);
+				pstm1.setInt(16, ejercicio);
+				pstm1.setInt(17, mes);
+				pstm1.setInt(18, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion entidad = new CEjecucion((Integer)null, results.getInt("entidad"), results.getString("entidad_nombre"), results.getDouble("ano_1"), 
@@ -88,7 +90,7 @@ public class CEjecucionDAO {
 							null, results.getDouble("aprobado_cuota") + (todosgrupos ? results.getDouble("anticipo_cuota") : 0), 
 							results.getDouble("aprobado_cuota_acumulado") + (todosgrupos ? results.getDouble("anticipo_cuota_acumulado") : 0), 
 							results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					entidades.add(entidad);
 				}
 				results.close();
@@ -122,6 +124,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+						", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 						"from mv_ejecucion_presupuestaria ep " + 
 						"where ep.ejercicio = ? " +
 						"and ep.mes <= ? " + 
@@ -168,18 +171,19 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
-				pstm1.setInt(11, entidad);
-				pstm1.setInt(12, mes);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
+				pstm1.setInt(11, mes);
+				pstm1.setInt(12, entidad);
 				pstm1.setInt(13, mes);
 				pstm1.setInt(14, mes);
 				pstm1.setInt(15, mes);
-				pstm1.setInt(16, ejercicio);
-				pstm1.setInt(17, mes);
-				pstm1.setInt(18, entidad);
-				pstm1.setInt(19, ejercicio);
-				pstm1.setInt(20, entidad);
+				pstm1.setInt(16, mes);
+				pstm1.setInt(17, ejercicio);
+				pstm1.setInt(18, mes);
+				pstm1.setInt(19, entidad);
+				pstm1.setInt(20, ejercicio);
+				pstm1.setInt(21, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(entidad, results.getInt("unidad_ejecutora"), results.getString("unidad_ejecutora_nombre"), results.getDouble("ano_1"), 
@@ -187,7 +191,7 @@ public class CEjecucionDAO {
 							null, results.getDouble("aprobado_cuota") + (todosgrupos ? results.getDouble("anticipo_cuota") : 0) , 
 							results.getDouble("aprobado_cuota_acumulado") + (todosgrupos ? results.getDouble("anticipo_cuota_acumulado") : 0), 
 							results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					entidades.add(ue);
 				}
 				results.close();
@@ -220,7 +224,8 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes = ?) then ep.ano_5 else 0 end) ano_5 " + 
 						", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
-						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " +
+						", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 						"from mv_ejecucion_presupuestaria ep " + 
 						"where ep.ejercicio =? "+
 						"and ep.mes <= ? " + 
@@ -246,17 +251,18 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
-				pstm1.setInt(11, entidad);
-				pstm1.setInt(12, ejercicio);
-				pstm1.setInt(13, entidad);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
+				pstm1.setInt(11, mes);
+				pstm1.setInt(12, entidad);
+				pstm1.setInt(13, ejercicio);
+				pstm1.setInt(14, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora}, results.getInt("programa"), results.getString("programa_nombre"), results.getDouble("ano_1"), 
 							results.getDouble("ano_2"), results.getDouble("ano_3"), results.getDouble("ano_4"), results.getDouble("ano_5"), 
 							null, null, null, results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					entidades.add(ue);
 				}
 				results.close();
@@ -290,7 +296,8 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes = ?) then ep.ano_5 else 0 end) ano_5 " + 
 						", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
-						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " +
+						", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 						"from mv_ejecucion_presupuestaria ep " + 
 						"where ep.ejercicio = ? and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
@@ -317,17 +324,18 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
-				pstm1.setInt(11, entidad);
-				pstm1.setInt(12, ejercicio);
-				pstm1.setInt(13, entidad);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
+				pstm1.setInt(11, mes);
+				pstm1.setInt(12, entidad);
+				pstm1.setInt(13, ejercicio);
+				pstm1.setInt(14, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora, programa}, results.getInt("subprograma"), results.getString("subprograma_nombre"), results.getDouble("ano_1"), 
 							results.getDouble("ano_2"), results.getDouble("ano_3"), results.getDouble("ano_4"), results.getDouble("ano_5"), 
 							null, null, null, results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					entidades.add(ue);
 				}
 				results.close();
@@ -362,6 +370,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+						", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 						"from mv_ejecucion_presupuestaria ep " + 
 						"where ep.ejercicio = ?  and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
@@ -390,17 +399,18 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
-				pstm1.setInt(11, entidad);
-				pstm1.setInt(12, ejercicio);
-				pstm1.setInt(13, entidad);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
+				pstm1.setInt(11, mes);
+				pstm1.setInt(12, entidad);
+				pstm1.setInt(13, ejercicio);
+				pstm1.setInt(14, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora, programa, subprograma}, results.getInt("proyecto"), results.getString("proyecto_nombre"), results.getDouble("ano_1"), 
 							results.getDouble("ano_2"), results.getDouble("ano_3"), results.getDouble("ano_4"), results.getDouble("ano_5"), 
 							null, null, null, results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					entidades.add(ue);
 				}
 				results.close();
@@ -435,6 +445,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+						", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 						"from mv_ejecucion_presupuestaria ep " + 
 						"where ep.ejercicio = ? and ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
@@ -465,11 +476,12 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
-				pstm1.setInt(11, entidad);
-				pstm1.setInt(12, ejercicio);
-				pstm1.setInt(13, entidad);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
+				pstm1.setInt(11, mes);
+				pstm1.setInt(12, entidad);
+				pstm1.setInt(13, ejercicio);
+				pstm1.setInt(14, entidad);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					Integer actividad = results.getInt("actividad");
@@ -477,7 +489,7 @@ public class CEjecucionDAO {
 					CEjecucion ue = new CEjecucion(new Integer[]{ entidad, unidad_ejecutora, programa, subprograma, proyecto}, actividad!=null ? actividad : obra, results.getString("actividad_obra_nombre"), results.getDouble("ano_1"), 
 							results.getDouble("ano_2"), results.getDouble("ano_3"), results.getDouble("ano_4"), results.getDouble("ano_5"), 
 							null, null, null, results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					entidades.add(ue);
 				}
 				results.close();
@@ -512,6 +524,7 @@ public class CEjecucionDAO {
 						", sum(case when (ep.mes = ?) then ep.ano_actual else 0 end) ejecutado " + 
 						", sum(case when (ep.mes <= ?) then ep.ano_actual else 0 end) ejecutado_acumulado " + 
 						", sum(case when (ep.mes = ?) then ep.vigente else 0 end) vigente " + 
+						", sum(case when (ep.mes = ?)  then ep.asignado else 0 end) asignado "+
 						"from mv_ejecucion_presupuestaria ep " + 
 						"where ep.ejercicio = ?  and  ep.mes <= ? " + 
 						"and ep.fuente IN ("+fuentes+") "+
@@ -542,10 +555,11 @@ public class CEjecucionDAO {
 				pstm1.setInt(6, mes);
 				pstm1.setInt(7, mes);
 				pstm1.setInt(8, mes);
-				pstm1.setInt(9, ejercicio);
-				pstm1.setInt(10, mes);
-				pstm1.setInt(11, entidad);
-				pstm1.setInt(12, ejercicio);
+				pstm1.setInt(9, mes);
+				pstm1.setInt(10, ejercicio);
+				pstm1.setInt(11, mes);
+				pstm1.setInt(12, entidad);
+				pstm1.setInt(13, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
 				int grupo_actual=-1;
 				int subgrupo_actual =-1;
@@ -576,7 +590,7 @@ public class CEjecucionDAO {
 						}
 						grupo_actual = results.getInt("grupo");
 						egrupo = new CEjecucion(0,grupo_actual, results.getString("grupo_nombre"), 0.0, 
-								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0);
+								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0, 0.0);
 						g_ano1=0.0; g_ano2=0.0; g_ano3=0.0; g_ano4=0.0; g_ano5=0.0; g_ejecutado=0.0; g_acumulado=0.0; g_vigente=0.0;
 					}
 					if(subgrupo_actual!=results.getInt("subgrupo")){
@@ -591,7 +605,7 @@ public class CEjecucionDAO {
 							cambio_grupo=false;
 						subgrupo_actual = results.getInt("subgrupo");
 						esubgrupo = new CEjecucion(1,subgrupo_actual, results.getString("subgrupo_nombre"), 0.0, 
-								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0);
+								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0, 0.0);
 						g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
 						g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
 						sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0;
@@ -600,7 +614,7 @@ public class CEjecucionDAO {
 					CEjecucion renglon = new CEjecucion((Integer)null, results.getInt("renglon"), results.getString("renglon_nombre"), results.getDouble("ano_1"), 
 							results.getDouble("ano_2"), results.getDouble("ano_3"), results.getDouble("ano_4"), results.getDouble("ano_5"), 
 							null, null, null, results.getDouble("ejecutado"), results.getDouble("ejecutado_acumulado"), 
-							results.getDouble("vigente"));
+							results.getDouble("vigente"), results.getDouble("asignado"));
 					sg_ano1 += results.getDouble("ano_1");
 					sg_ano2 += results.getDouble("ano_2");
 					sg_ano3 += results.getDouble("ano_3");
