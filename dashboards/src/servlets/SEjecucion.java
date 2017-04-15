@@ -55,6 +55,7 @@ public class SEjecucion extends HttpServlet {
     	double ejecutado;
     	double ejecutado_acumulado;
     	double vigente;
+    	double asignado;
     	double ejecucion_anual;
     	double aprobacion_anual;
     	int icono_ejecucion_anual;
@@ -138,6 +139,7 @@ public class SEjecucion extends HttpServlet {
 					sttemp.ejecutado = centidad.getEjecutado() != null ? centidad.getEjecutado() : 0;
 					sttemp.ejecutado_acumulado = centidad.getEjecutado_acumulado() != null ? centidad.getEjecutado_acumulado() : 0;
 					sttemp.vigente = centidad.getVigente();
+					sttemp.asignado = centidad.getAsignado();
 					sttemp.ejecucion_anual = (sttemp.vigente>0) ? (sttemp.ejecutado_acumulado/sttemp.vigente)*100.00 : 0.00;
 					double semaforo = (sttemp.ejecucion_anual*100.00)/((100.00/12.00)*mes);
 					if(semaforo<50)
@@ -175,21 +177,21 @@ public class SEjecucion extends HttpServlet {
 					
 					if (map.get("excel").compareTo("1")==0){						
 						excel = new CExcel("Ejecucion_Presupuestaria", level==3);
-						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Aprobada", "Cuota Apr. Ac.", "Ejecutado", "Eje. Acumulado", "Vigente", "% Anual"},
-								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","aprobado","aprobado_acumulado","ejecutado","ejecutado_acumulado","vigente","ejecucion_anual"},
-								{"int", "string", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "percent"},
-								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
-								{"","","","","","","","","","","","","ejecutado_acumulado,vigente"}
+						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Aprobada", "Cuota Apr. Ac.", "Ejecutado", "Eje. Acumulado", "Vigente","Asignado", "% Anual"},
+								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","aprobado","aprobado_acumulado","ejecutado","ejecutado_acumulado","vigente","asignado","ejecucion_anual"},
+								{"int", "string", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency","percent"},
+								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
+								{"","","","","","","","","","","","","ejecutado_acumulado,vigente, asignado"}
 								};
 						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
 						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria", headers , ejercicio, extra_lines);
 					}else if (map.get("excel").compareTo("2")==0){						
 						excel = new CExcel("Ejecucion_Presupuestaria_Acumulada", level==3);
-						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Solicitada", "Cuota Aprobada","Anticipos","Aproabada+Anticipos", "Ejecutado", "Vigente", "% Anual"},
-								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","solicitado_acumulado","aprobado_sin_anticipo","anticipo","aprobado_acumulado","ejecutado_acumulado","vigente","ejecucion_anual"},
-								{"int", "string", "currency", "currency", "currency","currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "percent"},
-								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
-								{"","","","","","","","","","","","","","ejecutado_acumulado,vigente"}
+						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Solicitada", "Cuota Aprobada","Anticipos","Aproabada+Anticipos", "Ejecutado", "Vigente","Asignado", "% Anual"},
+								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","solicitado_acumulado","aprobado_sin_anticipo","anticipo","aprobado_acumulado","ejecutado_acumulado","vigente","asignado","ejecucion_anual"},
+								{"int", "string", "currency", "currency", "currency","currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency","percent"},
+								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
+								{"","","","","","","","","","","","","","ejecutado_acumulado,vigente","asignado"}
 								};
 						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
 						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria Acumulada", headers , ejercicio, extra_lines);
