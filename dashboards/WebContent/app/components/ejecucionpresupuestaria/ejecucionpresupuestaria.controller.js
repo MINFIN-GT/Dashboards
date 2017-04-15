@@ -2,9 +2,9 @@
  * 
  */
 
-angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.contextMenu']).controller('ejecucionpresupuestariaController',['$scope','$routeParams','$http','$interval', 
-       'uiGridTreeViewConstants','uiGridConstants','i18nService','$timeout','uiGridGroupingConstants',
-	   function($scope,$routeParams,$http, $interval, uiGridTreeViewConstants, uiGridConstants, i18nService, $timeout, uiGridGroupingConstants){
+angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.contextMenu']).controller('ejecucionpresupuestariaController',['$scope','$routeParams','$http','$interval',
+	'$location','uiGridTreeViewConstants','uiGridConstants','i18nService','$timeout','uiGridGroupingConstants',
+	   function($scope,$routeParams,$http, $interval, $location, uiGridTreeViewConstants, uiGridConstants, i18nService, $timeout, uiGridGroupingConstants){
 			i18nService.setCurrentLang('es');
 			
 			this.tributarias = [11,12,13,14,15,16,21,22,29];
