@@ -62,7 +62,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 			
 			this.ano1=0, this.ano2, this.ano3, this.ano4, this.ano5;
 			this.aprobado=0, this.aprobado_acumulado=0;
-	    	this.ejecutado=0, this.ejecutado_acumulado=0, this.vigente=0;
+	    	this.ejecutado=0, this.ejecutado_acumulado=0, this.vigente=0, this.asignado=0;
 			
 			
 			$http.post('/SFuente', { ejercicio: 2016, t: (new Date()).getTime() }).then(function(response){
@@ -161,6 +161,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    		ejecutado+= response.data.entidades[i].ejecutado;
 					    		ejecutado_acumulado += response.data.entidades[i].ejecutado_acumulado;
 					    		vigente+= response.data.entidades[i].vigente;
+					    		asignado+= response.data.entidades[i].asignado;
 					    		if(response.data.entidades[i].parent!=null && this.level==7)
 					    			response.data.entidades[i].$$treeLevel = response.data.entidades[i].parent;
 					    	}
@@ -281,6 +282,10 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 						  cellClass: 'grid-align-right', 
 						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
 						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.ejecutado_acumulado | currency:"Q " : 0 }}</div>'},
+					  { name: 'asignado', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Asignado', enableFiltering: false,
+						  cellClass: 'grid-align-right',  
+						  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
+						  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ grid.appScope.ejecucion.asignado | currency:"Q " : 0 }}</div>' },
 					  { name: 'vigente', width: 150, cellFilter: 'currency:"Q " : 0', displayName: 'Vigente hasta el mes', enableFiltering: false,
 							  cellClass: 'grid-align-right',  
 							  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
@@ -313,7 +318,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 				    		  }
 				    		  this.grid.appScope.ejecucion.ano1=0, this.grid.appScope.ejecucion.ano2=0, this.grid.appScope.ejecucion.ano3=0, this.grid.appScope.ejecucion.ano4=0, this.grid.appScope.ejecucion.ano5=0;
 					    	  this.grid.appScope.ejecucion.aprobado=0, this.grid.appScope.ejecucion.aprobado_acumulado=0;
-					    	  this.grid.appScope.ejecucion.ejecutado=0, this.grid.appScope.ejecucion.ejecutado_acumulado=0, this.grid.appScope.ejecucion.vigente=0;
+					    	  this.grid.appScope.ejecucion.ejecutado=0, this.grid.appScope.ejecucion.ejecutado_acumulado=0, this.grid.appScope.ejecucion.vigente=0, this.grid.appScope.ejecucion.asignado=0;
 					    	  for(var i=0; i<rows.length; i++){
 					    		  if(rows[i].entity.parent==null || this.grid.appScope.ejecucion.level<7){
 					    			  this.grid.appScope.ejecucion.ano1 += rows[i].entity.ano1;
@@ -325,6 +330,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    			  this.grid.appScope.ejecucion.aprobado_acumulado += rows[i].entity.aprobado_acumulado;
 					    			  this.grid.appScope.ejecucion.ejecutado += rows[i].entity.ejecutado;
 					    			  this.grid.appScope.ejecucion.ejecutado_acumulado += rows[i].entity.ejecutado_acumulado;
+					    			  this.grid.appScope.ejecucion.asignado += rows[i].entity.asignado;
 					    			  this.grid.appScope.ejecucion.vigente += rows[i].entity.vigente;
 					    		  }
 					    	  }
