@@ -177,21 +177,21 @@ public class SEjecucion extends HttpServlet {
 					
 					if (map.get("excel").compareTo("1")==0){						
 						excel = new CExcel("Ejecucion_Presupuestaria", level==3);
-						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Aprobada", "Cuota Apr. Ac.", "Ejecutado", "Eje. Acumulado", "Vigente","Asignado", "% Anual"},
-								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","aprobado","aprobado_acumulado","ejecutado","ejecutado_acumulado","vigente","asignado","ejecucion_anual"},
+						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Aprobada", "Cuota Apr. Ac.", "Ejecutado", "Eje. Acumulado", "Asignado","Vigente", "% Anual"},
+								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","aprobado","aprobado_acumulado","ejecutado","ejecutado_acumulado","asignado","vigente","ejecucion_anual"},
 								{"int", "string", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency","percent"},
 								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
-								{"","","","","","","","","","","","","ejecutado_acumulado,vigente, asignado"}
+								{"","","","","","","","","","","","","ejecutado_acumulado,asignado,vigente"}
 								};
 						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
 						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria", headers , ejercicio, extra_lines);
 					}else if (map.get("excel").compareTo("2")==0){						
 						excel = new CExcel("Ejecucion_Presupuestaria_Acumulada", level==3);
-						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Solicitada", "Cuota Aprobada","Anticipos","Aproabada+Anticipos", "Ejecutado", "Vigente","Asignado", "% Anual"},
-								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","solicitado_acumulado","aprobado_sin_anticipo","anticipo","aprobado_acumulado","ejecutado_acumulado","vigente","asignado","ejecucion_anual"},
+						headers = new String[][]{{"Código", "Nombre", "Ejecución 2011", "Ejecución 2012", "Ejecución 2013", "Ejecución 2014", "Ejecución 2015","Cuota Solicitada", "Cuota Aprobada","Anticipos","Aproabada+Anticipos", "Ejecutado", "Asignado","Vigente", "% Anual"},
+								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","solicitado_acumulado","aprobado_sin_anticipo","anticipo","aprobado_acumulado","ejecutado_acumulado","asignado","vigente","ejecucion_anual"},
 								{"int", "string", "currency", "currency", "currency","currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency","percent"},
 								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
-								{"","","","","","","","","","","","","","ejecutado_acumulado,vigente","asignado"}
+								{"","","","","","","","","","","","","","ejecutado_acumulado,asignado,vigente"}
 								};
 						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
 						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria Acumulada", headers , ejercicio, extra_lines);
