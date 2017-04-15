@@ -189,4 +189,10 @@ nav.navbar{
 .tab_nivel5{
 	padding-left: 25px;
 }
+
+.semaphore-dot{
+	font-size: 18px;
+    color: withe;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
  

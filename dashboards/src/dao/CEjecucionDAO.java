@@ -527,8 +527,7 @@ public class CEjecucionDAO {
 						") a, renglones r, renglones sg, cp_grupos_gasto g " + 
 						"where a.renglon = r.renglon "
 						+ "and r.ejercicio = ? "
-						+ "and a.vigente > 0 "
-						+ "and a.ejecutado_acumulado > 0 "
+						+ "and (a.vigente > 0 or a.ejecutado_acumulado > 0) "
 						+ "and r.subgrupo = sg.subgrupo "
 						+ "and r.subgrupo = sg.renglon "
 						+ "and sg.ejercicio = r.ejercicio "
