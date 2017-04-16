@@ -120,20 +120,37 @@
 	</div>
 </div>
 <div class="row" style="width: 90%; margin: auto">
-		<div class="col-sm-12" style="margin-top: 20px;">
-			<h4>{{ ejecucion.chartTitle }}</h4>
-			<h5>Gasto en millones de quetzales</h5>
+		<div class="col-sm-6" style="margin-top: 20px; padding-right: 20px;">
+			<h4 align="center">{{ ejecucion.chartTitle }}</h4>
+			<h5 align="center">Gasto en millones de quetzales</h5>
 			<div class="row">
 				<div class="col-sm-12" style="text-align: right;">
 					<div class="btn-group" role="group" aria-label="">
-						<a class="btn btn-default" href ng-click="ejecucion.chartType='line'" ng-disabled="ejecucion.showloading" role="button">Lineas</a>
-						<a class="btn btn-default" href ng-click="ejecucion.chartType='bar'" ng-disabled="ejecucion.showloading" role="button">Barras</a>
-						<a class="btn btn-default" href ng-click="ejecucion.chartType='radar'" ng-disabled="ejecucion.showloading" role="button">Radar</a>
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartType='line'" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Lineas"><i class="fa fa-line-chart"></i></a>
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartType='bar'" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Barras"><i class="fa fa-bar-chart"></i></a>
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartType='radar'" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Radio"><i class="fa fa-bullseye"></i></a>
 					</div>
 				</div>
 			</div>
+			<br/>
 				<canvas height="120px" class="chart-base" chart-type="ejecucion.chartType" chart-data="ejecucion.chartData"
-					chart-labels="ejecucion.chartLabels" chart-legend="true" chart-series="ejecucion.chartSeries" chart-options="ejecucion.chartOptions">
+					chart-labels="ejecucion.chartLabels" chart-series="ejecucion.chartSeries" chart-options="ejecucion.chartOptions">
+				</canvas>
+	    </div>
+	    <div class="col-sm-6" style="margin-top: 20px; padding-left: 20px;">
+	    	<h4 align="center">Histórico de la ejecución</h4>
+	    	<h5 align="center">Gasto en millones de quetzales</h5>
+	    	<div class="row">
+				<div class="col-sm-12" style="text-align: right;">
+					<div class="btn-group" role="group" aria-label="">
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartHistoricoHastaMesActual(true)" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Hasta mes actual"><i class="glyphicon glyphicon-resize-full"></i></a>
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartHistoricoHastaMesActual(false)" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Todos los meses"><i class="glyphicon glyphicon-resize-small"></i></a>
+					</div>
+				</div>
+			</div>
+			<br/>
+	    	<canvas height="120px" class="chart chart-line"  chart-data="ejecucion.chartData_historico"
+					chart-labels="ejecucion.chartLabels_historico" chart-series="ejecucion.chartSeries_historico" chart-options="ejecucion.chartOptions_historico">
 				</canvas>
 	    </div>
 </div>

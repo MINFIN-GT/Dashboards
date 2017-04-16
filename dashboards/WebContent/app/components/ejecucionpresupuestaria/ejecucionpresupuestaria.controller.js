@@ -57,6 +57,13 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 			this.chartData = [];
 			this.chartData_start = [];
 			
+			this.months_labels = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+			this.chartLabels_historico = this.months_labels.slice();
+			this.chartSeries_historico = [];
+			this.chartData_historico = [];
+			this.chartData_historico_todos = [];
+			this.chartData_historico_hasta_actual = [];
+			
 			this.total_ejecucion = 0;
 			this.indicador_total_ejecucion = 0;
 			
@@ -161,7 +168,6 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    		ejecutado+= response.data.entidades[i].ejecutado;
 					    		ejecutado_acumulado += response.data.entidades[i].ejecutado_acumulado;
 					    		vigente+= response.data.entidades[i].vigente;
-					    		asignado+= response.data.entidades[i].asignado;
 					    		if(response.data.entidades[i].parent!=null && this.level==7)
 					    			response.data.entidades[i].$$treeLevel = response.data.entidades[i].parent;
 					    	}
@@ -210,9 +216,32 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					    		this.selectedRow=null;
 					    		this.chartData=[];
 					    		this.chartSeries=[];
-					    		this.chartData_start = [ano1/1000000, ano2/1000000, ano3/1000000, ano4/1000000, ano5/1000000, ejecutado/1000000];
+					    		this.chartData_start = [ ano1/1000000, ano2/1000000, ano3/1000000, ano4/1000000, ano5/1000000, ejecutado/1000000];
 					    		this.chartData.push(this.chartData_start);
-					    		this.chartSeries.push('Ejercicios');
+					    		this.chartSeries.push('Administración Central');
+					    		
+					    		$http.post('/SEjecucion', { action: 'historico_ejecucion', ejercicio: this.ano,
+					    			entidad: this.entidad, ue: this.unidad_ejecutora, programa: this.programa, subprograma: this.subprograma,
+									proyecto: this.proyecto, actividad: this.actividad, obra: this.obra,
+									fuentes: this.getFuentes(), grupos: this.getGrupos(), todosgrupos: this.todosgrupos, 
+									t: (new Date()).getTime() }).then(function(response){
+										this.chartSeries_historico=[];
+										this.chartData_historico=[];
+										this.chartData_historico_hasta_actual=[];
+										this.chartData.historico_todos=[];
+										for(var i=0; i<response.data.historico.length; i++){
+											this.chartSeries_historico.push(response.data.historico[i].ejercicio+"");
+											if(i == response.data.historico.length-1){
+												this.chartData_historico.push(response.data.historico[i].meses.slice(0,this.month));
+												this.chartData_historico_todos.push(response.data.historico[i].meses.slice(0,this.month));
+											}
+											else{
+												this.chartData_historico.push(response.data.historico[i].meses);
+												this.chartData_historico_todos.push(response.data.historico[i].meses);
+											}
+											this.chartData_historico_hasta_actual.push(response.data.historico[i].meses.slice(0,this.month));
+										}
+								}.bind(this));
 						    }
 						    if(mantain_select){
 						    	$scope.gridApi.grid.modifyRows(this.entidades_gridOptions.data);
@@ -388,7 +417,8 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 						    		  	case 6: this.chartTitle = 'Actividades / Obras'; this.titulo='Actividades / Obras'; break;
 						    		  	case 7: this.chartTitle = 'Renglones'; this.titulo='Renglones'; break;
 				    		 		}
-				    		 		this.chartSeries[0] = 'Ejercicios';
+				    		 		this.chartSeries[0] = 'Administración Central';
+				    		 		this.chartTitle = this.chartSeries[0];
 				    		 		break;
 				    		 	case 1:
 				    		 		this.chartTitle = this.chartSeries[0];
@@ -462,13 +492,66 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 			}
 			
 			this.chartOptions= {
-					bezierCurve : false,
-					datasetStrokeWidth : 6,
-					pointDotRadius : 6,
-					scaleLabel: function(label){return  numeral(label.value).format('$ 0,0')},
-					tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= numeral(value).format('$ 0,0.00') %>",
-					multiTooltipTemplate: "<%= numeral(value).format('$ 0,0.00') %>",
-					legendTemplate: "<div class=\"chart-legend\"><ul class=\"line-legend\"><% for (var i=0; i<datasets.length; i++){%><li><div class=\"img-rounded\" style=\"float: left; margin-right: 5px; width: 15px; height: 15px; background-color:<%=datasets[i].strokeColor%>\"></div><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+					elements: {
+				        line: {
+				            tension: 0
+				        },
+				        point:{
+				        	radius: 5
+				        }
+				    },
+					scales: {
+						yAxes:[{
+							ticks:{
+								callback: function(value){
+									return numeral(value).format('$ 0,0');
+								}
+							}	
+						}]
+					},
+					tooltips:{
+							callbacks:{
+								label:function(tooltipItem, data){
+									return numeral(tooltipItem.yLabel).format('$ 0,0.00');
+								}
+							}
+					},
+					legend:{
+						display: true,
+						position: 'bottom'
+					}
+			};
+			
+			this.chartOptions_historico= {
+					elements: {
+				        line: {
+				            tension: 0,
+				            fill: false
+				        },
+				        point:{
+				        	radius: 5
+				        }
+				    },
+					scales: {
+						yAxes:[{
+							ticks:{
+								callback: function(value){
+									return numeral(value).format('$ 0,0');
+								}
+							}	
+						}]
+					},
+					tooltips:{
+							callbacks:{
+								label:function(tooltipItem, data){
+									return numeral(tooltipItem.yLabel).format('$ 0,0.00');
+								}
+							}
+					},
+					legend:{
+						display: true,
+						position: 'bottom'
+					}
 			};
 			
 			for(var i=0; i<6; i++)
@@ -636,6 +719,20 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 					$route.reload();
 				else
 					$location.path('/dashboards/ejecucionpresupuestaria/gt1');
+			}
+			
+			this.chartHistoricoHastaMesActual=function(view_all){
+				if(view_all){
+					this.chartData_historico = this.chartData_historico_todos.slice();
+					this.chartLabels_historico = this.months_labels.slice();
+				}
+				else{
+					this.chartData_historico = this.chartData_historico_hasta_actual.slice();
+					this.chartLabels_historico = [];
+					for(var i=0; i<this.month; i++){
+						this.chartLabels_historico.push(this.months_labels[i]);
+					}
+				}
 			}
 		}
 	]);
