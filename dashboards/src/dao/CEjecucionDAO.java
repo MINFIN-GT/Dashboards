@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import db.utilities.CDatabase;
 import pojo.CEjecucion;
@@ -566,8 +567,8 @@ public class CEjecucionDAO {
 				ArrayList<CEjecucion> subgrupos=new ArrayList<CEjecucion>();
 				ArrayList<CEjecucion> renglones=new ArrayList<CEjecucion>();
 				
-				Double g_ano1=0.0, g_ano2=0.0,g_ano3=0.0,g_ano4=0.0,g_ano5=0.0, g_ejecutado=0.0, g_acumulado=0.0, g_vigente=0.0;
-				Double sg_ano1=0.0, sg_ano2=0.0, sg_ano3=0.0, sg_ano4=0.0, sg_ano5=0.0, sg_ejecutado=0.0, sg_acumulado=0.0, sg_vigente=0.0;
+				Double g_ano1=0.0, g_ano2=0.0,g_ano3=0.0,g_ano4=0.0,g_ano5=0.0, g_ejecutado=0.0, g_acumulado=0.0, g_vigente=0.0, g_asignado=0.0;
+				Double sg_ano1=0.0, sg_ano2=0.0, sg_ano3=0.0, sg_ano4=0.0, sg_ano5=0.0, sg_ejecutado=0.0, sg_acumulado=0.0, sg_vigente=0.0, sg_asignado=0.0;
 				CEjecucion egrupo=null, esubgrupo=null;
 				boolean cambio_grupo=false;
 				while (results.next()){
@@ -575,28 +576,31 @@ public class CEjecucionDAO {
 						if(grupo_actual>-1){
 							lista.add(egrupo);
 							g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
-							g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
+							g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente; g_asignado += sg_asignado;
 							esubgrupo.setAno1(sg_ano1); esubgrupo.setAno2(sg_ano2); esubgrupo.setAno3(sg_ano3); esubgrupo.setAno4(sg_ano4); esubgrupo.setAno5(sg_ano5); 
 							esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado); esubgrupo.setVigente(sg_vigente);
+							esubgrupo.setAsignado(sg_asignado);
 							subgrupos.add(esubgrupo);
 							subgrupos.addAll(renglones);
 							lista.addAll(subgrupos);
 							egrupo.setAno1(g_ano1); egrupo.setAno2(g_ano2); egrupo.setAno3(g_ano3); egrupo.setAno4(g_ano4); egrupo.setAno5(g_ano5); 
 							egrupo.setEjecutado(g_ejecutado); egrupo.setEjecutado_acumulado(g_acumulado); egrupo.setVigente(g_vigente);
+							egrupo.setAsignado(g_asignado);
 							subgrupos.clear();
 							renglones.clear();
 							cambio_grupo = true;
-							sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0;
+							sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0; sg_asignado=0.0;
 						}
 						grupo_actual = results.getInt("grupo");
 						egrupo = new CEjecucion(0,grupo_actual, results.getString("grupo_nombre"), 0.0, 
 								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0, 0.0);
-						g_ano1=0.0; g_ano2=0.0; g_ano3=0.0; g_ano4=0.0; g_ano5=0.0; g_ejecutado=0.0; g_acumulado=0.0; g_vigente=0.0;
+						g_ano1=0.0; g_ano2=0.0; g_ano3=0.0; g_ano4=0.0; g_ano5=0.0; g_ejecutado=0.0; g_acumulado=0.0; g_vigente=0.0; g_asignado=0.0;
 					}
 					if(subgrupo_actual!=results.getInt("subgrupo")){
 						if(subgrupo_actual>0 && !cambio_grupo){
 							esubgrupo.setAno1(sg_ano1); esubgrupo.setAno2(sg_ano2); esubgrupo.setAno3(sg_ano3); esubgrupo.setAno4(sg_ano4); esubgrupo.setAno5(sg_ano5); 
 							esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado); esubgrupo.setVigente(sg_vigente);
+							esubgrupo.setAsignado(sg_asignado);
 							subgrupos.add(esubgrupo);
 							subgrupos.addAll(renglones);
 							renglones.clear();
@@ -607,8 +611,9 @@ public class CEjecucionDAO {
 						esubgrupo = new CEjecucion(1,subgrupo_actual, results.getString("subgrupo_nombre"), 0.0, 
 								0.0, 0.0, 0.0, 0.0,null, 0.0, 0.0, 0.0, 0.0,0.0, 0.0);
 						g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
-						g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
-						sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0;
+						g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente; g_asignado += sg_asignado;
+						sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0; sg_vigente=0.0; 
+						sg_asignado=0.0;
 						
 					}
 					CEjecucion renglon = new CEjecucion((Integer)null, results.getInt("renglon"), results.getString("renglon_nombre"), results.getDouble("ano_1"), 
@@ -623,26 +628,226 @@ public class CEjecucionDAO {
 					sg_ejecutado += results.getDouble("ejecutado");
 					sg_acumulado += results.getDouble("ejecutado_acumulado");
 					sg_vigente += results.getDouble("vigente");
+					sg_asignado += results.getDouble("asignado");
 					renglones.add(renglon);
 				}
 				lista.add(egrupo);
 				g_ano1+=sg_ano1; g_ano2+=sg_ano2; g_ano3+=sg_ano3; g_ano4+=sg_ano4; g_ano5+=sg_ano5;
-				g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente;
+				g_ejecutado += sg_ejecutado; g_acumulado += sg_acumulado; g_vigente += sg_vigente; g_asignado +=sg_asignado;
 				sg_ano1=0.0; sg_ano2=0.0; sg_ano3=0.0; sg_ano4=0.0; sg_ano5=0.0; sg_ejecutado=0.0; sg_acumulado=0.0;
 				esubgrupo.setAno1(sg_ano1); esubgrupo.setAno2(sg_ano2); esubgrupo.setAno3(sg_ano3); esubgrupo.setAno4(sg_ano4); esubgrupo.setAno5(sg_ano5); 
 				esubgrupo.setEjecutado(sg_ejecutado); esubgrupo.setEjecutado_acumulado(sg_acumulado); esubgrupo.setVigente(sg_vigente);
+				esubgrupo.setAsignado(sg_asignado);
+				
 				subgrupos.add(esubgrupo);
 				subgrupos.addAll(renglones);
 				lista.addAll(subgrupos);
 				egrupo.setAno1(g_ano1); egrupo.setAno2(g_ano2); egrupo.setAno3(g_ano3); egrupo.setAno4(g_ano4); egrupo.setAno5(g_ano5); 
 				egrupo.setEjecutado(g_ejecutado); egrupo.setEjecutado_acumulado(g_acumulado); egrupo.setVigente(g_vigente);
-				
+				egrupo.setAsignado(g_asignado);
 				results.close();
 				pstm1.close();
 				
 			}
 			catch(Exception e){
 				CLogger.write("7", CEjecucionDAO.class, e);
+			}
+			finally{
+				CDatabase.close(conn);
+			}
+		}
+		return lista.size()>0 ? lista : null;
+	}
+	
+	public static ArrayList<ArrayList<Double>> getEjecucionMesCincoEjercicios(int ejercicio, Integer entidad,
+			Integer unidad_ejecutora, Integer programa, Integer subprograma, Integer proyecto, Integer actividad, 
+			Integer obra, String fuentes, String gruposGasto){
+		final ArrayList<ArrayList<Double>> lista=new ArrayList<ArrayList<Double>>();
+		if(CDatabase.connect()){
+			Connection conn = CDatabase.getConnection();
+			try{
+				entidad = entidad==0 ?  null : entidad;
+				PreparedStatement pstm1 =  conn.prepareStatement("select "+(ejercicio-5)+" ejercicio, " + 
+						"	sum(case mes when 1 then ano_1 else 0 end) enero, " + 
+						"	sum(case mes when 2 then ano_1 else 0 end) febrero, " + 
+						"	sum(case mes when 3 then ano_1 else 0 end) marzo, " + 
+						"	sum(case mes when 4 then ano_1 else 0 end) abril, " + 
+						"	sum(case mes when 5 then ano_1 else 0 end) mayo, " + 
+						"	sum(case mes when 6 then ano_1 else 0 end) junio, " + 
+						"	sum(case mes when 7 then ano_1 else 0 end) julio, " + 
+						"	sum(case mes when 8 then ano_1 else 0 end) agosto, " + 
+						"	sum(case mes when 9 then ano_1 else 0 end) septiembre, " + 
+						"	sum(case mes when 10 then ano_1 else 0 end) octubre, " + 
+						"	sum(case mes when 11 then ano_1 else 0 end) noviembre, " + 
+						"	sum(case mes when 12 then ano_1 else 0 end) diciembre " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? " + 
+						"and fuente IN ("+fuentes+") "+
+						"and grupo IN ("+gruposGasto+") "+
+						(entidad!=null ? "and entidad =  "+ entidad : "" ) +
+						(unidad_ejecutora!=null ? " and unidad_ejecutora = "+unidad_ejecutora : "") +
+						(programa!=null ? " and programa = "+programa : "") +
+						(subprograma!=null ? " and subprograma = "+subprograma : "") +
+						(proyecto!=null ? " and proyecto = "+proyecto : "") +
+						(actividad!=null ? " and actividad = "+actividad : "") +
+						(obra!=null ? " and obra = "+obra : "") +
+						" UNION ALL " + 
+						"select "+(ejercicio-4)+", " + 
+						"	sum(case mes when 1 then ano_2 else 0 end), " + 
+						"	sum(case mes when 2 then ano_2 else 0 end), " + 
+						"	sum(case mes when 3 then ano_2 else 0 end), " + 
+						"	sum(case mes when 4 then ano_2 else 0 end), " + 
+						"	sum(case mes when 5 then ano_2 else 0 end), " + 
+						"	sum(case mes when 6 then ano_2 else 0 end), " + 
+						"	sum(case mes when 7 then ano_2 else 0 end), " + 
+						"	sum(case mes when 8 then ano_2 else 0 end), " + 
+						"	sum(case mes when 9 then ano_2 else 0 end), " + 
+						"	sum(case mes when 10 then ano_2 else 0 end), " + 
+						"	sum(case mes when 11 then ano_2 else 0 end), " + 
+						"	sum(case mes when 12 then ano_2 else 0 end) " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? " + 
+						"and fuente IN ("+fuentes+") "+
+						"and grupo IN ("+gruposGasto+") "+
+						(entidad!=null ? "and entidad =  "+ entidad : "" ) +
+						(unidad_ejecutora!=null ? " and unidad_ejecutora = "+unidad_ejecutora : "") +
+						(programa!=null ? " and programa = "+programa : "") +
+						(subprograma!=null ? " and subprograma = "+subprograma : "") +
+						(proyecto!=null ? " and proyecto = "+proyecto : "") +
+						(actividad!=null ? " and actividad = "+actividad : "") +
+						(obra!=null ? " and obra = "+obra : "") +
+						" UNION ALL " + 
+						"select "+(ejercicio-3)+", " + 
+						"	sum(case mes when 1 then ano_3 else 0 end), " + 
+						"	sum(case mes when 2 then ano_3 else 0 end), " + 
+						"	sum(case mes when 3 then ano_3 else 0 end), " + 
+						"	sum(case mes when 4 then ano_3 else 0 end), " + 
+						"	sum(case mes when 5 then ano_3 else 0 end), " + 
+						"	sum(case mes when 6 then ano_3 else 0 end), " + 
+						"	sum(case mes when 7 then ano_3 else 0 end), " + 
+						"	sum(case mes when 8 then ano_3 else 0 end), " + 
+						"	sum(case mes when 9 then ano_3 else 0 end), " + 
+						"	sum(case mes when 10 then ano_3 else 0 end), " + 
+						"	sum(case mes when 11 then ano_3 else 0 end), " + 
+						"	sum(case mes when 12 then ano_3 else 0 end) " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? " + 
+						"and fuente IN ("+fuentes+") "+
+						"and grupo IN ("+gruposGasto+") "+
+						(entidad!=null ? "and entidad =  "+ entidad : "" ) +
+						(unidad_ejecutora!=null ? " and unidad_ejecutora = "+unidad_ejecutora : "") +
+						(programa!=null ? " and programa = "+programa : "") +
+						(subprograma!=null ? " and subprograma = "+subprograma : "") +
+						(proyecto!=null ? " and proyecto = "+proyecto : "") +
+						(actividad!=null ? " and actividad = "+actividad : "") +
+						(obra!=null ? " and obra = "+obra : "") +
+						" UNION ALL " + 
+						"select "+(ejercicio-2)+", " + 
+						"	sum(case mes when 1 then ano_4 else 0 end), " + 
+						"	sum(case mes when 2 then ano_4 else 0 end), " + 
+						"	sum(case mes when 3 then ano_4 else 0 end), " + 
+						"	sum(case mes when 4 then ano_4 else 0 end), " + 
+						"	sum(case mes when 5 then ano_4 else 0 end), " + 
+						"	sum(case mes when 6 then ano_4 else 0 end), " + 
+						"	sum(case mes when 7 then ano_4 else 0 end), " + 
+						"	sum(case mes when 8 then ano_4 else 0 end), " + 
+						"	sum(case mes when 9 then ano_4 else 0 end), " + 
+						"	sum(case mes when 10 then ano_4 else 0 end), " + 
+						"	sum(case mes when 11 then ano_4 else 0 end), " + 
+						"	sum(case mes when 12 then ano_4 else 0 end) " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? " + 
+						"and fuente IN ("+fuentes+") "+
+						"and grupo IN ("+gruposGasto+") "+
+						(entidad!=null ? "and entidad =  "+ entidad : "" ) +
+						(unidad_ejecutora!=null ? " and unidad_ejecutora = "+unidad_ejecutora : "") +
+						(programa!=null ? " and programa = "+programa : "") +
+						(subprograma!=null ? " and subprograma = "+subprograma : "") +
+						(proyecto!=null ? " and proyecto = "+proyecto : "") +
+						(actividad!=null ? " and actividad = "+actividad : "") +
+						(obra!=null ? " and obra = "+obra : "") +
+						" UNION ALL " + 
+						"select "+(ejercicio-1)+", " + 
+						"	sum(case mes when 1 then ano_5 else 0 end), " + 
+						"	sum(case mes when 2 then ano_5 else 0 end), " + 
+						"	sum(case mes when 3 then ano_5 else 0 end), " + 
+						"	sum(case mes when 4 then ano_5 else 0 end), " + 
+						"	sum(case mes when 5 then ano_5 else 0 end), " + 
+						"	sum(case mes when 6 then ano_5 else 0 end), " + 
+						"	sum(case mes when 7 then ano_5 else 0 end), " + 
+						"	sum(case mes when 8 then ano_5 else 0 end), " + 
+						"	sum(case mes when 9 then ano_5 else 0 end), " + 
+						"	sum(case mes when 10 then ano_5 else 0 end), " + 
+						"	sum(case mes when 11 then ano_5 else 0 end), " + 
+						"	sum(case mes when 12 then ano_5 else 0 end) " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? " + 
+						"and fuente IN ("+fuentes+") "+
+						"and grupo IN ("+gruposGasto+") "+
+						(entidad!=null ? "and entidad =  "+ entidad : "" ) +
+						(unidad_ejecutora!=null ? " and unidad_ejecutora = "+unidad_ejecutora : "") +
+						(programa!=null ? " and programa = "+programa : "") +
+						(subprograma!=null ? " and subprograma = "+subprograma : "") +
+						(proyecto!=null ? " and proyecto = "+proyecto : "") +
+						(actividad!=null ? " and actividad = "+actividad : "") +
+						(obra!=null ? " and obra = "+obra : "") +
+						" UNION ALL " + 
+						"select "+ejercicio+", " + 
+						"	sum(case mes when 1 then ano_actual else 0 end), " + 
+						"	sum(case mes when 2 then ano_actual else 0 end), " + 
+						"	sum(case mes when 3 then ano_actual else 0 end), " + 
+						"	sum(case mes when 4 then ano_actual else 0 end), " + 
+						"	sum(case mes when 5 then ano_actual else 0 end), " + 
+						"	sum(case mes when 6 then ano_actual else 0 end), " + 
+						"	sum(case mes when 7 then ano_actual else 0 end), " + 
+						"	sum(case mes when 8 then ano_actual else 0 end), " + 
+						"	sum(case mes when 9 then ano_actual else 0 end), " + 
+						"	sum(case mes when 10 then ano_actual else 0 end), " + 
+						"	sum(case mes when 11 then ano_actual else 0 end), " + 
+						"	sum(case mes when 12 then ano_actual else 0 end) " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? "+
+						"and fuente IN ("+fuentes+") "+
+						"and grupo IN ("+gruposGasto+") "+
+						(entidad!=null ? "and entidad =  "+ entidad : "" ) +
+						(unidad_ejecutora!=null ? " and unidad_ejecutora = "+unidad_ejecutora : "") +
+						(programa!=null ? " and programa = "+programa : "") +
+						(subprograma!=null ? " and subprograma = "+subprograma : "") +
+						(proyecto!=null ? " and proyecto = "+proyecto : "") +
+						(actividad!=null ? " and actividad = "+actividad : "") +
+						(obra!=null ? " and obra = "+obra : "") );				
+				
+				pstm1.setInt(1, ejercicio);
+				pstm1.setInt(2, ejercicio);
+				pstm1.setInt(3, ejercicio);
+				pstm1.setInt(4, ejercicio);
+				pstm1.setInt(5, ejercicio);
+				pstm1.setInt(6, ejercicio);
+				ResultSet results = pstm1.executeQuery();	
+				while (results.next()){
+					ArrayList<Double> temp=new ArrayList<Double>(Arrays.asList(
+							results.getDouble("ejercicio"),
+							results.getDouble("enero")/1000000.0,
+							results.getDouble("febrero")/1000000.0,
+							results.getDouble("marzo")/1000000.0,
+							results.getDouble("abril")/1000000.0,
+							results.getDouble("mayo")/1000000.0,
+							results.getDouble("junio")/1000000.0,
+							results.getDouble("julio")/1000000.0,
+							results.getDouble("agosto")/1000000.0,
+							results.getDouble("septiembre")/1000000.0,
+							results.getDouble("octubre")/1000000.0,
+							results.getDouble("noviembre")/1000000.0,
+							results.getDouble("diciembre")/1000000.0
+					));
+					lista.add(temp);
+				}
+				results.close();
+				pstm1.close();
+				
+			}
+			catch(Exception e){
+				CLogger.write("8", CEjecucionDAO.class, e);
 			}
 			finally{
 				CDatabase.close(conn);

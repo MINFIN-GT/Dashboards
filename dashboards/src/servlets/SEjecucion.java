@@ -61,6 +61,11 @@ public class SEjecucion extends HttpServlet {
     	int icono_ejecucion_anual;
     }
 	
+	class sthistorico{
+		Integer ejercicio;
+		Double[] meses; 
+	}
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -89,20 +94,20 @@ public class SEjecucion extends HttpServlet {
 	    };
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 		String action = map.get("action");
+		int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : 0;
+		int entidad = map.get("entidad")!=null ? Integer.parseInt(map.get("entidad")) : 0;
+		String fuentes = map.get("fuentes");
+		String grupos = map.get("grupos");
+		String nmes = map.get("nmes");
+		Integer unidad_ejecutora = map.get("ue")!=null ? Integer.parseInt(map.get("ue")) : null;
+		Integer programa = map.get("programa")!=null ? Integer.parseInt(map.get("programa")) : null;
+		Integer subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : null;
+		Integer proyecto = map.get("proyecto")!=null ? Integer.parseInt(map.get("proyecto")) : null;
+		Integer actividad = map.get("actividad")!=null ? Integer.parseInt(map.get("actividad")) : null;
+		Integer obra = map.get("obra")!=null ? Integer.parseInt(map.get("obra")) : null;
 		if(action.compareTo("entidadesData")==0){
 			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : 0;
-			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : 0;
 			int level = map.get("level")!=null ? Integer.parseInt(map.get("level")) : 0;
-			int entidad = map.get("entidad")!=null ? Integer.parseInt(map.get("entidad")) : 0;
-			String fuentes = map.get("fuentes");
-			String grupos = map.get("grupos");
-			String nmes = map.get("nmes");
-			Integer unidad_ejecutora = map.get("ue")!=null ? Integer.parseInt(map.get("ue")) : null;
-			Integer programa = map.get("programa")!=null ? Integer.parseInt(map.get("programa")) : null;
-			Integer subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : null;
-			Integer proyecto = map.get("proyecto")!=null ? Integer.parseInt(map.get("proyecto")) : null;
-			Integer actividad = map.get("actividad")!=null ? Integer.parseInt(map.get("actividad")) : null;
-			Integer obra = map.get("obra")!=null ? Integer.parseInt(map.get("obra")) : null;
 			ArrayList<stentidad> stentidades=new ArrayList<stentidad>();
 			boolean todosgrupos = map.get("todosgrupos")!=null && map.get("todosgrupos").compareTo("1")==0;
 			ArrayList<CEjecucion> entidades=null; 
@@ -207,6 +212,30 @@ public class SEjecucion extends HttpServlet {
 					outStream.flush();
 				}
 			}
+		}
+		else if(action.compareTo("historico_ejecucion")==0){
+			ArrayList<ArrayList<Double>> ejercicios = CEjecucionDAO.getEjecucionMesCincoEjercicios(ejercicio, entidad,
+					unidad_ejecutora, programa, subprograma, proyecto, actividad, obra, fuentes, grupos);
+			ArrayList<sthistorico> historico = new ArrayList<sthistorico>(); 
+			for(ArrayList<Double> aejercicio: ejercicios){
+				sthistorico temp = new sthistorico();
+				temp.ejercicio = aejercicio.get(0).intValue();
+				aejercicio.remove(0);
+				temp.meses = aejercicio.toArray(new Double[0]);
+				historico.add(temp);
+			}
+			response.setHeader("Content-Encoding", "gzip");
+			response.setCharacterEncoding("UTF-8");
+			String response_text=new GsonBuilder().serializeNulls().create().toJson(historico);
+            response_text = String.join("", "\"historico\":",response_text);
+	            
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+	        
+	        OutputStream output = response.getOutputStream();
+			GZIPOutputStream gz = new GZIPOutputStream(output);
+	        gz.write(response_text.getBytes("UTF-8"));
+            gz.close();
+            output.close();
 		}
 	}
 
