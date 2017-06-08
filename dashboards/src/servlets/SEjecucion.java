@@ -186,7 +186,7 @@ public class SEjecucion extends HttpServlet {
 								{"entidad","nombre","ano1","ano2","ano3","ano4","ano5","aprobado","aprobado_acumulado","ejecutado","ejecutado_acumulado","asignado","vigente","ejecucion_anual"},
 								{"int", "string", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency", "currency","percent"},
 								{"","","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","div"},
-								{"","","","","","","","","","","","","ejecutado_acumulado,asignado,vigente"}
+								{"","","","","","","","","","","","","","ejecutado_acumulado,asignado,vigente"}
 								};
 						extra_lines=new String[][]{{"Año",ejercicio+""},{"Mes",nmes},{"Fuentes", fuentes},{"Grupos de Gasto",grupos},{"",""}};
 						wb=excel.generateExcel(stentidades, "Ejecucion Presupuestaria", headers , ejercicio, extra_lines);

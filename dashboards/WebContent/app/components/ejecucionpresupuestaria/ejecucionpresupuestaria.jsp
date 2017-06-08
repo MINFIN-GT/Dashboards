@@ -143,8 +143,8 @@
 	    	<div class="row">
 				<div class="col-sm-12" style="text-align: right;">
 					<div class="btn-group" role="group" aria-label="">
-						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartHistoricoHastaMesActual(true)" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Hasta mes actual"><i class="glyphicon glyphicon-resize-full"></i></a>
-						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartHistoricoHastaMesActual(false)" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Todos los meses"><i class="glyphicon glyphicon-resize-small"></i></a>
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartHistoricoHastaMesActual(true)" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Todos los meses"><i class="glyphicon glyphicon-resize-full"></i></a>
+						<a class="btn btn-default btn-sm" href ng-click="ejecucion.chartHistoricoHastaMesActual(false)" ng-disabled="ejecucion.showloading" role="button" uib-tooltip="Hasta mes actual"><i class="glyphicon glyphicon-resize-small"></i></a>
 					</div>
 				</div>
 			</div>
