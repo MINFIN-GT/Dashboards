@@ -228,7 +228,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 										this.chartSeries_historico=[];
 										this.chartData_historico=[];
 										this.chartData_historico_hasta_actual=[];
-										this.chartData.historico_todos=[];
+										this.chartData_historico_todos=[];
 										for(var i=0; i<response.data.historico.length; i++){
 											this.chartSeries_historico.push(response.data.historico[i].ejercicio+"");
 											if(i == response.data.historico.length-1){
