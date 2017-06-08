@@ -9,7 +9,7 @@
 </head>
 <body>
 <% 
-	CUserDAO.createUser("kenriquez", "kes77!n", "Kildare", null, "Enríquez", null, "DTP", "Director");
+	CUserDAO.createUser("pblanco", "wspz9h", "Pablo", null, "Blanco", null, "Despacho Superior", "Asesor");
 %>
 </body>
 </html>
