@@ -12,11 +12,12 @@ import pojo.transparencia.CCompra;
 import utilities.CLogger;
 
 public class CCompraDAO {
-	public static Integer numCompras(){
+	public static Integer numCompras(int subprograma){
 		Integer ret=0;
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=2");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=?");
+				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
 					ret=rs.getInt(1);
@@ -31,13 +32,13 @@ public class CCompraDAO {
 		return ret;		
 	}
 	
-	public static ArrayList<CCompra> getCompras(){
+	public static ArrayList<CCompra> getCompras(int subprograma){
 		ArrayList<CCompra> ret=new ArrayList<CCompra>();
 		if(CDatabase.connect() && CDatabase.connectOracle()){
 			try{
 				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_compra WHERE programa=? and subprograma=?");
 				pstm.setInt(1, 94);
-				pstm.setInt(2, 2);
+				pstm.setInt(2, subprograma);
 				ResultSet rs=pstm.executeQuery();
 				PreparedStatement pstm2=null;
 				ResultSet rs2;

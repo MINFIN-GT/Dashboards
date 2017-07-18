@@ -123,7 +123,8 @@ public class SSaveActividad extends HttpServlet {
 				response_text = String.join("", "{\"success\":false, \"result\":\"NO eliminada\"}");
         }
 		else if(action.compareTo("getlist")==0){
-			ArrayList<CActividad> actividades = CActividadDAO.getActividades();
+			int subprograma = map.get("subprograma")!=null && map.get("subprograma").length()>0 ? Integer.parseInt(map.get("subprograma")) : 0;
+			ArrayList<CActividad> actividades = CActividadDAO.getActividades(subprograma);
 			ArrayList<stactividad> stactividades= new ArrayList<stactividad>();
 			for(CActividad actividad : actividades){
 				stactividad temp = new stactividad();

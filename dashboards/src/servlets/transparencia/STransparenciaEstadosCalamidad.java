@@ -36,6 +36,10 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
     	String decreto;
     	String nombre;
     	String link;
+    	String titulo;
+    	String latitude;
+    	String longitude;
+    	String tipo;
     }
        
     /**
@@ -51,7 +55,6 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -88,14 +91,46 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
 				temp.decreto = estado.getDecreto();
 				temp.fecha_declaracion = estado.getFecha_declaracion();
 				temp.link = estado.getLink();
+				temp.titulo = estado.getNombre();
+				temp.latitude = estado.getLatitude();
+				temp.longitude = estado.getLongitude();
+				switch(estado.getTipo_estado_calamidad()){
+					case 1: temp.tipo = "Calamidad"; break;
+					case 2: temp.tipo = "Sitio"; break;
+				}
 				stestados.add(temp);
 			}
 			
 			response_text=new GsonBuilder().serializeNulls().create().toJson(stestados);
 	        response_text = String.join("", "\"estados_calamidad\":",response_text);	            
-	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+	        
 		}
-		
+		else if(action.compareTo("getEstado")==0){
+			int subprograma = Integer.parseInt(map.get("subprograma"));
+			CEstadoCalamidad estadoc = CEstadoCalamidadDAO.getEstadoCalamidad(subprograma);
+			stestadocalamidad temp = new stestadocalamidad();
+			if(estadoc!=null){
+				temp.ejercicio = estadoc.getEjercicio();
+				temp.programa = estadoc.getPrograma();
+				temp.subprograma = estadoc.getSuprograma();
+				temp.nombre = estadoc.getNombre();
+				temp.decreto = estadoc.getDecreto();
+				temp.fecha_declaracion = estadoc.getFecha_declaracion();
+				temp.link = estadoc.getLink();
+				temp.titulo = estadoc.getNombre();
+				temp.latitude = estadoc.getLatitude();
+				temp.longitude = estadoc.getLongitude();
+				switch(estadoc.getTipo_estado_calamidad()){
+					case 1: temp.tipo = "Calamidad"; break;
+					case 2: temp.tipo = "Sitio"; break;
+				}
+			}			
+						
+			response_text=new GsonBuilder().serializeNulls().create().toJson(temp);
+			response_text = String.join("", "\"results\":",response_text);
+			
+		}
+		response_text = String.join("", "{\"success\":true,", response_text,"}");
 		gz.write(response_text.getBytes("UTF-8"));
 		gz.close();
 		output.close();	

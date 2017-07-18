@@ -15,8 +15,8 @@ public class CDocumentoDAO {
 		if(CDatabase.connect()){
 			try{
 				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("INSERT INTO seg_documento"
-						+ "(id_actividad,nombre, titulo,ruta,tipo,usuario_creacion,fecha_creacion) "
-						+ "values (?,?,?,?,?,?,?)");
+						+ "(id_actividad,nombre, titulo,ruta,tipo,usuario_creacion,fecha_creacion, subprograma) "
+						+ "values (?,?,?,?,?,?,?,?)");
 				if (documento.getId_actividad()>0)
 					pstm.setInt(1, documento.getId_actividad());
 				else					
@@ -60,11 +60,12 @@ public class CDocumentoDAO {
 	}
 	
 	
-	public static Integer numDocumentos(){
+	public static Integer numDocumentos(int subprograma){
 		Integer ret=0;
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_documento ");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_documento WHERE subprograma=? ORDER BY id");
+				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
 					ret=rs.getInt(1);
@@ -88,7 +89,8 @@ public class CDocumentoDAO {
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
 					CDocumento documento = new CDocumento(rs.getInt("id"), id_actividad, rs.getString("nombre"), rs.getString("titulo"), 
-							rs.getString("ruta"), rs.getInt("tipo"), rs.getTimestamp("fecha_creacion"), rs.getString("usuario_creacion"));
+							rs.getString("ruta"), rs.getInt("tipo"), rs.getTimestamp("fecha_creacion"), rs.getString("usuario_creacion"),
+							rs.getInt("subprograma"));
 					ret.add(documento);
 				}
 			}
@@ -102,17 +104,19 @@ public class CDocumentoDAO {
 		return ret;		
 	}
 
-	public static ArrayList<CDocumento> getDocumentos(int id) {
+	public static ArrayList<CDocumento> getDocumentos(int id, int subprograma) {
 		ArrayList<CDocumento> ret =new ArrayList<CDocumento>();
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select * from seg_documento "
-						+ (id>0? "where id_actividad="+id : "" ) 
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select * from seg_documento where subprograma=? "
+						+ (id>0? "and id_actividad="+id : "" ) 
 						+ " order by fecha_creacion ");
+				pstm.setInt(1, subprograma);
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
 					CDocumento documento = new CDocumento(rs.getInt("id"), rs.getInt("id_actividad"), rs.getString("nombre"), rs.getString("titulo"), 
-							rs.getString("ruta"), rs.getInt("tipo"), rs.getTimestamp("fecha_creacion"), rs.getString("usuario_creacion"));
+							rs.getString("ruta"), rs.getInt("tipo"), rs.getTimestamp("fecha_creacion"), rs.getString("usuario_creacion"),
+							rs.getInt("subprograma"));
 					ret.add(documento);
 				}
 			}
@@ -135,7 +139,8 @@ public class CDocumentoDAO {
 				ResultSet rs=pstm.executeQuery();
 				if (rs.next()){
 					ret = new CDocumento(rs.getInt("id"), rs.getInt("id_actividad"), rs.getString("nombre"), rs.getString("titulo"), 
-							rs.getString("ruta"), rs.getInt("tipo"), rs.getTimestamp("fecha_creacion"), rs.getString("usuario_creacion"));
+							rs.getString("ruta"), rs.getInt("tipo"), rs.getTimestamp("fecha_creacion"), rs.getString("usuario_creacion"),
+							rs.getInt("subprograma"));
 				}
 			}
 			catch(Exception e){

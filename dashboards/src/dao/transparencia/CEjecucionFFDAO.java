@@ -26,7 +26,7 @@ public class CEjecucionFFDAO {
 							( nivel > 3 ? ", fn.actividad + fn.obra actividad, fn.actividad_nombre " : "" )+
 							( nivel > 4 ? ", fn.RENGLON, fn.renglon_NOMBRE " : "" )+
 							", sum(fn.vigente) vigente, sum(fn.ejecutado) ejecutado, sum(fn.meta_avanzado) meta_avanzado, sum(fn.meta) meta "+
-							"from calamidad_ejecucion fn where fn.ejercicio ="+ now.getYear() + " " +
+							"from calamidad_ejecucion fn where fn.ejercicio <= "+ now.getYear() + " " +
 							( nivel > 1 ? "and entidad = "+entidad+" " : "" )+
 							( nivel > 2 ? "and unidad_ejecutora = "+unidad_ejecutora+" " : "")+
 							( nivel > 3 ? "and proyecto = "+proyecto+" " : "")+
@@ -81,7 +81,7 @@ public class CEjecucionFFDAO {
 					( nivel > 3 ? ", fn.actividad + fn.obra actividad, fn.actividad_nombre " : "" )+
 					( nivel > 4 ? ", fn.RENGLON, fn.renglon_NOMBRE " : "" )+
 					", sum(fn.vigente) vigente, sum(fn.ejecutado) ejecutado, sum(meta_avanzado) meta_avanzado, sum(meta) meta "+
-					"from calamidad_ejecucion fn where fn.ejercicio ="+ now.getYear() + " " +
+					"from calamidad_ejecucion fn where fn.ejercicio <="+ now.getYear() + " " +
 					"and programa = "+programa+" and subprograma = "+subprograma+" " +
 					( nivel > 3 ? "and proyecto = "+proyecto+" " : "")+
 					( nivel > 4 ? "and ( (actividad = "+actividad+" and obra = 0) or (actividad=0 and obra="+actividad+")) " : "")+
@@ -134,7 +134,7 @@ public class CEjecucionFFDAO {
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(ejecutado) ejecutado, sum(meta) meta, "
 						+ "sum(meta_avanzado) meta_avanzado "
 						+ "from calamidad_ejecucion "
-						+ "where ejercicio="+now.getYear()+" and programa="+programa+" and subprograma="+subprograma);		
+						+ "where ejercicio<="+now.getYear()+" and programa="+programa+" and subprograma="+subprograma);		
 				ResultSet rs = pstm1.executeQuery();	
 				if (rs.next()){
 					vigente = rs.getDouble(1);
@@ -162,7 +162,7 @@ public class CEjecucionFFDAO {
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(ejecutado) ejecutado, sum(meta) meta, "
 						+ "sum(meta_avanzado) meta_avanzado "
 						+ "from calamidad_ejecucion "
-						+ "where ejercicio="+now.getYear()+" and programa="+programa+" and subprograma="+subprograma);		
+						+ "where ejercicio<="+now.getYear()+" and programa="+programa+" and subprograma="+subprograma);		
 				ResultSet rs = pstm1.executeQuery();	
 				if (rs.next()){
 					ret = rs.getDouble("meta")>0?rs.getDouble("meta_avanzado")/rs.getDouble("meta"):0.0;

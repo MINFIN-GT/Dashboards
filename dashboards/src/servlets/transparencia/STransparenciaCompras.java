@@ -72,8 +72,9 @@ public class STransparenciaCompras extends HttpServlet {
 		;
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 		String action = map.get("action");
+		int subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : 0;
 		if (action.compareTo("getlist") == 0) {
-			ArrayList<CCompra> compras = CCompraDAO.getCompras();
+			ArrayList<CCompra> compras = CCompraDAO.getCompras(subprograma);
 			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
 			response_text = String.join("", "\"compras\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");

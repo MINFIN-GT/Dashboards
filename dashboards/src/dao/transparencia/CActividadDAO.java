@@ -146,11 +146,12 @@ public class CActividadDAO {
 		return ret;		
 	}
 	
-	public static Integer numActividades(){
+	public static Integer numActividades(int subprograma){
 		Integer ret = 0;
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT COUNT(*) FROM seg_actividad where subprograma=2");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT COUNT(*) FROM seg_actividad where subprograma=?");
+				pstm.setInt(1,subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
 					ret=rs.getInt(1);
@@ -165,11 +166,12 @@ public class CActividadDAO {
 		return ret;
 	}
 	
-	public static ArrayList<CActividad> getActividades(){
+	public static ArrayList<CActividad> getActividades(int subprograma){
 		ArrayList<CActividad> ret = new ArrayList<CActividad>();
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_actividad where programa=94 and subprograma=2 ORDER BY id ");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_actividad where programa=94 and subprograma=? ORDER BY id ");
+				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				while(rs.next()){
 					CActividad actividad = new CActividad(rs.getInt("id"), rs.getString("nombre"), 

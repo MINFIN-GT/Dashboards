@@ -19,12 +19,36 @@ public class CEstadoCalamidadDAO {
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
 					CEstadoCalamidad estado = new CEstadoCalamidad(rs.getInt("ejercicio"), rs.getInt("programa"), 
-							rs.getInt("subprograma"), rs.getString("nombre"), rs.getString("fecha_declaracion"), rs.getString("decrecto"), rs.getString("link")); 
+							rs.getInt("subprograma"), rs.getString("nombre"), rs.getString("fecha_declaracion"), rs.getString("decrecto"), rs.getString("link"),
+							rs.getInt("tipo_estado_calamidad"), rs.getString("latitude"), rs.getString("longitude"));  
 					ret.add(estado);
 				}
 			}
 			catch(Exception e){
 				CLogger.write("1", CEstadoCalamidad.class, e);
+			}
+			finally{
+				CDatabase.close();
+			}
+		}
+		return ret;		
+	}
+	
+	public static CEstadoCalamidad getEstadoCalamidad(int subprograma){
+		CEstadoCalamidad ret=null;
+		if(CDatabase.connect()){
+			try{
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM  estado_de_calamidad WHERE subprograma = ?");
+				pstm.setInt(1, subprograma);
+				ResultSet rs=pstm.executeQuery();
+				if (rs.next()){
+					ret = new CEstadoCalamidad(rs.getInt("ejercicio"), rs.getInt("programa"), 
+							rs.getInt("subprograma"), rs.getString("nombre"), rs.getString("fecha_declaracion"), rs.getString("decrecto"), rs.getString("link"),
+							rs.getInt("tipo_estado_calamidad"), rs.getString("latitude"), rs.getString("longitude")); 
+				}
+			}
+			catch(Exception e){
+				CLogger.write("2", CEstadoCalamidad.class, e);
 			}
 			finally{
 				CDatabase.close();

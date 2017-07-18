@@ -62,9 +62,7 @@ public class SSaveFile extends HttpServlet {
         String place="";
         FileItem fItem=null;
         Integer id_actividad=-1; 
-        
-        
-        //Hola 
+        Integer subprograma=0;
         
         if (!isMultipart) {
             return;
@@ -86,6 +84,7 @@ public class SSaveFile extends HttpServlet {
                 	switch(item.getFieldName()){
                 	case "id_actividad" : id_actividad = Integer.parseInt(item.getString());
                 	case "place" : place = item.getString(); break;
+                	case "subprograma": subprograma = Integer.parseInt(item.getString());
                 	}
                 }
             }
@@ -101,7 +100,9 @@ public class SSaveFile extends HttpServlet {
             filePath = path.getPath() +"/"+ fileName;
             uploadedFile = new File(filePath);
             fItem.write(uploadedFile);
-            CDocumento doc = new CDocumento(-1, id_actividad, fileName, fileName, filePath, filetype, new Timestamp(DateTime.now().getMillis()), CShiro.getAttribute("username").toString());
+            
+            CDocumento doc = new CDocumento(-1, id_actividad, fileName, fileName, filePath, filetype, new Timestamp(DateTime.now().getMillis()), CShiro.getAttribute("username").toString(),
+            		subprograma);
             CDocumentoDAO.crearDocumento(doc);
             
     		request.setCharacterEncoding("UTF-8");

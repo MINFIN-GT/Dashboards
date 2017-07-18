@@ -80,9 +80,10 @@ public class STransparenciaDocumentos extends HttpServlet {
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 		String action = map.get("action");
 		int id_actividad = map.get("id")!=null ? Integer.parseInt(map.get("id")):-1;
+		int subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : -1;
 		if(action.compareTo("getlist")==0){
 		
-			ArrayList<CDocumento> documentos = CDocumentoDAO.getDocumentos(id_actividad);
+			ArrayList<CDocumento> documentos = CDocumentoDAO.getDocumentos(id_actividad, subprograma);
 			ArrayList<stdocumento> stdocumentos= new ArrayList<stdocumento>();
 			for(CDocumento documento : documentos){
 				stdocumento temp = new stdocumento();

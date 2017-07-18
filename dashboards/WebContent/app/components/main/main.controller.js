@@ -68,11 +68,35 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/transparencia/jerez/compras',{
             	template: '<div load-on-demand="\'jerezComprasController\'" class="all_page"></div>'
             })
+            .when('/transparencia/calamidad/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/mapa/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadMapaController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/actividades/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadActividadesController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/ejecucion/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadEjecucionController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/admin/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadAdminController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/documentos/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadDocumentosController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/compras/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadComprasController\'" class="all_page"></div>'
+            })
             .when('/presidenciales/metas',{
             	template: '<div load-on-demand="\'metasController\'" class="all_page"></div>'
             })
             .when('/prestamos',{
             	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
+            })
+            .when('/proyectopresupuesto',{
+            	template: '<div load-on-demand="\'proyectoPresupuestoController\'" class="all_page"></div>'
             })
 
             /*.when('/salir',{
@@ -179,6 +203,41 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	           script: '/app/components/transparencia/jerez/jerezCompras.controller.js',
 	           template: '/app/components/transparencia/jerez/jerezCompras.jsp'
 	       },
+	       {
+	    	   name: 'calamidadController',     
+	           script: '/app/components/transparencia/calamidad/calamidad.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidad.jsp'
+	       },
+	       {
+	    	   name: 'calamidadMapaController',     
+	           script: '/app/components/transparencia/calamidad/calamidadMapa.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadMapa.jsp'
+	       },
+	       {
+	    	   name: 'calamidadActividadesController',     
+	           script: '/app/components/transparencia/calamidad/calamidadActividades.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadActividades.jsp'
+	       },
+	       {
+	    	   name: 'calamidadEjecucionController',     
+	           script: '/app/components/transparencia/calamidad/calamidadEjecucion.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadEjecucion.jsp'
+	       },
+	       {
+	    	   name: 'calamidadAdminController',     
+	           script: '/app/components/transparencia/calamidad/calamidadAdmin.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadAdmin.jsp'
+	       },
+	       {
+	    	   name: 'calamidadDocumentosController',     
+	           script: '/app/components/transparencia/calamidad/calamidadDocumentos.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadDocumentos.jsp'
+	       },
+	       {
+	    	   name: 'calamidadComprasController',     
+	           script: '/app/components/transparencia/calamidad/calamidadCompras.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadCompras.jsp'
+	       },
 	       { 
 	    	   name: 'metasController',     
 	           script: '/app/components/presidenciales/metas/metas.controller.js',
@@ -188,6 +247,10 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     
 	           script:   '/app/components/creditopublico/prestamos/prestamos.controller.js',
 	           template: '/app/components/creditopublico/prestamos/prestamos.jsp'
+	       },{
+	    	   name: 'proyectoPresupuestoController',
+	    	   script: '/app/components/proyectopresupuesto/proyectopresupuesto.controller.js',
+	    	   template: '/app/components/proyectopresupuesto/proyectopresupuesto.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

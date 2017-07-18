@@ -18,8 +18,8 @@ angular.module('estadoscalamidadController',['dashboards']).controller('estadosc
  	}
 	);
 	
-	this.redirect=function(link){
-		 $location.path("/transparencia/"+ link );
+	this.redirect=function(subprograma){
+		 $location.path("/transparencia/calamidad/"+ subprograma );
 	};
 	
 }]);

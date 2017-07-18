@@ -8,6 +8,9 @@ public class CEstadoCalamidad {
 	String fecha_declaracion;
 	String decreto;
 	String link;
+	int tipo_estado_calamidad;
+	String latitude;
+	String longitude;
 	
 	public int getEjercicio() {
 		return ejercicio;
@@ -65,8 +68,32 @@ public class CEstadoCalamidad {
 		this.link = link;
 	}
 
+	public int getTipo_estado_calamidad() {
+		return tipo_estado_calamidad;
+	}
+
+	public void setTipo_estado_calamidad(int tipo_estado_calamidad) {
+		this.tipo_estado_calamidad = tipo_estado_calamidad;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
 	public CEstadoCalamidad(int ejercicio, int programa, int suprograma, String nombre, String fecha_declaracion,
-			String decreto, String link) {
+			String decreto, String link, int tipo_estado_calamidad, String latitude, String longitude) {
 		super();
 		this.ejercicio = ejercicio;
 		this.programa = programa;
@@ -75,5 +102,8 @@ public class CEstadoCalamidad {
 		this.fecha_declaracion = fecha_declaracion;
 		this.decreto = decreto;
 		this.link = link;
+		this.tipo_estado_calamidad = tipo_estado_calamidad;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 }

@@ -11,8 +11,9 @@ public class CDocumento {
 	int tipo;
 	Timestamp fecha_creacion;
 	String usuario_creacion;
+	int subprograma;
 	
-	public CDocumento(int id, int id_actividad,String nombre,String titulo, String ruta, int tipo, Timestamp fecha_creacion, String usuario_creacion) {
+	public CDocumento(int id, int id_actividad,String nombre,String titulo, String ruta, int tipo, Timestamp fecha_creacion, String usuario_creacion, int subprograma) {
 		super();
 		this.id = id;
 		this.id_actividad = id_actividad;
@@ -22,6 +23,7 @@ public class CDocumento {
 		this.tipo = tipo;
 		this.fecha_creacion = fecha_creacion;
 		this.usuario_creacion = usuario_creacion;
+		this.subprograma = subprograma;
 	}
 	
 	public int getId() {
@@ -76,6 +78,13 @@ public class CDocumento {
 
 	public void setUsuario_creacion(String usuario_creacion) {
 		this.usuario_creacion = usuario_creacion;
+	}
+	
+	public int getSubprograma() {
+		return subprograma;
+	}
+	public void setSubprograma(int subprograma) {
+		this.subprograma = subprograma;
 	}
 	
 	

@@ -19,11 +19,11 @@
 	
 	</style>
     <div ng-controller="estadoscalamidadController as control" class="maincontainer" id="title">
-	<h3>Tablero de Seguimiento a Estados de Calamidad</h3>
+	<h3>Tablero de Seguimiento a Estados de Excepción</h3>
 	<br/>
 	<br/>
 	<div ng-repeat="estado in control.estadoscalamidad" >
-		<div ng-click="estado.link != '' ? control.redirect(estado.link) : ''" class="cbox">
+		<div ng-click="estado.link != '' ? control.redirect(estado.subprograma) : ''" class="cbox">
 			<div class="success ng-scope ng-isolate-scope bounce-in" style="cursor: pointer;">
 				<div class="timeline-panel" >
 					<timeline-heading class="ng-scope"><div class="timeline-heading">
@@ -31,6 +31,7 @@
 							<p style="width: 100%" class="ng-scope">
 					            <small class="text-muted ng-binding" style="font-size: larger;"><i class="glyphicon glyphicon-time"></i>{{ estado.fecha_declaracion}}</small>
 					         </p>
+					      <p style="width: 100%" class="ng-binding ng-scope"><b>Estado de {{ estado.tipo }}</b></p>   
 				          <p style="width: 100%" class="ng-binding ng-scope">Decreto: {{ estado.decreto }}</p>
 				          <p style="width: 100%" class="ng-binding ng-scope">Programa: {{ estado.programa }}</p>
 				          <p style="width: 100%" class="ng-binding ng-scope">Subprograma: {{ estado.subprograma }}</p>
