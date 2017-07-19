@@ -43,17 +43,17 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 </style>
 
 <script type="text/ng-template" id="edit.html">
-	<%@ include file="/app/components/transparencia/jerez/actividad.jsp"%>
+	<%@ include file="/app/components/transparencia/calamidad/actividad.jsp"%>
 </script>
 
 <script type="text/ng-template" id="editCompras.html">
-	<%@ include file="/app/components/transparencia/jerez/compras.jsp"%>
+	<%@ include file="/app/components/transparencia/calamidad/compras.jsp"%>
 </script>
 
 <div ng-controller="adminCtrl as control" class="maincontainer"
 	id="title" class="all_page">
 
-	<h3>Actividades - Seguimiento Jerez, Jutiapa</h3>
+	<h3>Actividades - Seguimiento - {{ control.titulo }}</h3>
 	<br />
 	<div style="position: relative;">
 		<div style="text-align: right;">

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <div ng-controller="jerezEjecucionController as control" class="maincontainer" id="title" class="all_page">
-	<h3>Tablero de Seguimiento a Estados de Excepción - Jerez, Jutiapa</h3>
+    <div ng-controller="calamidadEjecucionController as control" class="maincontainer" id="title" class="all_page">
+	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo }}</h3>
 	<br/>
 	<div><h4>Indicadores de Ejecución</h4></div>
 	<div class="row panel panel-default" style="margin: 10px 0px 20px 0px;">

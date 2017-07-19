@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
     
     <div ng-controller="ComprasCtrl as control" class="maincontainer" id="title">
-	<h3>Tablero de Seguimiento a Estados de Excepción - Jerez, Jutiapa</h3>
+	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo }}</h3>
 	<br/>
 	<div class="row">
 		<div class="col-sm-6">

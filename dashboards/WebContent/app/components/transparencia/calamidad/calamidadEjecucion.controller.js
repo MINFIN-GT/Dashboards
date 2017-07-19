@@ -2,9 +2,11 @@
  * 
  */
 
-angular.module('jerezEjecucionController',['dashboards','smart-table']).controller('jerezEjecucionController',['$scope','$routeParams','$http','$document','$timeout',
-	   function($scope,$routeParams,$http, $document, $timeout){			
+angular.module('calamidadEjecucionController',['dashboards','smart-table']).controller('calamidadEjecucionController',['$scope','$routeParams','$http','$document','$timeout','$rootScope',
+	   function($scope,$routeParams,$http, $document, $timeout, $rootScope){			
 			this.lastupdate = '';
+			this.titulo=$rootScope.titulo;
+			this.tipo = $rootScope.tipo;
 			
 			$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
 			    if(response.data.success){
@@ -12,6 +14,18 @@ angular.module('jerezEjecucionController',['dashboards','smart-table']).controll
 				}
 			}.bind(this)
 			);
+			
+			if($rootScope.titulo==null || $rootScope.titulo === undefined){
+				$http.post('/STransparenciaEstadosCalamidad', { action: 'getEstado',subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+				    if(response.data.success){
+				    	this.titulo = response.data.results.nombre;
+				    	this.tipo = response.data.results.tipo;
+				    	$rootScope.titulo = this.titulo;
+				    	$rootScope.tipo = this.tipo;
+					}
+				}.bind(this)
+				);
+			}
 			
 			var current_year = moment().year();		
 			this.entidad_ejecucion_financiera=0;
@@ -26,7 +40,7 @@ angular.module('jerezEjecucionController',['dashboards','smart-table']).controll
 			this.entidad_programa_nombre="";
 			this.entidad_programa=94;
 			this.entidad_subprograma_nombre="";
-			this.entidad_subprograma=2;
+			this.entidad_subprograma=$routeParams.subprograma;
 			this.entidad_proyecto_nombre="";
 			this.entidad=proyecto=null;
 			this.entidad_actividad_nombre="";

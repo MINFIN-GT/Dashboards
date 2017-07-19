@@ -1,13 +1,28 @@
-angular.module('jerezAdminController',['dashboards','smart-table','ngFileUpload','ui.bootstrap']);
-angular.module('jerezAdminController').controller('adminCtrl', function($log,$scope,$rootScope,$routeParams,$http,$uibModal,$route){
+angular.module('calamidadAdminController',['dashboards','smart-table','ngFileUpload','ui.bootstrap']);
+angular.module('calamidadAdminController').controller('adminCtrl', function($log,$scope,$rootScope,$routeParams,$http,$uibModal,$route){
 	
     this.showloading = false;  
     this.actividades_data = [];
     this.actividades_data_original=[];
+    
+    $rootScope.subprograma = $routeParams.subprograma;
+    this.titulo = $rootScope.titulo;
+    
+    if($rootScope.titulo==null || $rootScope.titulo === undefined){
+		$http.post('/STransparenciaEstadosCalamidad', { action: 'getEstado',subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	this.titulo = response.data.results.nombre;
+		    	this.tipo = response.data.results.tipo;
+		    	$rootScope.titulo = this.titulo;
+		    	$rootScope.tipo = this.tipo;
+			}
+		}.bind(this)
+		);
+	}
   
 	this.loadList=function(){
 		this.showloading=true;
-		$http.post('/SSaveActividad', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
+		$http.post('/SSaveActividad', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
 		    if(response.data.success){
 		    	this.actividades_data_original = response.data.actividades;
 		    	this.actividades_data = this.actividades_data_original.length> 0 ? this.actividades_data_original.slice(0) : [];
@@ -49,7 +64,7 @@ angular.module('jerezAdminController').controller('adminCtrl', function($log,$sc
 		}, function() {
 
 		})['finally'](function(){
-			modalInstance = undefined  // <--- This fixes
+			modalInstance = undefined;  
 			$scope.render=false;
 		});
  
@@ -93,7 +108,7 @@ angular.module('jerezAdminController').controller('adminCtrl', function($log,$sc
 });
 
 
-angular.module('jerezAdminController')
+angular.module('calamidadAdminController')
 .controller('editActivity', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload) {
 	
 	if ($rootScope.id<=0){
@@ -126,7 +141,7 @@ angular.module('jerezAdminController')
 	    $uibModalInstance.dismiss('cancel');
 	};
 	
-	$http.post('/STransparenciaDocumentos', { action: 'getlist', id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
+	$http.post('/STransparenciaDocumentos', { action: 'getlist', subprograma: $rootScope.subprograma, id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
 	    if(response.data.success){
 	    	$scope.original_documentos = response.data.documentos;
 	    	$scope.documentos = $scope.original_documentos.length> 0 ? $scope.original_documentos.slice(0) : [];
@@ -140,7 +155,7 @@ angular.module('jerezAdminController')
 		 var data = {action:"delete",iddoc:idDoc}
 		 $http.post('/STransparenciaDocumentos', data).then(function(response){
 			    if(response.data.success){
-			    	$http.post('/STransparenciaDocumentos', { action: 'getlist', id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
+			    	$http.post('/STransparenciaDocumentos', { action: 'getlist', subprograma: $rootScope.subprograma, id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
 			    	    if(response.data.success){
 			    	    	$scope.original_documentos = response.data.documentos;
 			    	    	$scope.documentos = $scope.original_documentos.length> 0 ? $scope.original_documentos.slice(0) : [];
@@ -217,14 +232,14 @@ angular.module('jerezAdminController')
 	 $scope.uploadPic = function(file) {
 			file.upload = Upload.upload({
 			    url: '/SSaveFile',
-			    data: {id_actividad: this.id, place:"jerez", file: file},
+			    data: {id_actividad: this.id, place: $rootScope.subprograma, file: file},
 			  });
 			
 			 file.upload.then(function (response) {
 			    $timeout(function () {
 			      file.result = response.data;
 			      $rootScope.docFile=null;
-			      $http.post('/STransparenciaDocumentos', { action: 'getlist', id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
+			      $http.post('/STransparenciaDocumentos', { action: 'getlist', subprograma: $rootScope.subprograma, id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
 			    	    if(response.data.success){
 			    	    	$scope.original_documentos = response.data.documentos;
 			    	    	$scope.documentos = $scope.original_documentos.length> 0 ? $scope.original_documentos.slice(0) : [];
@@ -311,8 +326,8 @@ angular.module('jerezAdminController')
 	}
 });
 
-angular.module('jerezAdminController')
-.controller('editCompras', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout) {
+angular.module('calamidadAdminController')
+.controller('editCompras', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout, $rootScope) {
 	
 	$scope.tipoCompra;
 	$scope.idCompra;
@@ -327,7 +342,7 @@ angular.module('jerezAdminController')
 	    $uibModalInstance.dismiss('cancel');
 	};
 	
-	$http.post('/STransparenciaCompras', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
+	$http.post('/STransparenciaCompras', { action: 'getlist', subprograma: $rootScope.subprograma, t: (new Date()).getTime() }).then(function(response){
 	    if(response.data.success){
 	    	$scope.original_compras = response.data.compras;
 	    	$scope.compras = $scope.original_compras.length> 0 ? $scope.original_compras.slice(0) : [];
@@ -340,7 +355,7 @@ angular.module('jerezAdminController')
 	
 	$scope.getCompra=function(){
     	$scope.showloading=true;
-		$http.post('/STransparenciaCompras', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
+		$http.post('/STransparenciaCompras', { action: 'getlist', subprograma: $rootScope.subprograma, t: (new Date()).getTime() }).then(function(response){
 		    if(response.data.success){
 		    	$scope.original_compras = response.data.compras;
 		    	$scope.compras = $scope.original_compras.length> 0 ? $scope.original_compras.slice(0) : [];
@@ -375,7 +390,7 @@ angular.module('jerezAdminController')
 		}
 		
 		if (isValid){
-			$http.post('/STransparenciaCompras', { action: 'add', tipoCompra:this.tipoCompra, idCompra:this.idCompra, t: (new Date()).getTime() }).then(function(response){
+			$http.post('/STransparenciaCompras', { action: 'add', subprograma: $rootScope.subprograma, tipoCompra:this.tipoCompra, idCompra:this.idCompra, t: (new Date()).getTime() }).then(function(response){
 			    if(response.data.success){
 			    	this.getCompra();
 			    	this.tipoCompra=null;

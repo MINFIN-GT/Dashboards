@@ -3,11 +3,13 @@
  */
 
 
-angular.module('jerezActividadesController',['dashboards','angular-timeline','angular-scroll-animate','ngSanitize']).controller('jerezActividadesController',['$scope','$routeParams','$http','uiGridConstants','$document','$timeout','$sce','$uibModal','uiGmapGoogleMapApi',
-	   function($scope,$routeParams,$http,uiGridConstants, $document, $timeout,$sce,$uibModal,uiGmapGoogleMapApi){
+angular.module('calamidadActividadesController',['dashboards','angular-timeline','angular-scroll-animate','ngSanitize']).controller('calamidadActividadesController',['$scope','$routeParams','$http','uiGridConstants','$document','$timeout','$sce','$uibModal','uiGmapGoogleMapApi', '$rootScope',
+	   function($scope,$routeParams,$http,uiGridConstants, $document, $timeout,$sce,$uibModal,uiGmapGoogleMapApi, $rootScope){
 			
 			this.lastupdate = '';
 			this.actividad_seleccionada=-1;
+			this.titulo = $rootScope.titulo;
+			this.tipo = $rootScope.tipo;
 			
 			$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
 				    if(response.data.success){
@@ -16,16 +18,29 @@ angular.module('jerezActividadesController',['dashboards','angular-timeline','an
 			}.bind(this)
 			);
 			
+			if($rootScope.titulo==null || $rootScope.titulo === undefined){
+				$http.post('/STransparenciaEstadosCalamidad', { action: 'getEstado',subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+				    if(response.data.success){
+				    	this.titulo = response.data.results.nombre;
+				    	this.tipo = response.data.results.tipo;
+				    	$rootScope.titulo = this.titulo;
+				    	$rootScope.tipo = this.tipo;
+					}
+				}.bind(this)
+				);
+			}
 			
 			this.trustAsHtml = function(string) {
 		        return $sce.trustAsHtml(string);
 		    };
+		    
+		    
 		
 			this.side='';
 			this.actividad = '';
 			this.activiades = [];
 			
-			$http.post('/SSaveActividad', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
+			$http.post('/SSaveActividad', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
 			    if(response.data.success){
 			    	this.actividades = response.data.actividades;
 			    }
@@ -80,7 +95,7 @@ angular.module('jerezActividadesController',['dashboards','angular-timeline','an
 		}
 	]);
 
-angular.module('jerezActividadesController').controller('mapCtrl',[ '$scope','$uibModalInstance','$timeout', 'uiGmapGoogleMapApi','glat','glong',
+angular.module('calamidadActividadesController').controller('mapCtrl',[ '$scope','$uibModalInstance','$timeout', 'uiGmapGoogleMapApi','glat','glong',
                                                          function ($scope, $uibModalInstance,$timeout, uiGmapGoogleMapApi, glat, glong) {
                                                      	$scope.geoposicionlat = glat;
                                                      	$scope.geoposicionlong = glong;

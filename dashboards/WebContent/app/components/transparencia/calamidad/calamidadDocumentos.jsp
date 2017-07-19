@@ -17,8 +17,8 @@
 	    width: 0
 	}
 	</style>
-    <div ng-controller="jerezDocumentosController as control" class="maincontainer" id="title">
-	<h3>Tablero de Seguimiento a Estados de Excepción - Jerez, Jutiapa</h3>
+    <div ng-controller="calamidadDocumentosController as control" class="maincontainer" id="title">
+	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo }}</h3>
 	<br/>
 	<div class="row">
 		<div class="col-sm-6">
@@ -45,7 +45,7 @@
 					<td>{{ row.actividad }}</td>
 					<td>{{ row.usuario_creacion }}</td>
 					<td>{{ row.fecha_creacion | date }}</td>
-					<td><a href="/SDownload?place=jerez&iddoc={{ row.id }}"><span class="glyphicon glyphicon-save"></span></a></td>
+					<td><a href="/SDownload?place={{ control.subprograma }}&iddoc={{ row.id }}"><span class="glyphicon glyphicon-save"></span></a></td>
 				</tr>
 			</tbody>
 		</table>

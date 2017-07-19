@@ -3,14 +3,30 @@
  */
 
 
-angular.module('jerezDocumentosController',['dashboards','smart-table','ngFileUpload']).controller('jerezDocumentosController',['$scope','$route','$routeParams','$http','$filter','Upload','$timeout',
-	   function($scope,$route,$routeParams,$http,$filter,Upload,$timeout){
+angular.module('calamidadDocumentosController',['dashboards','smart-table','ngFileUpload']).controller('calamidadDocumentosController',['$scope','$route','$routeParams','$http','$filter','Upload','$timeout','$rootScope',
+	   function($scope,$route,$routeParams,$http,$filter,Upload,$timeout,$rootScope){
 	
 	this.lastupdate='';
 	this.documentos=[];
 	this.original_documentos=[];
 	this.docFile = null;
 	this.showloading=true;
+	
+	this.titulo=$rootScope.titulo;
+	this.tipo = $rootScope.tipo;
+	this.subprograma = $routeParams.subprograma;
+	
+	if($rootScope.titulo==null || $rootScope.titulo === undefined){
+		$http.post('/STransparenciaEstadosCalamidad', { action: 'getEstado',subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	this.titulo = response.data.results.nombre;
+		    	this.tipo = response.data.results.tipo;
+		    	$rootScope.titulo = this.titulo;
+		    	$rootScope.tipo = this.tipo;
+			}
+		}.bind(this)
+		);
+	}
 	
 	$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
 		    if(response.data.success){
@@ -19,7 +35,7 @@ angular.module('jerezDocumentosController',['dashboards','smart-table','ngFileUp
 		}.bind(this)
 	);
 	
-	$http.post('/STransparenciaDocumentos', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
+	$http.post('/STransparenciaDocumentos', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
 	    if(response.data.success){
 	    	this.original_documentos = response.data.documentos;
 	    	this.documentos = this.original_documentos.length> 0 ? this.original_documentos.slice(0) : [];
@@ -33,7 +49,7 @@ angular.module('jerezDocumentosController',['dashboards','smart-table','ngFileUp
 	this.uploadFile = function(file) {
 		file.upload = Upload.upload({
 		    url: '/SSaveFile',
-		    data: {id_actividad: -1, place:"jerez", file: file},
+		    data: {id_actividad: -1, place: this.subprograma, file: file},
 		  });
 		
 		 file.upload.then(function (response) {

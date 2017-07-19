@@ -14,7 +14,7 @@
 		background-image: none;
 	}
 	</style>
-	<div ng-controller="jerezActividadesController as control" class="maincontainer" id="title" class="all_page">
+	<div ng-controller="calamidadActividadesController as control" class="maincontainer" id="title" class="all_page">
 	<script type="text/ng-template" id="map.html">
         <div class="modal-header">
             <h3 class="modal-title">Mapa de Ubicación</h3>
@@ -28,7 +28,7 @@
             <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
         </div>
     </script>
-	<h3>Tablero de Seguimiento a Estados de Excepción - Jerez, Jutiapa</h3>
+	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo }}</h3>
 	<br/>
 	<div><h4>Línea de Tiempo</h4></div>
 	<div style="width: 100%; height: 500px; padding: 30px;" class="panel panel-default">
@@ -56,7 +56,7 @@
 							<div>
 								<uib-carousel active="active" interval="5000" no-wrap="false" style="height: 125px;">
 							      <uib-slide ng-repeat="foto in control.actividad.fotos track by $index" index="$index">
-							        <img ng-src="/SPicture?subp=jerez&idevento={{ control.actividad.id }}&pic={{ foto }}&pic_h=125" style="margin:auto;">
+							        <img ng-src="/SPicture?subp={{ control.subprograma }}&idevento={{ control.actividad.id }}&pic={{ foto }}&pic_h=125" style="margin:auto;">
 							        <div class="carousel-caption">
 							          <h4 style="background-color: transparent;">{{  }}</h4>
 							        </div>
