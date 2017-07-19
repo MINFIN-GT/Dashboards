@@ -15,7 +15,7 @@ public class CEstadoCalamidadDAO {
 		ArrayList<CEstadoCalamidad> ret=new ArrayList<CEstadoCalamidad>();
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM  estado_de_calamidad ORDER BY programa, subprograma ");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM  estado_de_calamidad ORDER BY subprograma DESC ");
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
 					CEstadoCalamidad estado = new CEstadoCalamidad(rs.getInt("ejercicio"), rs.getInt("programa"), 

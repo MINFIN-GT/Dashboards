@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
@@ -18,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import dao.transparencia.CEjecucionFFDAO;
 import dao.transparencia.CEstadoCalamidadDAO;
 import pojo.transparencia.CEstadoCalamidad;
 
@@ -40,6 +42,7 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
     	String latitude;
     	String longitude;
     	String tipo;
+    	String ejecucion;
     }
        
     /**
@@ -82,6 +85,7 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
 		
 			ArrayList<CEstadoCalamidad> estados = CEstadoCalamidadDAO.getEstadosCalamidad();
 			ArrayList<stestadocalamidad> stestados= new ArrayList<stestadocalamidad>();
+			DecimalFormat formatter = new DecimalFormat("#,##0.00");
 			for(CEstadoCalamidad estado : estados){
 				stestadocalamidad temp = new stestadocalamidad();
 				temp.ejercicio = estado.getEjercicio();
@@ -94,6 +98,7 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
 				temp.titulo = estado.getNombre();
 				temp.latitude = estado.getLatitude();
 				temp.longitude = estado.getLongitude();
+				temp.ejecucion = formatter.format(CEjecucionFFDAO.ejecucionFinancieraMonto(estado.getPrograma(), estado.getSuprograma()));
 				switch(estado.getTipo_estado_calamidad()){
 					case 1: temp.tipo = "Calamidad"; break;
 					case 2: temp.tipo = "Sitio"; break;
