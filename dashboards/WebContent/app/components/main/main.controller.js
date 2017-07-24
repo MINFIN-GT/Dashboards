@@ -169,41 +169,6 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	           template: '/app/components/transparencia/estadoscalamidad.jsp'
 	       },
 	       {
-	    	   name: 'jerezController',     
-	           script: '/app/components/transparencia/jerez/jerez.controller.js',
-	           template: '/app/components/transparencia/jerez/jerez.jsp'
-	       },
-	       {
-	    	   name: 'jerezMapaController',     
-	           script: '/app/components/transparencia/jerez/jerezMapa.controller.js',
-	           template: '/app/components/transparencia/jerez/jerezMapa.jsp'
-	       },
-	       {
-	    	   name: 'jerezActividadesController',     
-	           script: '/app/components/transparencia/jerez/jerezActividades.controller.js',
-	           template: '/app/components/transparencia/jerez/jerezActividades.jsp'
-	       },
-	       {
-	    	   name: 'jerezEjecucionController',     
-	           script: '/app/components/transparencia/jerez/jerezEjecucion.controller.js',
-	           template: '/app/components/transparencia/jerez/jerezEjecucion.jsp'
-	       },
-	       {
-	    	   name: 'jerezAdminController',     
-	           script: '/app/components/transparencia/jerez/jerezAdmin.controller.js',
-	           template: '/app/components/transparencia/jerez/jerezAdmin.jsp'
-	       },
-	       {
-	    	   name: 'jerezDocumentosController',     
-	           script: '/app/components/transparencia/jerez/jerezDocumentos.controller.js',
-	           template: '/app/components/transparencia/jerez/jerezDocumentos.jsp'
-	       },
-	       {
-	    	   name: 'jerezComprasController',     
-	           script: '/app/components/transparencia/jerez/jerezCompras.controller.js',
-	           template: '/app/components/transparencia/jerez/jerezCompras.jsp'
-	       },
-	       {
 	    	   name: 'calamidadController',     
 	           script: '/app/components/transparencia/calamidad/calamidad.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidad.jsp'
@@ -285,7 +250,10 @@ app.controller('MainController',['$scope','$document','deviceDetector','$rootSco
 	
 	$scope.hideBarFromMenu=function(){
 		$scope.hidebar = true;
-		document.getElementById("title").scrollIntoView()
+	}
+	
+	$scope.showBarFromMenu=function(){
+		$scope.hidebar = false;
 	}
 	
 	$scope.device = deviceDetector;

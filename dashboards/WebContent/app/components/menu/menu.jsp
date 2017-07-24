@@ -11,13 +11,13 @@
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	            </label>
-	            <a class="navbar-brand" href="/main.jsp"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Inicio</a>
+	            <a class="navbar-brand" href="/main.jsp"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
 		    </div>
 		    
 		    <div class="collapse navbar-collapse" id="navBar">
 	            <ul class="nav navbar-nav">
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Tableros <b class="caret"></b></a>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>Tableros <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionpresupuestaria">Ejecución Presupuestaria</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionfisica">Ejecución Física</a></li>
@@ -31,7 +31,7 @@
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon glyphicon-flag" aria-hidden="true"></span>Metas Presidenciales <b class="caret"></b></a>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon glyphicon-flag" aria-hidden="true"></span>Metas <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 	                     	<li role="menuitem"><a href="#!/presidenciales/metas">Metas Presidenciales</a></li>
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
@@ -79,6 +79,11 @@
 		            <li><a href="/SLogout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Salir</a></li>
 		            <li><a><span class="glyphicon glyphicon-chevron-up" aria-hidden="true" ng-click="hideBarFromMenu()"></span> </a></li>
 		        </ul>
-	        </div>
+		    </div>
+		    <div ng-hide ="!hidebar" class='triangle-down alineado' ng-click="showBarFromMenu()">
+					<p>
+					<i class='fa fa-chevron-down fa-12x isDown' id='toggle'></i>
+					</p>
+			</div>
 	    </div>
 	</nav>
