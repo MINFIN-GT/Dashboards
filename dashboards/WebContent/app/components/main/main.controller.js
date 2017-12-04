@@ -3,7 +3,7 @@
  */
 var app = angular.module('dashboards',['ngRoute','ui.bootstrap','chart.js', 'loadOnDemand','ngAnimate', 'ngTouch', 
                                        'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning',
-                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize']);
+                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 	   $locationProvider.hashPrefix('!');
@@ -97,6 +97,15 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             })
             .when('/proyectopresupuesto',{
             	template: '<div load-on-demand="\'proyectoPresupuestoController\'" class="all_page"></div>'
+            })
+            .when('/dashboards/eventosgc',{
+            	template: '<div load-on-demand="\'eventosGCController\'" class="all_page"></div>'
+            })
+            .when('/dashboards/ingresos',{
+            	template: '<div load-on-demand="\'ingresosController\'" class="all_page"></div>'
+            })
+            .when('/dashboards/egresos',{
+            	template: '<div load-on-demand="\'egresosController\'" class="all_page"></div>'
             })
 
             /*.when('/salir',{
@@ -216,6 +225,16 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'proyectoPresupuestoController',
 	    	   script: '/app/components/proyectopresupuesto/proyectopresupuesto.controller.js',
 	    	   template: '/app/components/proyectopresupuesto/proyectopresupuesto.jsp'
+	       },
+	       {
+	    	   name: 'eventosGCController',
+	    	   script: '/app/components/eventosgc/eventosgc_general.controller.js',
+	    	   template: '/app/components/eventosgc/eventosgc_general.jsp'
+	       },
+	       {
+	    	   name: 'ingresosController',
+	    	   script: '/app/components/ingresos/ingresos.controller.js',
+	    	   template: '/app/components/ingresos/ingresos.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

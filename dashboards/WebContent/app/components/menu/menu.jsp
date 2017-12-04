@@ -23,17 +23,11 @@
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionfisica">Ejecución Física</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copep">Cuotas COPEP</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copeprenglon">Cuotas COPEP por Renglón</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/eventosgc">Eventos Guatecompras</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/ingresos">Ingresos</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/egresos">Egresos</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo de Caja</a></li>
 	                     	<!--  <li role="menuitem"><a href="#!/dashboards/proyecciongasto">Test</a></li> -->
-	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
-	                        <li role="menuitem"><a href="#">Something else here</a></li>
-	                        <li class="divider"></li>
-	                        <li role="menuitem"><a href="#">Separated link</a></li>  -->
-	                    </ul>
-	                </li>
-	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon glyphicon-flag" aria-hidden="true"></span>Metas <b class="caret"></b></a>
-	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                     	<li role="menuitem"><a href="#!/presidenciales/metas">Metas Presidenciales</a></li>
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
 	                        <li class="divider"></li>
@@ -59,13 +53,6 @@
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
 	                        <li class="divider"></li>
 	                        <li role="menuitem"><a href="#">Separated link</a></li>  -->
-	                    </ul>
-	                </li>
-	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Crédito Público <b class="caret"></b></a>
-	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-		                    <li role="menuitem"><a href="#!/prestamos">Préstamos - Ejecución Presupuestaría</a></li>
-<!-- 	                     	<li role="menuitem"><a href="#!/donaciones">Donaciones - Ejecución Presupuestaría</a></li> -->
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>

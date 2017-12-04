@@ -8,8 +8,11 @@
 <link rel="stylesheet" type="text/css" href="/assets/css/timeline/angular-timeline-animations.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/timeline/angular-timeline-bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/timeline/angular-timeline.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/rzslider.min.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.adds.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/angucomplete-alt.css" />
+
 <script type="text/javascript" src="/assets/libs/angular/angular.js"></script>
 <script type="text/javascript" src="/assets/libs/angular/angular-route.min.js"></script>
 <script type="text/javascript" src="/assets/libs/angular/angular-animate.min.js"></script>
@@ -17,6 +20,7 @@
 <script type="text/javascript" src="/assets/libs/ui-bootstrap-tpls-1.2.1.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/moment.min.js"></script>
 <script type="text/javascript" src="/assets/libs/Chart.min.js"></script>
+<script type="text/javascript" src="/assets/libs/Chart.PieceLabel.min.js"></script>
 <script type="text/javascript" src="/assets/libs/angular-chart.min.js"></script>
 <script type="text/javascript" src="/assets/libs/ui-grid.min.js"></script>  
 <script type="text/javascript" src="/assets/libs/maps/angular-simple-logger.min.js"></script> 
@@ -37,6 +41,13 @@
 <script type="text/javascript" src="/assets/libs/ng-file-upload-shim.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/ng-file-upload.min.js"></script> 
 <script type="text/javascript" src="/assets/data/municipios.js"></script>
+<script type="text/javascript" src="/assets/libs/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="/assets/libs/ckeditor/ng-ckeditor.js"></script>
+<script type="text/javascript" src="/assets/libs/rzslider.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/angucomplete-alt.js"></script> 
+
+<script type="text/javascript" src="/assets/libs/utilities.js"></script> 
+
 
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-bootstrap-toggle.min.css" />
 <script type="text/javascript" src="/assets/libs/angular/angular-bootstrap-toggle.js"></script>
