@@ -101,10 +101,10 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/dashboards/eventosgc',{
             	template: '<div load-on-demand="\'eventosGCController\'" class="all_page"></div>'
             })
-            .when('/dashboards/ingresos',{
+            .when('/dashboards/proyeccion_ingresos',{
             	template: '<div load-on-demand="\'ingresosController\'" class="all_page"></div>'
             })
-            .when('/dashboards/egresos',{
+            .when('/dashboards/proyeccion_egresos',{
             	template: '<div load-on-demand="\'egresosController\'" class="all_page"></div>'
             })
 
@@ -233,8 +233,8 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'ingresosController',
-	    	   script: '/app/components/ingresos/ingresos.controller.js',
-	    	   template: '/app/components/ingresos/ingresos.jsp'
+	    	   script: '/app/components/proyeccion_ingresos/ingresos.controller.js',
+	    	   template: '/app/components/proyeccion_ingresos/ingresos.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

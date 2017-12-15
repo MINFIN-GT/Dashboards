@@ -142,7 +142,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, recursoId: 0, auxiliarId: 0, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 								mes: me.mes, ejercicio: me.anio }).then(function(response){
 						    if(response.data.success){
-						    	var date = moment([me.anio, me.mes, 1]);
+						    	var date = moment([me.anio, me.mes-1, 1]);
 						    	date = date.subtract(12,'months');
 						    	me.chartData=[];
 						    	me.chartLabels=[];
@@ -195,7 +195,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, recursoId: me.recurso, auxiliarId: me.auxiliar, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 							mes: me.mes, ejercicio: me.anio  }).then(function(response){
 					    if(response.data.success){
-					    	var date = moment([me.anio, me.mes, 1]);
+					    	var date = moment([me.anio, me.mes-1, 1]);
 					    	date = date.subtract(12,'months');
 					    	me.chartData=[];
 					    	me.chartLabels=[];
