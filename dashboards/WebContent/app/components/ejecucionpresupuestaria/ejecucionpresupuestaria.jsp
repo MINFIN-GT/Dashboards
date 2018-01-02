@@ -64,8 +64,8 @@
 	        {{ ejecucion.ano }} <span class="caret"></span>
 	      </button>
 	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-	        <li role="menuitem"><a href ng-click="ejecucion.anoClick(2017)">2017</a></li>
-	        <li role="menuitem"><a href ng-click="ejecucion.anoClick(2016)">2016</a></li>
+	        <li role="menuitem" ng-repeat="ano in ejecucion.anos_historia">
+	        	<a href ng-click="ejecucion.anoClick(ano)">{{ ano }}</a></li>
 	      </ul>
 	    </div>
 	    <span ng-show="ejecucion.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 

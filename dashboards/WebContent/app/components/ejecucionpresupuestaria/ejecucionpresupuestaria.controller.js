@@ -70,14 +70,17 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 			this.ano1=0, this.ano2, this.ano3, this.ano4, this.ano5;
 			this.aprobado=0, this.aprobado_acumulado=0;
 	    	this.ejecutado=0, this.ejecutado_acumulado=0, this.vigente=0, this.asignado=0;
+	    	
+	    	this.anos_historia=[];
+	    	for(var i=ano_actual; i>=2016; i--)
+	    		this.anos_historia.push(i);
 			
-			
-			$http.post('/SFuente', { ejercicio: 2016, t: (new Date()).getTime() }).then(function(response){
+			$http.post('/SFuente', { ejercicio: this.ano_actual, t: (new Date()).getTime() }).then(function(response){
 				    if(response.data.success){
 				    	this.fuentes_array = response.data.fuentes;
 					}
 				    if(!this.fuentes_loaded){
-				    	$http.post('/SGrupoGasto', { ejercicio: 2016, t: (new Date()).getTime() }).then(function(response){
+				    	$http.post('/SGrupoGasto', { ejercicio:  this.ano_actual, t: (new Date()).getTime() }).then(function(response){
 						    if(response.data.success){
 						    	this.grupos_array = response.data.Grupos;
 						    	this.mesClick(moment().month()+1);
