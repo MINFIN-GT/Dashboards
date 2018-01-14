@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-html {
+html, .ng-scope {
   height: 100%;
 }
 
@@ -234,4 +234,23 @@ nav.navbar{
 
 .input-angucomplete{
 	width: 100%;
+}
+
+.div_tree{
+	margin: 10px 15px 0px 15px; 
+	float: left; 
+	width: 250px;
+}
+
+.cols_treeview{
+	height: calc(100% - 105px) !important;
+}
+
+.tree-node-noselected > div > span{
+	font-weight: normal;
+}
+
+*:focus {
+    outline: none;
+    outline: 0;
 }

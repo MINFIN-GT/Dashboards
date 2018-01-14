@@ -14,14 +14,14 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			
 			me.chartLoaded=false;
 			
-			me.recursos = null;
-			me.recurso =null;
+			me.entidades = null;
+			me.entidad =null;
 			
-			me.auxiliares=null;
-			me.auxiliar=null;
+			me.unidades_ejecutoras=null;
+			me.unidad_ejecutora=null;
 			
 			me.chartType = 'line';
-			me.chartColors = [ '#4D4D4D', '#008000', '#5DA5DA'];
+			me.chartColors = [ '#4D4D4D', '#FF0000', '#5DA5DA'];
 			me.meses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 			me.chartSeries = ["Histórico","Pronósticos"];
 			me.numero = 12;
@@ -31,6 +31,11 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			me.viewQuetzales_p=true;
 			
 			me.sindatos=false;
+			
+			me.numero_pronosticos=12;
+			
+			me.total_ejercicio=[];
+			me.total_pronosticos=0.0;
 			
 			me.chartOptions= {
 					animation: {
@@ -109,40 +114,45 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			      }
 			];
 			
-			$http.post('/SFlujoCaja', { action: 'getRecursos', ejercicio: me.anio }).then(function(response){
+			$http.post('/SFlujoCaja', { action: 'getEntidades', ejercicio: me.anio }).then(function(response){
 			    if(response.data.success){
-			    	me.recursos = response.data.recursos;
-			    	me.recursos.splice(0,0,{
+			    	me.entidades = response.data.entidades;
+			    	me.entidades.splice(0,0,{
 			    		id: 0,
-			    		nombre_control: "Todos los Recursos",
-			    	})
+			    		nombre_control: "Todas las Entidades",
+			    	});
+			    	$scope.$broadcast('angucomplete-alt:changeInput','entidad', 'Todas las Entidades');
+			    	var selected={ originalObject: { entidad: 0 }};
+			    	me.cambioEntidad(selected);
 			    }
 			});
 			
 			
-			me.cambioRecurso=function(selected){
+			me.cambioEntidad=function(selected){
 				if(selected!== undefined){
-					me.recurso = selected.originalObject.recurso;
-					if(me.recurso>0){
-						$http.post('/SFlujoCaja', { action: 'getAuxiliares', ejercicio: me.anio, recursoId: me.recurso }).then(function(response){
+					me.sindatos=true;
+					me.entidad = selected.originalObject.entidad;
+					if(me.entidad>0){
+						$http.post('/SFlujoCaja', { action: 'getUnidadesEjecutoras', ejercicio: me.anio, entidadId: me.entidad }).then(function(response){
 						    if(response.data.success){
-						    	me.auxiliares = response.data.auxiliares;
-						    	if(me.auxiliares==null)
-						    		me.auxiliares=[];
-						    	me.auxiliares.splice(0,0,{
+						    	me.unidades_ejecutoras = response.data.unidades_ejecutoras;
+						    	if(me.unidades_ejecutoras==null)
+						    		me.unidades_ejecutoras=[];
+						    	me.unidades_ejecutoras.splice(0,0,{
 						    		id: 0,
-						    		nombre_control: "Todos los Auxiliares",
+						    		nombre_control: "Todas las Unidades Ejecutoras",
 						    	});
-						    	$scope.$broadcast('angucomplete-alt:clearInput','auxiliar');
+						    	$scope.$broadcast('angucomplete-alt:clearInput','unidad_ejecutora');
 						    }
 						});
 					}
 					else{
-						$scope.$broadcast('angucomplete-alt:clearInput','auxiliar');
-						$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, recursoId: 0, auxiliarId: 0, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
+						me.showloading = true;
+						$scope.$broadcast('angucomplete-alt:clearInput','unidad_ejecutora');
+						$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, entidadId: 0, unidad_ejecutoraId: 0, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 								mes: me.mes, ejercicio: me.anio }).then(function(response){
 						    if(response.data.success){
-						    	var date = moment([me.anio, me.mes, 1]);
+						    	var date = moment([me.anio, me.mes-1, 1]);
 						    	date = date.subtract(12,'months');
 						    	me.chartData=[];
 						    	me.chartLabels=[];
@@ -176,26 +186,38 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 						    		me.sindatos=true;
 						    		me.chartLoaded=false;
 						    	}
+						    	me.total_pronosticos=0.0;
+						    	for(var i=0; i<pronosticos.length; i++)
+						    		me.total_pronosticos+=pronosticos[i];
 						    	me.historia = response.data.historia;
+						    	for(var i=0; i<me.historia.length; i++){
+						    		var total = 0.0;
+						    		for(var j=0; j<me.historia[i].length; j++)
+						    			total += me.historia[i][j];
+						    		me.total_ejercicio.push(total);
+						    	}
 						    }
+						    me.showloading = false;
 						});
 					}
 				}
 				else{
-					me.recurso = null;
-					me.auxiliar = null;
-					me.auxiliares=[];
+					me.entidad = null;
+					me.unidad_ejecutora = null;
+					me.unidades_ejecutoras=[];
 					me.chartLoaded=false;
 				}
 			}
 			
-			me.cambioAuxiliar=function(selected){
+			me.cambioUnidadEjecutora=function(selected){
 				if(selected!== undefined){
-					me.auxiliar = selected.originalObject.recurso_auxiliar;
-					$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, recursoId: me.recurso, auxiliarId: me.auxiliar, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
+					me.showloading = true;
+					me.sindatos=true;
+					me.unidad_ejecutora = selected.originalObject.unidad_ejecutora;
+					$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 							mes: me.mes, ejercicio: me.anio  }).then(function(response){
-					    if(response.data.success){
-					    	var date = moment([me.anio, me.mes, 1]);
+						if(response.data.success){
+					    	var date = moment([me.anio, me.mes-1, 1]);
 					    	date = date.subtract(12,'months');
 					    	me.chartData=[];
 					    	me.chartLabels=[];
@@ -229,23 +251,33 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					    		me.sindatos=true;
 					    		me.chartLoaded=false;
 					    	}
+					    	me.total_pronosticos=0.0;
+					    	for(var i=0; i<pronosticos.length; i++)
+					    		me.total_pronosticos+=pronosticos[i];
 					    	me.historia = response.data.historia;
+					    	for(var i=0; i<me.historia.length; i++){
+					    		var total = 0.0;
+					    		for(var j=0; j<me.historia[i].length; j++)
+					    			total += me.historia[i][j];
+					    		me.total_ejercicio.push(total);
+					    	}
 					    }
+						me.showloading = false;
 					});
 				}
 				else
-					me.auxiliar=null;
+					me.unidad_ejecutora=null;
 					me.chartLoaded=false;
 			}
 			
-			me.blurRecurso=function(){
-				if(me.recurso==null)
-					$scope.$broadcast('angucomplete-alt:clearInput','recurso');
+			me.blurEntidad=function(){
+				if(me.entidad==null)
+					$scope.$broadcast('angucomplete-alt:clearInput','entidad');
 			}
 			
-			me.blurAuxiliar=function(){
-				if(me.auxiliar==null)
-					$scope.$broadcast('angucomplete-alt:clearInput','auxiliar');
+			me.blurUnidadEjecutora=function(){
+				if(me.unidad_ejecutora==null)
+					$scope.$broadcast('angucomplete-alt:clearInput','unidad_ejecutora');
 			}
 			
 			me.filtroQuetzales=function(value){

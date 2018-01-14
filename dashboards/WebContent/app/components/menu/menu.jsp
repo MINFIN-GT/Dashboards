@@ -24,9 +24,9 @@
 	                     	<li role="menuitem"><a href="#!/dashboards/copep">Cuotas COPEP</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copeprenglon">Cuotas COPEP por Renglón</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/eventosgc">Eventos Guatecompras</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_ingresos">Ingresos</a></li>
-	                     	<!--  <li role="menuitem"><a href="#!/dashboards/proyeccion_egresos">Egresos</a></li> -->
-	                     	<!--  <li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo de Caja</a></li> -->
+	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_ingresos">Pronósticos de Ingresos</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_egresos">Pronósticos de Egresos</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo de Caja</a></li>
 	                     	<!--  <li role="menuitem"><a href="#!/dashboards/proyecciongasto">Test</a></li> -->
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
@@ -54,6 +54,12 @@
 	                        <li class="divider"></li>
 	                        <li role="menuitem"><a href="#">Separated link</a></li>  -->
 	                    </ul>
+	                </li>
+	                <li uib-dropdown>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Utils <b class="caret"></b></a>
+	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+	                        <li role="menuitem"><a href="#!/logs/logs">Logs</a></li>
+	                     </ul>
 	                </li>
 	            </ul>
 	            <ul class="nav navbar-nav navbar-right">

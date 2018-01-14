@@ -20,9 +20,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import dao.CEntidadDAO;
 import dao.CRecursoDAO;
+import pojo.CEntidad;
 import pojo.CRecurso;
 import pojo.CRecursoAuxiliar;
+import pojo.CUnidadEjecutora;
 
 /**
  * Servlet implementation class SFlujoCaja
@@ -93,6 +96,53 @@ public class SFlujoCaja extends HttpServlet {
 			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
 			String response_text_historia = new GsonBuilder().serializeNulls().create().toJson(data_historia);
 	        response_text = String.join("", "\"pronosticos\":",response_text,", \"historicos\":", response_text_historicos,",\"historia\":", response_text_historia);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getEntidades")){
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			ArrayList<CEntidad> entidades = CEntidadDAO.getEntidades(ejercicio);
+			response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	        response_text = String.join("", "\"entidades\":",response_text);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getUnidadesEjecutoras")){
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			int entidad = map.get("entidadId")!=null ? Integer.parseInt(map.get("entidadId")) : 0;
+			ArrayList<CUnidadEjecutora> unidad_ejecutoras = CEntidadDAO.getUnidadesEjecutoras(ejercicio, entidad);
+			response_text=new GsonBuilder().serializeNulls().create().toJson(unidad_ejecutoras);
+	        response_text = String.join("", "\"unidades_ejecutoras\":",response_text);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getPronosticosEgresos")){
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
+			int entidad = map.get("entidadId")!=null ? Integer.parseInt(map.get("entidadId")) : 0;
+			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
+			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
+			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
+			Double[] pronosticos = CEntidadDAO.getPronosticos(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
+			Double[] historicos = CEntidadDAO.getHistoricos(ejercicio, mes, entidad,unidad_ejecutora, 12);
+			Double[][] data_historia = CEntidadDAO.getTodaHistoria(entidad,unidad_ejecutora);
+			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
+			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
+			String response_text_historia = new GsonBuilder().serializeNulls().create().toJson(data_historia);
+	        response_text = String.join("", "\"pronosticos\":",response_text,", \"historicos\":", response_text_historicos,",\"historia\":", response_text_historia);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getPronosticosFlujo")){
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			DateTime now = DateTime.now();
+			int mes = (ejercicio < now.getYear()) ? 1 : now.getMonthOfYear();
+			Double[] pronosticos_egresos = CEntidadDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getHistoricos(ejercicio, 1, 0, 0, (ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
+			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, 1, 0, 0,(ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
+			String response_pronosticos_egresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_egresos);
+			String response_historicos_egresos = new GsonBuilder().serializeNulls().create().toJson(historicos_egresos);
+			String response_pronosticos_ingresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_ingresos);
+			String response_historicos_ingresos = new GsonBuilder().serializeNulls().create().toJson(historicos_ingresos);
+			response_text = String.join("", "\"pronosticos_egresos\":",response_pronosticos_egresos,", \"historicos_egresos\":", response_historicos_egresos,
+					",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
         OutputStream output = response.getOutputStream();

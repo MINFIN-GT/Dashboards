@@ -75,12 +75,12 @@ angular.module('ejecucionpresupuestariaController',['dashboards','ui.bootstrap.c
 	    	for(var i=ano_actual; i>=2016; i--)
 	    		this.anos_historia.push(i);
 			
-			$http.post('/SFuente', { ejercicio: this.ano_actual, t: (new Date()).getTime() }).then(function(response){
+			$http.post('/SFuente', { ejercicio: ano_actual, t: (new Date()).getTime() }).then(function(response){
 				    if(response.data.success){
 				    	this.fuentes_array = response.data.fuentes;
 					}
 				    if(!this.fuentes_loaded){
-				    	$http.post('/SGrupoGasto', { ejercicio:  this.ano_actual, t: (new Date()).getTime() }).then(function(response){
+				    	$http.post('/SGrupoGasto', { ejercicio:  ano_actual, t: (new Date()).getTime() }).then(function(response){
 						    if(response.data.success){
 						    	this.grupos_array = response.data.Grupos;
 						    	this.mesClick(moment().month()+1);

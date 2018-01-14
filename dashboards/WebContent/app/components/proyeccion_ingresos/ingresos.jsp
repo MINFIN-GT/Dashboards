@@ -34,6 +34,7 @@
     
 <div ng-controller="ingresosController as ingreso" class="maincontainer" id="title" class="all_page">
 <h4>Ingresos</h4>
+<h5>Pronósticos</h5>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12" style="padding-left: 0px;">
@@ -65,7 +66,7 @@
 	        <li role="menuitem"><a href ng-click="ingreso.anoClick(2016)">2018</a></li>
 	      </ul>
 	    </div>
-	    <span ng-show="ejecucion.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
+	    <span ng-show="ingreso.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
     </div>
 </div>
 <br/>
@@ -110,7 +111,7 @@
               disable-input="ingreso.recurso==null"></div>
     </div>
 </div>
-<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-if="!ingreso.sindatos">
+<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="!ingreso.sindatos">
 	<div style="width: 800px; height: 400px; margin: 0 auto;">
 		<canvas class="chart-base" chart-type="ingreso.chartType" chart-data="ingreso.chartData"
 					chart-labels="ingreso.chartLabels" chart-series="ingreso.chartSeries" chart-options="ingreso.chartOptions" chart-colors="ingreso.chartColors"
@@ -118,7 +119,7 @@
 				</canvas>
 	</div>
 </div>
-<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-if="ingreso.chartLoaded && !ingreso.sindatos">
+<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="ingreso.chartLoaded && !ingreso.sindatos">
 	<div>Pronósticos</div>
 	<div style="text-align: center;">
 		<div style="width: 90%; text-align: right;">
@@ -131,11 +132,13 @@
 			<thead>
 				<tr>
 					<td align="center" ng-repeat="label in ingreso.chartLabels.slice(12) track by $index">{{ label }}</td>
+					<td align="center">Total</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td align="right" ng-repeat="dato_pronostico in ingreso.chartData[1].slice(12) track by $index">{{ ingreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
+					<td align="right">{{ ingreso.filtroQuetzales(ingreso.total_pronosticos.toFixed(2)) }}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -154,18 +157,20 @@
 				<tr>
 					<td>Año</td>
 					<td ng-repeat="mes in ingreso.meses">{{ mes }}</td>
+					<td>Total</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="ejercicio in ingreso.historia track by $index">
 					<td align="center">{{ ejercicio[0] }}</td>
 					<td align="right" ng-repeat="dato in ejercicio.slice(1) track by $index">{{ ingreso.filtroQuetzales(dato.toFixed(2)) }}</td>
+					<td align="right">{{ ingreso.filtroQuetzales(ingreso.total_ejercicio[$index].toFixed(2)) }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
-<div style="text-align: center;" ng-if="ingreso.sindatos">Sin datos históricos suficientes para generar los prónosticos</div>
+<div style="text-align: center;" ng-show="ingreso.sindatos && ingreso.recurso==0">Sin datos históricos suficientes para generar los prónosticos</div>
 <br/>
 <br/>
 <br/>

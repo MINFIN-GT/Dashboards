@@ -12,6 +12,9 @@
 <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.adds.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/angucomplete-alt.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/angular-tree/tree-control-attribute.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/angular-tree/tree-control.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/angular-resizable.min.css" />
 
 <script type="text/javascript" src="/assets/libs/angular/angular.js"></script>
 <script type="text/javascript" src="/assets/libs/angular/angular-route.min.js"></script>
@@ -45,6 +48,8 @@
 <script type="text/javascript" src="/assets/libs/ckeditor/ng-ckeditor.js"></script>
 <script type="text/javascript" src="/assets/libs/rzslider.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/angucomplete-alt.js"></script> 
+<script type="text/javascript" src="/assets/libs/angular-tree-control.js"></script> 
+<script type="text/javascript" src="/assets/libs/angular-resizable.min.js"></script> 
 
 <script type="text/javascript" src="/assets/libs/utilities.js"></script> 
 

@@ -41,9 +41,6 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/maps/gastoCodedesMunis',{
             	template: '<div load-on-demand="\'mapsGastoCodedesMunisModule\'" class="all_page"></div>'
             })
-            .when('/dashboards/proyecciongasto',{
-            	template: '<div load-on-demand="\'proyecciongastoController\'" class="all_page"></div>'
-            })
             .when('/transparencia/estados_de_calamidad',{
             	template: '<div load-on-demand="\'estadoscalamidadController\'" class="all_page"></div>'
             })
@@ -106,6 +103,12 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             })
             .when('/dashboards/proyeccion_egresos',{
             	template: '<div load-on-demand="\'egresosController\'" class="all_page"></div>'
+            })
+            .when('/dashboards/flujocaja',{
+            	template: '<div load-on-demand="\'flujoController\'" class="all_page"></div>'
+            })
+            .when('/logs/logs',{
+            	template: '<div load-on-demand="\'logsController\'" class="all_page"></div>'
             })
 
             /*.when('/salir',{
@@ -235,6 +238,21 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'ingresosController',
 	    	   script: '/app/components/proyeccion_ingresos/ingresos.controller.js',
 	    	   template: '/app/components/proyeccion_ingresos/ingresos.jsp'
+	       },
+	       {
+	    	   name: 'egresosController',
+	    	   script: '/app/components/proyeccion_egresos/egresos.controller.js',
+	    	   template: '/app/components/proyeccion_egresos/egresos.jsp'
+	       },
+	       {
+	    	   name: 'flujoController',
+	    	   script: '/app/components/flujocaja/flujo.controller.js',
+	    	   template: '/app/components/flujocaja/flujo.jsp'
+	       },
+	       {
+	    	   name: 'logsController',
+	    	   script: '/app/components/logs/logs.controller.js',
+	    	   template: '/app/components/logs/logs.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

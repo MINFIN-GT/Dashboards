@@ -32,6 +32,10 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			
 			me.sindatos=false;
 			
+			me.numero_pronosticos=12;
+			me.total_ejercicio=[];
+			me.total_pronosticos=0.0;
+			
 			me.chartOptions= {
 					animation: {
 			            duration: 0
@@ -115,13 +119,17 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			    	me.recursos.splice(0,0,{
 			    		id: 0,
 			    		nombre_control: "Todos los Recursos",
-			    	})
+			    	});
+			    	$scope.$broadcast('angucomplete-alt:changeInput','recurso', 'Todos los Recursos');
+			    	var selected={ originalObject: { recurso: 0 }};
+			    	me.cambioRecurso(selected);
 			    }
 			});
 			
 			
 			me.cambioRecurso=function(selected){
 				if(selected!== undefined){
+					me.sindatos=true;
 					me.recurso = selected.originalObject.recurso;
 					if(me.recurso>0){
 						$http.post('/SFlujoCaja', { action: 'getAuxiliares', ejercicio: me.anio, recursoId: me.recurso }).then(function(response){
@@ -138,6 +146,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						});
 					}
 					else{
+						me.showloading = true;
 						$scope.$broadcast('angucomplete-alt:clearInput','auxiliar');
 						$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, recursoId: 0, auxiliarId: 0, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 								mes: me.mes, ejercicio: me.anio }).then(function(response){
@@ -176,8 +185,18 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						    		me.sindatos=true;
 						    		me.chartLoaded=false;
 						    	}
+						    	me.total_pronosticos=0.0;
+						    	for(var i=0; i<pronosticos.length; i++)
+						    		me.total_pronosticos+=pronosticos[i];
 						    	me.historia = response.data.historia;
+						    	for(var i=0; i<me.historia.length; i++){
+						    		var total = 0.0;
+						    		for(var j=0; j<me.historia[i].length; j++)
+						    			total += me.historia[i][j];
+						    		me.total_ejercicio.push(total);
+						    	}
 						    }
+						    me.showloading = false;
 						});
 					}
 				}
@@ -191,6 +210,8 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			
 			me.cambioAuxiliar=function(selected){
 				if(selected!== undefined){
+					me.showloading = true;
+					me.sindatos=true;
 					me.auxiliar = selected.originalObject.recurso_auxiliar;
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, recursoId: me.recurso, auxiliarId: me.auxiliar, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 							mes: me.mes, ejercicio: me.anio  }).then(function(response){
@@ -229,8 +250,18 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    		me.sindatos=true;
 					    		me.chartLoaded=false;
 					    	}
+					    	me.total_pronosticos=0.0;
+					    	for(var i=0; i<pronosticos.length; i++)
+					    		me.total_pronosticos+=pronosticos[i];
 					    	me.historia = response.data.historia;
+					    	for(var i=0; i<me.historia.length; i++){
+					    		var total = 0.0;
+					    		for(var j=0; j<me.historia[i].length; j++)
+					    			total += me.historia[i][j];
+					    		me.total_ejercicio.push(total);
+					    	}
 					    }
+					    me.showloading = false;
 					});
 				}
 				else
