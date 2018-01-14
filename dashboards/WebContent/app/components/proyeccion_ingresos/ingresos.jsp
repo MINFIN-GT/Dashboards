@@ -42,19 +42,19 @@
 	      <button id="single-button" type="button" class="btn btn-default no-border" ng-disabled="ingreso.showloading"  uib-dropdown-toggle style="width: 150px; text-align: left; font-size: 24px;">
 	        {{ ingreso.nmes }} <span class="caret"></span>
 	      </button>
-	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(1)">Enero</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(2)">Febrero</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(3)">Marzo</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(4)">Abril</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(5)">Mayo</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(6)">Junio</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(7)">Julio</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(8)">Agosto</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(9)">Septiembre</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(10)">Octubre</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(11)">Noviembre</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(12)">Diciembre</a></li>
+	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button" >
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(1, true)">Enero</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(2, true)">Febrero</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(3, true)">Marzo</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(4, true)">Abril</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(5, true)">Mayo</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(6, true)">Junio</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(7, true)">Julio</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(8, true)">Agosto</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(9, true)">Septiembre</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(10, true)">Octubre</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(11, true)">Noviembre</a></li>
+	        <li role="menuitem"><a href ng-click="ingreso.mesClick(12, true)">Diciembre</a></li>
 	      </ul>
 	    </div>
 	    <div class="btn-group" uib-dropdown>
@@ -72,7 +72,7 @@
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12">Número de meses a proyectar:
-		<input type="number" ng-model="ingreso.numero_pronosticos" min="1" max="24" style="text-align: right;"/>
+		<input type="number" ng-model="ingreso.numero_pronosticos" min="1" max="24" style="text-align: right;" ng-disabled="ingreso.showloading"/>
 	</div>
 </div>
 <br/>
@@ -91,7 +91,8 @@
               input-class="input-angucomplete"
               match-class="highlight"
               focus-out="ingreso.blurRecurso()"
-              inputname="recurso"></div>
+              inputname="recurso" 
+              disable-input="ingreso.showloading"></div>
     </div>
     <div class="col-sm-12" style="margin-top: -20px;">
     	<div>Auxiliar</div>
@@ -108,7 +109,7 @@
               match-class="highlight"
               focus-out="ingreso.blurAuxiliar()"
               inputname="auxiliar" 
-              disable-input="ingreso.recurso==null"></div>
+              disable-input="ingreso.recurso==null || ingreso.showloading"></div>
     </div>
 </div>
 <div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="!ingreso.sindatos">

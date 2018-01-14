@@ -296,7 +296,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					return value;
 			}
 			
-			me.mesClick=function(mes){
+			me.mesClick=function(mes,load){
 				switch(mes){
 					case 1: me.nmes="Enero"; break;
 					case 2: me.nmes="Febrero"; break;
@@ -312,7 +312,30 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					case 12: me.nmes="Diciembre"; break;
 				}
 				this.mes = mes;
+				if(load){
+					if(me.unidad_ejecutora!=null){
+						var selected={ originalObject: { unidad_ejecutora: me.unidad_ejecutora }};
+				    	me.cambioUnidadEjecutora(selected);
+					}
+					else{
+						var selected={ originalObject: { entidad: (me.entidad !=null ? me.entidad : 0 ) }};
+				    	me.cambioEntidad(selected);
+					}
+				}
 			}
-			me.mesClick(me.mes);
+			
+			me.mesClick(me.mes,false);
+			
+			this.anoClick=function(ano){
+				me.anio=ano;
+				if(me.unidad_ejecutora!=null){
+					var selected={ originalObject: { unidad_ejecutora: me.unidad_ejecutora }};
+			    	me.cambioUnidadEjecutora(selected);
+				}
+				else{
+					var selected={ originalObject: { entidad: (me.entidad !=null ? me.entidad : 0 ) }};
+			    	me.cambioEntidad(selected);
+				}
+			}
 		}
 	]);

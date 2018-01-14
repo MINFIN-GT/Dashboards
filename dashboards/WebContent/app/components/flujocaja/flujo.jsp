@@ -46,8 +46,7 @@
 	        {{ flujo.anio }} <span class="caret"></span>
 	      </button>
 	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-	        <li role="menuitem"><a href ng-click="flujo.anoClick(2017)">2018</a></li>
-	        <li role="menuitem"><a href ng-click="flujo.anoClick(2016)">2017</a></li>
+	        <li role="menuitem"><a href ng-click="flujo.anoClick(2018)">2018</a></li>
 	      </ul>
 	    </div>
 	    <span ng-show="flujo.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 

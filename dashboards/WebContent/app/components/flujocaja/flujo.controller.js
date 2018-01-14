@@ -122,52 +122,56 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 				      }
 			];
 			
-			$http.post('/SFlujoCaja',  { action: 'getPronosticosFlujo', ejercicio: me.anio, ejercicio: me.anio  }).then(function(response){
-			    if(response.data.success){
-			    	var pronosticos_egresos = response.data.pronosticos_egresos;
-			    	if(pronosticos_egresos!=null && pronosticos_egresos.length<12){
-			    		for(var i=pronosticos_egresos.length; i<12; i++)
-			    			pronosticos_egresos.splice(0,0,null);
-			    	}	
-			    	var historicos_egresos = response.data.historicos_egresos;
-			    	if(historicos_egresos!=null && historicos_egresos.length<12){
-			    		for(var i=historicos_egresos.length; i<12; i++)
-			    			historicos_egresos.push(null);
-			    	}
-			    	var pronosticos_ingresos = response.data.pronosticos_ingresos;
-			    	if(pronosticos_ingresos!=null && pronosticos_ingresos.length<12){
-			    		for(var i=pronosticos_ingresos.length; i<12; i++)
-			    			pronosticos_ingresos.splice(0,0,null);
-			    	}
-			    	var historicos_ingresos = response.data.historicos_ingresos;
-			    	if(historicos_ingresos!=null && historicos_ingresos.length<12){
-			    		for(var i=historicos_ingresos.length; i<12; i++)
-			    			historicos_ingresos.push(null);
-			    	}
-			    	me.caja=[];
-			    	var saldo=0;
-			    	me.total_ingresos=0.0;
-			    	me.total_egresos=0.0;
-			    	for(var i=0; i<12; i++){
-			    		var egreso_mes = historicos_egresos[i]!=null ? historicos_egresos[i] : ( pronosticos_egresos[i]!=null ? pronosticos_egresos[i] : 0);
-			    		var ingreso_mes = historicos_ingresos[i]!=null ? historicos_ingresos[i] : ( pronosticos_ingresos[i]!=null ? pronosticos_ingresos[i] : 0);
-			    		saldo = ingreso_mes-egreso_mes+saldo;
-			    		me.caja.push(saldo);
-			    		me.ingresos.push(ingreso_mes);
-			    		me.egresos.push(egreso_mes);
-			    		me.total_ingresos+=ingreso_mes;
-			    		me.total_egresos+=egreso_mes;
-			    	}
-			    	
-			    	me.chartData=[];
-			    	me.chartData.push(me.caja);
-			    	me.chartData.push(historicos_ingresos);
-			    	me.chartData.push(pronosticos_ingresos);
-			    	me.chartData.push(historicos_egresos);
-			    	me.chartData.push(pronosticos_egresos);
-			    	me.chartLoaded=true;
-			    }
-			});
+			me.loadFlujo=function(){
+				$http.post('/SFlujoCaja',  { action: 'getPronosticosFlujo', ejercicio: me.anio, ejercicio: me.anio  }).then(function(response){
+				    if(response.data.success){
+				    	var pronosticos_egresos = response.data.pronosticos_egresos;
+				    	if(pronosticos_egresos!=null && pronosticos_egresos.length<12){
+				    		for(var i=pronosticos_egresos.length; i<12; i++)
+				    			pronosticos_egresos.splice(0,0,null);
+				    	}	
+				    	var historicos_egresos = response.data.historicos_egresos;
+				    	if(historicos_egresos!=null && historicos_egresos.length<12){
+				    		for(var i=historicos_egresos.length; i<12; i++)
+				    			historicos_egresos.push(null);
+				    	}
+				    	var pronosticos_ingresos = response.data.pronosticos_ingresos;
+				    	if(pronosticos_ingresos!=null && pronosticos_ingresos.length<12){
+				    		for(var i=pronosticos_ingresos.length; i<12; i++)
+				    			pronosticos_ingresos.splice(0,0,null);
+				    	}
+				    	var historicos_ingresos = response.data.historicos_ingresos;
+				    	if(historicos_ingresos!=null && historicos_ingresos.length<12){
+				    		for(var i=historicos_ingresos.length; i<12; i++)
+				    			historicos_ingresos.push(null);
+				    	}
+				    	me.caja=[];
+				    	var saldo=0;
+				    	me.total_ingresos=0.0;
+				    	me.total_egresos=0.0;
+				    	for(var i=0; i<12; i++){
+				    		var egreso_mes = historicos_egresos[i]!=null ? historicos_egresos[i] : ( pronosticos_egresos[i]!=null ? pronosticos_egresos[i] : 0);
+				    		var ingreso_mes = historicos_ingresos[i]!=null ? historicos_ingresos[i] : ( pronosticos_ingresos[i]!=null ? pronosticos_ingresos[i] : 0);
+				    		saldo = ingreso_mes-egreso_mes+saldo;
+				    		me.caja.push(saldo);
+				    		me.ingresos.push(ingreso_mes);
+				    		me.egresos.push(egreso_mes);
+				    		me.total_ingresos+=ingreso_mes;
+				    		me.total_egresos+=egreso_mes;
+				    	}
+				    	
+				    	me.chartData=[];
+				    	me.chartData.push(me.caja);
+				    	me.chartData.push(historicos_ingresos);
+				    	me.chartData.push(pronosticos_ingresos);
+				    	me.chartData.push(historicos_egresos);
+				    	me.chartData.push(pronosticos_egresos);
+				    	me.chartLoaded=true;
+				    }
+				});
+			};
+			
+			me.loadFlujo();
 			
 			me.filtroQuetzales=function(value, transform){
 				if(transform){
@@ -175,6 +179,11 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 				}
 				else 
 					return value;
+			}
+			
+			this.anoClick=function(ano){
+				me.anio=ano;
+				me.loadFlujo();
 			}
 			
 		}

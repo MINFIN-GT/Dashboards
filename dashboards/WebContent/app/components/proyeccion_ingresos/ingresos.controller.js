@@ -295,7 +295,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					return value;
 			}
 			
-			me.mesClick=function(mes){
+			me.mesClick=function(mes, load){
 				switch(mes){
 					case 1: me.nmes="Enero"; break;
 					case 2: me.nmes="Febrero"; break;
@@ -312,9 +312,30 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 				}
 				
 				this.mes = mes;
+				if(load){
+					if(me.auxiliar!=null){
+						var selected={ originalObject: { auxiliar: me.auxiliar }};
+				    	me.cambioAuxiliar(selected);
+					}
+					else{
+						var selected={ originalObject: { recurso: (me.recurso !=null ? me.recurso : 0 ) }};
+				    	me.cambioRecurso(selected);
+					}
+				}
 			}
 			
-			me.mesClick(me.mes);
+			me.mesClick(me.mes, false);
 			
+			this.anoClick=function(ano){
+				me.anio=ano;
+				if(me.auxiliar!=null){
+					var selected={ originalObject: { auxiliar: me.auxiliar }};
+			    	me.cambioAuxiliar(selected);
+				}
+				else{
+					var selected={ originalObject: { recurso: (me.recurso !=null ? me.recurso : 0 ) }};
+			    	me.cambioRecurso(selected);
+				}
+			}
 		}
 	]);

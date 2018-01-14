@@ -43,18 +43,18 @@
 	        {{ egreso.nmes }} <span class="caret"></span>
 	      </button>
 	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(1)">Enero</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(2)">Febrero</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(3)">Marzo</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(4)">Abril</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(5)">Mayo</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(6)">Junio</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(7)">Julio</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(8)">Agosto</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(9)">Septiembre</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(10)">Octubre</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(11)">Noviembre</a></li>
-	        <li role="menuitem"><a href ng-click="egreso.mesClick(12)">Diciembre</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(1, true)">Enero</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(2, true)">Febrero</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(3, true)">Marzo</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(4, true)">Abril</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(5, true)">Mayo</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(6, true)">Junio</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(7, true)">Julio</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(8, true)">Agosto</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(9, true)">Septiembre</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(10, true)">Octubre</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(11, true)">Noviembre</a></li>
+	        <li role="menuitem"><a href ng-click="egreso.mesClick(12, true)">Diciembre</a></li>
 	      </ul>
 	    </div>
 	    <div class="btn-group" uib-dropdown>
@@ -72,7 +72,7 @@
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12">Número de meses a proyectar:
-		<input type="number" ng-model="egreso.numero_pronosticos" min="1" max="24" style="text-align: right;"/>
+		<input type="number" ng-model="egreso.numero_pronosticos" min="1" max="24" style="text-align: right;" ng-disabled="egreso.showloading"/>
 	</div>
 </div>
 <br/>
@@ -91,7 +91,8 @@
               input-class="input-angucomplete"
               match-class="highlight"
               focus-out="egreso.blurEntidad()"
-              inputname="entidad"></div>
+              inputname="entidad"
+              disable-input="egreso.showloading"></div>
     </div>
     <div class="col-sm-12" style="margin-top: -20px;">
     	<div>Unidad Ejecutora</div>
@@ -108,7 +109,7 @@
               match-class="highlight"
               focus-out="egreso.blurUnidadEjecutora()"
               inputname="auxiliar" 
-              disable-input="egreso.entidad==null"></div>
+              disable-input="egreso.entidad==null || egreso.showloading"></div>
     </div>
 </div>
 <div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="!egreso.sindatos">
