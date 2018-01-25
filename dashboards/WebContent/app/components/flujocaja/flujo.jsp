@@ -36,7 +36,7 @@
 </style>    
     
 <div ng-controller="flujoController as flujo" class="maincontainer" id="title" class="all_page">
-<h4>Flujo de Caja</h4>
+<h4>Flujo Presupuestario</h4>
 <h5>Pronósticos</h5>
 <br/>
 <div class="row" style="margin-bottom: 10px;">

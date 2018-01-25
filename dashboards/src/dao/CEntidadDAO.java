@@ -21,7 +21,7 @@ public class CEntidadDAO {
 				Connection conn = CDatabase.getConnection();
 				try{
 					PreparedStatement pstm1 =  conn.prepareStatement("select ejercicio, entidad, nombre from cg_entidades where ejercicio=? "
-							+ "AND (entidad between 11130003 AND 11130019 OR entidad = 11140021) order by entidad");
+							+ "AND (entidad between 11130003 AND 11130020 OR entidad = 11140021) order by entidad");
 					pstm1.setInt(1, ejercicio);
 					ResultSet results = pstm1.executeQuery();	
 					while (results.next()){

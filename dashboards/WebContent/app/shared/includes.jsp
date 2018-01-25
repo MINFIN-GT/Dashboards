@@ -52,7 +52,8 @@
 <script type="text/javascript" src="/assets/libs/angular-resizable.min.js"></script> 
 
 <script type="text/javascript" src="/assets/libs/utilities.js"></script> 
-
+<script type="text/javascript" src="/assets/libs/angular-flash.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/Utilidades.js"></script> 
 
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-bootstrap-toggle.min.css" />
 <script type="text/javascript" src="/assets/libs/angular/angular-bootstrap-toggle.js"></script>

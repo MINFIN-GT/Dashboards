@@ -157,6 +157,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						    	me.chartLabels=[];
 						    	var historicos = [];
 						    	var pronosticos=[];
+						    	me.total_pronosticos=0.0;
 						    	if(response.data.historicos.length>0){
 						    		var historicos_año = response.data.historicos[0];
 							    	for(var i=1; i<response.data.historicos.length; i++){
@@ -173,6 +174,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						    			pronosticos.push(response.data.pronosticos[i]);
 						    			me.chartLabels.push(me.meses[date.month()]+" "+date.year());
 						    			date=date.add(1,'months');
+						    			me.total_pronosticos+=response.data.pronosticos[i];
 						    		}
 						    	}
 						    	me.chartData.push(historicos);
@@ -185,13 +187,12 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						    		me.sindatos=true;
 						    		me.chartLoaded=false;
 						    	}
-						    	me.total_pronosticos=0.0;
-						    	for(var i=0; i<pronosticos.length; i++)
-						    		me.total_pronosticos+=pronosticos[i];
+						    	
 						    	me.historia = response.data.historia;
+						    	me.total_ejercicio=[];
 						    	for(var i=0; i<me.historia.length; i++){
 						    		var total = 0.0;
-						    		for(var j=0; j<me.historia[i].length; j++)
+						    		for(var j=1; j<me.historia[i].length; j++)
 						    			total += me.historia[i][j];
 						    		me.total_ejercicio.push(total);
 						    	}
@@ -222,6 +223,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    	me.chartLabels=[];
 					    	var historicos = [];
 					    	var pronosticos=[];
+					    	me.total_pronosticos=0.0;
 					    	if(response.data.historicos.length>0){
 					    		var historicos_año = response.data.historicos[0];
 						    	for(var i=1; i<response.data.historicos.length; i++){
@@ -238,6 +240,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    			pronosticos.push(response.data.pronosticos[i]);
 					    			me.chartLabels.push(me.meses[date.month()]+" "+date.year());
 					    			date=date.add(1,'months');
+					    			me.total_pronosticos+=response.data.pronosticos[i];
 					    		}
 					    	}
 					    	me.chartData.push(historicos);
@@ -254,6 +257,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    	for(var i=0; i<pronosticos.length; i++)
 					    		me.total_pronosticos+=pronosticos[i];
 					    	me.historia = response.data.historia;
+					    	me.total_ejercicio=[];
 					    	for(var i=0; i<me.historia.length; i++){
 					    		var total = 0.0;
 					    		for(var j=0; j<me.historia[i].length; j++)

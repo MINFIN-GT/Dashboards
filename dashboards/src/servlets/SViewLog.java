@@ -33,7 +33,7 @@ public class SViewLog extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	//private static String path = "/Users/rafa/hadoop/bash_logs";
-	private static String path = "/home/hadoop/bash_logs";
+	private static String path = "/mnt/nfs/bash_logs";
 	
 	/**
      * @see HttpServlet#HttpServlet()

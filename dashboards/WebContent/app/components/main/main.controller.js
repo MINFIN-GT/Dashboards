@@ -3,7 +3,7 @@
  */
 var app = angular.module('dashboards',['ngRoute','ui.bootstrap','chart.js', 'loadOnDemand','ngAnimate', 'ngTouch', 
                                        'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning',
-                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor']);
+                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor','ngFlash','ngUtilidades']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 	   $locationProvider.hashPrefix('!');
@@ -109,6 +109,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             })
             .when('/logs/logs',{
             	template: '<div load-on-demand="\'logsController\'" class="all_page"></div>'
+            })
+            .when('/admin/users',{
+            	template: '<div load-on-demand="\'usersController\'" class="all_page"></div>'
             })
 
             /*.when('/salir',{
@@ -253,6 +256,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'logsController',
 	    	   script: '/app/components/logs/logs.controller.js',
 	    	   template: '/app/components/logs/logs.jsp'
+	       },
+	       {
+	    	   name: 'usersController',
+	    	   script: '/app/components/admin/users.controller.js',
+	    	   template: '/app/components/admin/users.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

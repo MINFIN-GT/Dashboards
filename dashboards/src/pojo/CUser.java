@@ -10,9 +10,10 @@ public class CUser {
 	String dependence;
 	String position;
 	String salt;
+	String email;
 	
 	public CUser(String username, String password, String firstname, String secondname, String lastname,
-			String secondlastname, String dependence, String position, String salt) {
+			String secondlastname, String dependence, String position, String salt, String email) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -23,10 +24,11 @@ public class CUser {
 		this.dependence = dependence;
 		this.position = position;
 		this.salt = salt;
+		this.email = email;
 	}
 	
 	public CUser(String username, String password, String firstname, String lastname, 
-			String dependence, String position, String salt){
+			String dependence, String position, String salt, String email){
 		this.username = username;
 		this.password = password;
 		this.firstname = firstname;
@@ -34,6 +36,7 @@ public class CUser {
 		this.dependence = dependence;
 		this.position = position;
 		this.salt = salt;
+		this.email = email;
 	}
 
 	public String getUsername() {
@@ -106,6 +109,14 @@ public class CUser {
 	
 	public void setSalt(String salt){
 		this.salt = salt;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	

@@ -44,6 +44,11 @@ public class CustomRealm extends JdbcRealm {
 	
 	@Override
 	public boolean isPermitted(PrincipalCollection principals, String permission) {
-		return CUserDAO.hasUserPermiso(principals.getPrimaryPrincipal().toString(), permission);
+		return CUserDAO.hasUserPermission(principals.getPrimaryPrincipal().toString(), permission);
+	}
+	
+	@Override
+	public boolean hasRole(PrincipalCollection principal, String roleIdentifier){
+		return CUserDAO.hasUserRole( principal.getPrimaryPrincipal().toString(), roleIdentifier);
 	}
 }

@@ -1,3 +1,4 @@
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html> 
@@ -14,6 +15,10 @@
 	<div id="mainview">
 		<div ng-view></div>
     </div>
+    <div class="div_alertas">
+		<flash-message name="alertas">
+		</flash-message>
+	</div>
     <div class="footer">- Minfin 2017 -</div>
 </body>
 </html>

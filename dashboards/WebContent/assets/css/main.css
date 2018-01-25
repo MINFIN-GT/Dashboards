@@ -254,3 +254,21 @@ nav.navbar{
     outline: none;
     outline: 0;
 }
+
+.st-selected{
+	background: #B0C4DE !important;
+}
+
+.label_required::before{
+	content: '* ';
+	color: red;
+}
+
+.div_alertas{
+	position: fixed;
+	bottom: 10px;
+	width: 100%;
+	font-size: 16px;
+	padding: 0 40px 0 40px;
+	z-index: 10000;
+}

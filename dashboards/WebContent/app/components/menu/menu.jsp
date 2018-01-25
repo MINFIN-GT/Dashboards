@@ -17,17 +17,21 @@
 		    <div class="collapse navbar-collapse" id="navBar">
 	            <ul class="nav navbar-nav">
 	                <li uib-dropdown>
-	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>Tableros <b class="caret"></b></a>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>Ejecución <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionpresupuestaria">Ejecución Presupuestaria</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/ejecucionfisica">Ejecución Física</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copep">Cuotas COPEP</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/copeprenglon">Cuotas COPEP por Renglón</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/eventosgc">Eventos Guatecompras</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_ingresos">Pronósticos de Ingresos</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_egresos">Pronósticos de Egresos</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo de Caja</a></li>
-	                     	<!--  <li role="menuitem"><a href="#!/dashboards/proyecciongasto">Test</a></li> -->
+	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo Presupuestario</a></li>
+	                    </ul>
+	                </li>
+	                <li uib-dropdown>
+	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>Guatecompras <b class="caret"></b></a>
+	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+	                     	<li role="menuitem"><a href="#!/dashboards/eventosgc">Eventos Guatecompras</a></li>
 	                        <!--  <li role="menuitem"><a href="#">Another action</a></li>
 	                        <li role="menuitem"><a href="#">Something else here</a></li>
 	                        <li class="divider"></li>
@@ -58,6 +62,9 @@
 	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Utils <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+	                     	<shiro:hasPermission name="1">
+	                        	<li role="menuitem"><a href="#!/admin/users">Usuarios</a></li>
+	                        </shiro:hasPermission>
 	                        <li role="menuitem"><a href="#!/logs/logs">Logs</a></li>
 	                     </ul>
 	                </li>
