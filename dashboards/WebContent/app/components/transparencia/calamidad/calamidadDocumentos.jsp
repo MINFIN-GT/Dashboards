@@ -21,7 +21,7 @@
 	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo }}</h3>
 	<br/>
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-sm-12">
 			<h4>Documentos</h4>
 		</div>
 	</div>
@@ -30,20 +30,16 @@
 		<table st-table="control.documentos" st-safe-src="control.original_documentos" class="table table-striped">
 			<thead>
 				<tr>
-					<th st-sort="id">ID</th>
 					<th st-sort="nombre">Nombre</th>
 					<th st-sort="actividad">Actividad</th>
-					<th st-sort="usuario_creacion">Usuario Creación</th>
 					<th st-sort="fecha_creacion">Fecha de Creación</th>
 					<th>Link</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="row in control.documentos">
-					<td>{{ row.id }}</td>
 					<td>{{ row.nombre }}</td>
 					<td>{{ row.actividad }}</td>
-					<td>{{ row.usuario_creacion }}</td>
 					<td>{{ row.fecha_creacion | date }}</td>
 					<td><a href="/SDownload?place={{ control.subprograma }}&iddoc={{ row.id }}"><span class="glyphicon glyphicon-save"></span></a></td>
 				</tr>

@@ -15,6 +15,8 @@
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-tree/tree-control-attribute.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-tree/tree-control.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-resizable.min.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/ivh-treeview/ivh-treeview.min.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/ivh-treeview/ivh-treeview-theme-basic.css" />
 
 <script type="text/javascript" src="/assets/libs/angular/angular.js"></script>
 <script type="text/javascript" src="/assets/libs/angular/angular-route.min.js"></script>
@@ -50,11 +52,11 @@
 <script type="text/javascript" src="/assets/libs/angucomplete-alt.js"></script> 
 <script type="text/javascript" src="/assets/libs/angular-tree-control.js"></script> 
 <script type="text/javascript" src="/assets/libs/angular-resizable.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/angular-flash.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/ivh-treeview.min.js"></script> 
 
 <script type="text/javascript" src="/assets/libs/utilities.js"></script> 
-<script type="text/javascript" src="/assets/libs/angular-flash.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/Utilidades.js"></script> 
-
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-bootstrap-toggle.min.css" />
 <script type="text/javascript" src="/assets/libs/angular/angular-bootstrap-toggle.js"></script>
 

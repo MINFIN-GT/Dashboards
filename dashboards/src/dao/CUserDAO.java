@@ -51,7 +51,7 @@ public class CUserDAO {
 	        	pstm.setString(8, position);
 	        	pstm.setString(9, user.getSalt());
 	        	pstm.setString(10, email);
-	        	
+	        	pstm.executeUpdate();
 	        	pstm.close();
 	        	CDatabase.close();
 	        	return true;

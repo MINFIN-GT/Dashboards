@@ -3,7 +3,7 @@
  */
 var app = angular.module('dashboards',['ngRoute','ui.bootstrap','chart.js', 'loadOnDemand','ngAnimate', 'ngTouch', 
                                        'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning',
-                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor','ngFlash','ngUtilidades']);
+                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor','ngFlash','ngUtilidades','ivh.treeview']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 	   $locationProvider.hashPrefix('!');
@@ -43,27 +43,6 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             })
             .when('/transparencia/estados_de_calamidad',{
             	template: '<div load-on-demand="\'estadoscalamidadController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez',{
-            	template: '<div load-on-demand="\'jerezController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez/mapa',{
-            	template: '<div load-on-demand="\'jerezMapaController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez/actividades',{
-            	template: '<div load-on-demand="\'jerezActividadesController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez/ejecucion',{
-            	template: '<div load-on-demand="\'jerezEjecucionController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez/admin',{
-            	template: '<div load-on-demand="\'jerezAdminController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez/documentos',{
-            	template: '<div load-on-demand="\'jerezDocumentosController\'" class="all_page"></div>'
-            })
-            .when('/transparencia/jerez/compras',{
-            	template: '<div load-on-demand="\'jerezComprasController\'" class="all_page"></div>'
             })
             .when('/transparencia/calamidad/:subprograma',{
             	template: '<div load-on-demand="\'calamidadController\'" class="all_page"></div>'
@@ -205,8 +184,8 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadAdminController',     
-	           script: '/app/components/transparencia/calamidad/calamidadAdmin.controller.js',
-	           template: '/app/components/transparencia/calamidad/calamidadAdmin.jsp'
+	           script: '/app/components/transparencia/calamidad/admin/calamidadAdmin.controller.js',
+	           template: '/app/components/transparencia/calamidad/admin/calamidadAdmin.jsp'
 	       },
 	       {
 	    	   name: 'calamidadDocumentosController',     

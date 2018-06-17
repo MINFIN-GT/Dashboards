@@ -1,29 +1,41 @@
 package pojo;
 
+import java.util.ArrayList;
+
 public class CRecurso {
 	Integer ejercicio;
 	Integer recurso;
 	String nombre;
 	Integer grupo_ingreso;
-	String hoja;
 	Integer clase;
 	Integer seccion;
 	Integer grupo;
 	String nombre_control;
+	Integer auxiliar;
+	ArrayList<CRecurso> children;
+	Integer nivel;
+	Double[] pronosticos;
 	
+	public CRecurso(){
+		
+	};
 	
-	public CRecurso(Integer ejercicio, Integer recurso, String nombre, Integer grupo_ingreso, String hoja,
-			Integer clase, Integer seccion, Integer grupo, String nombre_control) {
+	public CRecurso(Integer ejercicio, Integer recurso, String nombre, Integer grupo_ingreso, 
+			Integer clase, Integer seccion, Integer grupo, String nombre_control, Integer auxiliar, ArrayList<CRecurso> children, Integer nivel,
+			Double[] pronosticos) {
 		super();
 		this.ejercicio = ejercicio;
 		this.recurso = recurso;
 		this.nombre = nombre;
 		this.grupo_ingreso = grupo_ingreso;
-		this.hoja = hoja;
 		this.clase = clase;
 		this.seccion = seccion;
 		this.grupo = grupo;
 		this.nombre_control = nombre_control;
+		this.auxiliar = auxiliar;
+		this.children = children;
+		this.nivel = nivel;
+		this.pronosticos = pronosticos;
 	}
 
 
@@ -66,17 +78,6 @@ public class CRecurso {
 		this.grupo_ingreso = grupo_ingreso;
 	}
 
-
-	public String getHoja() {
-		return hoja;
-	}
-
-
-	public void setHoja(String hoja) {
-		this.hoja = hoja;
-	}
-
-
 	public Integer getClase() {
 		return clase;
 	}
@@ -113,6 +114,45 @@ public class CRecurso {
 
 	public void setNombreControl(String nombre_control) {
 		this.nombre_control = nombre_control;
+	}
+
+
+	public Integer getAuxiliar() {
+		return this.auxiliar;
+	}
+
+
+	public void setAuxiliar(Integer auxiliar) {
+		this.auxiliar = auxiliar;
+	}
+
+
+	public ArrayList<CRecurso> getChildren() {
+		return children;
+	}
+
+
+	public void setChildren(ArrayList<CRecurso> children) {
+		this.children = children;
+	}
+
+
+	public Integer getNivel() {
+		return nivel;
+	}
+
+
+	public void setNivel(Integer nivel) {
+		this.nivel = nivel;
+	}
+
+
+	public Double[] getPronosticos() {
+		return pronosticos;
+	}
+
+	public void setPronosticos(Double[] pronosticos) {
+		this.pronosticos = pronosticos;
 	}
 	
 }

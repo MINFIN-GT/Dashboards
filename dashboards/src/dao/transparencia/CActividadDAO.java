@@ -16,7 +16,7 @@ import utilities.CLogger;
 
 public class CActividadDAO {
 	
-	public static boolean crearActividad(CActividad actividad,String usuario){
+	public static boolean crearActividad(CActividad actividad,String usuario, int subprograma){
 		boolean ret=false;
 		if(CDatabase.connect()){
 			try{
@@ -50,7 +50,7 @@ public class CActividadDAO {
 						pstm.setString(8, actividad.getEntidades());
 						pstm.setLong(9, idResponsable);
 						pstm.setInt(10,94);
-						pstm.setInt(11,2);
+						pstm.setInt(11,subprograma);
 						pstm.setString(12, usuario);
 						pstm.setTimestamp(13, new Timestamp(DateTime.now().getMillis()));
 						if (pstm.executeUpdate()>0)

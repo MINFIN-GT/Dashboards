@@ -204,4 +204,31 @@ public class CEjecucionFFDAO {
 		ret = ejecutado;
 		return ret;
 	}
+	
+	public static double vigenteMonto(int programa, int subprograma){
+		double ret = 0.0;
+		double ejecutado = 0.0;
+		try{
+			if(CDatabase.connect()){
+				Connection conn = CDatabase.getConnection();
+				DateTime now = new DateTime();
+				PreparedStatement  pstm1;
+				pstm1 = conn.prepareStatement("select sum(vigente) vigente "
+						+ "from calamidad_ejecucion "
+						+ "where ejercicio="+now.getYear()+" and programa="+programa+" and subprograma="+subprograma);		
+				ResultSet rs = pstm1.executeQuery();	
+				if (rs.next()){
+					ejecutado = rs.getDouble(1);
+				}
+				pstm1.close();
+				rs.close();				
+				CDatabase.close(conn);
+			}			
+		}
+		catch(Exception e){
+			CLogger.write("5", CEjecucionFFDAO.class, e);
+		}
+		ret = ejecutado;
+		return ret;
+	}
 }

@@ -27,6 +27,7 @@ public class CDocumentoDAO {
 				pstm.setInt(5, documento.getTipo());
 				pstm.setString(6, documento.getUsuario_creacion());
 				pstm.setTimestamp(7, documento.getFecha_creacion());
+				pstm.setInt(8, documento.getSubprograma());
 				if (pstm.executeUpdate()>0)
 					ret=true;
 			}

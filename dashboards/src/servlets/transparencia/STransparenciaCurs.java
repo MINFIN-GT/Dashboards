@@ -19,20 +19,22 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.transparencia.CCompraDAO;
+import dao.transparencia.CCurDAO;
 import pojo.transparencia.CCompra;
+import pojo.transparencia.CCur;
 import shiro.utilities.CShiro;
 
 /**
  * Servlet implementation class STransparenciaCompras
  */
-@WebServlet("/STransparenciaCompras")
-public class STransparenciaCompras extends HttpServlet {
+@WebServlet("/STransparenciaCurs")
+public class STransparenciaCurs extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public STransparenciaCompras() {
+	public STransparenciaCurs() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -44,7 +46,6 @@ public class STransparenciaCompras extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -73,29 +74,29 @@ public class STransparenciaCompras extends HttpServlet {
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 		String action = map.get("action");
 		int subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : 0;
+		int id_cur = map.get("idCur")!=null ? Integer.parseInt(map.get("idCur")) : 0;
 		if (action.compareTo("getlist") == 0) {
-			ArrayList<CCompra> compras = CCompraDAO.getCompras(subprograma);
-			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
-			response_text = String.join("", "\"compras\":", response_text);
+			ArrayList<CCur> curs = CCurDAO.getCurs(subprograma);
+			response_text = new GsonBuilder().serializeNulls().create().toJson(curs);		
+			response_text = String.join("", "\"curs\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
 		}else if (action.compareTo("add") == 0) {
-			int id_compra = map.get("idCompra")!=null ? Integer.parseInt(map.get("idCompra")) : 0;
-			boolean existe_nog=CCompraDAO.getCompra(id_compra);
-			if(existe_nog){
-			CCompra compra = new CCompra(map.get("tipoCompra"), map.get("idCompra"),94, subprograma, CShiro.getIdUser());
-				if (CCompraDAO.crearCompra(compra))
-					response_text = String.join("", "{\"success\":true, \"result\":\"creada\"}");
-				else
-					response_text = String.join("", "{\"success\":false, \"result\":\"no creada\"}");
-			}
-			else{
-				response_text = "{\"success\": false, \"result\":\"El nog indicado no existe\"}";
-			}
+			//boolean existe_nog=CCurDAO.getCur(id_cur);
+			//if(existe_nog){
+				//CCur cur = new CCur();
+				//if (CCurDAO.crearCur(cur))
+					//response_text = String.join("", "{\"success\":true, \"result\":\"creado\"}");
+				//else
+					//response_text = String.join("", "{\"success\":false, \"result\":\"no creado\"}");
+			//}
+			//else{
+			//	response_text = "{\"success\": false, \"result\":\"El CUR indicado no existe\"}";
+			//}
 		}else if (action.compareTo("delete") == 0) {
-			if (CCompraDAO.deleteCompra(map.get("idCompra"), map.get("tipoCompra"),94,subprograma))
-				response_text = String.join("", "{\"success\":true, \"result\":\"borrada\"}");
-			else
-				response_text = String.join("", "{\"success\":false, \"result\":\"no borrada\"}");
+			//if (CCurDAO.deleteCur(id_cur,94,subprograma))
+			//	response_text = String.join("", "{\"success\":true, \"result\":\"borrado\"}");
+			//else
+			//	response_text = String.join("", "{\"success\":false, \"result\":\"no borrado\"}");
 		}			
 		gz.write(response_text.getBytes("UTF-8"));
 		gz.close();

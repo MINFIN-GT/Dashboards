@@ -13,6 +13,7 @@ public class CDatabase {
 	private static Connection connection;
 	private static Connection connection_des;
 	private static String host;
+	private static String host_intra;
 	private static Integer port;
 	private static String user;
 	private static String password;
@@ -28,6 +29,7 @@ public class CDatabase {
 	
 	static {
 		host = CProperties.getmemsql_host();
+		host_intra = CProperties.getmemsql_host_intra();
 		port = CProperties.getmemsql_port();
 		user = CProperties.getmemsql_user();
 		password = CProperties.getmemsql_password();
@@ -39,6 +41,23 @@ public class CDatabase {
 		user_oracle = CProperties.getOracle_user();
 		password_oracle = CProperties.getOracle_password();
 		schema_oracle = CProperties.getOracle_schema();
+		
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			DriverManager.setLoginTimeout(10);
+			connection = DriverManager.getConnection(String.join("", "jdbc:mysql://",String.valueOf(host),":", String.valueOf(port),"/",schema), user, password);
+		}
+		catch(Exception e){
+			try {
+				connection = DriverManager.getConnection(String.join("", "jdbc:mysql://",String.valueOf(host_intra),":", String.valueOf(port),"/",schema), user, password);
+				if(!connection.isClosed())
+					host = host_intra;
+			} 
+			catch (Exception e1) {
+			
+			}
+			
+		}
 	}
 	
 	public static boolean connect(){

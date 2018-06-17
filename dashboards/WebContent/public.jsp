@@ -10,9 +10,9 @@
 <title>MINFIN - Tableros de Información</title>
 </head>
 <body ng-app="dashboards" ng-controller="publicController as publicController">
-	<div id="mainview">
+	<div id="mainview" style="padding-top: 0px;">
 		<div ng-view></div>
     </div>
-    <div class="footer">- Minfin 2016 -</div>
+    <div class="footer">- Minfin 2018 -</div>
 </body>
 </html>

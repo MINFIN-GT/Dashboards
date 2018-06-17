@@ -104,7 +104,7 @@ nav.navbar{
      overflow: visible;
      padding-right: 25px;
 }
-                 
+               
 .angular-google-map-container {
   position: absolute;
   top: 0;
@@ -271,4 +271,8 @@ nav.navbar{
 	font-size: 16px;
 	padding: 0 40px 0 40px;
 	z-index: 10000;
+}
+
+.recurso_auxiliar{
+	color: green;
 }

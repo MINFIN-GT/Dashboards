@@ -6,6 +6,8 @@
 angular.module('calamidadController',['dashboards']).controller('calamidadController',['$scope','$routeParams','$http','$location','uiGmapGoogleMapApi','$rootScope',
 	   function($scope,$routeParams,$http,$location,uiGmapGoogleMapApi, $rootScope){
 	
+	this.num_compras=0;
+	this.num_donaciones=0;
 	this.num_documentos=0;
 	this.num_actividades=0;
 	this.ejecucion_fisica = 0.0;
@@ -14,13 +16,17 @@ angular.module('calamidadController',['dashboards']).controller('calamidadContro
 	this.latitude = null;
 	this.longitude = null;
 	this.tipo = null;
-	this.subprograma = 0;
+	if($routeParams.subprograma===undefined)
+		$routeParams.subprograma = 7;
+	this.subprograma = $routeParams.subprograma;
 	
 	
-	$http.post('/STransparenciaVentanas', { t: (new Date()).getTime(), subprograma: $routeParams.subprograma }).then(function(response){
+	$http.post('/STransparenciaVentanas', { t: (new Date()).getTime(), subprograma: this.subprograma }).then(function(response){
 	    if(response.data.success){
 	    	this.num_documentos = response.data.results.documentos;
 	    	this.num_actividades = response.data.results.actividades;
+	    	this.num_compras = response.data.results.compras;
+	    	this.num_donaciones = response.data.results.donaciones;
 	    	this.ejecucion_financiera = response.data.results.ejecucion_financiera;
 	    	this.ejecucion_fisica = response.data.results.ejecucion_fisica;
 	    	this.titulo = response.data.results.titulo;

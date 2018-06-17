@@ -43,11 +43,11 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 </style>
 
 <script type="text/ng-template" id="edit.html">
-	<%@ include file="/app/components/transparencia/calamidad/actividad.jsp"%>
+	<%@ include file="/app/components/transparencia/calamidad/admin/actividad.jsp"%>
 </script>
 
 <script type="text/ng-template" id="editCompras.html">
-	<%@ include file="/app/components/transparencia/calamidad/compras.jsp"%>
+	<%@ include file="/app/components/transparencia/calamidad/admin/compras.jsp"%>
 </script>
 
 <div ng-controller="adminCtrl as control" class="maincontainer"
@@ -57,7 +57,6 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 	<br />
 	<div style="position: relative;">
 		<div style="text-align: right;">
-
 			<div class="btn-group" role="group">
 				<a class="btn btn-default" role="button"
 					ng-click="control.addCompras()" uib-tooltip="Procesos de Compra"
@@ -65,13 +64,17 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 					class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
 				</a>
 			</div>
-
 			<div class="btn-group" role="group">
 				<a class="btn btn-default" role="button"
 					ng-click="control.addActivity()" uib-tooltip="Agregar actividad"
 					tooltip-placement="left"> <span
 					class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</a>
+			</div>
+			<div class="btn-group" role="group">
+				<a class="btn btn-default" role="button"
+					ng-click="control.addCUR()" uib-tooltip="Agregar CUR de gasto"
+					tooltip-placement="left"> Q</a>
 			</div>
 		</div>
 		

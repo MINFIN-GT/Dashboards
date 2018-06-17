@@ -161,7 +161,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
-			<div class="col-sm-6">Última actualización: {{ control.lastupdate }}</div>
+			<div style="text-align: center;">Última actualización: {{ control.lastupdate }}</div>
 		</div>		
 	</div>
 </div>

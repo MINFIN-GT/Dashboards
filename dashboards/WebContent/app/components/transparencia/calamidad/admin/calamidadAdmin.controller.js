@@ -125,7 +125,7 @@ angular.module('calamidadAdminController')
 		$rootScope.entidad="";
 		$rootScope.unidad_ejecutora="";
 		$rootScope.programa="";
-		$rootScope.subprograma="";
+		//$rootScope.subprograma="";
 		$rootScope.proyecto="";
 		$rootScope.actividad="";
 		$rootScope.obra="";
@@ -259,16 +259,16 @@ angular.module('calamidadAdminController')
 		 
 	$scope.changeCenter=function(){
 		if (this.center == "opt1")
-			$scope.map.center = { latitude: '14.091376', longitude:'-89.766197' };
+			$scope.map.center = { latitude: '14.6287331', longitude:'-90.5111991' };
 		else if (this.center == "opt2")
 			$scope.map.center = { latitude: '14.5743078', longitude:'-90.5274319' };
 		else if (this.center == "opt3")
-			$scope.map.center = { latitude: '14.6287331', longitude:'-90.5111991' };
+			$scope.map.center = { latitude: '14.4376902', longitude:'-90.9427951' };
 		$scope.map.zoom=15;
 	}
 	
 	uiGmapGoogleMapApi.then(function() {
-		$scope.map = { center: { latitude: '14.091376', longitude:'-89.766197' }, 
+		$scope.map = { center: { latitude: '14.6287331', longitude:'-90.5111991' }, 
 					   zoom: 15,					   
 					   options: {
 						   streetViewControl: false,
@@ -379,7 +379,7 @@ angular.module('calamidadAdminController')
 			}
 		}
 		
-		for (i=0; i<=$scope.compras.length; i++ ){
+		for (i=0; i<$scope.compras.length; i++ ){
 			isValid=true;
 			if ($scope.compras[i].id == this.idCompra){
 				isValid=false;
@@ -396,6 +396,10 @@ angular.module('calamidadAdminController')
 			    	this.tipoCompra=null;
 			    	this.idCompra=null;
 			    }
+			    else{
+			    	$scope.error=true;
+					$scope.errorMessage=response.data.result;
+			    }
 		 	}.bind($scope), function errorCallback(response){
 		 	}
 			);
@@ -404,7 +408,7 @@ angular.module('calamidadAdminController')
 	};
 	
 	$scope.deleteCompra=function(tipo,id){
-		$http.post('/STransparenciaCompras', { action: 'delete', tipoCompra:tipo, idCompra:id, t: (new Date()).getTime() }).then(function(response){
+		$http.post('/STransparenciaCompras', { action: 'delete', subprograma: $rootScope.subprograma, tipoCompra:tipo, idCompra:id, t: (new Date()).getTime() }).then(function(response){
 		    if(response.data.success){
 		    	this.getCompra();
 		    }

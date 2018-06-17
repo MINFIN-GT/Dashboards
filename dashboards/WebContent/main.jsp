@@ -19,7 +19,7 @@
 		<flash-message name="alertas">
 		</flash-message>
 	</div>
-    <div class="footer">- Minfin 2017 -</div>
+    <div class="footer">- Minfin 2018 -</div>
 </body>
 </html>
 

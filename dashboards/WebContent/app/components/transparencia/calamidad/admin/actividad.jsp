@@ -133,10 +133,9 @@
 		<div>
 			<label for="singleSelect"> Ir a: </label><br>
    			 <select name="singleSelect" ng-model="center" ng-change="changeCenter()">
-     		 	<option value="opt1">Jerez, Jutiapa</option>
+     		 	<option value="opt1">MINFIN</option>
      		 	<option value="opt2">CONRED</option>
-     		 	<option value="opt3">MINFIN</option>
-     		 	<option value="opt4">Palacio Nacional</option>
+     		 	<option value="opt3">Volcán de Fuego</option>
    			 </select><br>
 		</div>
 		<div class="angular-google-map-container">

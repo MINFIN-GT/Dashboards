@@ -13,8 +13,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 	   		.when('/paptn/ejecucionfinanciera',{
             	template: '<div load-on-demand="\'paptn_ejecucionfinancieraController\'" class="all_page"></div>'
             })
-             .when('/transparencia/estados_de_calamidad',{
-            	template: '<div load-on-demand="\'estadoscalamidadController\'" class="all_page"></div>'
+            .when('/transparencia/estados_de_calamidad',{
+            	//template: '<div load-on-demand="\'estadoscalamidadController\'" class="all_page"></div>'
+            	redirectTo: '/transparencia/calamidad/7'
             })
             .when('/transparencia/calamidad/:subprograma',{
             	template: '<div load-on-demand="\'calamidadController\'" class="all_page"></div>'
@@ -28,21 +29,21 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/transparencia/calamidad/ejecucion/:subprograma',{
             	template: '<div load-on-demand="\'calamidadEjecucionController\'" class="all_page"></div>'
             })
-            .when('/transparencia/calamidad/admin/:subprograma',{
-            	template: '<div load-on-demand="\'calamidadAdminController\'" class="all_page"></div>'
-            })
             .when('/transparencia/calamidad/documentos/:subprograma',{
             	template: '<div load-on-demand="\'calamidadDocumentosController\'" class="all_page"></div>'
             })
             .when('/transparencia/calamidad/compras/:subprograma',{
             	template: '<div load-on-demand="\'calamidadComprasController\'" class="all_page"></div>'
             })
+            .when('/transparencia/calamidad/donaciones/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadDonacionesController\'" class="all_page"></div>'
+            })
             .when('/prestamos',{
             	template: '<div load-on-demand="\'prestamosEjecucionPresupuestariaModule\'" class="all_page"></div>'
             })
             .when('/donaciones',{
             	template: '<div load-on-demand="\'donacionesEjecucionPresupuestariaModule\'" class="all_page"></div>'
-            })            ;
+            });
     }]);
 
 app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
@@ -59,7 +60,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadController',     
-	           script: '/app/components/transparencia/calamidad/calamidad.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidad1.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidad.jsp'
 	       },
 	       {
@@ -89,8 +90,13 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadComprasController',     
-	           script: '/app/components/transparencia/calamidad/calamidadCompras.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadCompras1.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidadCompras.jsp'
+	       },
+	       {
+	    	   name: 'calamidadDonacionesController',     
+	           script: '/app/components/transparencia/calamidad/donaciones.controller.js',
+	           template: '/app/components/transparencia/calamidad/donaciones.jsp'
 	       },
 	       {
 	    	   name: 'prestamosEjecucionPresupuestariaModule',     

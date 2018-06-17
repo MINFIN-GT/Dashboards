@@ -26,6 +26,8 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	    if(response.data.success){
 	    	this.original_compras = response.data.compras;
 	    	this.compras = this.original_compras.length> 0 ? this.original_compras.slice(0) : [];
+	    	for(var i=0; i<this.compras.length; i++)
+	    		this.compras[i].fecha = Date.parse(this.compras[i].fecha);
 	    	this.showloading=false;
 	    }
  	}.bind(this), function errorCallback(response){

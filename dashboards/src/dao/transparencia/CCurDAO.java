@@ -8,22 +8,22 @@ import java.util.ArrayList;
 import org.joda.time.DateTime;
 
 import db.utilities.CDatabase;
-import pojo.transparencia.CCompra;
+import pojo.transparencia.CCur;
 import utilities.CLogger;
 
-public class CCompraDAO {
-	public static Integer numCompras(int subprograma){
+public class CCurDAO {
+	public static Integer numCurs(int subprograma){
 		Integer ret=0;
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=?");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_cur where programa=94 and subprograma=?");
 				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
 					ret=rs.getInt(1);
 			}
 			catch(Exception e){
-				CLogger.write("1", CCompraDAO.class, e);
+				CLogger.write("1", CCurDAO.class, e);
 			}
 			finally{
 				CDatabase.close();
@@ -32,43 +32,31 @@ public class CCompraDAO {
 		return ret;		
 	}
 	
-	public static ArrayList<CCompra> getCompras(int subprograma){
-		ArrayList<CCompra> ret=new ArrayList<CCompra>();
+	public static ArrayList<CCur> getCurs(int subprograma){
+		ArrayList<CCur> ret=new ArrayList<CCur>();
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_compra WHERE programa=? and subprograma=?");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_cur WHERE programa=? and subprograma=?");
 				pstm.setInt(1, 94);
 				pstm.setInt(2, subprograma);
 				ResultSet rs=pstm.executeQuery();
 				PreparedStatement pstm2=null;
 				ResultSet rs2;
-				CCompra compra;
+				CCur cur;
 				while (rs.next()){
-					/*if (rs.getString("NPG")!=null){
-						pstm2 = CDatabase.getConnection_Oracle().prepareStatement("select * from GUATECOMPRAS.VW_GC_NPG_JUTIAPA2016 where NPG_CONCURSO=?");
-						pstm2.setString(1,rs.getString("NPG"));
-						rs2 = pstm2.executeQuery();
-						if (rs2.next()){
-							compra = new CCompra(rs2.getString("ENTIDAD_GC"), rs2.getString("UNIDAD_GC"),"NPG", rs2.getString("NPG_CONCURSO"), rs2.getTimestamp("FECHA_PUBLICACION_GC"), rs2.getString("DESCRIPCION"), rs2.getString("NOMBRE_MODALIDAD")+" - "+rs2.getString("NOMBRE_MODALIDAD_EJECUCION"),rs2.getString("NOMBRE_ESTATUS"), rs2.getString("NIT"), rs2.getString("NOMBRE"), rs2.getDouble("MONTO"));
-							ret.add(compra);
-						}					
-					}else*/ if (rs.getInt("NOG")>0){
+					if (rs.getInt("cur")>0){
 						pstm2 = CDatabase.getConnection().prepareStatement("select * from mv_evento_gc where nog_concurso=?");
 						pstm2.setString(1,rs.getString("NOG"));
 						rs2 = pstm2.executeQuery();
 						if (rs2.next()){
-							compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
-									rs2.getString("nog_concurso"), rs2.getTimestamp("fecha_publicacion"), rs2.getString("descripcion"), 
-									rs2.getString("modalidad_nombre"),rs2.getString("estatus_concurso_nombre"),null, 
-									null, rs2.getDouble("monto")
-									);
-							ret.add(compra);
+							//cur = new CCur();
+							//ret.add(cur);
 						}		
 					}					
 				}
 			}
 			catch(Exception e){
-				CLogger.write("2", CCompraDAO.class, e);
+				CLogger.write("2", CCurDAO.class, e);
 			}
 			finally{
 				CDatabase.close();
@@ -78,30 +66,24 @@ public class CCompraDAO {
 		return ret;		
 	}
 	
-	public static boolean crearCompra(CCompra compra) {
+	public static boolean crearCur(CCur cur) {
 		boolean ret = false;
 		if (CDatabase.connect()) {
 			try {
 				PreparedStatement pstm = CDatabase.getConnection()
-						.prepareStatement("INSERT INTO seg_compra (nog,npg,programa,subprograma,usuario_creacion,fecha_creacion)"
+						.prepareStatement("INSERT INTO seg_cur (programa,subprograma,ejercicio, entidad, unidad_ejecutora, usuario_creacion,fecha_creacion)"
 								+ "values (?,?,?,?,?,?)");
 
-				if (compra.getTipo().compareTo("NOG")==0){
-					pstm.setNull(2, java.sql.Types.VARCHAR);
-					pstm.setInt(1, Integer.parseInt(compra.getId()));
-				}else{
-					pstm.setNull(1, java.sql.Types.INTEGER);
-					pstm.setString(2, compra.getId());
-				}
-				pstm.setInt(3, compra.getPrograma());
-				pstm.setInt(4, compra.getSubprograma());
-				pstm.setString(5, compra.getUsuario());
+				pstm.setInt(1, cur.getPrograma());
+				pstm.setInt(2, cur.getSubprograma());
+				
+				/*pstm.setString(5, compra.getUsuario());
 				pstm.setTimestamp(6, new Timestamp(DateTime.now().getMillis()));
-
+*/
 				if (pstm.executeUpdate() > 0)
 					ret = true;
 			} catch (Exception e) {
-				CLogger.write("3", CCompra.class, e);
+				CLogger.write("3", CCurDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}
@@ -120,7 +102,7 @@ public class CCompraDAO {
 				if (pstm.executeUpdate() > 0)
 					ret = true;
 			} catch (Exception e) {
-				CLogger.write("4", CCompra.class, e);
+				CLogger.write("4", CCurDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}
@@ -141,7 +123,7 @@ public class CCompraDAO {
 			}
 		}
 		catch(Exception e){
-			CLogger.write("4", CCompraDAO.class, e);
+			CLogger.write("4", CCurDAO.class, e);
 		}
 		finally{
 			CDatabase.close();

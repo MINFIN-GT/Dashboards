@@ -1,3 +1,5 @@
+<%@page import="shiro.utilities.CShiro"%>
+<%@page import="dao.CUserDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <style>
@@ -74,10 +76,37 @@
 						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
 							<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp={{ control.subprograma }}&idevento=-1&pic=b5.png&pic_w=300" alt="Compras" class="img-rounded"></div>
 							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
-								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.num_compras }} Compras</button>
+								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.num_compras }} eventos en Guatecompras</button>
 	  						</div>
 						</div>						
 					</td>
+					<td ng-click="go('/transparencia/calamidad/donaciones/'+control.subprograma)">
+						<div class="bwindow_title">Donaciones</div>
+						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
+							<div style="position: absolute; float: left; width: 100%; overflow: hidden; text-align: center;"><img src="/assets_public/icons/donaciones.png" alt="Donaciones" class="img-rounded"></div>
+							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
+								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.num_donaciones }} donaciones</button>
+	  						</div>
+						</div>						
+					</td>
+				</tr>
+				<tr>
+					<% 
+					String url = request.getHeader("Referer");
+					if(url.contains("main.jsp")){
+						if(CUserDAO.hasUserPermission(CShiro.getIdUser(), "100")){ %>
+						<td ng-click="go('/transparencia/calamidad/admin/'+control.subprograma)">
+							<div class="bwindow_title">Administración</div>
+							<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
+								<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp={{ control.subprograma }}&idevento=-1&pic=b1.png&pic_w=300" alt="Administración" class="img-rounded"></div>
+								<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
+									<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">Administración</button>
+		  						</div>
+							</div>
+						</td>
+					<% }
+					}
+					%>
 				</tr>
 			</table>
 		</div>

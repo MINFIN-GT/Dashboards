@@ -4,7 +4,7 @@
 	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo}}</h3>
 	<br/>
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-sm-12">
 			<h4>Mapa de Actividades</h4>
 		</div>
 	</div>
@@ -19,7 +19,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
-			<div class="col-sm-6">Última actualización: {{ control.lastupdate }}</div>
+			<div style="text-align: center;">Última actualización: {{ control.lastupdate }}</div>
 		</div>		
 	</div>
 </div>

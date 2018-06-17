@@ -38,11 +38,17 @@
 								          <p style="width: 100%" class="ng-binding ng-scope">Programa: {{ estado.programa }}</p>
 								          <p style="width: 100%" class="ng-binding ng-scope">Subprograma: {{ estado.subprograma }}</p>
 							         </div>
-						         <div class="col-sm-6">
+						         <div class="col-sm-3">
 						         			<div style="white-space: nowrap; text-align: right; font-size: 32px; color: green; font-weight: bold;">
 						         				Q {{ estado.ejecucion }}
 						         			</div>
-						         			<div style="text-align: right; color: green;">Ejecución</div>
+						         			<div style="text-align: right; color: green;">Ejecución acumulada desde {{ estado.ejercicio }}</div>
+						         </div>
+						         <div class="col-sm-3">
+						         		<div style="white-space: nowrap; text-align: right; font-size: 32px; color: green; font-weight: bold;">
+						         				Q {{ estado.vigente }}
+						         		</div>
+						         		<div style="text-align: right; color: green;">Vigente año actual</div>
 						         </div>
 					        	</div>
 					    </div>

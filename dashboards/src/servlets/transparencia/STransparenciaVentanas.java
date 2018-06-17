@@ -18,7 +18,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.transparencia.CActividadDAO;
+import dao.transparencia.CCompraDAO;
 import dao.transparencia.CDocumentoDAO;
+import dao.transparencia.CDonacionDAO;
 import dao.transparencia.CEjecucionFFDAO;
 import dao.transparencia.CEstadoCalamidadDAO;
 import pojo.transparencia.CEstadoCalamidad;
@@ -35,6 +37,8 @@ public class STransparenciaVentanas extends HttpServlet {
 	class stresults{
     	int actividades;
     	int documentos;
+    	int compras;
+    	int donaciones;
     	double ejecucion_financiera;
     	double ejecucion_fisica;
     	String titulo;
@@ -84,6 +88,8 @@ public class STransparenciaVentanas extends HttpServlet {
 		stresults results = new stresults();
 		results.actividades = CActividadDAO.numActividades(subprograma);
 		results.documentos = CDocumentoDAO.numDocumentos(subprograma);	
+		results.compras = CCompraDAO.numCompras(subprograma);
+		results.donaciones = CDonacionDAO.numDonaciones(subprograma);
 		results.ejecucion_financiera = CEjecucionFFDAO.ejecucionFinanciera(94,subprograma);
 		results.ejecucion_fisica = CEjecucionFFDAO.ejecucionFisica(94,subprograma);
 		CEstadoCalamidad estadoc = CEstadoCalamidadDAO.getEstadoCalamidad(subprograma);

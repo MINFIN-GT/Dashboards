@@ -44,7 +44,7 @@ public class SDownload extends HttpServlet {
 				BufferedInputStream input = null;
 				BufferedOutputStream output = null;
 				file = (documento.getTipo()==1) ? new File("/files/images/"+place+"/"+(documento.getId_actividad()>-1 ? documento.getId_actividad()+"/" : "")+documento.getNombre()) : 
-					new File("/files/docs/"+place+"/"+documento.getNombre());				
+					new File("/files/docs/"+place+"/"+(documento.getId_actividad()>-1 ? documento.getId_actividad()+"/" : "")+documento.getNombre());				
 				response.setHeader("Content-Type", getServletContext().getMimeType(file.getName()));
 				response.setHeader("Content-Disposition", "inline; filename=\"" + documento.getNombre() + "\""); 
 				try {

@@ -43,6 +43,7 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
     	String longitude;
     	String tipo;
     	String ejecucion;
+    	String vigente;
     }
        
     /**
@@ -99,6 +100,7 @@ public class STransparenciaEstadosCalamidad extends HttpServlet {
 				temp.latitude = estado.getLatitude();
 				temp.longitude = estado.getLongitude();
 				temp.ejecucion = formatter.format(CEjecucionFFDAO.ejecucionFinancieraMonto(estado.getPrograma(), estado.getSuprograma()));
+				temp.vigente = formatter.format(CEjecucionFFDAO.vigenteMonto(estado.getPrograma(), estado.getSuprograma()));
 				switch(estado.getTipo_estado_calamidad()){
 					case 1: temp.tipo = "Calamidad"; break;
 					case 2: temp.tipo = "Sitio"; break;

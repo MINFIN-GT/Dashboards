@@ -98,7 +98,8 @@ public class SSaveActividad extends HttpServlet {
 			CResponsable responsable = new CResponsable(-1,map.get("responsable_nombre"),map.get("responsable_correo"),map.get("responsable_telefono"));
 			CActividad actividad = new CActividad(-1, map.get("nombre"), map.get("descripcion"),new Timestamp(Long.parseLong(map.get("fecha_inicio"))),new Timestamp(Long.parseLong(map.get("fecha_fin"))),
 					Double.parseDouble(map.get("porcentaje_ejecucion")),map.get("coord_lat"),map.get("coord_long"),map.get("entidades"),responsable,null,null);
-			CActividadDAO.crearActividad(actividad,CShiro.getAttribute("username").toString());
+			int subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : 0;
+			CActividadDAO.crearActividad(actividad,CShiro.getAttribute("username").toString(), subprograma);
 			response_text = String.join("", "{\"success\":true, \"result\":\"creada\"}");
 		}
 		else if(action.compareTo("update")==0){

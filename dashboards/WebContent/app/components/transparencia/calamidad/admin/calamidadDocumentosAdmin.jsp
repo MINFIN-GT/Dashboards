@@ -33,6 +33,8 @@
 		    	<input type="file" ngf-select ng-model="control.docFile" name="file"    
 		             ngf-max-size="100MB" required
 		             ngf-model-invalid="errorFile"
+		             ngf-pattern="'*'"
+    				 ngf-accept="'*'" 
 		             class="form-control"/>
 		    	<i ng-show="myForm.file.$error.required">*obligatorio</i><br>
 		    	<i ng-show="myForm.file.$error.maxSize">Archivo excede el tamaño -

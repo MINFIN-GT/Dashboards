@@ -19,20 +19,22 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.transparencia.CCompraDAO;
+import dao.transparencia.CDonacionDAO;
 import pojo.transparencia.CCompra;
+import pojo.transparencia.CDonacion;
 import shiro.utilities.CShiro;
 
 /**
  * Servlet implementation class STransparenciaCompras
  */
-@WebServlet("/STransparenciaCompras")
-public class STransparenciaCompras extends HttpServlet {
+@WebServlet("/STransparenciaDonaciones")
+public class STransparenciaDonaciones extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public STransparenciaCompras() {
+	public STransparenciaDonaciones() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -44,7 +46,7 @@ public class STransparenciaCompras extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
 	}
 
 	/**
@@ -74,9 +76,9 @@ public class STransparenciaCompras extends HttpServlet {
 		String action = map.get("action");
 		int subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : 0;
 		if (action.compareTo("getlist") == 0) {
-			ArrayList<CCompra> compras = CCompraDAO.getCompras(subprograma);
-			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
-			response_text = String.join("", "\"compras\":", response_text);
+			ArrayList<CDonacion> donaciones = CDonacionDAO.getDonaciones(subprograma);
+			response_text = new GsonBuilder().serializeNulls().create().toJson(donaciones);		
+			response_text = String.join("", "\"donaciones\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
 		}else if (action.compareTo("add") == 0) {
 			int id_compra = map.get("idCompra")!=null ? Integer.parseInt(map.get("idCompra")) : 0;

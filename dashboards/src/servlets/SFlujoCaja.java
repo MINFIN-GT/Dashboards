@@ -83,19 +83,33 @@ public class SFlujoCaja extends HttpServlet {
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
 		else if(action.equals("getPronosticosIngresos")){
+			Type typea = new TypeToken<Map<String, Integer[]>>(){}.getType();
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
 			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
-			int recurso = map.get("recursoId")!=null ? Integer.parseInt(map.get("recursoId")) : 0;
-			int auxiliar = map.get("auxiliarId")!=null ? Integer.parseInt(map.get("auxiliarId")) : 0;
+			String[] recursosIds = map.get("recursosIds")!=null && map.get("recursosIds").length()>2 ?  map.get("recursosIds").substring(1,map.get("recursosIds").length()-2).split(",") : null;
+			Map<String,Integer[]> auxiliaresIds = map.get("auxiliaresIds")!=null && map.get("auxiliaresIds").length()>0 ? gson.fromJson(map.get("auxiliaresIds"), typea) : null;
 			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
-			Double[] pronosticos = CRecursoDAO.getPronosticos(ejercicio, mes,recurso, auxiliar, ajustado, numero);
-			Double[] historicos = CRecursoDAO.getHistoricos(ejercicio, mes, recurso,auxiliar, 12);
-			Double[][] data_historia = CRecursoDAO.getTodaHistoria(recurso,auxiliar);
+			Double[] pronosticos = CRecursoDAO.getPronosticos(ejercicio, mes,recursosIds, auxiliaresIds, ajustado, numero);
+			Double[] historicos = CRecursoDAO.getHistoricos(ejercicio, mes, recursosIds, auxiliaresIds, 12);
+			Double[][] data_historia = CRecursoDAO.getTodaHistoria(recursosIds, auxiliaresIds);
+			
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
 			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
 			String response_text_historia = new GsonBuilder().serializeNulls().create().toJson(data_historia);
 	        response_text = String.join("", "\"pronosticos\":",response_text,", \"historicos\":", response_text_historicos,",\"historia\":", response_text_historia);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getPronosticosIngresosDetalle")){
+			Type typea = new TypeToken<Map<String, Integer[]>>(){}.getType();
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
+			String[] recursosIds = map.get("recursosIds")!=null && map.get("recursosIds").length()>2 ?  map.get("recursosIds").substring(1,map.get("recursosIds").length()-2).split(",") : null;
+			Map<String,Integer[]> auxiliaresIds = map.get("auxiliaresIds")!=null && map.get("auxiliaresIds").length()>0 ? gson.fromJson(map.get("auxiliaresIds"), typea) : null;
+			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
+			ArrayList<CRecurso> recursos = CRecursoDAO.getPronosticosDetalle(ejercicio, mes, numero, recursosIds, auxiliaresIds);
+			response_text=new GsonBuilder().serializeNulls().create().toJson(recursos);
+			response_text = String.join("", "\"pronosticos\":",response_text);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
 		else if(action.equals("getEntidades")){
@@ -135,14 +149,20 @@ public class SFlujoCaja extends HttpServlet {
 			int mes = (ejercicio < now.getYear()) ? 1 : now.getMonthOfYear();
 			Double[] pronosticos_egresos = CEntidadDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
 			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getHistoricos(ejercicio, 1, 0, 0, (ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
-			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, 1, 0, 0,(ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
+			//Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			//Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, 1, 0, 0,(ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
 			String response_pronosticos_egresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_egresos);
 			String response_historicos_egresos = new GsonBuilder().serializeNulls().create().toJson(historicos_egresos);
-			String response_pronosticos_ingresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_ingresos);
-			String response_historicos_ingresos = new GsonBuilder().serializeNulls().create().toJson(historicos_ingresos);
-			response_text = String.join("", "\"pronosticos_egresos\":",response_pronosticos_egresos,", \"historicos_egresos\":", response_historicos_egresos,
-					",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos);
+			//String response_pronosticos_ingresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_ingresos);
+			//String response_historicos_ingresos = new GsonBuilder().serializeNulls().create().toJson(historicos_ingresos);
+			//response_text = String.join("", "\"pronosticos_egresos\":",response_pronosticos_egresos,", \"historicos_egresos\":", response_historicos_egresos,
+			//		",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getRecursosTree")){
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			CRecurso root = CRecursoDAO.getRecursosTree(ejercicio);
+			response_text = String.join("", "\"recursos\":",new GsonBuilder().serializeNulls().create().toJson(root));
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
         OutputStream output = response.getOutputStream();

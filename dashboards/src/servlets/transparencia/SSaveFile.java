@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.joda.time.DateTime;
@@ -23,6 +22,7 @@ import org.joda.time.DateTime;
 import dao.transparencia.CDocumentoDAO;
 import pojo.transparencia.CDocumento;
 import shiro.utilities.CShiro;
+import utilities.CLogger;
 
 /**
  * Servlet implementation class SSaveFile
@@ -82,9 +82,9 @@ public class SSaveFile extends HttpServlet {
                     fItem = item;
                 }else{
                 	switch(item.getFieldName()){
-                	case "id_actividad" : id_actividad = Integer.parseInt(item.getString());
-                	case "place" : place = item.getString(); break;
-                	case "subprograma": subprograma = Integer.parseInt(item.getString());
+	                	case "id_actividad" : id_actividad = Integer.parseInt(item.getString());
+	                	case "place" : place = item.getString(); break;
+	                	case "subprograma": subprograma = Integer.parseInt(item.getString());
                 	}
                 }
             }
@@ -102,7 +102,7 @@ public class SSaveFile extends HttpServlet {
             fItem.write(uploadedFile);
             
             CDocumento doc = new CDocumento(-1, id_actividad, fileName, fileName, filePath, filetype, new Timestamp(DateTime.now().getMillis()), CShiro.getAttribute("username").toString(),
-            		subprograma);
+            		subprograma==0 ? Integer.parseInt(place) : subprograma);
             CDocumentoDAO.crearDocumento(doc);
             
     		request.setCharacterEncoding("UTF-8");
@@ -117,12 +117,9 @@ public class SSaveFile extends HttpServlet {
 	        output.close();
     		
     		
-        } catch (FileUploadException ex) {
-            throw new ServletException(ex);
-        } catch (Exception ex) {
-            throw new ServletException(ex);
-        }
-      
+        } catch (Exception e) {
+           CLogger.write("1", SSaveFile.class, e);
+        } 
 	}
 
 }

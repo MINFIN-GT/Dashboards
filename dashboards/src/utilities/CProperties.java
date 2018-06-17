@@ -6,6 +6,7 @@ import java.util.Properties;
 public class CProperties {
 	private static Properties properties;
 	private static String memsql_host="";
+	private static String memsql_host_intra="";
 	private static Integer memsql_port=null;
 	private static String memsql_user="";
 	private static String memsql_password="";
@@ -25,6 +26,7 @@ public class CProperties {
 		try{
 			properties.load(input);
 			memsql_host = properties.getProperty("memsql_host");
+			memsql_host_intra = properties.getProperty("memsql_host_intra");
 			memsql_port = properties.getProperty("memsql_port") != null ? 
 					Integer.parseInt(properties.getProperty("memsql_port")) : null;
 			memsql_schema = properties.getProperty("memsql_schema");
@@ -103,6 +105,14 @@ public class CProperties {
 
 	public static void setmemsql_host(String memsql_host) {
 		CProperties.memsql_host = memsql_host;
+	}
+	
+	public static String getmemsql_host_intra() {
+		return memsql_host_intra;
+	}
+
+	public static void setmemsql_host_intra(String memsql_host_intra) {
+		CProperties.memsql_host_intra = memsql_host_intra;
 	}
 
 	public static Integer getmemsql_port() {
