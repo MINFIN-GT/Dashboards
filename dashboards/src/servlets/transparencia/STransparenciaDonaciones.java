@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gdata.data.DateTime;
+import org.joda.time.DateTime;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -89,7 +90,7 @@ public class STransparenciaDonaciones extends HttpServlet {
 					map.get("metodo_acreditamiento"), new Timestamp(formatter.parse(map.get("fecha_ingreso")).getTime()), 
 					Double.parseDouble(map.get("monto_d")), Double.parseDouble(map.get("monto_q")), 
 					map.get("estado"), map.get("destino"), CShiro.getIdUser(), 
-					new Timestamp(DateTime.now().getValue()), null, null); 
+					new Timestamp(DateTime.now().getMillis()), null, null); 
 				if (CDonacionDAO.crearDonacion(donacion))
 					response_text = String.join("", "{\"success\":true, \"result\":\"creada\"}");
 				else
