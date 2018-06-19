@@ -55,8 +55,8 @@ angular.module('calamidadAdminController').controller('adminCtrl', function($log
 		      keyboard:false,
 		      backdrop:'static',
 		      scope:$scope,
-		      templateUrl: 'edit.html',
-		      controller: 'editActivity',
+		      templateUrl: 'editActividad.html',
+		      controller: 'editActividad',
 		 });
 		 
 		 modalInstance.result.then(function() {
@@ -77,8 +77,8 @@ angular.module('calamidadAdminController').controller('adminCtrl', function($log
 		      keyboard:false,
 		      backdrop:'static',
 		      scope:$scope,
-		      templateUrl: 'edit.html',
-		      controller: 'editActivity',
+		      templateUrl: 'editActividad.html',
+		      controller: 'editActividad',
 		 });
 		 
 		 modalInstance.result.then(function () {
@@ -95,8 +95,8 @@ angular.module('calamidadAdminController').controller('adminCtrl', function($log
 			      keyboard:false,
 			      backdrop:'static',
 			      scope:$scope,
-			      templateUrl: 'editCompras.html',
-			      controller: 'editCompras',
+			      templateUrl: 'editCompra.html',
+			      controller: 'editCompra',
 			 });
 			 
 			 modalInstance.result.then(function () {
@@ -105,11 +105,47 @@ angular.module('calamidadAdminController').controller('adminCtrl', function($log
 			    	
 			    });
 		 };	 
+	
+		 this.addDonacion = function () {
+		    	$rootScope.donacion_id = -1;
+				 var modalInstance = $uibModal.open({
+				      animation: true,
+				      keyboard:false,
+				      backdrop:'static',
+				      scope:$scope,
+				      templateUrl: 'editDonacion.html',
+				      controller: 'editDonacion',
+				 });
+				 
+				 modalInstance.result.then(function () {
+					 $route.reload();
+				    }, function () {
+				    	
+				    });
+			 };
+			 
+			 this.addCUR = function () {
+			    	$rootScope.cur_id = -1;
+					 var modalInstance = $uibModal.open({
+					      animation: true,
+					      keyboard:false,
+					      backdrop:'static',
+					      scope:$scope,
+					      templateUrl: 'editCUR.html',
+					      controller: 'editCUR',
+					 });
+					 
+					 modalInstance.result.then(function () {
+						 $route.reload();
+					    }, function () {
+					    	
+					    });
+				 };
 });
 
 
 angular.module('calamidadAdminController')
-.controller('editActivity', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload) {
+.controller('editActividad', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload) {
 	
 	if ($rootScope.id<=0){
 		$rootScope.id=-1; 
@@ -327,7 +363,7 @@ angular.module('calamidadAdminController')
 });
 
 angular.module('calamidadAdminController')
-.controller('editCompras', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout, $rootScope) {
+.controller('editCompra', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout, $rootScope) {
 	
 	$scope.tipoCompra;
 	$scope.idCompra;
@@ -419,3 +455,188 @@ angular.module('calamidadAdminController')
 	};
 	
 });
+
+angular.module('calamidadAdminController')
+.controller('editDonacion', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout, $rootScope) {
+	
+	$scope.idDonacion;
+	$scope.showloading=true;
+	$scope.successMessage="";
+	$scope.success=false;
+	
+	$scope.clearError=function(){
+		$scope.error = false;
+		$scope.errorMessage="";
+		$scope.successMessage="";
+		$scope.success=false;
+	}
+	
+	$scope.cancel = function () {
+	    $uibModalInstance.dismiss('cancel');
+	};
+	
+	$http.post('/STransparenciaDonaciones', { action: 'getlist', subprograma: $rootScope.subprograma, t: (new Date()).getTime() }).then(function(response){
+	    if(response.data.success){
+	    	$scope.original_donaciones = response.data.donaciones;
+	    	$scope.donaciones = $scope.original_donaciones.length> 0 ? $scope.original_donaciones.slice(0) : [];
+	    	$scope.showloading=false;
+	    }
+ 	}.bind($scope), function errorCallback(response){
+    	$scope.showloading=false;
+ 	}
+	);
+	
+	$scope.getDonacion=function(){
+    	$scope.showloading=true;
+		$http.post('/STransparenciaDonaciones', { action: 'getlist', subprograma: $rootScope.subprograma, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	$scope.original_donaciones= response.data.donaciones;
+		    	$scope.donaciones = $scope.original_donaciones.length> 0 ? $scope.original_donaciones.slice(0) : [];
+		    	$scope.showloading=false;
+		    }
+	 	}.bind($scope), function errorCallback(response){
+	    	$scope.showloading=false;
+	 	}
+		);
+	}
+	
+	$scope.addDonacion=function(){
+		
+			$http.post('/STransparenciaDonaciones', { action: 'add', subprograma: $rootScope.subprograma, 
+				donante: this.donante,
+				procedencia: this.procedencia,
+				fecha_ingreso: this.fecha_ingreso,
+				metodo_acreditamiento: this.metodo_acredita,
+				monto_d: this.monto_d,
+				monto_q: this.monto_q,
+				estado: this.estado,
+				destino: this.destino,
+				t: (new Date()).getTime() }).then(function(response){
+			    if(response.data.success){
+			    	this.getDonacion();
+			    	this.idDonacion=null;
+			    	this.donante = null;
+			    	this.procedencia = null;
+			    	this.fecha_ingreso = null;
+			    	this.metodo_acredita=null;
+			    	this.monto_d = null;
+			    	this.monto_q = null;
+			    	this.estado = null;
+			    	this.destino = null;
+			    	$scope.success = true;
+			    	$scope.successMessage="Donación agregada con éxito";
+			    }
+			    else{
+			    	$scope.error=true;
+					$scope.errorMessage=response.data.result;
+			    }
+		 	}.bind(this), function errorCallback(response){
+		 	}
+			);
+		
+	};
+	
+	$scope.deleteDonacion=function(tipo,id){
+		$http.post('/STransparenciaDonaciones', { action: 'delete', subprograma: $rootScope.subprograma, idDonacion:id, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	this.getDonacion();
+		    }
+	 	}.bind($scope), function errorCallback(response){
+	 		
+	 	}
+		);
+	};
+	
+});
+
+angular.module('calamidadAdminController')
+.controller('editCUR', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout, $rootScope) {
+	
+	$scope.idCur;
+	$scope.showloading=true;
+	$scope.successMessage="";
+	$scope.success=false;
+	
+	$scope.clearError=function(){
+		$scope.error = false;
+		$scope.errorMessage="";
+		$scope.successMessage="";
+		$scope.success=false;
+	}
+	
+	$scope.cancel = function () {
+	    $uibModalInstance.dismiss('cancel');
+	};
+	
+	$http.post('/STransparenciaCurs', { action: 'getlist', subprograma: $rootScope.subprograma, t: (new Date()).getTime() }).then(function(response){
+	    if(response.data.success){
+	    	$scope.original_curs = response.data.curs;
+	    	$scope.curs = $scope.original_curs.length> 0 ? $scope.original_curs.slice(0) : [];
+	    	$scope.showloading=false;
+	    }
+ 	}.bind($scope), function errorCallback(response){
+    	$scope.showloading=false;
+ 	}
+	);
+	
+	$scope.getCur=function(){
+    	$scope.showloading=true;
+		$http.post('/STransparenciaCurs', { action: 'getlist', subprograma: $rootScope.subprograma, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	$scope.original_curs = response.data.curs;
+		    	$scope.curs = $scope.original_curs.length> 0 ? $scope.original_curs.slice(0) : [];
+		    	$scope.showloading=false;
+		    }
+	 	}.bind($scope), function errorCallback(response){
+	    	$scope.showloading=false;
+	 	}
+		);
+	}
+	
+	$scope.addCur=function(){
+		isValid = false;
+			$http.post('/STransparenciaCurs', { action: 'add', 
+				subprograma: $rootScope.subprograma, 
+				ejercicio:this.ejercicio, 
+				entidad:this.entidad, 
+				unidad_ejecutora: this.unidad_ejecutora,
+				cur: this.idCur,
+				t: (new Date()).getTime() }).then(function(response){
+			    if(response.data.success){
+			    	this.getCur();
+			    	this.idCur=null;
+			    	this.ejercicio = null;
+			    	this.entidad = null;
+			    	this.unidad_ejecutora = null;
+			    	$scope.success = true;
+			    	$scope.successMessage="CUR agregado con éxito";
+			    }
+			    else{
+			    	$scope.error=true;
+					$scope.errorMessage=response.data.result;
+			    }
+		 	}.bind(this), function errorCallback(response){
+		 	}
+			);
+		
+		
+	};
+	
+	$scope.deleteCur=function(ejercicio, entidad, unidad_ejecutora, cur){
+		$http.post('/STransparenciaCurs', { action: 'delete', subprograma: $rootScope.subprograma, 
+			ejercicio: ejercicio, entidad:entidad, 
+			unidad_ejecutora: unidad_ejecutora,
+			cur: cur,
+			t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	this.getCur();
+		    }
+	 	}.bind($scope), function errorCallback(response){
+	 		
+	 	}
+		);
+	};
+	
+});
+
+

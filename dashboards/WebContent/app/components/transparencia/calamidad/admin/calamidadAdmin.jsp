@@ -42,12 +42,20 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 }
 </style>
 
-<script type="text/ng-template" id="edit.html">
+<script type="text/ng-template" id="editActividad.html">
 	<%@ include file="/app/components/transparencia/calamidad/admin/actividad.jsp"%>
 </script>
 
-<script type="text/ng-template" id="editCompras.html">
+<script type="text/ng-template" id="editCompra.html">
 	<%@ include file="/app/components/transparencia/calamidad/admin/compras.jsp"%>
+</script>
+
+<script type="text/ng-template" id="editDonacion.html">
+	<%@ include file="/app/components/transparencia/calamidad/admin/donaciones.jsp"%>
+</script>
+
+<script type="text/ng-template" id="editCUR.html">
+	<%@ include file="/app/components/transparencia/calamidad/admin/curs.jsp"%>
 </script>
 
 <div ng-controller="adminCtrl as control" class="maincontainer"
@@ -75,6 +83,13 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 				<a class="btn btn-default" role="button"
 					ng-click="control.addCUR()" uib-tooltip="Agregar CUR de gasto"
 					tooltip-placement="left"> Q</a>
+			</div>
+			<div class="btn-group" role="group">
+				<a class="btn btn-default" role="button"
+					ng-click="control.addDonacion()" uib-tooltip="Agregar donación"
+					tooltip-placement="left"> <span
+					class="glyphicon glyphicon-gift" aria-hidden="true"></span>
+				</a>
 			</div>
 		</div>
 		

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
@@ -14,13 +16,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gdata.data.DateTime;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import dao.transparencia.CCompraDAO;
 import dao.transparencia.CDonacionDAO;
-import pojo.transparencia.CCompra;
 import pojo.transparencia.CDonacion;
 import shiro.utilities.CShiro;
 
@@ -81,20 +82,24 @@ public class STransparenciaDonaciones extends HttpServlet {
 			response_text = String.join("", "\"donaciones\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
 		}else if (action.compareTo("add") == 0) {
-			int id_compra = map.get("idCompra")!=null ? Integer.parseInt(map.get("idCompra")) : 0;
-			boolean existe_nog=CCompraDAO.getCompra(id_compra);
-			if(existe_nog){
-			CCompra compra = new CCompra(map.get("tipoCompra"), map.get("idCompra"),94, subprograma, CShiro.getIdUser());
-				if (CCompraDAO.crearCompra(compra))
+			try {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+				int id_donacion = map.get("idDonacion")!=null ? Integer.parseInt(map.get("idDonacion")) : 0;
+				CDonacion donacion = new CDonacion(id_donacion, 94, subprograma, map.get("donante"), map.get("procedencia"), 
+					map.get("metodo_acreditamiento"), new Timestamp(formatter.parse(map.get("fecha_ingreso")).getTime()), 
+					Double.parseDouble(map.get("monto_d")), Double.parseDouble(map.get("monto_q")), 
+					map.get("estado"), map.get("destino"), CShiro.getIdUser(), 
+					new Timestamp(DateTime.now().getValue()), null, null); 
+				if (CDonacionDAO.crearDonacion(donacion))
 					response_text = String.join("", "{\"success\":true, \"result\":\"creada\"}");
 				else
 					response_text = String.join("", "{\"success\":false, \"result\":\"no creada\"}");
 			}
-			else{
-				response_text = "{\"success\": false, \"result\":\"El nog indicado no existe\"}";
+			catch(Exception e) {
+				response_text = String.join("", "{\"success\":false, \"result\":\"no creada\"}");
 			}
 		}else if (action.compareTo("delete") == 0) {
-			if (CCompraDAO.deleteCompra(map.get("idCompra"), map.get("tipoCompra"),94,subprograma))
+			if (CDonacionDAO.deleteDonacion(Integer.parseInt(map.get("idDonacion"))))
 				response_text = String.join("", "{\"success\":true, \"result\":\"borrada\"}");
 			else
 				response_text = String.join("", "{\"success\":false, \"result\":\"no borrada\"}");

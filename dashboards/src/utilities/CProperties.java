@@ -12,6 +12,7 @@ public class CProperties {
 	private static String memsql_password="";
 	private static String memsql_schema=null;
 	private static String memsql_schema_des=null;
+	private static String memsql_schema_estados_excepcion;
 	
 	private static String oracle_host="";
 	private static Integer oracle_port=null;
@@ -31,6 +32,7 @@ public class CProperties {
 					Integer.parseInt(properties.getProperty("memsql_port")) : null;
 			memsql_schema = properties.getProperty("memsql_schema");
 			memsql_schema_des = properties.getProperty("memsql_schemades");
+			memsql_schema_estados_excepcion = properties.getProperty("memsql_schema_estados_excepcion");
 			memsql_user = properties.getProperty("memsql_user");
 			memsql_password = properties.getProperty("memsql_password");
 			
@@ -153,5 +155,13 @@ public class CProperties {
 	
 	public void setmemsql_schema_des(String memsql_schema_des){
 		CProperties.memsql_schema_des = memsql_schema_des;
+	}
+	
+	public static String getmemsql_schema_estados_excepcion(){
+		return memsql_schema_estados_excepcion;
+	}
+	
+	public void setmemsql_schema_estados_excepcion(String memsql_schema_estados_excepcion){
+		CProperties.memsql_schema_des = memsql_schema_estados_excepcion;
 	}
 }

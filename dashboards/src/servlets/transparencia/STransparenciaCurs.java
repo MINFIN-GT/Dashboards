@@ -18,11 +18,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import dao.transparencia.CCompraDAO;
 import dao.transparencia.CCurDAO;
-import pojo.transparencia.CCompra;
 import pojo.transparencia.CCur;
-import shiro.utilities.CShiro;
 
 /**
  * Servlet implementation class STransparenciaCompras
@@ -75,28 +72,27 @@ public class STransparenciaCurs extends HttpServlet {
 		String action = map.get("action");
 		int subprograma = map.get("subprograma")!=null ? Integer.parseInt(map.get("subprograma")) : 0;
 		int id_cur = map.get("idCur")!=null ? Integer.parseInt(map.get("idCur")) : 0;
+		int ejercicio = map.get("ejercicio")!=null && map.get("ejercicio").length()>0 ? Integer.parseInt(map.get("ejercicio")) : 0;
+		int entidad = map.get("entidad")!=null && map.get("entidad").length()>0 ? Integer.parseInt(map.get("entidad")) : 0;
+		int unidad_ejecutora = map.get("undidad_ejecutora")!=null && map.get("undidad_ejecutora").length()>0 ? Integer.parseInt(map.get("undidad_ejecutora")) : 0;
 		if (action.compareTo("getlist") == 0) {
 			ArrayList<CCur> curs = CCurDAO.getCurs(subprograma);
 			response_text = new GsonBuilder().serializeNulls().create().toJson(curs);		
 			response_text = String.join("", "\"curs\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
 		}else if (action.compareTo("add") == 0) {
-			//boolean existe_nog=CCurDAO.getCur(id_cur);
-			//if(existe_nog){
-				//CCur cur = new CCur();
-				//if (CCurDAO.crearCur(cur))
-					//response_text = String.join("", "{\"success\":true, \"result\":\"creado\"}");
-				//else
-					//response_text = String.join("", "{\"success\":false, \"result\":\"no creado\"}");
-			//}
-			//else{
-			//	response_text = "{\"success\": false, \"result\":\"El CUR indicado no existe\"}";
-			//}
+			
+				CCur cur = new CCur(94,7,ejercicio,entidad,unidad_ejecutora,id_cur);
+				if (CCurDAO.crearCur(cur))
+					response_text = String.join("", "{\"success\":true, \"result\":\"creado\"}");
+				else
+					response_text = String.join("", "{\"success\":false, \"result\":\"no creado\"}");
+			
 		}else if (action.compareTo("delete") == 0) {
-			//if (CCurDAO.deleteCur(id_cur,94,subprograma))
-			//	response_text = String.join("", "{\"success\":true, \"result\":\"borrado\"}");
-			//else
-			//	response_text = String.join("", "{\"success\":false, \"result\":\"no borrado\"}");
+			if (CCurDAO.deleteCur(94,subprograma, ejercicio,entidad, unidad_ejecutora, id_cur))
+				response_text = String.join("", "{\"success\":true, \"result\":\"borrado\"}");
+			else
+				response_text = String.join("", "{\"success\":false, \"result\":\"no borrado\"}");
 		}			
 		gz.write(response_text.getBytes("UTF-8"));
 		gz.close();

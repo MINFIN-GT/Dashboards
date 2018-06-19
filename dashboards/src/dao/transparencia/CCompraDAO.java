@@ -14,9 +14,9 @@ import utilities.CLogger;
 public class CCompraDAO {
 	public static Integer numCompras(int subprograma){
 		Integer ret=0;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=?");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=?");
 				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
@@ -26,7 +26,7 @@ public class CCompraDAO {
 				CLogger.write("1", CCompraDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -34,15 +34,16 @@ public class CCompraDAO {
 	
 	public static ArrayList<CCompra> getCompras(int subprograma){
 		ArrayList<CCompra> ret=new ArrayList<CCompra>();
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_compra WHERE programa=? and subprograma=?");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_compra WHERE programa=? and subprograma=?");
 				pstm.setInt(1, 94);
 				pstm.setInt(2, subprograma);
 				ResultSet rs=pstm.executeQuery();
 				PreparedStatement pstm2=null;
 				ResultSet rs2;
 				CCompra compra;
+				CDatabase.connect();
 				while (rs.next()){
 					/*if (rs.getString("NPG")!=null){
 						pstm2 = CDatabase.getConnection_Oracle().prepareStatement("select * from GUATECOMPRAS.VW_GC_NPG_JUTIAPA2016 where NPG_CONCURSO=?");
@@ -71,8 +72,8 @@ public class CCompraDAO {
 				CLogger.write("2", CCompraDAO.class, e);
 			}
 			finally{
+				CDatabase.close_estados_excepcion();
 				CDatabase.close();
-				//CDatabase.close_oracle();
 			}
 		}
 		return ret;		
@@ -80,9 +81,9 @@ public class CCompraDAO {
 	
 	public static boolean crearCompra(CCompra compra) {
 		boolean ret = false;
-		if (CDatabase.connect()) {
+		if (CDatabase.connectEstadosExcepcion()) {
 			try {
-				PreparedStatement pstm = CDatabase.getConnection()
+				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion()
 						.prepareStatement("INSERT INTO seg_compra (nog,npg,programa,subprograma,usuario_creacion,fecha_creacion)"
 								+ "values (?,?,?,?,?,?)");
 
@@ -103,7 +104,7 @@ public class CCompraDAO {
 			} catch (Exception e) {
 				CLogger.write("3", CCompra.class, e);
 			} finally {
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;
@@ -113,16 +114,16 @@ public class CCompraDAO {
 
 	public static boolean deleteCompra(String id, String tipo, int programa, int subprograma) {
 		boolean ret = false;
-		if (CDatabase.connect()) {
+		if (CDatabase.connectEstadosExcepcion()) {
 			try {
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("DELETE FROM seg_compra " + "WHERE "+
+				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion().prepareStatement("DELETE FROM seg_compra " + "WHERE "+
 						(tipo.compareTo("NPG")==0? "NPG = '"+id+"'": "NOG = "+id) + " and programa = "+programa+" and subprograma= "+subprograma);
 				if (pstm.executeUpdate() > 0)
 					ret = true;
 			} catch (Exception e) {
 				CLogger.write("4", CCompra.class, e);
 			} finally {
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;
@@ -131,8 +132,8 @@ public class CCompraDAO {
 	public static boolean getCompra(int nog) {
 		boolean ret = false;
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select count(*) total from mv_evento_gc where nog_concurso=?");
+			if(CDatabase.connectEstadosExcepcion()){
+				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion().prepareStatement("select count(*) total from mv_evento_gc where nog_concurso=?");
 				pstm.setInt(1, nog);
 				ResultSet rs=pstm.executeQuery();
 				if(rs.next() && rs.getInt("total")>0){
@@ -144,7 +145,7 @@ public class CCompraDAO {
 			CLogger.write("4", CCompraDAO.class, e);
 		}
 		finally{
-			CDatabase.close();
+			CDatabase.close_estados_excepcion();
 		}
 		return ret;
 	}

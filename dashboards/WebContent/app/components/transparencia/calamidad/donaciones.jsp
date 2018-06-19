@@ -27,8 +27,8 @@
 					<td>{{ row.donante }}</td>
 					<td>{{ row.procedencia }}</td>
 					<td>{{ row.fecha_ingreso | date: 'd/M/yyyy' }}</td>
-					<td style="min-width: 100px; text-align: right;">$ {{ row.monto_d | number:2 }}</td>
-					<td style="min-width: 100px; text-align: right;">Q {{ row.monto_q | number:2 }}</td>
+					<td style="min-width: 100px; text-align: right; white-space: nowrap;">$ {{ row.monto_d | number:2 }}</td>
+					<td style="min-width: 100px; text-align: right; white-space: nowrap;">Q {{ row.monto_q | number:2 }}</td>
 					<td>{{ row.estado }}</td>
 				</tr>
 			</tbody>

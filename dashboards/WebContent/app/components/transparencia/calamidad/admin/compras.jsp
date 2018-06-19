@@ -44,7 +44,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="row in original_compras">
+				<tr ng-repeat="row in compras">
 					<td>{{ row.entidad }}</td>
 					<td><a target="_blank" href="{{row.tipo=='NOG' ? 'http://www.guatecompras.gt/concursos/consultaDetalleCon.aspx?nog='+row.id : 'http://www.guatecompras.gt/PubSinConcurso/ConsultaAnexosPubSinConcurso.aspx?op=4&n='+row.id }}">{{ row.id }}</a></td>
 					<td>{{ row.fecha | date }}</td>

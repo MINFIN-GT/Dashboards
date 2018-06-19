@@ -41,6 +41,7 @@ public class STransparenciaVentanas extends HttpServlet {
     	int donaciones;
     	double ejecucion_financiera;
     	double ejecucion_fisica;
+    	double vigente;
     	String titulo;
     	String latitude;
     	String longitude;
@@ -92,6 +93,7 @@ public class STransparenciaVentanas extends HttpServlet {
 		results.donaciones = CDonacionDAO.numDonaciones(subprograma);
 		results.ejecucion_financiera = CEjecucionFFDAO.ejecucionFinanciera(94,subprograma);
 		results.ejecucion_fisica = CEjecucionFFDAO.ejecucionFisica(94,subprograma);
+		results.vigente = CEjecucionFFDAO.vigenteMonto(94, subprograma);
 		CEstadoCalamidad estadoc = CEstadoCalamidadDAO.getEstadoCalamidad(subprograma);
 		if(estadoc!=null){
 			results.titulo = estadoc.getNombre();

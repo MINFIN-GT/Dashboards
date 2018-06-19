@@ -15,8 +15,8 @@ public class CEjecucionFFDAO {
 	
 	public static ArrayList<CEjecucionFF> getEntidadesEjecucion(int nivel, Integer entidad, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
 		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
+		if(CDatabase.connectEstadosExcepcion()){
+			Connection conn = CDatabase.getConnection_estados_excepcion();
 			try{
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
@@ -70,8 +70,8 @@ public class CEjecucionFFDAO {
 				
 	public static ArrayList<CEjecucionFF> getProgramasEjecucion(int nivel, Integer entidad, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
 		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
+		if(CDatabase.connectEstadosExcepcion()){
+			Connection conn = CDatabase.getConnection_estados_excepcion();
 			try{
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
@@ -127,8 +127,8 @@ public class CEjecucionFFDAO {
 		double vigente = 0.0;
 		double ejecutado = 0.0;
 		try{
-			if(CDatabase.connect()){
-				Connection conn = CDatabase.getConnection();
+			if(CDatabase.connectEstadosExcepcion()){
+				Connection conn = CDatabase.getConnection_estados_excepcion();
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(ejecutado) ejecutado, sum(meta) meta, "
@@ -155,8 +155,8 @@ public class CEjecucionFFDAO {
 	public static double ejecucionFisica(int programa, int subprograma){
 		double ret = 0.0;
 		try{
-			if(CDatabase.connect()){
-				Connection conn = CDatabase.getConnection();
+			if(CDatabase.connectEstadosExcepcion()){
+				Connection conn = CDatabase.getConnection_estados_excepcion();
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(ejecutado) ejecutado, sum(meta) meta, "
@@ -182,8 +182,8 @@ public class CEjecucionFFDAO {
 		double ret = 0.0;
 		double ejecutado = 0.0;
 		try{
-			if(CDatabase.connect()){
-				Connection conn = CDatabase.getConnection();
+			if(CDatabase.connectEstadosExcepcion()){
+				Connection conn = CDatabase.getConnection_estados_excepcion();
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(ejecutado) ejecutado "
@@ -209,8 +209,8 @@ public class CEjecucionFFDAO {
 		double ret = 0.0;
 		double ejecutado = 0.0;
 		try{
-			if(CDatabase.connect()){
-				Connection conn = CDatabase.getConnection();
+			if(CDatabase.connectEstadosExcepcion()){
+				Connection conn = CDatabase.getConnection_estados_excepcion();
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente "

@@ -33,6 +33,7 @@ angular.module('calamidadController',['dashboards']).controller('calamidadContro
 	    	this.latitude = response.data.results.latitude;
 	    	this.longitude = response.data.results.longitude;
 	    	this.tipo = response.data.results.tipo;
+	    	this.vigente = response.data.results.vigente;
 	    	this.subprograma = $routeParams.subprograma;
 	    	
 	    	$rootScope.titulo = this.titulo;

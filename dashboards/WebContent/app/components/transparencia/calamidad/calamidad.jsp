@@ -32,9 +32,8 @@
 						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
 							<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp={{ control.subprograma }}&idevento=-1&pic=b1.png&pic_w=300" alt="Ejecución Física y Financiera" class="img-rounded"></div>
 							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
-								<button type="button" class="btn btn-default" style="width: 50%; height: 40px;">{{ control.ejecucion_financiera | number:2 }}% Financiera</button>
-	  							<button type="button" class="btn btn-default" style="width: 50%; height: 40px;">{{ control.ejecucion_fisica | number:2 }}% Física</button>
-							</div>
+								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">Asignado: Q {{ control.vigente | number:2 }}</button>
+	  						</div>
 						</div>
 					</td>
 					<td ng-click="go('/transparencia/calamidad/actividades/'+control.subprograma)">

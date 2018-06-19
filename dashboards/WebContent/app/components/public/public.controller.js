@@ -60,7 +60,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadController',     
-	           script: '/app/components/transparencia/calamidad/calamidad1.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidad2.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidad.jsp'
 	       },
 	       {

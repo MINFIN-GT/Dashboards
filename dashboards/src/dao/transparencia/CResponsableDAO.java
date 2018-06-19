@@ -15,9 +15,9 @@ import utilities.CLogger;
 public class CResponsableDAO {
 	public static CResponsable crearResponsable(String nombre, String correo, String telefono,String usuario){
 		CResponsable responsable=null;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("INSERT INTO "
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("INSERT INTO "
 						+ "seg_responsable(nombre, correo, telefono, fecha_creacion, usuario_creacion) "
 						+ "VALUES (?,?,?,?,?) " , Statement.RETURN_GENERATED_KEYS);
 				pstm.setString(1, nombre);
@@ -35,7 +35,7 @@ public class CResponsableDAO {
 				CLogger.write("1", CResponsableDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return responsable
@@ -44,9 +44,9 @@ public class CResponsableDAO {
 	
 	public static CResponsable getResponsable(Integer id){
 		CResponsable responsable=null;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM "
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM "
 						+ "seg_responsable WHERE id=?");
 				pstm.setInt(1, id);
 				ResultSet rs = pstm.executeQuery();
@@ -58,7 +58,7 @@ public class CResponsableDAO {
 				CLogger.write("2", CResponsableDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return responsable;

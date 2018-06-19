@@ -13,9 +13,9 @@ public class CEstadoCalamidadDAO {
 	
 	public static ArrayList<CEstadoCalamidad> getEstadosCalamidad(){
 		ArrayList<CEstadoCalamidad> ret=new ArrayList<CEstadoCalamidad>();
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM  estado_de_calamidad ORDER BY subprograma DESC ");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM  estado_de_calamidad ORDER BY subprograma DESC ");
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
 					CEstadoCalamidad estado = new CEstadoCalamidad(rs.getInt("ejercicio"), rs.getInt("programa"), 
@@ -28,7 +28,7 @@ public class CEstadoCalamidadDAO {
 				CLogger.write("1", CEstadoCalamidad.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -36,9 +36,9 @@ public class CEstadoCalamidadDAO {
 	
 	public static CEstadoCalamidad getEstadoCalamidad(int subprograma){
 		CEstadoCalamidad ret=null;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM  estado_de_calamidad WHERE subprograma = ?");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM  estado_de_calamidad WHERE subprograma = ?");
 				pstm.setInt(1, subprograma);
 				ResultSet rs=pstm.executeQuery();
 				if (rs.next()){
@@ -51,7 +51,7 @@ public class CEstadoCalamidadDAO {
 				CLogger.write("2", CEstadoCalamidad.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		

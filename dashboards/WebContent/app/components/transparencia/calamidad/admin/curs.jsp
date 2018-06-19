@@ -2,28 +2,40 @@
 	pageEncoding="UTF-8"%>
 
 <div class="modal-header">
-	<h3 class="modal-title">Edición de Compras</h3>
+	<h3 class="modal-title">Edición de CURs</h3>
 </div>
 <div class="modal-body" style="margin-left: 15px; margin-right: 15px;">
 	<uib-accordion>
 	<div style="padding-top: 5px;">
 		<div uib-accordion-group class="panel-info row"
-			heading="Agregar proceso de compra">
+			heading="Agregar CUR de gasto">
 			<form name="myForm" class="css-form" novalidate style="margin-top: 15px;">
-				<div class="form-group row" style="text-align: center;">
-					<label class="radio-inline"><input type="radio" ng-model="tipoCompra" ng-required="!tipoCompra" value="NOG" ng-change="clearError()" />NOG</label>
-					<label class="radio-inline"><input type="radio" ng-model="tipoCompra" ng-required="!tipoCompra" value="NPG" ng-change="clearError()" />NPG</label>
+				<div class="form-group row" style="text-align: left;">
+					<label for="ejercicio">Ejercicio</label>
+					<input type="number" ng-model="ejercicio" ng-change="clearError()" required class="form-control" id="ejercicio"/>
 				</div>
-				<div class="form-group row" style="text-align: center;">
-					<input type="text" ng-model="idCompra" ng-change="clearError()" required	/>
+				<div class="form-group row" style="text-align: left;">
+					<label for="entidad">Entidad</label>
+					<input type="number" ng-model="entidad" ng-change="clearError()" required class="form-control" id="entidad"/>
+				</div>
+				<div class="form-group row" style="text-align: left;">
+					<label for="cur">Unidad Ejecutora</label>
+					<input type="number" ng-model="unidad_ejecutora" ng-change="clearError()" required class="form-control" id="unidad_ejecutora"/>
+				</div>
+				<div class="form-group row" style="text-align: left;">
+					<label for="cur">CUR</label>
+					<input type="number" ng-model="idCur" ng-change="clearError()" required class="form-control" id="cur"/>
 				</div>
 				<div class="form-group row" style="text-align: center;">
 					<div class="btn-group" role="group">
-						<input type="button" value="Agregar" ng-disabled="!myForm.$valid" class="btn btn-success" ng-click="addCompra()" />
+						<input type="button" value="Agregar" ng-disabled="!myForm.$valid" class="btn btn-success" ng-click="addCur()" />
 					</div>
 				</div>
 				<div class="row" style="font-size:16px; text-align: center; color: red;" ng-show="error">
 					<label><span class="glyphicon glyphicon-exclamation-sign">{{errorMessage}}</span> </label>
+				</div>
+				<div class="row" style="font-size:16px; text-align: center; color: green;" ng-show="success">
+					<label>{{successMessage}}</label>
 				</div>
 			</form>
 		</div>
@@ -32,25 +44,25 @@
 
 	<div class="row panel panel-default"
 		style="margin: 10px 0px 20px 0px; height: 250px; position: relative; overflow: auto;">
-		<table st-table="compras" st-safe-src="original_compras"
+		<table st-table="curs" st-safe-src="original_curs"
 			class="table table-striped">
 			<thead>
 				<tr>
+					<th st-sort="ejercicio">Ejercicio</th>
 					<th st-sort="entidad">Entidad</th>
-					<th st-sort="id">NPG/NOG</th>
-					<th st-sort="fecha">Publicación</th>
-					<th st-sort="monto">Monto</th>
+					<th st-sort="unidad_ejecutora">Unidad Ejecutora</th>
+					<th st-sort="cur">CUR</th>
 					<th>Borrar</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="row in original_compras">
+				<tr ng-repeat="row in curs">
+					<td>{{ row.ejercicio }}</td>
 					<td>{{ row.entidad }}</td>
-					<td><a target="_blank" href="{{row.tipo=='NOG' ? 'http://www.guatecompras.gt/concursos/consultaDetalleCon.aspx?nog='+row.id : 'http://www.guatecompras.gt/PubSinConcurso/ConsultaAnexosPubSinConcurso.aspx?op=4&n='+row.id }}">{{ row.id }}</a></td>
-					<td>{{ row.fecha | date }}</td>
-					<td style="min-width: 100px;">Q {{ row.monto|number:2 }}</td>
+					<td>{{ row.unidad_ejecutora }}</td>
+					<td>{{ row.cur }}</td>
 					<td style="text-align: center;"><a
-						ng-click="deleteCompra(row.tipo, row.id)"><span style="color: red;"
+						ng-click="deleteCur(row.ejercicio, row.entidad, row.unidad_ejecutora, row.cur)"><span style="color: red;"
 							class="glyphicon glyphicon-remove"></span></a></td>
 				</tr>
 			</tbody>

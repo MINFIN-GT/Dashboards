@@ -33,7 +33,7 @@
 					<td>{{ row.descripcion }}</td>
 					<td>{{ row.modalidad }}</td>
 					<td>{{ row.estado }}</td>
-					<td style="min-width: 100px; text-align: right;">Q {{ row.monto|number:2 }}</td>
+					<td style="min-width: 100px; text-align: right; white-space: nowrap;">Q {{ row.monto|number:2 }}</td>
 				</tr>
 			</tbody>
 		</table>

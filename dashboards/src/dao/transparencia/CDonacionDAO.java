@@ -14,9 +14,9 @@ import utilities.CLogger;
 public class CDonacionDAO {
 	public static Integer numDonaciones(int subprograma){
 		Integer ret=0;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select count(*) from seg_donacion where programa=94 and subprograma=?");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("select count(*) from seg_donacion where programa=94 and subprograma=?");
 				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
@@ -26,7 +26,7 @@ public class CDonacionDAO {
 				CLogger.write("1", CDonacionDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -34,9 +34,9 @@ public class CDonacionDAO {
 	
 	public static ArrayList<CDonacion> getDonaciones(int subprograma){
 		ArrayList<CDonacion> ret=new ArrayList<CDonacion>();
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_donacion WHERE programa=? and subprograma=? order by id");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_donacion WHERE programa=? and subprograma=? order by id");
 				pstm.setInt(1, 94);
 				pstm.setInt(2, subprograma);
 				ResultSet rs=pstm.executeQuery();
@@ -55,7 +55,7 @@ public class CDonacionDAO {
 				CLogger.write("2", CDonacionDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -63,9 +63,9 @@ public class CDonacionDAO {
 	
 	public static boolean crearDonacion(CDonacion donacion) {
 		boolean ret = false;
-		if (CDatabase.connect()) {
+		if (CDatabase.connectEstadosExcepcion()) {
 			try {
-				PreparedStatement pstm = CDatabase.getConnection()
+				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion()
 						.prepareStatement("INSERT INTO seg_donacion (programa,subprograma,donante,procedencia,metodo_acreditamiento,"
 								+ "fecha_ingreso,monto_d,monto_q,estado,destino,usuario_creacion,fecha_creacion)"
 								+ "values (?,?,?,?,?,?,?,?,?,?,"
@@ -89,7 +89,7 @@ public class CDonacionDAO {
 			} catch (Exception e) {
 				CLogger.write("3", CDonacion.class, e);
 			} finally {
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;
@@ -99,16 +99,16 @@ public class CDonacionDAO {
 
 	public static boolean deleteDonacion(int id) {
 		boolean ret = false;
-		if (CDatabase.connect()) {
+		if (CDatabase.connectEstadosExcepcion()) {
 			try {
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("DELETE FROM seg_donacion WHERE id = ?");
+				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion().prepareStatement("DELETE FROM seg_donacion WHERE id = ?");
 				pstm.setInt(1, id);
 				if (pstm.executeUpdate() > 0)
 					ret = true;
 			} catch (Exception e) {
 				CLogger.write("4", CDonacion.class, e);
 			} finally {
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;

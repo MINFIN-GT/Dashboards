@@ -18,14 +18,14 @@ public class CActividadDAO {
 	
 	public static boolean crearActividad(CActividad actividad,String usuario, int subprograma){
 		boolean ret=false;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
 				long idResponsable=-1;
 				PreparedStatement pstm;
 				if (actividad.getResponsable().getId()>0)
 					idResponsable=actividad.getResponsable().getId();
 				else{					
-					pstm =  CDatabase.getConnection().prepareStatement("INSERT INTO "
+					pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("INSERT INTO "
 							+ "seg_responsable(nombre, correo, telefono, fecha_creacion, usuario_creacion) "
 							+ "VALUES (?,?,?,?,?) " , Statement.RETURN_GENERATED_KEYS);
 					pstm.setString(1, actividad.getResponsable().getNombre());
@@ -37,7 +37,7 @@ public class CActividadDAO {
 					ResultSet rs = pstm.getGeneratedKeys();
 					if (rs != null && rs.next()) {
 					    idResponsable = rs.getLong(1);								
-						pstm =  CDatabase.getConnection().prepareStatement("INSERT INTO "
+						pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("INSERT INTO "
 								+"seg_actividad(nombre,descripcion,fecha_inicio,fecha_fin,porcentaje_ejecucion,coord_lat,coord_long,entidades,id_responsable,programa,subprograma,usuario_creacion,fecha_creacion) "
 								+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ");
 						pstm.setString(1, actividad.getNombre());
@@ -62,7 +62,7 @@ public class CActividadDAO {
 				CLogger.write("1", CActividadDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -70,9 +70,9 @@ public class CActividadDAO {
 	
 	public static boolean actualizarActividad(CActividad actividad,String usuario){
 		boolean ret=false;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("UPDATE seg_actividad SET "
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("UPDATE seg_actividad SET "
 						+ "NOMBRE = ?, "
 						+ "DESCRIPCION = ?, "
 						+ "FECHA_INICIO = ?, "
@@ -96,7 +96,7 @@ public class CActividadDAO {
 				pstm.setInt(11, actividad.getId());
 				if (pstm.executeUpdate()>0)
 					ret=true;
-				pstm = CDatabase.getConnection().prepareStatement("UPDATE seg_responsable SET "
+				pstm = CDatabase.getConnection_estados_excepcion().prepareStatement("UPDATE seg_responsable SET "
 						+ "NOMBRE = ?, "
 						+ "CORREO = ?, "
 						+ "TELEFONO = ?, "
@@ -115,7 +115,7 @@ public class CActividadDAO {
 				CLogger.write("2", CActividadDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -123,14 +123,14 @@ public class CActividadDAO {
 	
 	public static boolean eliminarActividad(CActividad actividad){
 		boolean ret=false;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("delete from seg_responsable where "
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("delete from seg_responsable where "
 						+ "id = ? ");
 				pstm.setLong(1, actividad.getResponsable().getId());
 				if (pstm.executeUpdate()>0)
 					ret=true;
-				pstm = CDatabase.getConnection().prepareStatement("delete from seg_actividad "
+				pstm = CDatabase.getConnection_estados_excepcion().prepareStatement("delete from seg_actividad "
 						+ "WHERE id = ?");
 				pstm.setLong(1, actividad.getId());
 				if (pstm.executeUpdate()>0)
@@ -140,7 +140,7 @@ public class CActividadDAO {
 				CLogger.write("3", CActividadDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;		
@@ -148,9 +148,9 @@ public class CActividadDAO {
 	
 	public static Integer numActividades(int subprograma){
 		Integer ret = 0;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT COUNT(*) FROM seg_actividad where subprograma=?");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT COUNT(*) FROM seg_actividad where subprograma=?");
 				pstm.setInt(1,subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
@@ -160,7 +160,7 @@ public class CActividadDAO {
 				CLogger.write("4", CActividadDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;
@@ -168,9 +168,9 @@ public class CActividadDAO {
 	
 	public static ArrayList<CActividad> getActividades(int subprograma){
 		ArrayList<CActividad> ret = new ArrayList<CActividad>();
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_actividad where programa=94 and subprograma=? ORDER BY id ");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_actividad where programa=94 and subprograma=? ORDER BY id ");
 				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				while(rs.next()){
@@ -188,7 +188,7 @@ public class CActividadDAO {
 				CLogger.write("5", CActividadDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;
@@ -196,9 +196,9 @@ public class CActividadDAO {
 
 	public static CActividad getActividad(int id) {
 		CActividad ret = null;
-		if(CDatabase.connect()){
+		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_actividad WHERE id=? ");
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_actividad WHERE id=? ");
 				pstm.setInt(1, id);
 				ResultSet rs = pstm.executeQuery();
 				if(rs.next()){
@@ -215,7 +215,7 @@ public class CActividadDAO {
 				CLogger.write("5", CActividadDAO.class, e);
 			}
 			finally{
-				CDatabase.close();
+				CDatabase.close_estados_excepcion();
 			}
 		}
 		return ret;
