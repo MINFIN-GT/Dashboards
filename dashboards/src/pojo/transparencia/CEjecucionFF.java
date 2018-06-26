@@ -5,17 +5,19 @@ public class CEjecucionFF {
 	String nombre;
  	double ejecutado;
 	double vigente;
+	double compromiso;
 	double ejecucion_financiera;
 	double meta;
 	double meta_avanzado;
 	double ejecucion_fisica;
-	public CEjecucionFF(Integer codigo, String nombre, double ejecutado, double vigente, double ejecucion_financiera,
+	public CEjecucionFF(Integer codigo, String nombre, double ejecutado, double vigente, double compromiso,double ejecucion_financiera,
 			double meta, double meta_avanzado, double ejecucion_fisica) {
 		super();
 		this.codigo = codigo;
 		this.nombre = nombre;
 		this.ejecutado = ejecutado;
 		this.vigente = vigente;
+		this.compromiso = compromiso;
 		this.ejecucion_financiera = ejecucion_financiera;
 		this.meta = meta;
 		this.meta_avanzado = meta_avanzado;
@@ -44,6 +46,12 @@ public class CEjecucionFF {
 	}
 	public void setVigente(double vigente) {
 		this.vigente = vigente;
+	}
+	public double getCompromiso() {
+		return compromiso;
+	}
+	public void setCompromiso(double compromiso) {
+		this.compromiso = compromiso;
 	}
 	public double getEjecucion_financiera() {
 		return ejecucion_financiera;

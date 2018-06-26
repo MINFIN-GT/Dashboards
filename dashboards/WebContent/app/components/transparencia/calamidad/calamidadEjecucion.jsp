@@ -50,6 +50,7 @@
 									<th st-sort="codigo">Código</th>
 									<th st-sort="nombre">Nombre</th>
 									<th st-sort="vigente" style="text-align: right; ">Vigente</th>
+									<th st-sort="compromiso" style="text-align: right; ">Comprometido</th>
 									<th st-sort="ejecutado" style="text-align: right;">Ejecutado</th>
 									<th st-sort="eje_financiera" style="text-align: right;">% Ejecución Financiera</th>
 									<th ng-hide="control.entidad_level>4" st-sort="eje_fisica" style="text-align: right; ">% Ejecucion Física</th>
@@ -61,6 +62,7 @@
 							    	<td/>
 							    	<td class="text-right"><strong>Totales</strong></td>
 									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[0] | currency:"Q&nbsp;":2  }}</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[6] | currency:"Q&nbsp;":2  }}</strong></td>
 									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[1] | currency:"Q&nbsp;":2 }}</strong></td>
 									<td class="text-right"><strong>{{ control.entidad_ejecucion_totales[2] | number:2 }}&nbsp;%</strong></td>
 									<td ng-hide="control.entidad_level>4" class="text-right"><strong>{{ control.entidad_ejecucion_totales[5] | number:2 }}&nbsp;%</strong></td>
@@ -72,6 +74,7 @@
 									<td class="text-nowrap"><strong>{{data.codigo}}</strong></td>
 									<td title="{{data.nombre}}" style="max-width: 350px; overflow: hidden;" class="text-nowrap"><strong>{{data.nombre}}</strong></td>
 									<td class="text-right">{{ data.vigente | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.compromiso | currency:"Q&nbsp;":2 }}</td>
 									<td class="text-right">{{ data.ejecutado | currency:"Q&nbsp;":2 }}</td>
 									<td class="text-right">{{ data.ejecucion_financiera | number:2}}&nbsp;%</td>
 									<td ng-hide="control.entidad_level>4" class="text-right">{{ data.ejecucion_fisica | number:2}}&nbsp;%</td>
@@ -116,6 +119,7 @@
 								<th st-sort="codigo">Código</th>
 								<th st-sort="nombre">Nombre</th>
 								<th st-sort="vigente" style="text-align: right;">Vigente</th>
+								<th st-sort="compromiso" style="text-align: right;">Comprometido</th>
 								<th st-sort="ejecutado" style="text-align: right;">Ejecutado</th>
 								<th st-sort="eje_financiera" style="text-align: right;">% Ejecución Financiera</th>
 								<th ng-hide="control.programa_level>4" st-sort="eje_fisica" style="text-align: right; ">% Ejecucion Física</th>
@@ -127,6 +131,7 @@
 						    	<td/>
 						    	<td class="text-right"><strong>Totales</strong></td>
 								<td class="text-right"><strong>{{ control.programa_ejecucion_totales[0] | currency:"Q&nbsp;":2  }}</strong></td>
+								<td class="text-right"><strong>{{ control.programa_ejecucion_totales[6] | currency:"Q&nbsp;":2 }}</strong></td>
 								<td class="text-right"><strong>{{ control.programa_ejecucion_totales[1] | currency:"Q&nbsp;":2 }}</strong></td>
 								<td class="text-right"><strong>{{ control.programa_ejecucion_totales[2] | number:2 }}&nbsp;%</strong></td>
 								<td ng-hide="control.programa_level>4" class="text-right"><strong>{{ control.programa_ejecucion_totales[5] | number:2 }}&nbsp;%</strong></td>
@@ -138,6 +143,7 @@
 								<td class="text-nowrap"><strong>{{data.codigo}}</strong></td>
 								<td title="{{data.nombre}}" style="max-width: 350px; overflow: hidden;" class="text-nowrap"><strong>{{data.nombre}}</strong></td>
 								<td class="text-right">{{ data.vigente | currency:"Q&nbsp;":2 }}</td>
+								<td class="text-right">{{ data.compromiso | currency:"Q&nbsp;":2 }}</td>
 								<td class="text-right">{{ data.ejecutado | currency:"Q&nbsp;":2 }}</td>
 								<td class="text-right">{{ data.ejecucion_financiera | number:2}}&nbsp;%</td>
 								<td ng-hide="control.programa_level>4"  class="text-right">{{ data.ejecucion_fisica | number:2}}&nbsp;%</td>

@@ -66,11 +66,11 @@ angular.module('calamidadEjecucionController',['dashboards','smart-table']).cont
 						
 			this.entidad_ejecucion_data=[];
 			this.entidad_ejecucion_data_original=[];
-			this.entidad_ejecucion_totales=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+			this.entidad_ejecucion_totales=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 			
 			this.programa_ejecucion_data=[];
 			this.programa_ejecucion_data_original=[];
-			this.programa_ejecucion_totales=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+			this.programa_ejecucion_totales=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 			
 			this.gauge1_loaded = false;
 						
@@ -117,8 +117,10 @@ angular.module('calamidadEjecucionController',['dashboards','smart-table']).cont
     					this.entidad_ejecucion_totales[3] = 0;
     					this.entidad_ejecucion_totales[4] = 0;
     					this.entidad_ejecucion_totales[5] = 0;
+    					this.entidad_ejecucion_totales[6] = 0;
 	    				for (i=0; i<this.entidad_ejecucion_data.length; i++){
 	    					this.entidad_ejecucion_totales[0] += this.entidad_ejecucion_data[i].vigente;
+	    					this.entidad_ejecucion_totales[6] += this.entidad_ejecucion_data[i].compromiso;
 	    					this.entidad_ejecucion_totales[1] += this.entidad_ejecucion_data[i].ejecutado;
 	    					this.entidad_ejecucion_totales[3] += this.entidad_ejecucion_data[i].meta;
 	    					this.entidad_ejecucion_totales[4] += this.entidad_ejecucion_data[i].meta_avanzado;
@@ -190,9 +192,11 @@ angular.module('calamidadEjecucionController',['dashboards','smart-table']).cont
     					this.programa_ejecucion_totales[3] = 0;
     					this.programa_ejecucion_totales[4] = 0;
     					this.programa_ejecucion_totales[5] = 0;
+    					this.programa_ejecucion_totales[6] = 0;
     					
     					for (i=0; i<this.programa_ejecucion_data.length; i++){
 	    					this.programa_ejecucion_totales[0] += this.programa_ejecucion_data[i].vigente;
+	    					this.programa_ejecucion_totales[6] += this.programa_ejecucion_data[i].compromiso;
 	    					this.programa_ejecucion_totales[1] += this.programa_ejecucion_data[i].ejecutado;
 	    					this.programa_ejecucion_totales[3] += this.programa_ejecucion_data[i].meta;
 	    					this.programa_ejecucion_totales[4] += this.programa_ejecucion_data[i].meta_avanzado;

@@ -33,6 +33,7 @@ public class SEjecucionFF extends HttpServlet {
 	    	String nombre;
 	     	double ejecutado;
 	    	double vigente;
+	    	double compromiso;
 	    	double ejecucion_financiera;
 	    	double meta;
 	    	double meta_avanzado;
@@ -90,6 +91,7 @@ public class SEjecucionFF extends HttpServlet {
 				sttemp.nombre = cvalor.getNombre();
 				sttemp.ejecutado =  cvalor.getEjecutado();
 				sttemp.vigente = cvalor.getVigente();
+				sttemp.compromiso = cvalor.getCompromiso();
 				sttemp.ejecucion_financiera = (sttemp.vigente>0) ? (sttemp.ejecutado/sttemp.vigente)*100.00 : 0.00;
 				sttemp.meta= cvalor.getMeta();
 				sttemp.meta_avanzado = cvalor.getMeta_Avanzado();

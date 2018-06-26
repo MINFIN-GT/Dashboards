@@ -84,8 +84,8 @@ public class CCompraDAO {
 		if (CDatabase.connectEstadosExcepcion()) {
 			try {
 				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion()
-						.prepareStatement("INSERT INTO seg_compra (nog,npg,programa,subprograma,usuario_creacion,fecha_creacion)"
-								+ "values (?,?,?,?,?,?)");
+						.prepareStatement("INSERT INTO seg_compra (nog,npg,programa,subprograma,usuario_creacion,fecha_creacion,es_manual)"
+								+ "values (?,?,?,?,?,?,1)");
 
 				if (compra.getTipo().compareTo("NOG")==0){
 					pstm.setNull(2, java.sql.Types.VARCHAR);
@@ -132,8 +132,8 @@ public class CCompraDAO {
 	public static boolean getCompra(int nog) {
 		boolean ret = false;
 		try{
-			if(CDatabase.connectEstadosExcepcion()){
-				PreparedStatement pstm = CDatabase.getConnection_estados_excepcion().prepareStatement("select count(*) total from mv_evento_gc where nog_concurso=?");
+			if(CDatabase.connect()){
+				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select count(*) total from mv_evento_gc where nog_concurso=?");
 				pstm.setInt(1, nog);
 				ResultSet rs=pstm.executeQuery();
 				if(rs.next() && rs.getInt("total")>0){
@@ -142,10 +142,10 @@ public class CCompraDAO {
 			}
 		}
 		catch(Exception e){
-			CLogger.write("4", CCompraDAO.class, e);
+			CLogger.write("5", CCompraDAO.class, e);
 		}
 		finally{
-			CDatabase.close_estados_excepcion();
+			CDatabase.close();
 		}
 		return ret;
 	}
