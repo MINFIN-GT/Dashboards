@@ -75,7 +75,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadEjecucionController',     
-	           script: '/app/components/transparencia/calamidad/calamidadEjecucion.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadEjecucion1.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidadEjecucion.jsp'
 	       },
 	       {
