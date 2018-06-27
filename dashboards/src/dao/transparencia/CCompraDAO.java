@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 
 import db.utilities.CDatabase;
 import pojo.transparencia.CCompra;
+import pojo.transparencia.CEntidadCompra;
 import utilities.CLogger;
 
 public class CCompraDAO {
@@ -79,7 +80,7 @@ public class CCompraDAO {
 		return ret;		
 	}
 	
-	public static boolean crearCompra(CCompra compra) {
+public static boolean crearCompra(CCompra compra) {
 		boolean ret = false;
 		if (CDatabase.connectEstadosExcepcion()) {
 			try {
@@ -148,6 +149,43 @@ public class CCompraDAO {
 			CDatabase.close();
 		}
 		return ret;
+	}
+	
+	public static ArrayList<CEntidadCompra> getComprasPorEntidad(int subprograma){
+		ArrayList<CEntidadCompra> ret=new ArrayList<CEntidadCompra>();
+		if(CDatabase.connectEstadosExcepcion()){
+			try{
+				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm.setInt(1, 94);
+				pstm.setInt(2, subprograma);
+				ResultSet rs=pstm.executeQuery();
+				PreparedStatement pstm2=null;
+				ResultSet rs2;
+				CEntidadCompra compra;
+				CDatabase.connect();
+				if (rs.next()){
+						pstm2 = CDatabase.getConnection().prepareStatement("select entidad_compradora, entidad_compradora_nombre,count(*) num_eventos, " +
+								"sum( case when estatus_concurso=3 then 1 else 0 end) num_adjudicados, " + 
+								"sum( case when estatus_concurso=3 then monto else 0 end) total_adjudicado " + 
+								"from mv_evento_gc where estado_calamidad=? group by entidad_compradora, entidad_compradora_nombre");
+						pstm2.setString(1,rs.getString("estado_calamidad_guatecompras"));
+						rs2 = pstm2.executeQuery();
+						while (rs2.next()){
+							compra = new CEntidadCompra(rs2.getInt("entidad_compradora"),rs2.getString("entidad_compradora_nombre"), rs2.getInt("num_eventos"),
+									rs2.getInt("num_adjudicados"),rs2.getDouble("total_adjudicado"));
+							ret.add(compra);
+						}		
+				}
+			}
+			catch(Exception e){
+				CLogger.write("6", CCompraDAO.class, e);
+			}
+			finally{
+				CDatabase.close_estados_excepcion();
+				CDatabase.close();
+			}
+		}
+		return ret;		
 	}
 
 

@@ -10,42 +10,79 @@
 		</div>
 	</div>
 	
-	<div class="row panel panel-default" style="margin: 10px 0px 20px 0px; height: 600px; position: relative; overflow: auto;">
-		<table st-table="control.compras" st-safe-src="control.original_compras" class="table table-striped">
-			<thead>
-				<tr>
-					<th st-sort="entidad">Entidad</th>
-					<th st-sort="unidad">Unidad</th>
-					<th st-sort="id">NPG/NOG</th>
-					<th st-sort="fecha">Publicación</th>
-					<th st-sort="descripcion">Descripción</th>
-					<th st-sort="modalidad">Modalidad</th>
-					<th st-sort="estatus">Estado</th>
-					<th st-sort="monto">Monto</th>
-				</tr>
-			</thead>
-			<tbody style="font-size: 10px;">
-				<tr ng-repeat="row in control.compras">
-					<td>{{ row.entidad }}</td>
-					<td>{{ row.unidad }}</td>
-					<td><a target="_blank" href="{{row.tipo=='NOG' ? 'http://www.guatecompras.gt/concursos/consultaDetalleCon.aspx?nog='+row.id : 'http://www.guatecompras.gt/PubSinConcurso/ConsultaAnexosPubSinConcurso.aspx?op=4&n='+row.id }}">{{ row.id }}</a></td>
-					<td style="text-align: right;">{{ row.fecha | date:'d/M/yyyy' }}</td>
-					<td>{{ row.descripcion }}</td>
-					<td>{{ row.modalidad }}</td>
-					<td>{{ row.estado }}</td>
-					<td style="min-width: 100px; text-align: right; white-space: nowrap;">Q {{ row.monto|number:2 }}</td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="grid_loading" ng-hide="!control.showloading">
- 			<div class="msg">
-     			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
-	  			<br /><br />
-	  			<b>Cargando, por favor espere...</b>
-  				</span>
-			</div>
-		</div>
+	<div class="row" style="margin: 10px 0px 20px 0px;">
+		<uib-tabset active="active">
+			<uib-tab index="0" heading="Por Entidad" select="control.view_total=false">
+				<table class="table table-striped">
+					<thead>
+						<tr style="font-weight: bold;">
+							<td>Entidad</td>
+							<td style="text-align: right;">Eventos Publicados</td>
+							<td style="text-align: right;">Adjudicados</td>
+							<td style="text-align: right;">Monto Adjudicado</td>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr style="font-weight: bold; text-align: right; white-space: nowrap;">
+							<td>Totales</td>
+							<td>{{ control.total_eventos }}</td>
+							<td>{{ control.total_adjudicados }}</td>
+							<td>Q {{ control.total_monto_adjudicado|number:2 }}</td>
+						</tr>
+					</tfoot>
+					<tbody style="font-size: 11px;">
+						<tr ng-repeat="row in control.compras_por_entidad">
+							<td>{{ row.entidad }}</td>
+							<td style="text-align: right;">{{ row.num_eventos }}</td>
+							<td style="text-align: right;">{{ row.num_adjudicados }}</td>
+							<td style="text-align: right;">Q {{ row.total_adjudicado|number:2 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div style="height: 300px; width: 80%; margin: 40px auto;">
+				<canvas class="chart-base" chart-type="control.chartType" chart-data="control.chartData" chart-title="control.chartTitle"
+					chart-labels="control.chartLabels" chart-legend="true" chart-series="control.chartSeries" chart-options="control.chartOptions" chart-colors="control.chart_colours">
+				</canvas>
+				</div>
+			</uib-tab>
+			<uib-tab index="1" heading="Detalle" select="control.view_total=true">
+				<table st-table="control.compras" st-safe-src="control.original_compras" class="table table-striped">
+					<thead>
+						<tr>
+							<th st-sort="entidad">Entidad</th>
+							<th st-sort="unidad">Unidad</th>
+							<th st-sort="id">NPG/NOG</th>
+							<th st-sort="fecha">Publicación</th>
+							<th st-sort="descripcion">Descripción</th>
+							<th st-sort="modalidad">Modalidad</th>
+							<th st-sort="estatus">Estado</th>
+							<th st-sort="monto">Monto</th>
+						</tr>
+					</thead>
+					<tbody style="font-size: 10px;">
+						<tr ng-repeat="row in control.compras">
+							<td>{{ row.entidad }}</td>
+							<td>{{ row.unidad }}</td>
+							<td><a target="_blank" href="{{row.tipo=='NOG' ? 'http://www.guatecompras.gt/concursos/consultaDetalleCon.aspx?nog='+row.id : 'http://www.guatecompras.gt/PubSinConcurso/ConsultaAnexosPubSinConcurso.aspx?op=4&n='+row.id }}">{{ row.id }}</a></td>
+							<td style="text-align: right;">{{ row.fecha | date:'d/M/yyyy' }}</td>
+							<td>{{ row.descripcion }}</td>
+							<td>{{ row.modalidad }}</td>
+							<td>{{ row.estado }}</td>
+							<td style="min-width: 100px; text-align: right; white-space: nowrap;">Q {{ row.monto|number:2 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="grid_loading" ng-hide="!control.showloading">
+		 			<div class="msg">
+		     			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
+			  			<br /><br />
+			  			<b>Cargando, por favor espere...</b>
+		  				</span>
+					</div>
+				</div>
+			</uib-tab>
+		</uib-tabset>
 	</div>
-	<div style="text-align: right;">Total de {{ control.compras.length }} eventos en Guatecompras</div><br/><br/>
+	<div style="text-align: right;" ng-show="control.view_total">Total de {{ control.compras.length }} eventos en Guatecompras</div><br/><br/>
 	</div>
 

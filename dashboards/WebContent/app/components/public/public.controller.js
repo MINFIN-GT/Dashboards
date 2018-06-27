@@ -47,55 +47,56 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
     }]);
 
 app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
+	   this.time = (new Date()).getTime();
 	   var modules = [
 	       {
 	           name: 'paptn_ejecucionfinancieraController',     
-	           script: '/app/components/paptn/ejecucionfinanciera/ejecucionfinanciera.controller.js',
+	           script: '/app/components/paptn/ejecucionfinanciera/ejecucionfinanciera.controller.js?'+time,
 	           template: '/app/components/paptn/ejecucionfinanciera/ejecucionfinanciera.jsp'
 	       },
 	       {
 	    	   name: 'estadoscalamidadController',     
-	           script: '/app/components/transparencia/estadoscalamidad.controller.js',
+	           script: '/app/components/transparencia/estadoscalamidad.controller.js?'+time,
 	           template: '/app/components/transparencia/estadoscalamidad.jsp'
 	       },
 	       {
 	    	   name: 'calamidadController',     
-	           script: '/app/components/transparencia/calamidad/calamidad2.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidad.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidad.jsp'
 	       },
 	       {
 	    	   name: 'calamidadMapaController',     
-	           script: '/app/components/transparencia/calamidad/calamidadMapa.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadMapa.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadMapa.jsp'
 	       },
 	       {
 	    	   name: 'calamidadActividadesController',     
-	           script: '/app/components/transparencia/calamidad/calamidadActividades.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadActividades.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadActividades.jsp'
 	       },
 	       {
 	    	   name: 'calamidadEjecucionController',     
-	           script: '/app/components/transparencia/calamidad/calamidadEjecucion1.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadEjecucion.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadEjecucion.jsp'
 	       },
 	       {
 	    	   name: 'calamidadAdminController',     
-	           script: '/app/components/transparencia/calamidad/calamidadAdmin.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadAdmin.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadAdmin.jsp'
 	       },
 	       {
 	    	   name: 'calamidadDocumentosController',     
-	           script: '/app/components/transparencia/calamidad/calamidadDocumentos.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadDocumentos.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadDocumentos.jsp'
 	       },
 	       {
 	    	   name: 'calamidadComprasController',     
-	           script: '/app/components/transparencia/calamidad/calamidadCompras1.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadCompras.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadCompras.jsp'
 	       },
 	       {
 	    	   name: 'calamidadDonacionesController',     
-	           script: '/app/components/transparencia/calamidad/donaciones.controller.js',
+	           script: '/app/components/transparencia/calamidad/donaciones.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/donaciones.jsp'
 	       },
 	       {

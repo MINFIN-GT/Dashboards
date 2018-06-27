@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 
 import dao.transparencia.CCompraDAO;
 import pojo.transparencia.CCompra;
+import pojo.transparencia.CEntidadCompra;
 import shiro.utilities.CShiro;
 
 /**
@@ -78,7 +79,12 @@ public class STransparenciaCompras extends HttpServlet {
 			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
 			response_text = String.join("", "\"compras\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
-		}else if (action.compareTo("add") == 0) {
+		}else if(action.compareTo("getlist_entidades")==0){
+			ArrayList<CEntidadCompra> compras = CCompraDAO.getComprasPorEntidad(subprograma);
+			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
+			response_text = String.join("", "\"compras\":", response_text);
+			response_text = String.join("", "{\"success\":true,", response_text, "}");
+		} else if (action.compareTo("add") == 0) {
 			int id_compra = map.get("idCompra")!=null ? Integer.parseInt(map.get("idCompra")) : 0;
 			boolean existe_nog=CCompraDAO.getCompra(id_compra);
 			if(existe_nog){
