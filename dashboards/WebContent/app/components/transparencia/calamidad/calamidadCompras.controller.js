@@ -27,42 +27,44 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 		    	this.tipo = response.data.results.tipo;
 		    	$rootScope.titulo = this.titulo;
 		    	$rootScope.tipo = this.tipo;
-		    	$http.post('/STransparenciaCompras', { action: 'getlist_entidades', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
-		    	    if(response.data.success){
-		    	    	this.compras_por_entidad = response.data.compras;
-		    	    	this.total_eventos=0;
-		    	    	this.total_adjudicados=0;
-		    	    	this.total_monto_adjudicado=0.0;
-		    	    	this.chartLabels = [];
-		    	    	this.chartData = [[],[]];
-		    	    	for(var i=0; i<this.compras_por_entidad.length; i++){
-		    	    		this.total_eventos += this.compras_por_entidad[i].num_eventos;
-		    	    		this.total_adjudicados += this.compras_por_entidad[i].num_adjudicados;
-		    	    		this.total_monto_adjudicado += this.compras_por_entidad[i].total_adjudicado;
-		    	    		this.chartLabels.push(this.compras_por_entidad[i].entidad);
-		    	    		this.chartData[0].push(this.compras_por_entidad[i].num_adjudicados);
-		    	    		this.chartData[1].push(this.compras_por_entidad[i].num_eventos - this.compras_por_entidad[i].num_adjudicados);
-		    	    	}
-		    	    	$http.post('/STransparenciaCompras', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
-		    	    	    if(response.data.success){
-		    	    	    	this.original_compras = response.data.compras;
-		    	    	    	this.compras = this.original_compras.length> 0 ? this.original_compras.slice(0) : [];
-		    	    	    	for(var i=0; i<this.compras.length; i++)
-		    	    	    		this.compras[i].fecha = Date.parse(this.compras[i].fecha);
-		    	    	    	this.showloading=false;
-		    	    	    }
-		    	     	}.bind(this), function errorCallback(response){
-		    	        	this.showloading=false;
-		    	     	}
-		    	    	);
-		    	    }
-		     	}.bind(this), function errorCallback(response){
-		        }
-		    	);
+		    	
 			}
 		}.bind(this)
 		);
 	}
+	
+	$http.post('/STransparenciaCompras', { action: 'getlist_entidades', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+	    if(response.data.success){
+	    	this.compras_por_entidad = response.data.compras;
+	    	this.total_eventos=0;
+	    	this.total_adjudicados=0;
+	    	this.total_monto_adjudicado=0.0;
+	    	this.chartLabels = [];
+	    	this.chartData = [[],[]];
+	    	for(var i=0; i<this.compras_por_entidad.length; i++){
+	    		this.total_eventos += this.compras_por_entidad[i].num_eventos;
+	    		this.total_adjudicados += this.compras_por_entidad[i].num_adjudicados;
+	    		this.total_monto_adjudicado += this.compras_por_entidad[i].total_adjudicado;
+	    		this.chartLabels.push(this.compras_por_entidad[i].entidad);
+	    		this.chartData[0].push(this.compras_por_entidad[i].num_adjudicados);
+	    		this.chartData[1].push(this.compras_por_entidad[i].num_eventos - this.compras_por_entidad[i].num_adjudicados);
+	    	}
+	    	$http.post('/STransparenciaCompras', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+	    	    if(response.data.success){
+	    	    	this.original_compras = response.data.compras;
+	    	    	this.compras = this.original_compras.length> 0 ? this.original_compras.slice(0) : [];
+	    	    	for(var i=0; i<this.compras.length; i++)
+	    	    		this.compras[i].fecha = Date.parse(this.compras[i].fecha);
+	    	    	this.showloading=false;
+	    	    }
+	     	}.bind(this), function errorCallback(response){
+	        	this.showloading=false;
+	     	}
+	    	);
+	    }
+ 	}.bind(this), function errorCallback(response){
+    }
+	);
 
 	this.chartOptions= {
 			//scaleLabel: function(label){ return  label.value+' %'; },
