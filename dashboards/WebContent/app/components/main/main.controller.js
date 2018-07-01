@@ -164,7 +164,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadController',     
-	           script: '/app/components/transparencia/calamidad/calamidad2.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidad.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidad.jsp'
 	       },
 	       {
@@ -194,7 +194,7 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'calamidadComprasController',     
-	           script: '/app/components/transparencia/calamidad/calamidadCompras1.controller.js',
+	           script: '/app/components/transparencia/calamidad/calamidadCompras.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidadCompras.jsp'
 	       },
 	       { 

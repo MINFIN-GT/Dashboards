@@ -80,11 +80,18 @@ public class STransparenciaCompras extends HttpServlet {
 			response_text = String.join("", "\"compras\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
 		}else if(action.compareTo("getlist_entidades")==0){
-			ArrayList<CEntidadCompra> compras = CCompraDAO.getComprasPorEntidad(subprograma);
+			ArrayList<CEntidadCompra> compras = CCompraDAO.getComprasEntidades(subprograma);
 			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
 			response_text = String.join("", "\"compras\":", response_text);
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
-		} else if (action.compareTo("add") == 0) {
+		}else if(action.compareTo("getlist_por_entidad")==0) {
+			int entidad = map.get("entidad")!=null ? Integer.parseInt(map.get("entidad")) : 0;
+			ArrayList<CCompra> compras = CCompraDAO.getComprasPorEntidad(subprograma, entidad);
+			response_text = new GsonBuilder().serializeNulls().create().toJson(compras);		
+			response_text = String.join("", "\"compras\":", response_text);
+			response_text = String.join("", "{\"success\":true,", response_text, "}");
+		}
+		else if (action.compareTo("add") == 0) {
 			int id_compra = map.get("idCompra")!=null ? Integer.parseInt(map.get("idCompra")) : 0;
 			boolean existe_nog=CCompraDAO.getCompra(id_compra);
 			if(existe_nog){

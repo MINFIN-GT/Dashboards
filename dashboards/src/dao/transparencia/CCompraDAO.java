@@ -37,15 +37,10 @@ public class CCompraDAO {
 		ArrayList<CCompra> ret=new ArrayList<CCompra>();
 		if(CDatabase.connectEstadosExcepcion()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_compra WHERE programa=? and subprograma=?");
-				pstm.setInt(1, 94);
-				pstm.setInt(2, subprograma);
-				ResultSet rs=pstm.executeQuery();
 				PreparedStatement pstm2=null;
 				ResultSet rs2;
 				CCompra compra;
 				CDatabase.connect();
-				while (rs.next()){
 					/*if (rs.getString("NPG")!=null){
 						pstm2 = CDatabase.getConnection_Oracle().prepareStatement("select * from GUATECOMPRAS.VW_GC_NPG_JUTIAPA2016 where NPG_CONCURSO=?");
 						pstm2.setString(1,rs.getString("NPG"));
@@ -54,11 +49,12 @@ public class CCompraDAO {
 							compra = new CCompra(rs2.getString("ENTIDAD_GC"), rs2.getString("UNIDAD_GC"),"NPG", rs2.getString("NPG_CONCURSO"), rs2.getTimestamp("FECHA_PUBLICACION_GC"), rs2.getString("DESCRIPCION"), rs2.getString("NOMBRE_MODALIDAD")+" - "+rs2.getString("NOMBRE_MODALIDAD_EJECUCION"),rs2.getString("NOMBRE_ESTATUS"), rs2.getString("NIT"), rs2.getString("NOMBRE"), rs2.getDouble("MONTO"));
 							ret.add(compra);
 						}					
-					}else*/ if (rs.getInt("NOG")>0){
-						pstm2 = CDatabase.getConnection().prepareStatement("select * from mv_evento_gc where nog_concurso=?");
-						pstm2.setString(1,rs.getString("NOG"));
+					}else*/ 
+						pstm2 = CDatabase.getConnection().prepareStatement("select * from mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=?)");
+						pstm2.setInt(1, 94);
+						pstm2.setInt(2, subprograma);
 						rs2 = pstm2.executeQuery();
-						if (rs2.next()){
+						while (rs2.next()){
 							compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
 									rs2.getString("nog_concurso"), rs2.getTimestamp("fecha_publicacion"), rs2.getString("descripcion"), 
 									rs2.getString("modalidad_nombre"),rs2.getString("estatus_concurso_nombre"),null, 
@@ -66,8 +62,6 @@ public class CCompraDAO {
 									);
 							ret.add(compra);
 						}		
-					}					
-				}
 			}
 			catch(Exception e){
 				CLogger.write("2", CCompraDAO.class, e);
@@ -151,7 +145,7 @@ public static boolean crearCompra(CCompra compra) {
 		return ret;
 	}
 	
-	public static ArrayList<CEntidadCompra> getComprasPorEntidad(int subprograma){
+	public static ArrayList<CEntidadCompra> getComprasEntidades(int subprograma){
 		ArrayList<CEntidadCompra> ret=new ArrayList<CEntidadCompra>();
 		if(CDatabase.connectEstadosExcepcion()){
 			try{
@@ -179,6 +173,39 @@ public static boolean crearCompra(CCompra compra) {
 			}
 			catch(Exception e){
 				CLogger.write("6", CCompraDAO.class, e);
+			}
+			finally{
+				CDatabase.close_estados_excepcion();
+				CDatabase.close();
+			}
+		}
+		return ret;		
+	}
+	
+	public static ArrayList<CCompra> getComprasPorEntidad(int subprograma, int entidad){
+		ArrayList<CCompra> ret=new ArrayList<CCompra>();
+		if(CDatabase.connectEstadosExcepcion()){
+			try{
+				PreparedStatement pstm2=null;
+				ResultSet rs2;
+				CCompra compra;
+				CDatabase.connect();
+				pstm2 = CDatabase.getConnection().prepareStatement("select * from mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=? and entidad=?)");
+				pstm2.setInt(1, 94);
+				pstm2.setInt(2, subprograma);
+				pstm2.setInt(3, entidad);
+				rs2 = pstm2.executeQuery();
+				while (rs2.next()){
+					compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
+									rs2.getString("nog_concurso"), rs2.getTimestamp("fecha_publicacion"), rs2.getString("descripcion"), 
+									rs2.getString("modalidad_nombre"),rs2.getString("estatus_concurso_nombre"),null, 
+									null, rs2.getDouble("monto")
+									);
+					ret.add(compra);
+				}		
+			}
+			catch(Exception e){
+				CLogger.write("7", CCompraDAO.class, e);
 			}
 			finally{
 				CDatabase.close_estados_excepcion();

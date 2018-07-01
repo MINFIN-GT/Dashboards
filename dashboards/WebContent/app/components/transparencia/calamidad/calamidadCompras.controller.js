@@ -1,7 +1,7 @@
 
 
 angular.module('calamidadComprasController',['dashboards','smart-table']);
-angular.module('calamidadComprasController').controller('ComprasCtrl', function($scope,$http,$routeParams,$rootScope){
+angular.module('calamidadComprasController').controller('ComprasCtrl', function($scope,$http,$routeParams,$rootScope,$filter){
 	
 	this.compras=[];
 	this.original_compras=[];
@@ -33,6 +33,21 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 		);
 	}
 	
+	this.getCompras=function(){
+		$http.post('/STransparenciaCompras', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
+    	    if(response.data.success){
+    	    	this.original_compras = response.data.compras;
+    	    	this.compras = this.original_compras.length> 0 ? this.original_compras.slice(0) : [];
+    	    	for(var i=0; i<this.compras.length; i++)
+    	    		this.compras[i].fecha = Date.parse(this.compras[i].fecha);
+    	    	this.showloading=false;
+    	    }
+     	}.bind(this), function errorCallback(response){
+        	this.showloading=false;
+     	}
+    	);
+	};
+	
 	$http.post('/STransparenciaCompras', { action: 'getlist_entidades', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
 	    if(response.data.success){
 	    	this.compras_por_entidad = response.data.compras;
@@ -49,22 +64,29 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	    		this.chartData[0].push(this.compras_por_entidad[i].num_adjudicados);
 	    		this.chartData[1].push(this.compras_por_entidad[i].num_eventos - this.compras_por_entidad[i].num_adjudicados);
 	    	}
-	    	$http.post('/STransparenciaCompras', { action: 'getlist', subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
-	    	    if(response.data.success){
-	    	    	this.original_compras = response.data.compras;
-	    	    	this.compras = this.original_compras.length> 0 ? this.original_compras.slice(0) : [];
-	    	    	for(var i=0; i<this.compras.length; i++)
-	    	    		this.compras[i].fecha = Date.parse(this.compras[i].fecha);
-	    	    	this.showloading=false;
-	    	    }
-	     	}.bind(this), function errorCallback(response){
-	        	this.showloading=false;
-	     	}
-	    	);
+	    	this.getCompras();
 	    }
  	}.bind(this), function errorCallback(response){
     }
 	);
+	
+	this.getComprasList=function(entidad){
+		this.showloading=true;
+		$http.post('/STransparenciaCompras', { action: 'getlist_por_entidad', subprograma: $routeParams.subprograma, 
+			entidad: entidad,
+			t: (new Date()).getTime() }).then(function(response){
+    	    if(response.data.success){
+    	    	this.original_compras = response.data.compras;
+    	    	this.compras = this.original_compras.length> 0 ? this.original_compras.slice(0) : [];
+    	    	for(var i=0; i<this.compras.length; i++)
+    	    		this.compras[i].fecha = Date.parse(this.compras[i].fecha);
+    	    	this.showloading=false;
+    	    }
+     	}.bind(this), function errorCallback(response){
+        	this.showloading=false;
+     	}
+    	);
+	};
 
 	this.chartOptions= {
 			//scaleLabel: function(label){ return  label.value+' %'; },
@@ -104,4 +126,23 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	
 	
 });
+
+app.filter('myStrictFilter', function($filter){
+    return function(input, predicate){
+        return $filter('filter')(input, predicate, true);
+    }
+});
+
+app.filter('unique', function() {
+    return function (arr, field) {
+        var o = {}, i, l = arr.length, r = [];
+        for(i=0; i<l;i+=1) {
+            o[arr[i][field]] = arr[i];
+        }
+        for(i in o) {
+            r.push(o[i]);
+        }
+        return r;
+    };
+  })
 
