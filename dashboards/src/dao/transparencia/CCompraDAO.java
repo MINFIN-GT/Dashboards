@@ -50,7 +50,7 @@ public class CCompraDAO {
 							ret.add(compra);
 						}					
 					}else*/ 
-						pstm2 = CDatabase.getConnection().prepareStatement("select * from mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=?)");
+						pstm2 = CDatabase.getConnection().prepareStatement("select * from mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=?) order by fecha_publicacion");
 						pstm2.setInt(1, 94);
 						pstm2.setInt(2, subprograma);
 						rs2 = pstm2.executeQuery();
@@ -161,7 +161,7 @@ public static boolean crearCompra(CCompra compra) {
 						pstm2 = CDatabase.getConnection().prepareStatement("select entidad_compradora, entidad_compradora_nombre,count(*) num_eventos, " +
 								"sum( case when estatus_concurso=3 then 1 else 0 end) num_adjudicados, " + 
 								"sum( case when estatus_concurso=3 then monto else 0 end) total_adjudicado " + 
-								"from mv_evento_gc where estado_calamidad=? group by entidad_compradora, entidad_compradora_nombre");
+								"from mv_evento_gc where estado_calamidad=? group by entidad_compradora, entidad_compradora_nombre order by entidad_compradora_nombre");
 						pstm2.setString(1,rs.getString("estado_calamidad_guatecompras"));
 						rs2 = pstm2.executeQuery();
 						while (rs2.next()){

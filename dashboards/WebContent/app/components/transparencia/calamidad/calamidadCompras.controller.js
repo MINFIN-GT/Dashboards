@@ -1,5 +1,3 @@
-
-
 angular.module('calamidadComprasController',['dashboards','smart-table']);
 angular.module('calamidadComprasController').controller('ComprasCtrl', function($scope,$http,$routeParams,$rootScope,$filter){
 	
@@ -19,6 +17,8 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	this.chartLabels = [];
 	this.chartSeries = ['Adjudicados', 'En proceso'];
 	this.chartData = [];
+	
+	this.selected_entidad="";
 	
 	if($rootScope.titulo==null || $rootScope.titulo === undefined){
 		$http.post('/STransparenciaEstadosCalamidad', { action: 'getEstado',subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
@@ -71,8 +71,8 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	);
 	
 	this.getComprasList=function(entidad){
-		this.showloading=true;
-		$http.post('/STransparenciaCompras', { action: 'getlist_por_entidad', subprograma: $routeParams.subprograma, 
+		this.selected_entidad=entidad;
+		/*$http.post('/STransparenciaCompras', { action: 'getlist_por_entidad', subprograma: $routeParams.subprograma, 
 			entidad: entidad,
 			t: (new Date()).getTime() }).then(function(response){
     	    if(response.data.success){
@@ -85,7 +85,8 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
      	}.bind(this), function errorCallback(response){
         	this.showloading=false;
      	}
-    	);
+    	);*/
+		
 	};
 
 	this.chartOptions= {
@@ -122,18 +123,18 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
             hover: { animationDuration: 0 }
 	}
 	
+	this.resetFilters=function(){
+		this.selected_entidad="";
+	}
 	
 	
 	
-});
-
-app.filter('myStrictFilter', function($filter){
+	
+}).filter('myStrictFilter', function($filter){
     return function(input, predicate){
         return $filter('filter')(input, predicate, true);
     }
-});
-
-app.filter('unique', function() {
+}).filter('unique', function() {
     return function (arr, field) {
         var o = {}, i, l = arr.length, r = [];
         for(i=0; i<l;i+=1) {
@@ -144,5 +145,34 @@ app.filter('unique', function() {
         }
         return r;
     };
-  })
+  }).directive("mhSearch", ['stConfig', '$timeout','$parse', function (stConfig, $timeout, $parse) {
+	    /* Like st-search, but relies on the value of ng-model to trigger changes.
+	     * Usage:
+	     * <input type="text" placeholder="Search..." ng-model="myCtrl.searchParams.search" mh-search="search" />
+	     */
+	    return {
+	        require: ['^stTable', 'ngModel'],
+	        link: function(scope, element, attr, ctrls) {
+	            var tableCtrl = ctrls[0],
+	                modelCtrl = ctrls[1];
+	            var promise = null;
+	            var throttle = attr.stDelay || stConfig.search.delay;
+
+	            function triggerSearch() {
+	                var value = modelCtrl.$modelValue;
+
+	                if (promise !== null) {
+	                    $timeout.cancel(promise);
+	                }
+
+	                promise = $timeout(function () {
+	                    tableCtrl.search(value, attr.mhSearch || '');
+	                    promise = null;
+	                }, throttle);
+	            }
+
+	            scope.$watch(function () { return modelCtrl.$modelValue; }, triggerSearch);
+	        }
+	    };
+	}]);
 

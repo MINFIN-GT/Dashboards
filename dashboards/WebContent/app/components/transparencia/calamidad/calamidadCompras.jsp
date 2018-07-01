@@ -23,15 +23,15 @@
 						</tr>
 					</thead>
 					<tfoot>
-						<tr style="font-weight: bold; text-align: right; white-space: nowrap;">
-							<td ng-click="control.getCompras()">Totales</td>
+						<tr style="font-weight: bold; text-align: right; white-space: nowrap; cursor: pointer;" >
+							<td ng-click="control.getComprasList('')">Totales</td>
 							<td>{{ control.total_eventos }}</td>
 							<td>{{ control.total_adjudicados }}</td>
 							<td>Q {{ control.total_monto_adjudicado|number:2 }}</td>
 						</tr>
 					</tfoot>
 					<tbody style="font-size: 11px;">
-						<tr ng-repeat="row in control.compras_por_entidad" ng-click="control.getComprasList(row.id_entidad)" style="cursor: pointer;">
+						<tr ng-repeat="row in control.compras_por_entidad" ng-click="control.getComprasList(row.entidad)" style="cursor: pointer;">
 							<td>{{ row.entidad }}</td>
 							<td style="text-align: right;">{{ row.num_eventos }}</td>
 							<td style="text-align: right;">{{ row.num_adjudicados }}</td>
@@ -61,28 +61,28 @@
 							</tr>
 							<tr style="font-size: 10px;">
 								<th>
-					                <select st-search="entidad" style="max-width: 150px;">
+									<select mh-search="entidad" ng-model="control.selected_entidad" style="max-width: 150px; color: black;">
 					                    <option value="">Todas</option>
 					                    <option ng-repeat="row in control.original_compras | unique:'entidad'" value="{{row.entidad}}">{{row.entidad}}</option>
 					                </select>
 					            </th>
 					            <th>
-					                <select st-search="unidad"  style="max-width: 150px;">
+					                <select st-search="unidad" style="max-width: 150px; color: black;">
 					                    <option value="">Todas</option>
 					                    <option ng-repeat="row in control.original_compras | unique:'unidad'" value="{{row.unidad}}">{{row.unidad}}</option>
 					                </select>
 					            </th>
-								<th><input st-search="id" placeholder="NOG" class="input-sm form-control" type="search" /></th>
+								<th><input st-search="id" placeholder="NOG" class="input-sm form-control" type="search" style="font-size:10px; height:18px;" /></th>
 								<th></th>
 								<th></th>
 								<th>
-					                <select st-search="modalidad"  style="max-width: 150px;">
+					                <select st-search="modalidad" style="max-width: 150px; color: black;">
 					                    <option value="">Todas</option>
 					                    <option ng-repeat="row in control.original_compras | unique:'modalidad'" value="{{row.modalidad}}">{{row.modalidad}}</option>
 					                </select>
 					            </th>
 								<th>
-					                <select st-search="estado">
+					                <select st-search="estado" style="max-width: 150px; color: black;">
 					                    <option value="">Todos</option>
 					                    <option ng-repeat="row in control.original_compras | unique:'estado'" value="{{row.estado}}">{{row.estado}}</option>
 					                </select>
@@ -103,7 +103,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<div class="grid_loading" ng-hide="!control.showloading" style="position: relative;">
+					<div class="grid_loading" ng-hide="!control.showloading" style="position: relative; width: 100%; height: 100%;">
 			 			<div class="msg">
 			     			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
 				  			<br /><br />
