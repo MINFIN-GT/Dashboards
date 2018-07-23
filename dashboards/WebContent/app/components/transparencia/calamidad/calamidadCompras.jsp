@@ -11,7 +11,7 @@
 	</div>
 	
 	<div class="row" style="margin: 10px 0px 20px 0px;">
-		<uib-tabset active="active">
+		<uib-tabset active="control.tab_active">
 			<uib-tab index="0" heading="Por Entidad" select="control.view_total=false">
 				<table class="table table-striped">
 					<thead>

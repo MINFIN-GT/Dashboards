@@ -19,6 +19,7 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	this.chartData = [];
 	
 	this.selected_entidad="";
+	this.tab_active = 0;
 	
 	if($rootScope.titulo==null || $rootScope.titulo === undefined){
 		$http.post('/STransparenciaEstadosCalamidad', { action: 'getEstado',subprograma: $routeParams.subprograma, t: (new Date()).getTime() }).then(function(response){
@@ -72,6 +73,7 @@ angular.module('calamidadComprasController').controller('ComprasCtrl', function(
 	
 	this.getComprasList=function(entidad){
 		this.selected_entidad=entidad;
+		this.tab_active = 1;
 		/*$http.post('/STransparenciaCompras', { action: 'getlist_por_entidad', subprograma: $routeParams.subprograma, 
 			entidad: entidad,
 			t: (new Date()).getTime() }).then(function(response){
