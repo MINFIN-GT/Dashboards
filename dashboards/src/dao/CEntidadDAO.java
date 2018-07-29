@@ -71,7 +71,7 @@ public class CEntidadDAO {
 	
 	}
 	
-	public static Double[] getPronosticos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+	public static Double[] getPronosticosEgresos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
@@ -105,7 +105,7 @@ public class CEntidadDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static Double[] getHistoricos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int numero) {
+	public static Double[] getPronosticosHistoricosEgresos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int numero) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
 		date = date.minusMonths(numero);

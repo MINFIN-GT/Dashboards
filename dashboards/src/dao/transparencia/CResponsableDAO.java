@@ -1,5 +1,6 @@
 package dao.transparencia;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -15,9 +16,11 @@ import utilities.CLogger;
 public class CResponsableDAO {
 	public static CResponsable crearResponsable(String nombre, String correo, String telefono,String usuario){
 		CResponsable responsable=null;
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("INSERT INTO "
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("INSERT INTO "
 						+ "seg_responsable(nombre, correo, telefono, fecha_creacion, usuario_creacion) "
 						+ "VALUES (?,?,?,?,?) " , Statement.RETURN_GENERATED_KEYS);
 				pstm.setString(1, nombre);
@@ -31,12 +34,12 @@ public class CResponsableDAO {
 				    responsable = new CResponsable(rs.getLong(1), nombre, correo, telefono);
 				}
 			}
-			catch(Exception e){
-				CLogger.write("1", CResponsableDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CResponsableDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return responsable
 				;		
@@ -44,9 +47,11 @@ public class CResponsableDAO {
 	
 	public static CResponsable getResponsable(Integer id){
 		CResponsable responsable=null;
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM "
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT * FROM "
 						+ "seg_responsable WHERE id=?");
 				pstm.setInt(1, id);
 				ResultSet rs = pstm.executeQuery();
@@ -54,12 +59,12 @@ public class CResponsableDAO {
 				    responsable = new CResponsable(id, rs.getString("nombre"), rs.getString("correo"), rs.getString("telefono"));
 				}
 			}
-			catch(Exception e){
-				CLogger.write("2", CResponsableDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CResponsableDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return responsable;
 	}

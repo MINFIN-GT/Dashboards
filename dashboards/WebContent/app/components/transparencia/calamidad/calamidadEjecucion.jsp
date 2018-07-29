@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <div ng-controller="calamidadEjecucionController as control" class="maincontainer" id="title" class="all_page">
-	<h3>Tablero de Seguimiento a Estados de {{ control.tipo }} - {{ control.titulo }}</h3>
+	<h3>Tablero de Seguimiento a Estado de {{ control.tipo }} - {{ control.titulo }}</h3>
 	<br/>
 	<div><h4>Indicadores de Ejecución</h4></div>
 	<div class="row panel panel-default" style="margin: 10px 0px 20px 0px;">
@@ -18,7 +18,7 @@
 					</div>
 				</div>
 	</div>
-	<div><h4>Presupuesto</h4></div>
+	<div><h4>Presupuesto en Programa 94 - {{ control.titulo }} </h4></div>
 	<div class="row">
 		<div>
 			<div style="padding: 15px;">
@@ -162,6 +162,79 @@
 	
 				</div>
 			
+			</div>
+		</div>
+	</div>
+	<div><h4>Presupuesto ejecutado en otros programas que ayudan al Estado de {{ control.tipo }} - {{ control.titulo }}</h4></div>
+	<div class="row">
+		<div>
+			<div style="padding: 15px;">
+				<div class="panel panel-default">
+					<div>
+						<div>
+							<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(1, false)" ng-disabled="control.showloading_otros"><b>Entidades Involucradas</b></a> 
+							<span ng-hide="control.entidad_otros_level<2">/ 
+								<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(2, false)" ng-disabled="control.showloading_otros">{{ control.entidad_otros_nombre }}</a>
+							</span>
+							<span ng-hide="control.entidad_otros_level<3">/ 
+								<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(3, false)" ng-disabled="control.showloading_otros">{{ control.entidad_otros_unidad_ejecutora_nombre }}</a>
+							</span>
+							<span ng-hide="control.entidad_otros_level<4">/ 
+								<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(4, false)" ng-disabled="control.showloading_otros">{{ control.entidad_otros_programa_nombre }}</a>
+							</span>
+							<span ng-hide="control.entidad_otros_level<5">/ 
+								<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(5, false)" ng-disabled="control.showloading_otros">{{ control.entidad_otros_subprograma_nombre }}</a>
+							</span>
+							<span ng-hide="control.entidad_otros_level<6">/ 
+								<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(6, false)" ng-disabled="control.showloading_otros">{{ control.entidad_otros_proyecto_nombre }}</a>
+							</span>
+							<span ng-hide="control.entidad_otros_level<7">/ 
+								<a href class="btn btn-default no-border" ng-click="control.entidad_otros_goLevel(7, false)" ng-disabled="control.showloading_otros">{{ control.entidad_otros_actividad_nombre }}</a>
+							</span>
+							<span ng-hide="control.entidad_otros_level<8">/ &nbsp;{{ control.entidad_otros_renglon_nombre }}</span>
+						</div>
+					</div> 
+			  		<div style="position: relative;">
+						<table class="table table-striped" st-table="control.entidad_otros_ejecucion_data" 
+							   st-safe-src="control.entidad_otros_ejecucion_data_original" >
+							 <thead>
+								<tr>
+									<th></th>
+									<th st-sort="codigo">Código</th>
+									<th st-sort="nombre">Nombre</th>
+									<th st-sort="compromiso" style="text-align: right; ">Comprometido</th>
+									<th st-sort="ejecutado" style="text-align: right;">Ejecutado</th>
+								</tr>
+							</thead>
+							<tfoot>
+							    <tr style="font-weight: bold;">
+							    	<td/>
+							    	<td/>
+							    	<td class="text-right"><strong>Totales</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_otros_ejecucion_totales[0] | currency:"Q&nbsp;":2  }}</strong></td>
+									<td class="text-right"><strong>{{ control.entidad_otros_ejecucion_totales[1] | currency:"Q&nbsp;":2  }}</strong></td>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr ng-repeat="data in control.entidad_otros_ejecucion_data">
+									<td><button ng-show="control.entidad_otros_level<7" class="btn btn-primary" ng-click="control.entidad_otros_clickRow(data.codigo,data.nombre)"></button></td>
+									<td class="text-nowrap"><strong>{{data.codigo}}</strong></td>
+									<td title="{{data.nombre}}" style="max-width: 350px; overflow: hidden;" class="text-nowrap"><strong>{{data.nombre}}</strong></td>
+									<td class="text-right">{{ data.compromiso | currency:"Q&nbsp;":2 }}</td>
+									<td class="text-right">{{ data.ejecutado | currency:"Q&nbsp;":2 }}</td>
+								</tr>
+							</tbody>
+						</table>	
+						<div class="grid_loading" ng-hide="!control.entidad_otros_showloading">
+				  			<div class="msg">
+				      			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  			<br /><br />
+						  			<b>Cargando, por favor espere...</b>
+					  			</span>
+							</div>
+			  			</div>					
+					</div>
+				</div >
 			</div>
 		</div>
 	</div>

@@ -147,16 +147,16 @@ public class CDatabase {
 		}
 	}
 	
-	public static boolean connectEstadosExcepcion(){
+	public static Connection connectEstadosExcepcion(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 			connection_estados_excepcion = DriverManager.getConnection(String.join("", "jdbc:mysql://",String.valueOf(host),":", String.valueOf(port),"/",schema_estados_excepcion,"?zeroDateTimeBehavior=convertToNull"), user, password);
-			return !connection_estados_excepcion.isClosed();
+			return connection_estados_excepcion;
 		}
 		catch(Exception e){
 			CLogger.write("8", CDatabase.class, e);
 		}
-		return false;
+		return null;
 	}
 	
 	public static void close_estados_excepcion(){

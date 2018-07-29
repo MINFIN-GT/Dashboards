@@ -10,6 +10,7 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			
 			me.showloading = false;
 			me.anio = moment().year();
+			me.mes = moment().month();
 			
 			me.ingresos = [];
 			me.egresos = [];
@@ -72,11 +73,11 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			                },
 			                scaleLabel: {
                                 display: true,
-                                labelString: 'Quetzales'
+                                labelString: 'Millones de Quetzales'
                             },
                             ticks:{
 								callback: function(value){
-									return numeral(value).format('$ 0,0');
+									return numeral(value/1000000).format('$ 0,0');
 								}
 							}
 		                }]
@@ -123,7 +124,7 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			];
 			
 			me.loadFlujo=function(){
-				$http.post('/SFlujoCaja',  { action: 'getPronosticosFlujo', ejercicio: me.anio, ejercicio: me.anio  }).then(function(response){
+				$http.post('/SFlujoCaja',  { action: 'getPronosticosFlujo', ejercicio: me.anio  }).then(function(response){
 				    if(response.data.success){
 				    	var pronosticos_egresos = response.data.pronosticos_egresos;
 				    	if(pronosticos_egresos!=null && pronosticos_egresos.length<12){
@@ -150,8 +151,8 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 				    	me.total_ingresos=0.0;
 				    	me.total_egresos=0.0;
 				    	for(var i=0; i<12; i++){
-				    		var egreso_mes = historicos_egresos[i]!=null ? historicos_egresos[i] : ( pronosticos_egresos[i]!=null ? pronosticos_egresos[i] : 0);
-				    		var ingreso_mes = historicos_ingresos[i]!=null ? historicos_ingresos[i] : ( pronosticos_ingresos[i]!=null ? pronosticos_ingresos[i] : 0);
+				    		var egreso_mes = historicos_egresos[i+1]!=null ? historicos_egresos[i+1] : ( pronosticos_egresos[i]!=null ? pronosticos_egresos[i] : 0);
+				    		var ingreso_mes = historicos_ingresos[i+1]!=null ? historicos_ingresos[i+1] : ( pronosticos_ingresos[i]!=null ? pronosticos_ingresos[i] : 0);
 				    		saldo = ingreso_mes-egreso_mes+saldo;
 				    		me.caja.push(saldo);
 				    		me.ingresos.push(ingreso_mes);
@@ -159,12 +160,13 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 				    		me.total_ingresos+=ingreso_mes;
 				    		me.total_egresos+=egreso_mes;
 				    	}
-				    	
 				    	me.chartData=[];
+				    	pronosticos_ingresos[me.mes-1] = historicos_ingresos[me.mes];
+				    	pronosticos_egresos[me.mes-1] = historicos_egresos[me.mes];
 				    	me.chartData.push(me.caja);
-				    	me.chartData.push(historicos_ingresos);
+				    	me.chartData.push(historicos_ingresos.slice(1));
 				    	me.chartData.push(pronosticos_ingresos);
-				    	me.chartData.push(historicos_egresos);
+				    	me.chartData.push(historicos_egresos.slice(1));
 				    	me.chartData.push(pronosticos_egresos);
 				    	me.chartLoaded=true;
 				    }

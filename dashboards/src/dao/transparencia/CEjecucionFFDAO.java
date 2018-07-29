@@ -15,9 +15,10 @@ public class CEjecucionFFDAO {
 	
 	public static ArrayList<CEjecucionFF> getEntidadesEjecucion(int nivel, Integer entidad, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
 		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
-		if(CDatabase.connectEstadosExcepcion()){
-			Connection conn = CDatabase.getConnection_estados_excepcion();
-			try{
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select fn.entidad, fn.entidad_nombre "+
@@ -59,21 +60,22 @@ public class CEjecucionFFDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CEjecucionFFDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CEjecucionFFDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return datos.size()>0 ? datos : null;
 	}
 				
 	public static ArrayList<CEjecucionFF> getProgramasEjecucion(int nivel, Integer entidad, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
 		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
-		if(CDatabase.connectEstadosExcepcion()){
-			Connection conn = CDatabase.getConnection_estados_excepcion();
-			try{
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select fn.programa, fn.programa_nombre "+
@@ -112,13 +114,14 @@ public class CEjecucionFFDAO {
 				}
 				results.close();
 				pstm1.close();
+			
 			}
-			catch(Exception e){
-				CLogger.write("2", CEjecucionFFDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CEjecucionFFDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return datos.size()>0 ? datos : null;
 	}
@@ -128,9 +131,10 @@ public class CEjecucionFFDAO {
 		double ret = 0.0;
 		double vigente = 0.0;
 		double ejecutado = 0.0;
+		Connection conn = null;
 		try{
-			if(CDatabase.connectEstadosExcepcion()){
-				Connection conn = CDatabase.getConnection_estados_excepcion();
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(compromiso) compromiso, sum(ejecutado) ejecutado, sum(meta) meta, "
@@ -156,9 +160,10 @@ public class CEjecucionFFDAO {
 	
 	public static double ejecucionFisica(int programa, int subprograma){
 		double ret = 0.0;
+		Connection conn = null;
 		try{
-			if(CDatabase.connectEstadosExcepcion()){
-				Connection conn = CDatabase.getConnection_estados_excepcion();
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente, sum(compromiso) compromiso, sum(ejecutado) ejecutado, sum(meta) meta, "
@@ -183,9 +188,10 @@ public class CEjecucionFFDAO {
 	public static double ejecucionFinancieraMonto(int programa, int subprograma){
 		double ret = 0.0;
 		double ejecutado = 0.0;
+		Connection conn = null;
 		try{
-			if(CDatabase.connectEstadosExcepcion()){
-				Connection conn = CDatabase.getConnection_estados_excepcion();
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(ejecutado) ejecutado "
@@ -210,9 +216,10 @@ public class CEjecucionFFDAO {
 	public static double vigenteMonto(int programa, int subprograma){
 		double ret = 0.0;
 		double ejecutado = 0.0;
+		Connection conn = null;
 		try{
-			if(CDatabase.connectEstadosExcepcion()){
-				Connection conn = CDatabase.getConnection_estados_excepcion();
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select sum(vigente) vigente "
@@ -232,5 +239,68 @@ public class CEjecucionFFDAO {
 		}
 		ret = ejecutado;
 		return ret;
+	}
+	
+	public static ArrayList<CEjecucionFF> getEntidadesOtrosEjecucion(int nivel, Integer entidad, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
+		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+			
+				DateTime now = new DateTime();
+				PreparedStatement  pstm1;
+				pstm1 = conn.prepareStatement("select fn.entidad, fn.entidad_nombre "+
+							( nivel > 1 ? ", fn.unidad_ejecutora, fn.unidad_ejecutora_nombre " : "" )+
+							( nivel > 2 ? ", fn.programa, fn.programa_nombre " : "" )+
+							( nivel > 3 ? ", fn.subprograma, fn.subprograma_nombre " : "" )+
+							( nivel > 4 ? ", fn.proyecto, fn.proyecto_nombre " : "" )+
+							( nivel > 5 ? ", fn.actividad + fn.obra actividad, fn.actividad_nombre " : "" )+
+							( nivel > 6 ? ", fn.renglon, fn.renglon_nombre " : "" )+
+							", sum(fn.compromiso) compromiso, sum(fn.ejecutado) ejecutado "+
+							"from calamidad_ejecucion_otros_programas fn where fn.ejercicio <= "+ now.getYear() + " " +
+							( nivel > 1 ? "and entidad = "+entidad+" " : "" )+
+							( nivel > 2 ? "and unidad_ejecutora = "+unidad_ejecutora+" " : "")+
+							( nivel > 3 ? "and programa = " +programa+" " : "" )+
+							( nivel > 4 ? "and subprograma = " +subprograma+" " : "" )+
+							( nivel > 5 ? "and proyecto = "+proyecto+" " : "")+
+							( nivel > 6 ? "and ( (actividad = "+actividad+" and obra = 0) or (actividad=0 and obra="+actividad+")) " : "")+
+							"group by fn.entidad, fn.entidad_nombre "+
+							( nivel > 1 ? ", fn.unidad_ejecutora, fn.unidad_ejecutora_nombre ": "" )+
+							( nivel > 2 ? ", fn.programa, fn.programa_nombre ":"")+
+							( nivel > 3 ? ", fn.subprograma, fn.subprograma_nombre ":"")+
+							( nivel > 4 ? ", fn.proyecto, fn.proyecto_nombre ":"")+
+							( nivel > 5 ? ", fn.actividad, fn.obra, fn.actividad_nombre ":"")+
+							( nivel > 6 ? ", fn.renglon, fn.renglon_nombre ":""));
+				ResultSet results = pstm1.executeQuery();	
+				Integer codigo = null;
+				String  nombre = "";
+				while (results.next()){
+				switch(nivel){
+					case 1: nombre = results.getString("entidad_nombre"); codigo=results.getInt("entidad"); break;
+					case 2: nombre = results.getString("unidad_ejecutora_nombre"); codigo=results.getInt("unidad_ejecutora"); break;
+					case 3: nombre = results.getString("programa_nombre"); codigo=results.getInt("programa"); break;
+					case 4: nombre = results.getString("subprograma_nombre"); codigo=results.getInt("subprograma"); break;
+					case 5: nombre = results.getString("proyecto_nombre"); codigo=results.getInt("proyecto"); break;
+					case 6: nombre = results.getString("actividad_nombre"); codigo=results.getInt("actividad"); break;
+					case 7: nombre = results.getString("renglon_nombre"); codigo=results.getInt("renglon"); break;
+					}
+				CEjecucionFF dato = new CEjecucionFF(codigo,nombre
+						, results.getDouble("ejecutado"), 0.0
+						, results.getDouble("compromiso")
+						, 0.0, 0.0, 0.0, 0.0);
+					datos.add(dato);
+				}
+				results.close();
+				pstm1.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("6", CEjecucionFFDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return datos.size()>0 ? datos : null;
 	}
 }

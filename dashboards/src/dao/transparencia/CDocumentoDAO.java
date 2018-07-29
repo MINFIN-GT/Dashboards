@@ -1,5 +1,6 @@
 package dao.transparencia;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -12,9 +13,11 @@ public class CDocumentoDAO {
 	
 	public static boolean crearDocumento(CDocumento documento){
 		boolean ret=false;
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("INSERT INTO seg_documento"
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("INSERT INTO seg_documento"
 						+ "(id_actividad,nombre, titulo,ruta,tipo,usuario_creacion,fecha_creacion, subprograma) "
 						+ "values (?,?,?,?,?,?,?,?)");
 				if (documento.getId_actividad()>0)
@@ -30,32 +33,35 @@ public class CDocumentoDAO {
 				pstm.setInt(8, documento.getSubprograma());
 				if (pstm.executeUpdate()>0)
 					ret=true;
+			
 			}
-			catch(Exception e){
-				CLogger.write("1", CDocumentoDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CDocumentoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;		
 	}
 	
 	public static boolean deleteDocumento(int id){
 		boolean ret=false;
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("DELETE FROM seg_documento "
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("DELETE FROM seg_documento "
 						+ "WHERE id =  " + id);
 				if (pstm.executeUpdate()>0)
 					ret=true;
 			}
-			catch(Exception e){
-				CLogger.write("2", CDocumentoDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CDocumentoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;		
 	}
@@ -63,29 +69,34 @@ public class CDocumentoDAO {
 	
 	public static Integer numDocumentos(int subprograma){
 		Integer ret=0;
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("select count(*) from seg_documento WHERE subprograma=? ORDER BY id");
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("select count(*) from seg_documento WHERE subprograma=? ORDER BY id");
 				pstm.setInt(1, subprograma);
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
 					ret=rs.getInt(1);
+			
 			}
-			catch(Exception e){
-				CLogger.write("3", CDocumentoDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CDocumentoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;		
 	}
 	
 	public static ArrayList<CDocumento> getDocumentosActividad(Integer id_actividad){
 		ArrayList<CDocumento> ret=new ArrayList<CDocumento>();
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_documento WHERE id_actividad=? ");
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT * FROM seg_documento WHERE id_actividad=? ");
 				pstm.setInt(1, id_actividad);
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
@@ -94,22 +105,25 @@ public class CDocumentoDAO {
 							rs.getInt("subprograma"));
 					ret.add(documento);
 				}
+			
 			}
-			catch(Exception e){
-				CLogger.write("4", CDocumentoDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("4", CDocumentoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;		
 	}
 
 	public static ArrayList<CDocumento> getDocumentos(int id, int subprograma) {
 		ArrayList<CDocumento> ret =new ArrayList<CDocumento>();
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("select * from seg_documento where subprograma=? "
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("select * from seg_documento where subprograma=? "
 						+ (id>0? "and id_actividad="+id : "" ) 
 						+ " order by fecha_creacion ");
 				pstm.setInt(1, subprograma);
@@ -120,22 +134,24 @@ public class CDocumentoDAO {
 							rs.getInt("subprograma"));
 					ret.add(documento);
 				}
-			}
-			catch(Exception e){
-				CLogger.write("5", CDocumentoDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		}
+		catch(Exception e){
+			CLogger.write("5", CDocumentoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
 
 	public static CDocumento getDocumento(int id_documento) {
 		CDocumento ret = null;
-		if(CDatabase.connectEstadosExcepcion()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection_estados_excepcion().prepareStatement("SELECT * FROM seg_documento WHERE id = ?");
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT * FROM seg_documento WHERE id = ?");
 				pstm.setInt(1,id_documento);
 				ResultSet rs=pstm.executeQuery();
 				if (rs.next()){
@@ -144,12 +160,12 @@ public class CDocumentoDAO {
 							rs.getInt("subprograma"));
 				}
 			}
-			catch(Exception e){
-				CLogger.write("6", CDocumentoDAO.class, e);
-			}
-			finally{
-				CDatabase.close_estados_excepcion();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("6", CDocumentoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;
 	}

@@ -134,8 +134,8 @@ public class SFlujoCaja extends HttpServlet {
 			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
 			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
-			Double[] pronosticos = CEntidadDAO.getPronosticos(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
-			Double[] historicos = CEntidadDAO.getHistoricos(ejercicio, mes, entidad,unidad_ejecutora, 12);
+			Double[] pronosticos = CEntidadDAO.getPronosticosEgresos(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
+			Double[] historicos = CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, mes, entidad,unidad_ejecutora, 12);
 			Double[][] data_historia = CEntidadDAO.getTodaHistoria(entidad,unidad_ejecutora);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
 			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
@@ -147,17 +147,17 @@ public class SFlujoCaja extends HttpServlet {
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
 			DateTime now = DateTime.now();
 			int mes = (ejercicio < now.getYear()) ? 1 : now.getMonthOfYear();
-			Double[] pronosticos_egresos = CEntidadDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getHistoricos(ejercicio, 1, 0, 0, (ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
-			//Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			//Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, 1, 0, 0,(ejercicio<now.getYear() ? 12 : mes + 1)) : new Double[0];
+			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, 1, 0, 0, (ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
+			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes, null, null, 0,(ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, 1, null, null,(ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
 			String response_pronosticos_egresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_egresos);
 			String response_historicos_egresos = new GsonBuilder().serializeNulls().create().toJson(historicos_egresos);
-			//String response_pronosticos_ingresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_ingresos);
-			//String response_historicos_ingresos = new GsonBuilder().serializeNulls().create().toJson(historicos_ingresos);
-			//response_text = String.join("", "\"pronosticos_egresos\":",response_pronosticos_egresos,", \"historicos_egresos\":", response_historicos_egresos,
-			//		",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos);
-	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+			String response_pronosticos_ingresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_ingresos);
+			String response_historicos_ingresos = new GsonBuilder().serializeNulls().create().toJson(historicos_ingresos);
+			response_text = String.join("", "\"pronosticos_egresos\":",response_pronosticos_egresos,", \"historicos_egresos\":", response_historicos_egresos,
+					",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos);
+			response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
 		else if(action.equals("getRecursosTree")){
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();

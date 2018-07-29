@@ -48,6 +48,20 @@ angular.module('calamidadEjecucionController',['dashboards','smart-table']).cont
 			this.entidad_renglon_nombre="";
 			this.entidad_renglon=null;
 			
+			this.showloading_otros = false;
+			this.entidad_otros_level = 1;
+			this.entidad_otros_nombre="";
+			this.entidad_otros_unidad_ejecutora_nombre="";
+			this.entidad_otros_programa_nombre="";
+			this.entidad_otros_subprograma_nombre="";
+			this.entidad_otros_proyecto_nombre="";
+			this.entidad_otros_actividad_nombre="";
+			this.entidad_otros_renglon_nombre="";
+			this.entidad_otros_ejecucion_data;
+			this.entidad_otros_ejecucion_data_original;
+			this.entidad_otros_ejecucion_totales=[];
+			this.entidad_otros_showloading=false;
+			
 			this.programa = this.entidad_programa;
 			this.programa_subprograma = this.entidad_subprograma;
 			this.programa_proyecto=null;
@@ -146,6 +160,73 @@ angular.module('calamidadEjecucionController',['dashboards','smart-table']).cont
 			 	});		
 			};
 			
+			this.entidad_otros_goLevel=function(entidad_level){			
+				this.entidad_otros_level = entidad_level;
+				switch(this.entidad_otros_level){
+					case 1: this.entidad_otros=null; this.entidad_otros_unidad_ejecutora=null; this.entidad_otros_programa=null; this.entidad_otros_subprograma=null; this.entidad_otros_proyecto=null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null; break;
+					case 2: this.entidad_otros_unidad_ejecutora=null; this.entidad_otros_programa=null; this.entidad_otros_subprograma=null; this.entidad_otros_proyecto=null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null; break;
+					case 3: this.entidad_otros_programa=null; this.entidad_otros_subprograma=null; this.entidad_otros_proyecto=null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null; break;
+					case 4: this.entidad_otros_subprograma=null; this.entidad_otros_proyecto=null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null;break;
+					case 5: this.entidad_otros_proyecto=null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null; break;
+					case 6: this.entidad_otros_actividad=null; this.entidad_otros_renglon=null; break;
+					case 7: this.entidad_otros_renglon=null;
+				}
+				var data = { level:this.entidad_otros_level, ejercicio:current_year, entidad: this.entidad_otros, unidad_ejecutora: this.entidad_otros_unidad_ejecutora, 
+						programa:this.entidad_otros_programa, subprograma:this.entidad_otros_subprograma,
+						proyecto:this.entidad_otros_proyecto, actividad:this.entidad_otros_actividad, renglon:this.entidad_otros_renglon};				
+    			this.entidad_otros_showloading = true;
+				$http.post('/SEjecucionFOtros', data).then(function(response){
+	    			if(response.data.success){
+	    				this.entidad_otros_ejecucion_data_original = response.data.datos;
+	    				this.entidad_otros_ejecucion_data = this.entidad_otros_ejecucion_data_original.length > 0 ? this.entidad_otros_ejecucion_data_original : [];
+	    				this.entidad_otros_ejecucion_totales[0] = 0;
+    					this.entidad_otros_ejecucion_totales[1] = 0;
+    					for (i=0; i<this.entidad_otros_ejecucion_data.length; i++){
+	    					this.entidad_otros_ejecucion_totales[0] += this.entidad_otros_ejecucion_data[i].compromiso;
+	    					this.entidad_otros_ejecucion_totales[1] += this.entidad_otros_ejecucion_data[i].ejecutado;
+	    				}
+	    				
+	    				if (this.entidad_otros_level==1){
+	    					this.entidad_otros_ejecutado=this.entidad_ejecucion_totales[0];
+	    					this.entidad_otros_compromiso=this.entidad_ejecucion_totales[1];
+	    				}
+	    			}
+	    			
+	    			this.entidad_otros_showloading = false;		
+	    		}.bind(this), function errorCallback(response){	 		
+			 	});		
+			};
+			
+			this.entidad_otros_clickRow = function(codigo, nombre){
+				switch(this.entidad_otros_level){
+					case 1: this.entidad_otros = codigo; this.entidad_otros_nombre = nombre;
+							this.entidad_otros_unidad_ejecutora=null; this.entidad_otros_programa=null; this.entidad_otros_subprograma=null;
+							this.entidad_otros_proyecto = null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null;
+							break;
+					case 2: this.entidad_otros_unidad_ejecutora = codigo; this.entidad_otros_unidad_ejecutora_nombre = nombre; 
+							this.entidad_otros_programa=null; this.entidad_otros_subprograma=null;
+							this.entidad_otros_proyecto = null; this.entidad_otros_actividad=null; this.entidad_otros_renglon=null;
+							break;
+					case 3: this.entidad_otros_programa=codigo; this.entidad_otros_programa_nombre=nombre;
+							this.entidad_otros_subprograma=null; this.entidad_otros_proyecto=null; 
+							this.entidad_otros_actividad=null;this.entidad_otros_renglon=null;
+							break;
+					case 4: this.entidad_otros_subprograma=codigo; this.entidad_otros_subprograma_nombre=nombre;
+							this.entidad_otros_proyecto=null; this.entidad_otros_proyecto_nombre = null;
+							this.entidad_otros_actividad=null;this.entidad_otros_renglon=null;
+							break;
+					case 5: this.entidad_otros_proyecto=codigo; this.entidad_otros_proyecto_nombre = nombre;
+							this.entidad_otros_actividad=null;this.entidad_otros_renglon=null;break;		
+					case 6: this.entidad_otros_actividad=codigo; this.entidad_otros_actividad_nombre = nombre; 
+							this.entidad_otros_renglon=null;
+							break;	
+					case 7: this.entidad_otros_renglon=codigo; this.entidad_otros_renglon_nombre=nombre;
+							break;
+				}
+				this.entidad_otros_level = this.entidad_otros_level<7 ? this.entidad_otros_level+1 : this.entidad_otros_level;
+				this.entidad_otros_goLevel(this.entidad_otros_level);
+			};
+			
 			//////
 			
 			this.programa_clickRow = function(codigo, nombre){
@@ -212,6 +293,7 @@ angular.module('calamidadEjecucionController',['dashboards','smart-table']).cont
 			
 			this.entidad_goLevel(1);
 			this.programa_goLevel(1);
+			this.entidad_otros_goLevel(1);
 
 			this.FunCall=function(gauge, val, title){
 				var g = new JustGage({

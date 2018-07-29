@@ -82,13 +82,15 @@ public class CRecursoDAO {
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
 					srecursosIds+=","+recursosIds[i];
 				}
-				for (Map.Entry<String, Integer[]> entry : auxiliaresIds.entrySet()) {
-					sauxiliaresIds+= " OR (recurso="+entry.getKey().substring(1)+" AND auxiliar IN (";
-					String auxiliares = "";
-					for(int i=0; i<entry.getValue().length;i++){
-						auxiliares += ","+entry.getValue()[i];
+				if(auxiliaresIds!=null) {
+					for (Map.Entry<String, Integer[]> entry : auxiliaresIds.entrySet()) {
+						sauxiliaresIds+= " OR (recurso="+entry.getKey().substring(1)+" AND auxiliar IN (";
+						String auxiliares = "";
+						for(int i=0; i<entry.getValue().length;i++){
+							auxiliares += ","+entry.getValue()[i];
+						}
+						sauxiliaresIds+= (auxiliares.length()>0) ? auxiliares.substring(1)+")) " : ")";
 					}
-					sauxiliaresIds+= (auxiliares.length()>0) ? auxiliares.substring(1)+")) " : ")";
 				}
 				PreparedStatement pstm1=null;
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_ingreso_recurso_auxiliar "
@@ -97,6 +99,7 @@ public class CRecursoDAO {
 							(srecursosIds.length()>0 ? "recurso IN ("+srecursosIds.substring(1)+")" : "") + 
 							(srecursosIds.length()>0 ? sauxiliaresIds  : (sauxiliaresIds.length()>0 ? sauxiliaresIds.substring(3) : "")) + 
 							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " ) "  : "") +
+							(recursosIds==null && auxiliaresIds==null ? " AND auxiliar>0 " : "") +
 							" AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
 					pstm1.setInt(1, ejercicio);
 					pstm1.setInt(2, mes);
@@ -132,13 +135,15 @@ public class CRecursoDAO {
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
 					srecursosIds+=","+recursosIds[i];
 				}
-				for (Map.Entry<String, Integer[]> entry : auxiliaresIds.entrySet()) {
-					sauxiliaresIds+= " OR (recurso="+entry.getKey().substring(1)+" AND auxiliar IN (";
-					String auxiliares = "";
-					for(int i=0; i<entry.getValue().length;i++){
-						auxiliares += ","+entry.getValue()[i];
+				if(auxiliaresIds!=null) {
+					for (Map.Entry<String, Integer[]> entry : auxiliaresIds.entrySet()) {
+						sauxiliaresIds+= " OR (recurso="+entry.getKey().substring(1)+" AND auxiliar IN (";
+						String auxiliares = "";
+						for(int i=0; i<entry.getValue().length;i++){
+							auxiliares += ","+entry.getValue()[i];
+						}
+						sauxiliaresIds+= (auxiliares.length()>0) ? auxiliares.substring(1)+")) " : ")";
 					}
-					sauxiliaresIds+= (auxiliares.length()>0) ? auxiliares.substring(1)+")) " : ")";
 				}
 				String query = "SELECT ejercicio, sum(m1) m1, sum(m2) m2,sum(m3) m3,sum(m4) m4, sum(m5) m5, sum(m6) m6, sum(m7) m7, sum(m8) m8, sum(m9) m9, "
 							+ "sum(m10) m10, sum(m11) m11, sum(m12) m12 "
