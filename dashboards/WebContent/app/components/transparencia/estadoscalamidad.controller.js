@@ -3,8 +3,8 @@
  */
 
 
-angular.module('estadoscalamidadController',['dashboards']).controller('estadoscalamidadController',['$scope','$routeParams','$http','uiGmapGoogleMapApi','$location',
-	   function($scope,$routeParams,$http,uiGmapGoogleMapApi,$location){
+angular.module('estadoscalamidadController',['dashboards']).controller('estadoscalamidadController',['$scope','$routeParams','$http','$location',
+	   function($scope,$routeParams,$http,$location){
 	
 	this.estadoscalamidad = [];
 	

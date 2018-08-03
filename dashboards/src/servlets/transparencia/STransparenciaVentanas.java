@@ -38,6 +38,7 @@ public class STransparenciaVentanas extends HttpServlet {
     	int actividades;
     	int documentos;
     	int compras;
+    	int compras_fuera;
     	int donaciones;
     	double ejecucion_financiera;
     	double ejecucion_fisica;
@@ -90,6 +91,7 @@ public class STransparenciaVentanas extends HttpServlet {
 		results.actividades = CActividadDAO.numActividades(subprograma);
 		results.documentos = CDocumentoDAO.numDocumentos(subprograma);	
 		results.compras = CCompraDAO.numCompras(subprograma);
+		results.compras_fuera = CCompraDAO.numComprasFuera(subprograma);
 		results.donaciones = CDonacionDAO.numDonaciones(subprograma);
 		results.ejecucion_financiera = CEjecucionFFDAO.ejecucionFinanciera(94,subprograma);
 		results.ejecucion_fisica = CEjecucionFFDAO.ejecucionFisica(94,subprograma);

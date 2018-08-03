@@ -303,4 +303,83 @@ public class CEjecucionFFDAO {
 		}
 		return datos.size()>0 ? datos : null;
 	}
+	
+	public static ArrayList<CEjecucionFF> getGeograficosEjecucion(Integer programa,Integer subprograma){
+		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement  pstm1;
+				pstm1 = conn.prepareStatement("select * " + 
+						"from ( " + 
+						"select geografico, geografico_nombre, sum(vigente) vigente, sum(compromiso) compromiso, sum(ejecutado) ejecutado " + 
+						"from calamidad_ejecucion " + 
+						"where programa = ? and subprograma = ? " + 
+						"group by geografico, geografico_nombre " + 
+						") t1 " + 
+						"where ejecutado>0 OR vigente>0 OR compromiso>0 " + 
+						"order by geografico_nombre");
+				pstm1.setInt(1, programa);
+				pstm1.setInt(2, subprograma);
+				ResultSet results = pstm1.executeQuery();	
+				while (results.next()){
+					CEjecucionFF dato = new CEjecucionFF(results.getInt("geografico"),results.getString("geografico_nombre")
+						, results.getDouble("ejecutado"), results.getDouble("vigente")
+						, results.getDouble("compromiso")
+						, 0.0, 0.0, 0.0, 0.0);
+					datos.add(dato);
+				}
+				results.close();
+				pstm1.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("7", CEjecucionFFDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return datos.size()>0 ? datos : null;
+	}
+	
+	public static ArrayList<CEjecucionFF> getGeograficosEjecucionOtros(Integer programa,Integer subprograma){
+		final ArrayList<CEjecucionFF> datos=new ArrayList<CEjecucionFF>();
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement  pstm1;
+				pstm1 = conn.prepareStatement("select * " + 
+						"from ( " + 
+						"select geografico, geografico_nombre, sum(compromiso) compromiso, sum(ejecutado) ejecutado " + 
+						"from calamidad_ejecucion_otros_programas co, estado_de_calamidad ec " + 
+						"where ec.programa = ? and ec.subprograma = ? " + 
+						"and co.estado_de_calamidad_gc IN (ec.estado_calamidad_guatecompras, ec.estado_calamidad_guatecompras+1)" + 
+						"group by geografico, geografico_nombre " + 
+						") t1 " + 
+						"where ejecutado>0 OR compromiso>0 " + 
+						"order by geografico_nombre");
+				pstm1.setInt(1, programa);
+				pstm1.setInt(2, subprograma);
+				ResultSet results = pstm1.executeQuery();	
+				while (results.next()){
+					CEjecucionFF dato = new CEjecucionFF(results.getInt("geografico"),results.getString("geografico_nombre")
+						, results.getDouble("ejecutado"), 0.0
+						, results.getDouble("compromiso")
+						, 0.0, 0.0, 0.0, 0.0);
+					datos.add(dato);
+				}
+				results.close();
+				pstm1.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("8", CEjecucionFFDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return datos.size()>0 ? datos : null;
+	}
 }

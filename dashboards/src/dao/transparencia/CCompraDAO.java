@@ -20,11 +20,23 @@ public class CCompraDAO {
 		try{
 			conn = CDatabase.connectEstadosExcepcion();
 			if(!conn.isClosed()) {
-				PreparedStatement pstm =  conn.prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=?");
+				PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm1.setInt(1, 94);
+				pstm1.setInt(2, subprograma);
+				ResultSet rs1=pstm1.executeQuery();
+				rs1.next();
+				
+				PreparedStatement pstm =  conn.prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=? and estado_calamidad_guatecompras=?");
 				pstm.setInt(1, subprograma);
+				pstm.setInt(2, rs1.getInt("estado_calamidad_guatecompras"));
 				ResultSet rs = pstm.executeQuery();
 				if (rs.next())
 					ret=rs.getInt(1);
+				
+				rs1.close();
+				pstm1.close();
+				rs.close();
+				pstm.close();
 			
 			}
 		}
@@ -46,18 +58,16 @@ public class CCompraDAO {
 				PreparedStatement pstm2=null;
 				ResultSet rs2;
 				CCompra compra;
-					/*if (rs.getString("NPG")!=null){
-						pstm2 = CDatabase.getConnection_Oracle().prepareStatement("select * from GUATECOMPRAS.VW_GC_NPG_JUTIAPA2016 where NPG_CONCURSO=?");
-						pstm2.setString(1,rs.getString("NPG"));
-						rs2 = pstm2.executeQuery();
-						if (rs2.next()){
-							compra = new CCompra(rs2.getString("ENTIDAD_GC"), rs2.getString("UNIDAD_GC"),"NPG", rs2.getString("NPG_CONCURSO"), rs2.getTimestamp("FECHA_PUBLICACION_GC"), rs2.getString("DESCRIPCION"), rs2.getString("NOMBRE_MODALIDAD")+" - "+rs2.getString("NOMBRE_MODALIDAD_EJECUCION"),rs2.getString("NOMBRE_ESTATUS"), rs2.getString("NIT"), rs2.getString("NOMBRE"), rs2.getDouble("MONTO"));
-							ret.add(compra);
-						}					
-					}else*/ 
-						pstm2 = conn.prepareStatement("select * from mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=?) order by fecha_publicacion");
+				PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm1.setInt(1, 94);
+				pstm1.setInt(2, subprograma);
+				ResultSet rs1=pstm1.executeQuery();
+				rs1.next();
+				
+						pstm2 = conn.prepareStatement("select * from minfin.mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=? and estado_calamidad_guatecompras=?) order by fecha_publicacion");
 						pstm2.setInt(1, 94);
 						pstm2.setInt(2, subprograma);
+						pstm2.setInt(3, rs1.getInt("estado_calamidad_guatecompras"));
 						rs2 = pstm2.executeQuery();
 						while (rs2.next()){
 							compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
@@ -67,7 +77,11 @@ public class CCompraDAO {
 									);
 							ret.add(compra);
 						}		
-			
+						
+						rs2.close();
+						pstm2.close();
+						rs1.close();
+						pstm1.close();
 			}
 		}
 		catch(Exception e){
@@ -141,7 +155,7 @@ public static boolean crearCompra(CCompra compra) {
 		try{
 			conn = CDatabase.connectEstadosExcepcion();
 			if(!conn.isClosed()){
-				PreparedStatement pstm =  conn.prepareStatement("select count(*) total from mv_evento_gc where nog_concurso=?");
+				PreparedStatement pstm =  conn.prepareStatement("select count(*) total from minfin.mv_evento_gc where nog_concurso=?");
 				pstm.setInt(1, nog);
 				ResultSet rs=pstm.executeQuery();
 				if(rs.next() && rs.getInt("total")>0){
@@ -175,7 +189,7 @@ public static boolean crearCompra(CCompra compra) {
 						pstm2 = conn.prepareStatement("select entidad_compradora, entidad_compradora_nombre,count(*) num_eventos, " +
 								"sum( case when estatus_concurso=3 then 1 else 0 end) num_adjudicados, " + 
 								"sum( case when estatus_concurso=3 then monto else 0 end) total_adjudicado " + 
-								"from mv_evento_gc where estado_calamidad=? group by entidad_compradora, entidad_compradora_nombre order by entidad_compradora_nombre");
+								"from minfin.mv_evento_gc where estado_calamidad=? group by entidad_compradora, entidad_compradora_nombre order by entidad_compradora_nombre");
 						pstm2.setString(1,rs.getString("estado_calamidad_guatecompras"));
 						rs2 = pstm2.executeQuery();
 						while (rs2.next()){
@@ -201,13 +215,22 @@ public static boolean crearCompra(CCompra compra) {
 		try{
 			conn = CDatabase.connectEstadosExcepcion();
 			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm.setInt(1, 94);
+				pstm.setInt(2, subprograma);
+				ResultSet rs=pstm.executeQuery();
+				rs.next();
+				
 				PreparedStatement pstm2=null;
 				ResultSet rs2;
 				CCompra compra;
-				pstm2 = conn.prepareStatement("select * from mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=? and entidad=?)");
+				pstm2 = conn.prepareStatement("select * from minfin.mv_evento_gc where nog_concurso in ( " + 
+						"SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=? and entidad=? and estado_calamidad_guatecompras=? " 
+					+")");
 				pstm2.setInt(1, 94);
 				pstm2.setInt(2, subprograma);
 				pstm2.setInt(3, entidad);
+				pstm2.setInt(4, rs.getInt("estado_calamidad_guatecompras_fuera_de_estado"));
 				rs2 = pstm2.executeQuery();
 				while (rs2.next()){
 					compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
@@ -217,10 +240,179 @@ public static boolean crearCompra(CCompra compra) {
 									);
 					ret.add(compra);
 				}		
+				rs2.close();
+				pstm2.close();
+				rs.close();
+				pstm.close();
 			}
 		}
 		catch(Exception e){
 			CLogger.write("7", CCompraDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return ret;		
+	}
+	
+	public static ArrayList<CEntidadCompra> getComprasEntidadesFueraDeEstado(int subprograma){
+		ArrayList<CEntidadCompra> ret=new ArrayList<CEntidadCompra>();
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm.setInt(1, 94);
+				pstm.setInt(2, subprograma);
+				ResultSet rs=pstm.executeQuery();
+				rs.next();
+				PreparedStatement pstm2=null;
+				ResultSet rs2;
+				CEntidadCompra compra;
+				if (rs.next()){
+						pstm2 = conn.prepareStatement("select entidad_compradora, entidad_compradora_nombre,count(*) num_eventos, " +
+								"sum( case when estatus_concurso=3 then 1 else 0 end) num_adjudicados, " + 
+								"sum( case when estatus_concurso=3 then monto else 0 end) total_adjudicado " + 
+								"from minfin.mv_evento_gc where estado_calamidad=? group by entidad_compradora, entidad_compradora_nombre order by entidad_compradora_nombre");
+						pstm2.setString(1,rs.getString("estado_calamidad_guatecompras_fuera_de_estado"));
+						rs2 = pstm2.executeQuery();
+						while (rs2.next()){
+							compra = new CEntidadCompra(rs2.getInt("entidad_compradora"),rs2.getString("entidad_compradora_nombre"), rs2.getInt("num_eventos"),
+									rs2.getInt("num_adjudicados"),rs2.getDouble("total_adjudicado"));
+							ret.add(compra);
+						}		
+				}
+			}
+		}
+		catch(Exception e){
+			CLogger.write("8", CCompraDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return ret;		
+	}
+	
+	public static ArrayList<CCompra> getComprasPorEntidadFueraDeEstado(int subprograma, int entidad){
+		ArrayList<CCompra> ret=new ArrayList<CCompra>();
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm2=null;
+				ResultSet rs2;
+				CCompra compra;
+				
+				PreparedStatement pstm =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm.setInt(1, 94);
+				pstm.setInt(2, subprograma);
+				ResultSet rs=pstm.executeQuery();
+				rs.next();
+				
+				pstm2 = conn.prepareStatement("select * from minfin.mv_evento_gc " +
+						"where nog_concurso in ( " +
+							" SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=? and entidad=? and estado_calamidad_guatecompras=?"+
+						")");
+				pstm2.setInt(1, 94);
+				pstm2.setInt(2, subprograma);
+				pstm2.setInt(3, entidad);
+				pstm2.setInt(4, rs.getInt("estado_calamidad_guatecompras_fuera_de_estado"));
+				rs2 = pstm2.executeQuery();
+				while (rs2.next()){
+					compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
+									rs2.getString("nog_concurso"), rs2.getTimestamp("fecha_publicacion"), rs2.getString("descripcion"), 
+									rs2.getString("modalidad_nombre"),rs2.getString("estatus_concurso_nombre"),null, 
+									null, rs2.getDouble("monto")
+									);
+					ret.add(compra);
+				}
+				rs2.close();
+				pstm2.close();
+				rs.close();
+				pstm.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("9", CCompraDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return ret;		
+	}
+	
+	public static Integer numComprasFuera(int subprograma){
+		Integer ret=0;
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			
+			PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+			pstm1.setInt(1, 94);
+			pstm1.setInt(2, subprograma);
+			ResultSet rs1=pstm1.executeQuery();
+			rs1.next();
+			
+			if(!conn.isClosed()) {
+				PreparedStatement pstm =  conn.prepareStatement("select count(*) from seg_compra where programa=94 and subprograma=? and estado_calamidad_guatecompras=?");
+				pstm.setInt(1, subprograma);
+				pstm.setInt(2, rs1.getInt("estado_calamidad_guatecompras_fuera_de_estado"));
+				ResultSet rs = pstm.executeQuery();
+				if (rs.next())
+					ret=rs.getInt(1);
+				
+				rs1.close();
+				pstm1.close();
+				rs.close();
+				pstm.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("10", CCompraDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return ret;		
+	}
+	
+	public static ArrayList<CCompra> getComprasFueaDeEstado(int subprograma){
+		ArrayList<CCompra> ret=new ArrayList<CCompra>();
+		Connection conn = null;
+		try{
+			conn = CDatabase.connectEstadosExcepcion();
+			if(!conn.isClosed()){
+				PreparedStatement pstm2=null;
+				ResultSet rs2;
+				CCompra compra;
+				PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM estado_de_calamidad WHERE programa=? and subprograma=?");
+				pstm1.setInt(1, 94);
+				pstm1.setInt(2, subprograma);
+				ResultSet rs1=pstm1.executeQuery();
+				rs1.next();
+				
+						pstm2 = conn.prepareStatement("select * from minfin.mv_evento_gc where nog_concurso in (SELECT nog FROM estados_excepcion.seg_compra WHERE programa=? and subprograma=? and estado_calamidad_guatecompras=?) order by fecha_publicacion");
+						pstm2.setInt(1, 94);
+						pstm2.setInt(2, subprograma);
+						pstm2.setInt(3, rs1.getInt("estado_calamidad_guatecompras_fuera_de_estado"));
+						rs2 = pstm2.executeQuery();
+						while (rs2.next()){
+							compra = new CCompra(rs2.getString("entidad_compradora_nombre"), rs2.getString("unidad_compradora_nombre"),"NOG", 
+									rs2.getString("nog_concurso"), rs2.getTimestamp("fecha_publicacion"), rs2.getString("descripcion"), 
+									rs2.getString("modalidad_nombre"),rs2.getString("estatus_concurso_nombre"),null, 
+									null, rs2.getDouble("monto")
+									);
+							ret.add(compra);
+						}		
+						
+						rs2.close();
+						pstm2.close();
+						rs1.close();
+						pstm1.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("11", CCompraDAO.class, e);
 		}
 		finally{
 			CDatabase.close(conn);

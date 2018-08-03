@@ -3,7 +3,7 @@
  */
 var app = angular.module('dashboards',['ngRoute','ui.bootstrap','chart.js', 'loadOnDemand','ngAnimate', 'ngTouch', 
                                        'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning',
-                                       'uiGmapgoogle-maps','ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor','ngFlash','ngUtilidades','ivh.treeview']);
+                                       'ng.deviceDetector','ui.grid.grouping','ui.grid.autoResize','ngCkeditor','ngFlash','ngUtilidades','ivh.treeview']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 	   $locationProvider.hashPrefix('!');
@@ -197,6 +197,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	           script: '/app/components/transparencia/calamidad/calamidadCompras.controller.js',
 	           template: '/app/components/transparencia/calamidad/calamidadCompras.jsp'
 	       },
+	       {
+	    	   name: 'calamidadComprasFueraController',     
+	           script: '/app/components/transparencia/calamidad/calamidadComprasFuera.controller.js',
+	           template: '/app/components/transparencia/calamidad/calamidadComprasFuera.jsp'
+	       },
 	       { 
 	    	   name: 'metasController',     
 	           script: '/app/components/presidenciales/metas/metas.controller.js',
@@ -243,14 +248,6 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
-}]);
-
-app.config(['uiGmapGoogleMapApiProvider',function(uiGmapGoogleMapApiProvider) {
-    uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyBPq-t4dJ1GV1kdtXoVZfG7PtfEAHrhr00',
-        v: '3.', //defaults to latest 3.X anyhow
-        libraries: 'weather,geometry,visualization'
-    });
 }]);
 
 app.controller('MainController',['$scope','$document','deviceDetector','$rootScope','$location','$window',

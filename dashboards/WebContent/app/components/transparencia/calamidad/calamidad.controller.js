@@ -3,10 +3,11 @@
  */
 
 
-angular.module('calamidadController',['dashboards']).controller('calamidadController',['$scope','$routeParams','$http','$location','uiGmapGoogleMapApi','$rootScope',
-	   function($scope,$routeParams,$http,$location,uiGmapGoogleMapApi, $rootScope){
+angular.module('calamidadController',['dashboards','ngMap']).controller('calamidadController',['$scope','$routeParams','$http','$location','$rootScope',
+	   function($scope,$routeParams,$http,$location, $rootScope,NgMap){
 	
 	this.num_compras=0;
+	this.num_compras_fuera=0;
 	this.num_donaciones=0;
 	this.num_documentos=0;
 	this.num_actividades=0;
@@ -19,6 +20,7 @@ angular.module('calamidadController',['dashboards']).controller('calamidadContro
 	if($routeParams.subprograma===undefined)
 		$routeParams.subprograma = 7;
 	this.subprograma = $routeParams.subprograma;
+	this.map_options = {};
 	
 	
 	$http.post('/STransparenciaVentanas', { t: (new Date()).getTime(), subprograma: this.subprograma }).then(function(response){
@@ -26,6 +28,7 @@ angular.module('calamidadController',['dashboards']).controller('calamidadContro
 	    	this.num_documentos = response.data.results.documentos;
 	    	this.num_actividades = response.data.results.actividades;
 	    	this.num_compras = response.data.results.compras;
+	    	this.num_compras_fuera = response.data.results.compras_fuera;
 	    	this.num_donaciones = response.data.results.donaciones;
 	    	this.ejecucion_financiera = response.data.results.ejecucion_financiera;
 	    	this.ejecucion_fisica = response.data.results.ejecucion_fisica;
@@ -39,17 +42,12 @@ angular.module('calamidadController',['dashboards']).controller('calamidadContro
 	    	$rootScope.titulo = this.titulo;
 	    	$rootScope.tipo = this.tipo;
 	    	
-	    	uiGmapGoogleMapApi.then(function() {
-	       		$scope.mapcalamidad = { center: { latitude: this.latitude, longitude: this.longitude }, 
-	       					   zoom: 15,
-	       					   options: {
-	       						   scrollwheel: false,
-	       						   mapTypeId: google.maps.MapTypeId.SATELLITE,
-	       						   disableDefaultUI: true
-	       					   },
-	       					   refresh: true
-	       					};
-	           }.bind(this));
+	    	this.map_options.zoom = 10;
+	    	this.map_options.options = {
+					   scrollwheel: false,
+						   mapTypeId: google.maps.MapTypeId.SATELLITE,
+						   disableDefaultUI: true
+					   };
 		}
  	}.bind(this), function errorCallback(response){
  		

@@ -2,8 +2,8 @@
  * 
  */
 var app = angular.module('dashboards',['ngRoute','ui.bootstrap','chart.js', 'loadOnDemand','ngAnimate', 'ngTouch', 
-                                       'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning',
-                                       'uiGmapgoogle-maps']);
+                                       'ui.grid', 'ui.grid.treeView', 'ui.grid.selection','ui.grid.moveColumns', 
+                                       'ui.grid.resizeColumns', 'ui.grid.saveState','ui.grid.pinning']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 	   $locationProvider.hashPrefix('!');
@@ -31,6 +31,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             })
             .when('/transparencia/calamidad/documentos/:subprograma',{
             	template: '<div load-on-demand="\'calamidadDocumentosController\'" class="all_page"></div>'
+            })
+            .when('/transparencia/calamidad/cfuera/:subprograma',{
+            	template: '<div load-on-demand="\'calamidadCFueraController\'" class="all_page"></div>'
             })
             .when('/transparencia/calamidad/compras/:subprograma',{
             	template: '<div load-on-demand="\'calamidadComprasController\'" class="all_page"></div>'
@@ -90,6 +93,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	           template: '/app/components/transparencia/calamidad/calamidadDocumentos.jsp'
 	       },
 	       {
+	    	   name: 'calamidadCFueraController',     
+	           script: '/app/components/transparencia/calamidad/calamidadCFuera.controller.js?'+time,
+	           template: '/app/components/transparencia/calamidad/calamidadCFuera.jsp'
+	       },
+	       {
 	    	   name: 'calamidadComprasController',     
 	           script: '/app/components/transparencia/calamidad/calamidadCompras.controller.js?'+time,
 	           template: '/app/components/transparencia/calamidad/calamidadCompras.jsp'
@@ -113,14 +121,6 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       
 	   ];
 	   $loadOnDemandProvider.config(modules);
-}]);
-
-app.config(['uiGmapGoogleMapApiProvider',function(uiGmapGoogleMapApiProvider) {
-    uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyBPq-t4dJ1GV1kdtXoVZfG7PtfEAHrhr00',
-        v: '3.23', //defaults to latest 3.X anyhow
-        libraries: 'weather,geometry,visualization'
-    });
 }]);
 
 app.controller('publicController',['$scope','$document','$rootScope','$location','$window',

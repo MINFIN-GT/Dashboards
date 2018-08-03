@@ -51,8 +51,8 @@
 						<div class="bwindow_title">Mapa</div>
 						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
 							<div style="position: absolute; float: left; width: 100%; overflow: hidden; height: 190px;">
-								<ui-gmap-google-map id="mapcalamidad" center="mapcalamidad.center" zoom="mapcalamidad.zoom" options="mapcalamidad.options">
-								</ui-gmap-google-map>
+								<ng-map zoom="{{ control.map_options.zoom }}" options="{{ control.map_options.options }}" center="[14.4747103,-90.9156536]" map-type-id="ROADMAP" style="height: 100%; width: 100%;">
+								</ng-map>
 							</div>
 							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
 								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.titulo }}</button>
@@ -79,6 +79,17 @@
 	  						</div>
 						</div>						
 					</td>
+					<td ng-click="go('/transparencia/calamidad/cfuera/'+control.subprograma)">
+						<div class="bwindow_title">Compras fuera del Estado de {{ control.tipo }}</div>
+						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
+							<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp={{ control.subprograma }}&idevento=-1&pic=b6.png&pic_w=300" alt="Compras" class="img-rounded"></div>
+							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
+								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.num_compras_fuera }} eventos en Guatecompras</button>
+	  						</div>
+						</div>						
+					</td>
+				</tr>
+				<tr>
 					<td ng-click="go('/transparencia/calamidad/donaciones/'+control.subprograma)">
 						<div class="bwindow_title">Donaciones</div>
 						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">

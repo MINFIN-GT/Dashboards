@@ -21,7 +21,7 @@
 	<h3>Tablero de Seguimiento a Estados de Excepción</h3>
 	<br/>
 	<br/>
-	<div ng-repeat="estado in control.estadoscalamidad" >
+	<div ng-repeat="estado in control.estadoscalamidad" style="height: auto;" >
 		<div ng-click="estado.link != '' ? control.redirect(estado.subprograma) : ''" class="cbox">
 			<div class="success ng-scope ng-isolate-scope bounce-in" style="cursor: pointer;">
 				<div class="timeline-panel" >

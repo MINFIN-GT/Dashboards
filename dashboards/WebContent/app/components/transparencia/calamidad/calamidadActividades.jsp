@@ -20,9 +20,9 @@
             <h3 class="modal-title">Mapa de Ubicación</h3>
         </div>
         <div class="modal-body" style="height: 400px;">
-            			<ui-gmap-google-map id="mainmap" ng-if="refreshMap" center="map.center" zoom="map.zoom" options="map.options">
-							<ui-gmap-marker idkey="1" coords="map.center"></ui-gmap-marker>
-						</ui-gmap-google-map>
+            			<ng-map center="[{{ map.center.latitude  }},{{ map.center.longitude }}]" zoom="15" options="{{ map.options }}"  style="height: 100%;">
+							<marker position="{{ map.center.latitude }},{{ map.center.longitude }}" title=""></marker>
+						</ng-map>
 		</div>
         <div class="modal-footer">
             <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

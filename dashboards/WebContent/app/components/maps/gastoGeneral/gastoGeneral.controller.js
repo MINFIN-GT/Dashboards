@@ -1,5 +1,5 @@
 var modGastoGeneral = angular.module('mapsGastoGeneralModule', [ 'dashboards',
-		'ngAnimate', 'ngSanitize', 'ui.bootstrap' ]);
+		'ngAnimate', 'ngSanitize', 'ui.bootstrap', 'ngMap']);
 
 // Control principal
 modGastoGeneral.controller('mapsGastoGeneralController',
@@ -9,7 +9,7 @@ modGastoGeneral.controller('mapsGastoGeneralController',
 modGastoGeneral.controller('modalInfoGastoGeneralController',
 		modalInfoGastoGeneralController);
 
-function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
+function mapsGastoGeneralController($uibModal, $http,NgMap) {
 	var me = this;
 
 	me.showloading = false;
@@ -27,9 +27,9 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 	me.panel_fuentes;
 	me.fuentes_loaded = false;
 
-	me.grupos = "Grupos de Gasto";
+	me.grupos_gasto = "Grupos de Gasto";
 	me.grupos_array = [];
-	me.grupos_descripcion = "Todos";
+	me.grupos_gasto_descripcion = "Todos";
 	me.grupos_loaded = false;
 	me.panel_grupos;
 	me.todosgrupos = 1;
@@ -39,27 +39,116 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 	me.tributarias = [ 11, 12, 13, 14, 15, 16, 21, 22, 29 ];
 
 	me.geograficos = [];
+	me.geograficos_loaded=false;
+	
+	me.color = {};
+	me.color["v"] = "#008000";
+	me.color["va"] = "#98fb98";
+	me.color["a"] = "#ffff00";
+	me.color["ar"] = "#ffdab9";
+	me.color["r"] = "#ff0000";
+	me.color["d"] = "#bdbdbd";
+	
+	me.grupos = [];
+	me.grupos["v"] = [];
+	me.grupos["va"] = [];
+	me.grupos["a"] = [];
+	me.grupos["ar"] = [];
+	me.grupos["r"] = [];
+	
+	me.map_options={
+			map: null,
+			center: [15.605009229644448, -89.8793818359375],
+			zoom: 7,
+			options: {
+				   streetViewControl: false,
+				   scrollwheel: false,
+				   mapTypeId: google.maps.MapTypeId.ROADMAP
+			   },
+			styles: [
+				   {
+					    "elementType": "labels",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "administrative.land_parcel",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "administrative.locality",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "administrative.neighborhood",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "administrative.province",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "road.arterial",
+					    "elementType": "labels",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "road.highway",
+					    "elementType": "labels",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  },
+					  {
+					    "featureType": "road.local",
+					    "stylers": [
+					      {
+					        "visibility": "off"
+					      }
+					    ]
+					  }
+					]
+	};
 
-	function getColor(porcentaje) {
-		var color = {};
-		color["V"] = "#008000";
-		color["VA"] = "#98fb98";
-		color["A"] = "#ffff00";
-		color["AR"] = "#ffdab9";
-		color["R"] = "#ff0000";
+	function getGrupo(porcentaje) {
 
 		if (porcentaje >= 0 && porcentaje < 0.1) {
-			return color["R"];
+			return "r";
 		} else if (porcentaje >= 0.1 && porcentaje < 0.3) {
-			return color["AR"];
+			return "ar";
 		} else if (porcentaje >= 0.3 && porcentaje < 0.5) {
-			return color["A"];
+			return "a";
 		} else if (porcentaje >= 0.5 && porcentaje < 1) {
-			return color["VA"];
+			return "va";
 		} else if (porcentaje >= 1) {
-			return color["V"];
+			return "v";
 		} else {
-			return '#BDBDBD';
+			return "d";
 		}
 	}
 
@@ -69,42 +158,18 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 		me.cargarGastos();
 
 		switch (mes) {
-		case 1:
-			me.nmonth = "Enero";
-			break;
-		case 2:
-			me.nmonth = "Febrero";
-			break;
-		case 3:
-			me.nmonth = "Marzo";
-			break;
-		case 4:
-			me.nmonth = "Abril";
-			break;
-		case 5:
-			me.nmonth = "Mayo";
-			break;
-		case 6:
-			me.nmonth = "Junio";
-			break;
-		case 7:
-			me.nmonth = "Julio";
-			break;
-		case 8:
-			me.nmonth = "Agosto";
-			break;
-		case 9:
-			me.nmonth = "Septiembre";
-			break;
-		case 10:
-			me.nmonth = "Octubre";
-			break;
-		case 11:
-			me.nmonth = "Noviembre";
-			break;
-		case 12:
-			me.nmonth = "Diciembre";
-			break;
+			case 1: me.nmonth = "Enero"; break;
+			case 2: me.nmonth = "Febrero"; break;
+			case 3: me.nmonth = "Marzo"; break;
+			case 4: me.nmonth = "Abril"; break;
+			case 5: me.nmonth = "Mayo"; break;
+			case 6: me.nmonth = "Junio"; break;
+			case 7: me.nmonth = "Julio"; break;
+			case 8: me.nmonth = "Agosto"; break;
+			case 9: me.nmonth = "Septiembre"; break;
+			case 10: me.nmonth = "Octubre"; break;
+			case 11: me.nmonth = "Noviembre"; break;
+			case 12: me.nmonth = "Diciembre"; break;
 		}
 
 	};
@@ -119,7 +184,7 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 	}
 
 	$http.post('/SFuente', {
-		ejercicio : 2016,
+		ejercicio : me.ejercicio,
 		t : (new Date()).getTime()
 	}).then(loadFuentes, errorCallback);
 
@@ -271,7 +336,6 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 	}
 
 	function obtenerGasto(response) {
-
 		if (response.data.success) {
 			me.geograficos = response.data.geograficos;
 			dibujarMapa();
@@ -279,118 +343,115 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 	}
 
 	function dibujarMapa() {
+		me.geograficos_loaded=false;
+		me.grupos["v"] = [];
+		me.grupos["va"] = [];
+		me.grupos["a"] = [];
+		me.grupos["ar"] = [];
+		me.grupos["r"] = [];
+		var general = me.geograficos[0];
 		
-		uiGmapGoogleMapApi
-				.then(function() {
+		for (var j = 1; j < me.geograficos.length; j++) {
 
-					me.map = {
-						center : {
-							latitude : 15.605009229644448,
-							longitude : -89.8793818359375
-						},
-						zoom : 8,
-						options : {
-							streetViewControl : false,
-							scrollwheel : false
-						},
-						draw : null,
-						polygons : []
-					};
-
-					var general;
-
-					// Se agrega Bélice sin ninguna funcion
-					if (me.geograficos.length > 0) {
-
-						// Se agrega Bélice sin ninguna funcion
-						me.map.polygons.push({
-							id : municipios["2000"][0].propiedad.CODIGO,
-							path : municipios["2000"][0].coordenadas,
-							stroke : {
-								color : '#6060FB',
-								weight : 1
-							},
-							editable : false,
-							draggable : false,
-							geodesic : false,
-							visible : true,
-							fill : {
-								color : '#BDBDBD',
-								opacity : 0.8
-							}
-						});
-
-						general = me.geograficos[0];
-
-					}
-
-					for (var j = 1; j < me.geograficos.length; j++) {
-
-						// municipios es una variable que se encuentra en
-						// assets/data/municipios.js
-						var muni = municipios[me.geograficos[j].geografico];
-
-						if (muni != null) {
-
-							var porcentaje = 0;
-							if (!me.mostrarPerCapita)
-								porcentaje = me.geograficos[j].gasto
-										/ general.gasto * 100;
-							else
-								porcentaje = me.geograficos[j].gastoPerCapita
-										/ general.gastoPerCapita * 100;
-							
-							for (var i = 0; i < muni.length; i++) {
-								me.map.polygons
-										.push({
-											id : muni[i].propiedad.CODIGO,
-											path : muni[i].coordenadas,
-											stroke : {
-												color : '#6060FB',
-												weight : 1
-											},
-											editable : true,
-											draggable : false,
-											geodesic : false,
-											visible : true,
-											fill : {
-												color : (muni.CODIGO != 2000 ? getColor(
-														porcentaje)
-														: '#a7d0e1'),
-												opacity : 0.8
-											},
-											events : {
-												click : function() {
-													var data = {
-														action : "gastomunicipio",
-														mes : me.mes,
-														ejercicio : me.ejercicio,
-														grupos : me.getGrupos(),
-														fuentes : me
-																.getFuentes(),
-														geografico : this.events.data.geografico,
-														nivel : 1,
-														gasto : JSON
-																.stringify(this.events.data)
-													};
-
-													$http
-															.post(
-																	'/SGastoGeneral',
-																	data)
-															.success(
-																	obtenerGastoMunicipio);
-
-												},
-												data : me.geograficos[j]
-											}
-										});
-							}
-
-						}
-					}
-					me.showloading = false;
-				});
+				var porcentaje = 0;
+				if (!me.mostrarPerCapita)
+					porcentaje = me.geograficos[j].gasto / general.gasto * 100;
+				else
+					porcentaje = me.geograficos[j].gastoPerCapita / general.gastoPerCapita * 100;
+				grupo = getGrupo(porcentaje);
+				me.grupos[grupo].push(me.geograficos[j].geografico)
+		}
+		
+		if(me.map_options.map==null){
+			NgMap.getMap().then(function(map){
+	    		me.map_options.map = map;
+	    		dibujarLayerMunicipios();
+	    	});
+		}
+		else{
+			dibujarLayerMunicipios();
+		}
+		
+		
+	}
+	
+	function dibujarLayerMunicipios(){
+		if(me.map_options.fusion_layer!=null){
+			me.map_options.fusion_layer.setMap(null);
+			me.map_options.fusion_layer=null;
+		}
+		
+		var layer = new google.maps.FusionTablesLayer({
+			query: {
+		      select: 'geometry',
+		      from: '1N_9GQ5_zJYwZGmzW2UMDfKAjGc6F4QVct1E7qgny'
+		    },
+		    styles:[{
+	    		where: 'Codigo IN ('+me.grupos['v'].join(',')+')',
+		        polygonOptions: {
+		          fillColor: '#008000',
+		          fillOpacity: 0.75
+		        }
+	        },
+	        {
+	    		where: 'Codigo IN ('+ me.grupos['va'].join(',') +')',
+		        polygonOptions: {
+		          fillColor: '#98fb98',
+		          fillOpacity: 0.75
+		        }
+	        },
+	        {
+	    		where: 'Codigo IN ('+ me.grupos['a'].join(',') +')',
+		        polygonOptions: {
+		          fillColor: '#ffff00',
+		          fillOpacity: 0.75
+		        }
+	        },
+	        {
+	    		where: 'Codigo IN ('+ me.grupos['ar'].join(',') +')',
+		        polygonOptions: {
+		          fillColor: '#ffdab9',
+		          fillOpacity: 0.75
+		        }
+	        },
+	        {
+	    		where: 'Codigo IN ('+ me.grupos['r'].join(',') +')',
+		        polygonOptions: {
+		          fillColor: '#ff0000',
+		          fillOpacity: 0.75
+		        }
+	        }
+		    	
+		    ],
+		    suppressInfoWindows: true
+		  });
+		layer.setMap(me.map_options.map);
+		google.maps.event.addListener(layer, 'click', function(e){
+			var agasto = obtenerGeografico(e.row.Codigo.value);
+			var data = {
+					action : "gastomunicipio",
+					mes : me.mes,
+					ejercicio : me.ejercicio,
+					grupos : me.getGrupos(),
+					fuentes : me.getFuentes(),
+					geografico : e.row.Codigo.value,
+					nivel : 1,
+					gasto : JSON.stringify(agasto)
+				};
+				$http.post('/SGastoGeneral',data).success(obtenerGastoMunicipio);
+		 });
+		me.map_options.fusion_layer = layer;
+		
+		me.showloading = false;
+		
+		me.geograficos_loaded=true;
+	}
+	
+	function obtenerGeografico(codigo){
+		for(var i=0; i<me.geograficos.length;i++){
+			if(me.geograficos[i].geografico==codigo)
+				return me.geograficos[i];
+		}
 	}
 
 	function obtenerGastoMunicipio(data, status, headers, config) {
@@ -409,6 +470,23 @@ function mapsGastoGeneralController($uibModal, $http, uiGmapGoogleMapApi) {
 				gasto : data
 			}
 		});
+	}
+	
+	me.mapLoaded=function(map){
+		//Belice
+		var belice = new google.maps.FusionTablesLayer({
+			map: map,
+		    heatmap: { enabled: false },
+		    query: {
+		      select: 'geometry',
+		      from: '1soQUQhG0lzrro_eRnAnWx9s3LjhIxUJyR7-cnebE'
+		    },
+		      options: {
+		          styleId: 2,
+		          templateId: 2
+		        },
+		        suppressInfoWindows: true
+		  });
 	}
 }
 

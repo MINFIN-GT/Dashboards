@@ -19,9 +19,7 @@
 <script type="text/javascript" src="/assets/libs/Chart.min.js"></script>
 <script type="text/javascript" src="/assets/libs/angular-chart.min.js"></script>
 <script type="text/javascript" src="/assets/libs/ui-grid.min.js"></script>  
-<script type="text/javascript" src="/assets/libs/maps/angular-simple-logger.min.js"></script> 
-<script type="text/javascript" src="/assets/libs/maps/lodash.js"></script> 
-<script type="text/javascript" src="/assets/libs/maps/angular-google-maps.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/maps/ng-map.js"></script>
 <script type="text/javascript" src="/assets/libs/loadOnDemand.js"></script>
 <script type="text/javascript" src="/assets/libs/numeral.min.js"></script>
 <script type="text/javascript" src="/assets/libs/numeral.es.js"></script> 
@@ -34,7 +32,7 @@
 <script type="text/javascript" src="/assets/libs/ng-file-upload-shim.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/ng-file-upload.min.js"></script> 
 
-<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPq-t4dJ1GV1kdtXoVZfG7PtfEAHrhr00&callback=initMap" type="text/javascript"></script> -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPq-t4dJ1GV1kdtXoVZfG7PtfEAHrhr00" type="text/javascript"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -3,8 +3,8 @@
  */
 
 
-angular.module('calamidadActividadesController',['dashboards','angular-timeline','angular-scroll-animate','ngSanitize']).controller('calamidadActividadesController',['$scope','$routeParams','$http','uiGridConstants','$document','$timeout','$sce','$uibModal','uiGmapGoogleMapApi', '$rootScope',
-	   function($scope,$routeParams,$http,uiGridConstants, $document, $timeout,$sce,$uibModal,uiGmapGoogleMapApi, $rootScope){
+angular.module('calamidadActividadesController',['dashboards','angular-timeline','angular-scroll-animate','ngSanitize','ngMap']).controller('calamidadActividadesController',['$scope','$routeParams','$http','uiGridConstants','$document','$timeout','$sce','$uibModal', '$rootScope',
+	   function($scope,$routeParams,$http,uiGridConstants, $document, $timeout,$sce,$uibModal,$rootScope){
 			
 			this.lastupdate = '';
 			this.actividad_seleccionada=-1;
@@ -95,25 +95,21 @@ angular.module('calamidadActividadesController',['dashboards','angular-timeline'
 		}
 	]);
 
-angular.module('calamidadActividadesController').controller('mapCtrl',[ '$scope','$uibModalInstance','$timeout', 'uiGmapGoogleMapApi','glat','glong',
-                                                         function ($scope, $uibModalInstance,$timeout, uiGmapGoogleMapApi, glat, glong) {
+angular.module('calamidadActividadesController').controller('mapCtrl',[ '$scope','$uibModalInstance','$timeout','glat','glong',
+                                                         function ($scope, $uibModalInstance,$timeout, glat, glong) {
                                                      	$scope.geoposicionlat = glat;
                                                      	$scope.geoposicionlong = glong;
                                                      	
                                                      	$scope.refreshMap = true;
                                                      	
-                                                     	uiGmapGoogleMapApi.then(function() {
-                                                     		$scope.map = { center: { latitude: $scope.geoposicionlat, longitude: $scope.geoposicionlong }, 
-                                                     					   zoom: 15,
-                                                     					   height: 400,
-                                                     					   options: {
-                                                     						   streetViewControl: false,
-                                                     						   scrollwheel: true,
-                                                     						  mapTypeId: google.maps.MapTypeId.SATELLITE
-                                                     					   },
-                                                     					   refresh: true
-                                                     					};
-                                                         });
+                                                     	$scope.map = { center: { latitude: $scope.geoposicionlat, longitude: $scope.geoposicionlong }, 
+                                          					   height: 400,
+                                          					   options: {
+                                          						   streetViewControl: false,
+                                          						   scrollwheel: true,
+                                          						  mapTypeId: google.maps.MapTypeId.SATELLITE
+                                          					   }
+                                          					};
                                                      	
                                                      	
                                                      	
