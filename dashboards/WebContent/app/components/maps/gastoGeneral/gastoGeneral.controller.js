@@ -41,14 +41,6 @@ function mapsGastoGeneralController($uibModal, $http,NgMap) {
 	me.geograficos = [];
 	me.geograficos_loaded=false;
 	
-	me.color = {};
-	me.color["v"] = "#008000";
-	me.color["va"] = "#98fb98";
-	me.color["a"] = "#ffff00";
-	me.color["ar"] = "#ffdab9";
-	me.color["r"] = "#ff0000";
-	me.color["d"] = "#bdbdbd";
-	
 	me.grupos = [];
 	me.grupos["v"] = [];
 	me.grupos["va"] = [];
@@ -134,7 +126,12 @@ function mapsGastoGeneralController($uibModal, $http,NgMap) {
 					  }
 					]
 	};
-
+	
+	me.anios = [];
+	
+	for(var i=me.ejercicio; i>=2016; i--)
+		me.anios.push(i);
+	
 	function getGrupo(porcentaje) {
 
 		if (porcentaje >= 0 && porcentaje < 0.1) {

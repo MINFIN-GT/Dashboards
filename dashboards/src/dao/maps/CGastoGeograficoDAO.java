@@ -61,7 +61,8 @@ public class CGastoGeograficoDAO {
 						+ "from mv_ejecucion_presupuestaria_geografico where ejercicio = ? and renglon in (" + renglones + ") "
 						+ " group by geografico ) gasto right outer join cg_geograficos geo "
 						+ "on ( geo.geografico = gasto.geografico and geo.ejercicio = ? ) left outer join municipio_demografia muni "
-						+ "on ( muni.codigo_municipio = geo.geografico ) ";
+						+ "on ( muni.codigo_municipio = geo.geografico ) "
+						+ "where geo.ejercicio = 2018";
 						
 
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);

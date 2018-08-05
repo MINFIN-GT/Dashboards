@@ -83,9 +83,10 @@
 		        {{ control.ejercicio }} <span class="caret"></span>
 		      </button>
 		      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-		        <li role="menuitem"><a href ng-click="control.anoClick(2017)">2017</a></li>
-		        <li role="menuitem"><a href ng-click="control.anoClick(2016)">2016</a></li>
-		      </ul>
+		      	<li role="menuitem" ng-repeat="anio in control.anios">
+		      		<a href ng-click="control.anoClick(anio)">{{ anio }}</a>
+		      	</li>
+		        </ul>
 		    </div>
 		    <span ng-show="control.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
 	    </div>
@@ -106,14 +107,7 @@
 		<ng-map zoom="{{ control.map_options.zoom }}" styles="{{ control.map_options.styles }}" map-type-id="ROADMAP" style="height: 100%;"
 			center="{{ control.map_options.center }}" map-initialized="control.mapLoaded(map)">
 		</ng-map>
-	<!--  	<ui-gmap-google-map center="control.map.center" options="control.map.options" zoom="control.map.zoom">
-			<ui-gmap-polygon ng-repeat="p in control.map.polygons" static="true" 
-				path="p.path" stroke="p.stroke" visible="p.visible" geodesic="p.geodesic" fill="p.fill" fit="false" editable="p.editable" draggable="p.draggable" events="p.events">
-			</ui-gmap-polygon> 
-		</ui-gmap-google-map> -->
-
 	</div>
-	
 	<br/>
 	<div style="text-align: center;">
 		<p>

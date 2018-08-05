@@ -14,7 +14,7 @@
     }
 </style>
 	
-<div ng-controller="mapsGastoCodedesMunisController as mapsCM" class="maincontainer" id="gastogeograficomap" class="all_page">
+<div ng-controller="mapsGastoCodedesMunisController as control" class="maincontainer" id="gastogeograficomap" class="all_page">
 
 	<script type="text/ng-template" id="infoGastoCodedesMunis.jsp">
 		<%@ include file="/app/components/maps/gastoCodedesMunis/infoGastoCodedesMunis.jsp"%>
@@ -26,42 +26,43 @@
 	<div class="row" style="margin-bottom: 10px;">
 		<div class="col-sm-12">
 			<div class="btn-group" uib-dropdown>
-		      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="mapsCM.showloading" style="width: 150px; text-align: left; font-size: 24px;">
-		        {{ mapsCM.nmonth }} <span class="caret"></span>
+		      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="control.showloading" style="width: 150px; text-align: left; font-size: 24px;">
+		        {{ control.nmonth }} <span class="caret"></span>
 		      </button>
 		      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(1)">Enero</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(2)">Febrero</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(3)">Marzo</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(4)">Abril</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(5)">Mayo</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(6)">Junio</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(7)">Julio</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(8)">Agosto</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(9)">Septiembre</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(10)">Octubre</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(11)">Noviembre</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.mesClick(12)">Diciembre</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(1)">Enero</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(2)">Febrero</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(3)">Marzo</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(4)">Abril</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(5)">Mayo</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(6)">Junio</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(7)">Julio</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(8)">Agosto</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(9)">Septiembre</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(10)">Octubre</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(11)">Noviembre</a></li>
+		        <li role="menuitem"><a href ng-click="control.mesClick(12)">Diciembre</a></li>
 		      </ul>
 		    </div>
 		    <div class="btn-group" uib-dropdown>
-		      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="mapsCM.showloading" style="width: 100px; text-align: left; font-size: 24px;">
-		        {{ mapsCM.ejercicio }} <span class="caret"></span>
+		      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="control.showloading" style="width: 100px; text-align: left; font-size: 24px;">
+		        {{ control.ejercicio }} <span class="caret"></span>
 		      </button>
 		      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-		        <li role="menuitem"><a href ng-click="mapsCM.anoClick(2017)">2017</a></li>
-		        <li role="menuitem"><a href ng-click="mapsCM.anoClick(2016)">2016</a></li>
+		        <li role="menuitem" ng-repeat="anio in control.anios">
+		      		<a href ng-click="control.anoClick(anio)">{{ anio }}</a>
+		      	</li>
 		      </ul>
 		    </div>
-		    <span ng-show="mapsCM.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
+		    <span ng-show="control.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
 	    </div>
 	</div>
 	
 	<div class="row">
 		<div class="col-sm-12 text-center">
 			<div class="btn-group">
-	        	<label class="btn btn-primary activo" ng-model="mapsCM.mostrarCodedes" ng-click="mapsCM.cambiarRenglon()" uib-btn-checkbox>CODEDE</label>
-    	    	<label class="btn btn-success activo" ng-model="mapsCM.mostrarMunis" ng-click="mapsCM.cambiarRenglon()" uib-btn-checkbox>Municipalidad</label>
+	        	<label class="btn btn-primary btn-sm" ng-model="control.mostrarCodedes" ng-click="control.cambiarRenglon()" uib-btn-checkbox>CODEDE</label>
+    	    	<label class="btn btn-success btn-sm" ng-model="control.mostrarMunis" ng-click="control.cambiarRenglon()" uib-btn-checkbox>Municipalidad</label>
     		</div>
 		</div>
 	</div>
@@ -69,15 +70,9 @@
 	<br />
 		
 	<div style="position: relative; height: 700px;" id="title">
-	
-		<ui-gmap-google-map center="mapsCM.map.center" options="mapsCM.map.options" zoom="mapsCM.map.zoom">
-
-			<ui-gmap-polygon ng-repeat="p in mapsCM.map.polygons" static="true" 
-				path="p.path" stroke="p.stroke" visible="p.visible" geodesic="p.geodesic" fill="p.fill" fit="false" editable="p.editable" draggable="p.draggable" events="p.events">
-			</ui-gmap-polygon> 
-
-		</ui-gmap-google-map>
-
+		<ng-map zoom="{{ control.map_options.zoom }}" styles="{{ control.map_options.styles }}" map-type-id="ROADMAP" style="height: 100%;"
+			center="{{ control.map_options.center }}" map-initialized="control.mapLoaded(map)">
+		</ng-map>
 	</div>
 	
 	<br/>
@@ -92,6 +87,6 @@
 	</div>
 	
 	<div class="row">
-			<div class="col-sm-6">Última actualización: {{ mapsCM.lastupdate }}</div>
+			<div class="col-sm-6">Última actualización: {{ control.lastupdate }}</div>
 		</div>
 </div>
