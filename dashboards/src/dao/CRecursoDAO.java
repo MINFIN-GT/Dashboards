@@ -195,13 +195,15 @@ public class CRecursoDAO {
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
 					srecursosIds+=","+recursosIds[i];
 				}
-				for (Map.Entry<String, Integer[]> entry : auxiliaresIds.entrySet()) {
-					sauxiliaresIds+= " OR (recurso="+entry.getKey().substring(1)+" AND auxiliar IN (";
-					String auxiliares = "";
-					for(int i=0; i<entry.getValue().length;i++){
-						auxiliares += ","+entry.getValue()[i];
+				if(auxiliaresIds!=null) {
+					for (Map.Entry<String, Integer[]> entry : auxiliaresIds.entrySet()) {
+						sauxiliaresIds+= " OR (recurso="+entry.getKey().substring(1)+" AND auxiliar IN (";
+						String auxiliares = "";
+						for(int i=0; i<entry.getValue().length;i++){
+							auxiliares += ","+entry.getValue()[i];
+						}
+						sauxiliaresIds+= (auxiliares.length()>0) ? auxiliares.substring(1)+")) " : ")";
 					}
-					sauxiliaresIds+= (auxiliares.length()>0) ? auxiliares.substring(1)+")) " : ")";
 				}
 				String query= "SELECT ejercicio, sum(m1) m1, sum(m2) m2, sum(m3) m3, sum(m4) m4, sum(m5) m5, sum(m6) m6, " + 
 							"sum(m7) m7, sum(m8) m8, sum(m9) m9, sum(m10) m10, sum(m11) m11, sum(m12) m12 " +
@@ -247,23 +249,23 @@ public class CRecursoDAO {
 			try{
 				PreparedStatement pstm =  conn.prepareStatement("select * " + 
 						"from ( " + 
-						"SELECT c1.recurso parent, c.ejercicio ejercicio, c.recurso recurso, -1 auxiliar, c.nombre, c.grupo_ingreso, c.clase, c.seccion, c.grupo  " + 
-						"FROM cp_recursos c left outer join cp_recursos c1  " + 
-						"				    ON ( c.ejercicio = c1.ejercicio  " + 
-						"						and ( " + 
-						"							( " + 
-						"							 (c.recurso%10>=0 and c1.recurso = (c.recurso - c.recurso%10)) OR " + 
-						"							 (c.recurso%100>=10 and c.recurso%10=0 and c1.recurso = (c.recurso - c.recurso%100)) OR " + 
-						"							  (c.recurso%1000>=100 and c.recurso%100=0 and c1.recurso = (c.recurso - c.recurso%1000)) " + 
-						"							) " + 
-						"							and c1.recurso<>c.recurso " + 
-						"						) " + 
-						"					)  " + 
-						"WHERE c.ejercicio = ?    " + 
-						"UNION ALL " + 
-						"SELECT ca.recurso, ca.ejercicio, ca.recurso, ca.recurso_auxiliar, ca.nombre, null, null, null, null  " + 
-						"FROM cp_recursos_auxiliares ca " + 
-						"WHERE ca.ejercicio=? and ca.recurso_auxiliar > 0 " + 
+							"SELECT c1.recurso parent, c.ejercicio ejercicio, c.recurso recurso, -1 auxiliar, c.nombre, c.grupo_ingreso, c.clase, c.seccion, c.grupo  " + 
+							"FROM cp_recursos c left outer join cp_recursos c1  " + 
+							"				    ON ( c.ejercicio = c1.ejercicio  " + 
+							"						and ( " + 
+							"							( " + 
+							"							 (c.recurso%10>=0 and c1.recurso = (c.recurso - c.recurso%10)) OR " + 
+							"							 (c.recurso%100>=10 and c.recurso%10=0 and c1.recurso = (c.recurso - c.recurso%100)) OR " + 
+							"							  (c.recurso%1000>=100 and c.recurso%100=0 and c1.recurso = (c.recurso - c.recurso%1000)) " + 
+							"							) " + 
+							"							and c1.recurso<>c.recurso " + 
+							"						) " + 
+							"					)  " + 
+							"WHERE c.ejercicio = ?    " + 
+							"UNION ALL " + 
+							"SELECT ca.recurso, ca.ejercicio, ca.recurso, ca.recurso_auxiliar, ca.nombre, null, null, null, null  " + 
+							"FROM cp_recursos_auxiliares ca " + 
+							"WHERE ca.ejercicio=? and ca.recurso_auxiliar > 0 " + 
 						") t1 " + 
 						"order by t1.recurso, t1.auxiliar");
 				pstm.setInt(1, ejercicio);

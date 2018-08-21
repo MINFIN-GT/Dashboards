@@ -25,7 +25,7 @@
 	                     	<li role="menuitem"><a href="#!/dashboards/copeprenglon">Cuotas COPEP por Renglón</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_ingresos">Pronósticos de Ingresos</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_egresos">Pronósticos de Egresos</a></li>
-	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo Presupuestario</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo de Caja</a></li>
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>

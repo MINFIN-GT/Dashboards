@@ -20,11 +20,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import dao.CEjecucionDAO;
 import dao.CEntidadDAO;
 import dao.CRecursoDAO;
+import dao.CTesoreria;
 import pojo.CEntidad;
 import pojo.CRecurso;
 import pojo.CRecursoAuxiliar;
+import pojo.CTesoreriaCuenta;
 import pojo.CUnidadEjecutora;
 
 /**
@@ -147,16 +150,24 @@ public class SFlujoCaja extends HttpServlet {
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
 			DateTime now = DateTime.now();
 			int mes = (ejercicio < now.getYear()) ? 1 : now.getMonthOfYear();
-			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresos(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, 1, 0, 0, (ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
+			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, mes, 0, 0, (ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
 			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes, null, null, 0,(ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, 1, null, null,(ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
+			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, mes, null, null,(ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
+			Double[] pronosticos_egresos_contables =  CEjecucionDAO.getPronosticosEgresosContables(ejercicio, mes, null, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
+			Double[] historicos_egresos_contables = CEjecucionDAO.getPronosticosHistoricosEgresosContables(ejercicio, mes, null, (ejercicio<now.getYear() ? 12 : mes - 1));
+			ArrayList<CTesoreriaCuenta> cuentas= CTesoreria.getSaldoInicialCuentas(ejercicio);
 			String response_pronosticos_egresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_egresos);
 			String response_historicos_egresos = new GsonBuilder().serializeNulls().create().toJson(historicos_egresos);
 			String response_pronosticos_ingresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_ingresos);
 			String response_historicos_ingresos = new GsonBuilder().serializeNulls().create().toJson(historicos_ingresos);
+			String response_pronosticos_egresos_contables = new GsonBuilder().serializeNulls().create().toJson(pronosticos_egresos_contables);
+			String response_historicos_egresos_contables = new GsonBuilder().serializeNulls().create().toJson(historicos_egresos_contables);
+			String response_saldo_cuentas = new GsonBuilder().serializeNulls().create().toJson(cuentas);
 			response_text = String.join("", "\"pronosticos_egresos\":",response_pronosticos_egresos,", \"historicos_egresos\":", response_historicos_egresos,
-					",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos);
+					",\"pronosticos_ingresos\":", response_pronosticos_ingresos,",\"historicos_ingresos\":", response_historicos_ingresos,
+					",\"pronosticos_egresos_contables\":", response_pronosticos_egresos_contables,",\"historicos_egresos_contables\":", response_historicos_egresos_contables,
+					",\"cuentas_saldo\":", response_saldo_cuentas);
 			response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
 		else if(action.equals("getRecursosTree")){

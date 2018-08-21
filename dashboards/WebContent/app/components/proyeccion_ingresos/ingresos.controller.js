@@ -184,6 +184,8 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					me.recursos_selected=[];
 					me.auxiliares_selected={};
 					
+					var num_recursos=0;
+					
 					ivhTreeviewBfs(me.recursos, function(n) {
 			    	    if(n.selected){
 				    	    if(n.auxiliar>-1){
@@ -197,11 +199,13 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 				    	    	}
 				    	    }
 			    	    }
+			    	    if((n.children===undefined || n.children==null || n.children.length==0) && n.auxiliar==-1)
+			    	    	num_recursos++;
 			    	});
-					
+					console.log(num_recursos+' '+me.recursos_selected.length);
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, 
-							recursosIds: JSON.stringify(me.recursos_selected),
-							auxiliaresIds: JSON.stringify(me.auxiliares_selected), numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
+							recursosIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.recursos_selected),
+							auxiliaresIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.auxiliares_selected), numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 							mes: me.mes, ejercicio: me.anio  }).then(function(response){
 					    if(response.data.success){
 					    	var date = moment([me.anio, me.mes-1, 1]);

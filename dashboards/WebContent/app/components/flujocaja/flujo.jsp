@@ -36,7 +36,7 @@
 </style>    
     
 <div ng-controller="flujoController as flujo" class="maincontainer" id="title" class="all_page">
-<h4>Flujo de Caja [Presupuesto de Caja]</h4>
+<h4>Flujo de Caja</h4>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12" style="padding-left: 0px;">
@@ -69,6 +69,29 @@
    		</button>
    		</div>
    		<br/>
+   		<div style="text-align: left; font-weight: bold; width: 90%; margin: 0 auto;">Saldo iniciales de cuentas</div>
+   		<br>
+   		<table class="table_datos">
+   			<thead>
+   				<tr>
+   					<td>Cuenta</td>
+   					<td>Saldo</td>
+   				</tr>
+   			</thead>
+   			<tbody>
+	   			<tr class="tr_ingresos" ng-repeat="dato in flujo.cuentas_saldo track by $index">
+	   				<td>{{ dato.cuenta }}</td>
+	   				<td>{{ flujo.filtroQuetzales(dato.saldo_inicial,flujo.viewQuetzales) }}</td>
+	   			</tr>
+	   			<tr class="tr_ingresos" >
+	   				<td style="text-align: right; font-weight: bold;">Total</td>
+	   				<td>{{ flujo.filtroQuetzales(flujo.cuentas_saldo_total,flujo.viewQuetzales) }}</td>
+	   			</tr>
+   			</tbody>
+   		</table>	
+   		<br/>
+   		<div style="text-align: left; font-weight: bold; width: 90%; margin: 0 auto;">Datos de historicos y pronósticos</div>
+   		<br/>
 		<table class="table_datos">
 			<thead>
 				<tr>
@@ -88,10 +111,15 @@
 					<td align="right" ng-repeat="dato in flujo.egresos track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
 					<td align="right">{{ flujo.filtroQuetzales(flujo.total_egresos.toFixed(2), flujo.viewQuetzales) }}</td>
 				</tr>
+				<tr class="tr_egresos">
+					<td align="left">Egresos Contables</td>
+					<td align="right" ng-repeat="dato in flujo.egresos_contables track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
+					<td align="right">{{ flujo.filtroQuetzales(flujo.total_egresos_contables.toFixed(2), flujo.viewQuetzales) }}</td>
+				</tr>
 				<tr class="tr_caja">
 					<td align="left">Caja</td>
 					<td align="right" ng-repeat="dato in flujo.caja track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
-					<td align="right">{{ flujo.filtroQuetzales(flujo.total_ingresos.toFixed(2)-flujo.total_egresos.toFixed(2), flujo.viewQuetzales) }}</td>
+					<td align="right">{{ flujo.filtroQuetzales(flujo.caja[11], flujo.viewQuetzales) }}</td>
 				</tr>
 			</tbody>
 		</table>

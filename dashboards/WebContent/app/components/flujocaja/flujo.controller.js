@@ -12,8 +12,11 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			me.anio = moment().year();
 			me.mes = moment().month();
 			
+			me.cuentas_saldo=[];
 			me.ingresos = [];
 			me.egresos = [];
+			me.egresos_contables = [];
+			me.egresos_totales = [];
 			me.caja = [];
 			
 			me.chartLoaded=false;
@@ -32,6 +35,7 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			me.numero_pronosticos=12;
 			me.total_ingresos=0.0;
 			me.total_egresos=0.0;
+			me.cuentas_saldo_total=0.0;
 			
 			me.chartOptions= {
 					animation: {
@@ -126,6 +130,9 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			me.loadFlujo=function(){
 				$http.post('/SFlujoCaja',  { action: 'getPronosticosFlujo', ejercicio: me.anio  }).then(function(response){
 				    if(response.data.success){
+				    	pronosticos_egresos_totales = [];
+				    	historicos_egresos_totales = [];
+				    	me.cuentas_saldo = response.data.cuentas_saldo;
 				    	var pronosticos_egresos = response.data.pronosticos_egresos;
 				    	if(pronosticos_egresos!=null && pronosticos_egresos.length<12){
 				    		for(var i=pronosticos_egresos.length; i<12; i++)
@@ -135,6 +142,42 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 				    	if(historicos_egresos!=null && historicos_egresos.length<12){
 				    		for(var i=historicos_egresos.length; i<12; i++)
 				    			historicos_egresos.push(null);
+				    	}
+				    	var pronosticos_egresos_contables = response.data.pronosticos_egresos_contables;
+				    	if(pronosticos_egresos_contables!=null && pronosticos_egresos_contables.length<12){
+				    		for(var i=pronosticos_egresos_contables.length; i<12; i++){
+				    			pronosticos_egresos_contables.splice(0,0,null);
+				    		}
+				    	}	
+				    	var historicos_egresos_contables = response.data.historicos_egresos_contables;
+				    	if(historicos_egresos_contables!=null && historicos_egresos_contables.length<12){
+				    		for(var i=historicos_egresos_contables.length; i<12; i++){
+				    			historicos_egresos_contables.push(null);
+				    		}
+				    	}
+				    	for(var i=0; i<pronosticos_egresos.length;i++){
+				    		if(pronosticos_egresos[i]==null && pronosticos_egresos_contables[i]==null)
+				    			pronosticos_egresos_totales.push(null);
+				    		else{
+				    			pronosticos_egresos_totales.push((pronosticos_egresos[i]!=null ? pronosticos_egresos[i] : 0 ) +
+				    					(pronosticos_egresos_contables[i]!=null ? pronosticos_egresos_contables[i] : 0));
+				    		}
+				    	}
+				    	for(var i=0; i<historicos_egresos.length; i++){
+				    		if(historicos_egresos[i]==null && historicos_egresos_contables[i]==null)
+				    			historicos_egresos_totales.push(null);
+				    		else{
+				    			historicos_egresos_totales.push( (historicos_egresos[i]!=null ? historicos_egresos[i] : 0 ) +
+				    					(historicos_egresos_contables[i]!=null ? historicos_egresos_contables[i] : 0));
+				    		}
+				    	}
+				    	if(pronosticos_egresos_totales!=null && pronosticos_egresos_totales.length<12){
+				    		for(var i=pronosticos_egresos_totales.length; i<12; i++)
+				    			pronosticos_egresos_totales.splice(0,0,null);
+				    	}
+				    	if(historicos_egresos_totales!=null && historicos_egresos_totales.length<12){
+				    		for(var i=historicos_egresos_totlaes.length; i<12; i++)
+				    			historicos_egresos_totales.push(null);
 				    	}
 				    	var pronosticos_ingresos = response.data.pronosticos_ingresos;
 				    	if(pronosticos_ingresos!=null && pronosticos_ingresos.length<12){
@@ -148,26 +191,36 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 				    	}
 				    	me.caja=[];
 				    	var saldo=0;
+				    	for(var i=0; i<me.cuentas_saldo.length;i++)
+				    		saldo+=me.cuentas_saldo[i].saldo_inicial;
+				    	me.cuentas_saldo_total=saldo.toFixed(2);
 				    	me.total_ingresos=0.0;
 				    	me.total_egresos=0.0;
+				    	me.total_egresos_contables=0.0;
 				    	for(var i=0; i<12; i++){
 				    		var egreso_mes = historicos_egresos[i+1]!=null ? historicos_egresos[i+1] : ( pronosticos_egresos[i]!=null ? pronosticos_egresos[i] : 0);
+				    		var egreso_contable_mes = historicos_egresos_contables[i+1]!=null ? historicos_egresos_contables[i+1] : ( pronosticos_egresos_contables[i]!=null ? pronosticos_egresos_contables[i] : 0);
 				    		var ingreso_mes = historicos_ingresos[i+1]!=null ? historicos_ingresos[i+1] : ( pronosticos_ingresos[i]!=null ? pronosticos_ingresos[i] : 0);
-				    		saldo = ingreso_mes-egreso_mes+saldo;
+				    		saldo = ingreso_mes - egreso_mes - egreso_contable_mes + saldo;
 				    		me.caja.push(saldo);
 				    		me.ingresos.push(ingreso_mes);
 				    		me.egresos.push(egreso_mes);
+				    		me.egresos_contables.push(egreso_contable_mes);
 				    		me.total_ingresos+=ingreso_mes;
 				    		me.total_egresos+=egreso_mes;
+				    		me.total_egresos_contables+=egreso_contable_mes;
+				    		me.egresos_totales.push(egreso_mes+egreso_contable_mes);
 				    	}
+				    	
 				    	me.chartData=[];
 				    	pronosticos_ingresos[me.mes-1] = historicos_ingresos[me.mes];
-				    	pronosticos_egresos[me.mes-1] = historicos_egresos[me.mes];
+				    	pronosticos_egresos_totales[me.mes-1] = historicos_egresos_totales[me.mes];
 				    	me.chartData.push(me.caja);
 				    	me.chartData.push(historicos_ingresos.slice(1));
 				    	me.chartData.push(pronosticos_ingresos);
-				    	me.chartData.push(historicos_egresos.slice(1));
-				    	me.chartData.push(pronosticos_egresos);
+				    	
+				    	me.chartData.push(historicos_egresos_totales.slice(1));
+				    	me.chartData.push(pronosticos_egresos_totales);
 				    	me.chartLoaded=true;
 				    }
 				});

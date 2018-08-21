@@ -265,7 +265,6 @@ public static boolean crearCompra(CCompra compra) {
 				pstm.setInt(1, 94);
 				pstm.setInt(2, subprograma);
 				ResultSet rs=pstm.executeQuery();
-				rs.next();
 				PreparedStatement pstm2=null;
 				ResultSet rs2;
 				CEntidadCompra compra;
