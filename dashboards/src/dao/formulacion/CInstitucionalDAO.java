@@ -21,9 +21,9 @@ public class CInstitucionalDAO {
 		try{
 			conn = CDatabaseOracle.connect();
 			if(!conn.isClosed()){
-				PreparedStatement pstm =  conn.prepareStatement("  SELECT p.ejercicio, " + 
+				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
 						"         p.entidad, " + 
-						"         e.nombre          entidad_nombre, " + 
+						"         e.nombre_completo  entidad_nombre, " + 
 						"         (SELECT SUM (gd.monto_renglon) " + 
 						"            FROM sicoinprod.eg_gastos_hoja gh, sicoinprod.eg_gastos_detalle gd " + 
 						"           WHERE     gh.ejercicio = p.ejercicio - 2 " + 
@@ -53,12 +53,10 @@ public class CInstitucionalDAO {
 						"              0) " + 
 						"            aprobado_anterior_mas_amp, " + 
 						"         SUM (p.recomendado) recomendado " + 
-						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"    FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e " + 
 						"   WHERE     p.ejercicio = ? " + 
-						"         AND p.ejercicio = e.ejercicio " + 
 						"         AND p.entidad = e.entidad " + 
-						"         AND e.unidad_ejecutora = 0 " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre_completo " + 
 						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				ResultSet rs = pstm.executeQuery();
@@ -87,7 +85,7 @@ public class CInstitucionalDAO {
 			if(!conn.isClosed()){
 				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
 						"         p.entidad, " + 
-						"         e.nombre          entidad_nombre, " + 
+						"         e.nombre_completo  entidad_nombre, " + 
 						"         SUM (p.recomendado) recomendado_total, " + 
 						"         sum(case when p.tipo_presupuesto=11 then p.recomendado end) tp11, " + 
 						"         sum(case when p.tipo_presupuesto=12 then p.recomendado end) tp12, " + 
@@ -96,12 +94,10 @@ public class CInstitucionalDAO {
 						"         sum(case when p.tipo_presupuesto=22 then p.recomendado end) tp22, " + 
 						"         sum(case when p.tipo_presupuesto=23 then p.recomendado end) tp23, " + 
 						"         sum(case when p.tipo_presupuesto=31 then p.recomendado end) tp31 " + 
-						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"    FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e " + 
 						"   WHERE     p.ejercicio = ? " + 
-						"         AND p.ejercicio = e.ejercicio " + 
 						"         AND p.entidad = e.entidad " + 
-						"         AND e.unidad_ejecutora = 0 " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre_completo " + 
 						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				ResultSet rs = pstm.executeQuery();
@@ -130,7 +126,7 @@ public class CInstitucionalDAO {
 			if(!conn.isClosed()){
 				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
 						"         p.entidad, " + 
-						"         e.nombre          entidad_nombre, " + 
+						"         e.nombre_corto  entidad_nombre, " + 
 						"         SUM (p.recomendado) recomendado_total, " + 
 						"         sum(case when p.renglon between 0 and 99 then p.recomendado end) g0, " + 
 						"         sum(case when p.renglon between 100 and 199 then p.recomendado end) g1, " + 
@@ -142,13 +138,11 @@ public class CInstitucionalDAO {
 						"         sum(case when p.renglon between 700 and 799 then p.recomendado end) g7, " + 
 						"         sum(case when p.renglon between 800 and 899 then p.recomendado end) g8, " + 
 						"         sum(case when p.renglon between 900 and 999 then p.recomendado end) g9 " + 
-						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"    FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e " + 
 						"   WHERE     p.ejercicio = ? " + 
-						"         AND p.ejercicio = e.ejercicio " + 
 						"         AND p.entidad = e.entidad " + 
-						"         AND e.unidad_ejecutora = 0 " + 
 						"         and p.tipo_presupuesto between ? and ? " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre_corto " + 
 						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				switch(tipo_gasto) {
@@ -183,7 +177,7 @@ public class CInstitucionalDAO {
 			if(!conn.isClosed()){
 				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
 						"         p.entidad, " + 
-						"         e.nombre          entidad_nombre, " + 
+						"         e.nombre_corto          entidad_nombre, " + 
 						"         SUM (p.recomendado) recomendado_total, " + 
 						"         sum(case when p.funcion between 10000 and 19999 then p.recomendado end) f01, " + 
 						"         sum(case when p.funcion between 20000 and 29999 then p.recomendado end) f02, " + 
@@ -197,12 +191,10 @@ public class CInstitucionalDAO {
 						"         sum(case when p.funcion between 100000 and 109999 then p.recomendado end) f10, " + 
 						"         sum(case when p.funcion between 110000 and 119999 then p.recomendado end) f11, " + 
 						"         sum(case when p.funcion between 120000 and 129999 then p.recomendado end) f12 " + 
-						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"    FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e " + 
 						"   WHERE     p.ejercicio = ? " + 
-						"         AND p.ejercicio = e.ejercicio " + 
 						"         AND p.entidad = e.entidad " + 
-						"         AND e.unidad_ejecutora = 0 " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre_corto " + 
 						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				ResultSet rs = pstm.executeQuery();
@@ -232,7 +224,7 @@ public class CInstitucionalDAO {
 			if(!conn.isClosed()){
 				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
 						"         p.entidad, " + 
-						"         e.nombre          entidad_nombre, " + 
+						"         e.nombre_corto          entidad_nombre, " + 
 						"         SUM (p.recomendado) recomendado_total, " + 
 						"         sum(case when g.region = 1 then p.recomendado end) r1 , " + 
 						"         sum(case when g.region = 2 then p.recomendado end) r2 , " + 
@@ -245,15 +237,13 @@ public class CInstitucionalDAO {
 						"         sum(case when g.region = 9 then p.recomendado end) r9 , " + 
 						"         sum(case when g.region = 10 then p.recomendado end) r10 , " + 
 						"         sum(case when g.region = 11 then p.recomendado end) r11 " + 
-						"    FROM fp_p6_partidas p, cg_entidades e, cg_geograficos g " + 
+						"    FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e, cg_geograficos g " + 
 						"   WHERE     p.ejercicio = ? " + 
-						"         AND p.ejercicio = e.ejercicio " + 
 						"         AND p.entidad = e.entidad " + 
-						"         AND e.unidad_ejecutora = 0 " + 
 						"         AND g.geografico = p.geografico " + 
 						"         AND g.ejercicio = p.ejercicio " + 
 						"         and p.tipo_presupuesto between ? and ? " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre_corto " + 
 						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				switch(tipo_gasto) {

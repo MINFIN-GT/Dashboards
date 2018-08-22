@@ -18,7 +18,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import dao.formulacion.CFinalidadDAO;
 import dao.formulacion.CInstitucionalDAO;
+import pojo.formulacion.CFinalidadEconomico;
+import pojo.formulacion.CFinalidadRegion;
 import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
@@ -125,6 +128,32 @@ public class SInstitucional extends HttpServlet {
 				response.setCharacterEncoding("UTF-8");
 				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
 	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
+		else if(action.equals("getFinalidadRegion")) {
+			if(ejercicio>0) {
+				ArrayList<CFinalidadRegion> finalidades = CFinalidadDAO.getFinalidadRegion(ejercicio);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(finalidades);
+	            response_text = String.join("", "\"finalidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
+		else if(action.equals("getFinalidadEconomico")) {
+			if(ejercicio>0) {
+				ArrayList<CFinalidadEconomico> finalidades = CFinalidadDAO.getFinalidadRecurso(ejercicio);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(finalidades);
+	            response_text = String.join("", "\"finalidades\":",response_text);
 	            response_text = String.join("", "{\"success\":true,", response_text,"}");
 			}
 			else {

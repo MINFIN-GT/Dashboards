@@ -41,10 +41,18 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	me.total_tp_r=[];
 	me.regiones=[];
 	
+	me.finalidades_region = [];
+	me.total_finalidad_region = [];
+	
+	
+	me.finalidades_economico = [];
+	me.economicos=[];
+	me.total_finalidad_economico = [];
+	
 	me.filtroMillones=function(value, transform){
 		if(transform){
 			var millones = value/1000000;
-			return $filter('currency')(millones.toFixed(1), '', 1);
+			return (value>0) ? $filter('currency')(millones.toFixed(1), '', 1) : null;
 		}
 		else 
 			return value;
@@ -195,6 +203,37 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 				});
 			});
 		});
-	
+		
+		$http.post('/SInstitucional',  { action: 'getFinalidadRegion', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+		    if(response.data.success){
+		    	me.finalidades_region=response.data.finalidades;
+		    	//for(var i=1; i<12; i++)
+		    	//	me.regiones.push(me.finalidades_region[0]['r'+i+'_nombre']);
+		    	for(var i=0; i<12; i++)
+		    		me.total_finalidad_region.push(0.0);
+		    	for(var i=0; i<me.finalidades_region.length; i++){
+		    		me.total_finalidad_region[0] += me.finalidades_region[i].recomendado_total;
+		    		for(var j=0; j<11; j++){
+		    			me.total_finalidad_region[j+1]+=me.finalidades_region[i]['r'+(j+1)+'_monto'];
+		    		}
+		    	}
+		    }
+		});
+		
+		$http.post('/SInstitucional',  { action: 'getFinalidadEconomico', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+		    if(response.data.success){
+		    	me.finalidades_economico=response.data.finalidades;
+		    	for(var i=1; i<10; i++)
+		    		me.economicos.push(me.finalidades_economico[0]['e'+i+'_nombre']);
+		    	for(var i=0; i<10; i++)
+		    		me.total_finalidad_economico.push(0.0);
+		    	for(var i=0; i<me.finalidades_economico.length; i++){
+		    		me.total_finalidad_economico[0] += me.finalidades_economico[i].recomendado_total;
+		    		for(var j=1; j<10; j++){
+		    			me.total_finalidad_economico[j]+=me.finalidades_economico[i]['e'+(j)+'_monto'];
+		    		}
+		    	}
+		    }
+		});
 }
 ]);
