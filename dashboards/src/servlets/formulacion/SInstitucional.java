@@ -19,6 +19,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.formulacion.CInstitucionalDAO;
+import pojo.formulacion.CInstitucionalFinalidad;
+import pojo.formulacion.CInstitucionalTipoGasto;
+import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTotal;
 import utilities.Utils;
 
@@ -59,8 +62,8 @@ public class SInstitucional extends HttpServlet {
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 		String action = map.get("action");
 		String response_text="";
+		int ejercicio = Utils.String2Int(map.get("ejercicio"), 0);
 		if(action.equals("getInstitucionalTotal")) {
-			int ejercicio = Utils.String2Int(map.get("ejercicio"), 0);
 			if(ejercicio>0) {
 				ArrayList<CInstitucionalTotal> entidades = CInstitucionalDAO.getInstitucionalTotal(ejercicio);
 				response.setHeader("Content-Encoding", "gzip");
@@ -72,13 +75,52 @@ public class SInstitucional extends HttpServlet {
 			else {
 				response_text = String.join("", "{\"success\":false }");
 			}
-	        
-	        OutputStream output = response.getOutputStream();
+	    }
+		else if(action.equals("getInstitucionalTipoGasto")) {
+			if(ejercicio>0) {
+				ArrayList<CInstitucionalTipoGasto> entidades = CInstitucionalDAO.getInstitucionalTipoGasto(ejercicio);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
+		else if(action.equals("getInstitucionalTipoGastoGrupoGasto")) {
+			if(ejercicio>0) {
+				int tipo_gasto = Utils.String2Int(map.get("tipo_gasto"), 0);
+				ArrayList<CInstitucionalTipoGastoGrupoGasto> entidades = CInstitucionalDAO.getInstitucionalTipoGastoGrupoGasto(ejercicio,tipo_gasto);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
+		else if(action.equals("getInstitucionalFinalidad")) {
+			if(ejercicio>0) {
+				ArrayList<CInstitucionalFinalidad> entidades = CInstitucionalDAO.getInstitucionalFinalidad(ejercicio);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
+		 OutputStream output = response.getOutputStream();
 			GZIPOutputStream gz = new GZIPOutputStream(output);
 	        gz.write(response_text.getBytes("UTF-8"));
-            gz.close();
-            output.close();
-		}
+         gz.close();
+         output.close();
 	}
 
 }

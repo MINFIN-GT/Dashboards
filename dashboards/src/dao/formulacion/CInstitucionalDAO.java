@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import db.utilities.CDatabaseOracle;
+import pojo.formulacion.CInstitucionalFinalidad;
+import pojo.formulacion.CInstitucionalTipoGasto;
+import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTotal;
 import utilities.CLogger;
 
@@ -68,6 +71,151 @@ public class CInstitucionalDAO {
 		}
 		catch(Exception e){
 			CLogger.write("1", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+		}
+		return ret;
+	}
+	
+	public static ArrayList<CInstitucionalTipoGasto> getInstitucionalTipoGasto(int ejercicio){
+		ArrayList<CInstitucionalTipoGasto> ret = new ArrayList<CInstitucionalTipoGasto>();
+		Connection conn = null;
+		try{
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
+						"         p.entidad, " + 
+						"         e.nombre          entidad_nombre, " + 
+						"         SUM (p.recomendado) recomendado_total, " + 
+						"         sum(case when p.tipo_presupuesto=11 then p.recomendado end) tp11, " + 
+						"         sum(case when p.tipo_presupuesto=12 then p.recomendado end) tp12, " + 
+						"         sum(case when p.tipo_presupuesto=13 then p.recomendado end) tp13, " + 
+						"         sum(case when p.tipo_presupuesto=21 then p.recomendado end) tp21, " + 
+						"         sum(case when p.tipo_presupuesto=22 then p.recomendado end) tp22, " + 
+						"         sum(case when p.tipo_presupuesto=23 then p.recomendado end) tp23, " + 
+						"         sum(case when p.tipo_presupuesto=31 then p.recomendado end) tp31 " + 
+						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"   WHERE     p.ejercicio = ? " + 
+						"         AND p.ejercicio = e.ejercicio " + 
+						"         AND p.entidad = e.entidad " + 
+						"         AND e.unidad_ejecutora = 0 " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"ORDER BY p.entidad");
+				pstm.setInt(1, ejercicio);
+				ResultSet rs = pstm.executeQuery();
+				while(rs.next()){
+					CInstitucionalTipoGasto entidad = new CInstitucionalTipoGasto(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getDouble("recomendado_total"),
+							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"));
+					ret.add(entidad);
+				}
+			
+			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+		}
+		return ret;
+	}
+	
+	public static ArrayList<CInstitucionalTipoGastoGrupoGasto> getInstitucionalTipoGastoGrupoGasto(int ejercicio, int tipo_gasto){
+		ArrayList<CInstitucionalTipoGastoGrupoGasto> ret = new ArrayList<CInstitucionalTipoGastoGrupoGasto>();
+		Connection conn = null;
+		try{
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
+						"         p.entidad, " + 
+						"         e.nombre          entidad_nombre, " + 
+						"         SUM (p.recomendado) recomendado_total, " + 
+						"         sum(case when p.renglon between 0 and 99 then p.recomendado end) g0, " + 
+						"         sum(case when p.renglon between 100 and 199 then p.recomendado end) g1, " + 
+						"         sum(case when p.renglon between 200 and 299 then p.recomendado end) g2, " + 
+						"         sum(case when p.renglon between 300 and 399 then p.recomendado end) g3, " + 
+						"         sum(case when p.renglon between 400 and 499 then p.recomendado end) g4, " + 
+						"         sum(case when p.renglon between 500 and 599 then p.recomendado end) g5, " + 
+						"         sum(case when p.renglon between 600 and 699 then p.recomendado end) g6, " + 
+						"         sum(case when p.renglon between 700 and 799 then p.recomendado end) g7, " + 
+						"         sum(case when p.renglon between 800 and 899 then p.recomendado end) g8, " + 
+						"         sum(case when p.renglon between 900 and 999 then p.recomendado end) g9 " + 
+						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"   WHERE     p.ejercicio = ? " + 
+						"         AND p.ejercicio = e.ejercicio " + 
+						"         AND p.entidad = e.entidad " + 
+						"         AND e.unidad_ejecutora = 0 " + 
+						"         and p.tipo_presupuesto between ? and ? " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"ORDER BY p.entidad;");
+				pstm.setInt(1, ejercicio);
+				switch(tipo_gasto) {
+					case 10: pstm.setInt(2, 11); pstm.setInt(3, 13); break;
+					case 20: pstm.setInt(2, 21); pstm.setInt(3, 23); break;
+					case 30: pstm.setInt(2, 31); pstm.setInt(3, 31); break;
+				}
+				ResultSet rs = pstm.executeQuery();
+				while(rs.next()){
+					CInstitucionalTipoGastoGrupoGasto entidad = new CInstitucionalTipoGastoGrupoGasto(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"),
+							tipo_gasto, rs.getDouble("recomendado_total"), rs.getDouble("g0"), rs.getDouble("g1"),rs.getDouble("g2"),rs.getDouble("g3"),rs.getDouble("g4"),
+							rs.getDouble("g5"),rs.getDouble("g6"),rs.getDouble("g7"),rs.getDouble("g8"),rs.getDouble("g9"));
+					ret.add(entidad);
+				}
+			
+			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+		}
+		return ret;
+	}
+	
+	public static ArrayList<CInstitucionalFinalidad> getInstitucionalFinalidad(int ejercicio){
+		ArrayList<CInstitucionalFinalidad> ret = new ArrayList<CInstitucionalFinalidad>();
+		Connection conn = null;
+		try{
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
+						"         p.entidad, " + 
+						"         e.nombre          entidad_nombre, " + 
+						"         SUM (p.recomendado) recomendado_total, " + 
+						"         sum(case when p.funcion between 10000 and 19999 then p.recomendado end) f01, " + 
+						"         sum(case when p.funcion between 20000 and 29999 then p.recomendado end) f02, " + 
+						"         sum(case when p.funcion between 30000 and 39999 then p.recomendado end) f03, " + 
+						"         sum(case when p.funcion between 40000 and 49999 then p.recomendado end) f04, " + 
+						"         sum(case when p.funcion between 50000 and 59999 then p.recomendado end) f05, " + 
+						"         sum(case when p.funcion between 60000 and 69999 then p.recomendado end) f06, " + 
+						"         sum(case when p.funcion between 70000 and 79999 then p.recomendado end) f07, " + 
+						"         sum(case when p.funcion between 80000 and 89999 then p.recomendado end) f08, " + 
+						"         sum(case when p.funcion between 90000 and 99999 then p.recomendado end) f09, " + 
+						"         sum(case when p.funcion between 100000 and 109999 then p.recomendado end) f10, " + 
+						"         sum(case when p.funcion between 110000 and 119999 then p.recomendado end) f11, " + 
+						"         sum(case when p.funcion between 120000 and 129999 then p.recomendado end) f12 " + 
+						"    FROM fp_p6_partidas p, cg_entidades e " + 
+						"   WHERE     p.ejercicio = ? " + 
+						"         AND p.ejercicio = e.ejercicio " + 
+						"         AND p.entidad = e.entidad " + 
+						"         AND e.unidad_ejecutora = 0 " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"ORDER BY p.entidad");
+				pstm.setInt(1, ejercicio);
+				ResultSet rs = pstm.executeQuery();
+				while(rs.next()){
+					CInstitucionalFinalidad entidad = new CInstitucionalFinalidad(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"),
+							rs.getDouble("recomendado_total"), rs.getDouble("f01"), rs.getDouble("f02"),rs.getDouble("f03"),rs.getDouble("f04"),rs.getDouble("f05"),
+							rs.getDouble("f06"),rs.getDouble("f07"),rs.getDouble("f08"),rs.getDouble("f09"),rs.getDouble("f10"),rs.getDouble("f11"),rs.getDouble("f12"));
+					ret.add(entidad);
+				}
+			
+			}
+		}
+		catch(Exception e){
+			CLogger.write("4", CInstitucionalDAO.class, e);
 		}
 		finally{
 			CDatabaseOracle.close(conn);
