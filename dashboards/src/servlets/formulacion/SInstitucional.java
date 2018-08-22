@@ -22,6 +22,7 @@ import dao.formulacion.CInstitucionalDAO;
 import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
+import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
 import utilities.Utils;
 
@@ -106,6 +107,20 @@ public class SInstitucional extends HttpServlet {
 		else if(action.equals("getInstitucionalFinalidad")) {
 			if(ejercicio>0) {
 				ArrayList<CInstitucionalFinalidad> entidades = CInstitucionalDAO.getInstitucionalFinalidad(ejercicio);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
+		else if(action.equals("getInstitucionalTipoGastoRegion")) {
+			if(ejercicio>0) {
+				int tipo_gasto = Utils.String2Int(map.get("tipo_gasto"), 0);
+				ArrayList<CInstitucionalTipoGastoRegion> entidades = CInstitucionalDAO.getInstitucionalTipoGastoRegion(ejercicio,tipo_gasto);
 				response.setHeader("Content-Encoding", "gzip");
 				response.setCharacterEncoding("UTF-8");
 				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);

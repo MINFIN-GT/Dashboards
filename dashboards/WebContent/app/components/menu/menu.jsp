@@ -60,6 +60,12 @@
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>
+	                	<a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Formulación <b class="caret"></b></a>
+	                	<ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+	                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales">Cuadros Globales</a></li>
+	                	</ul>
+	                </li>
+	                <li uib-dropdown>
 	                    <a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Utils <b class="caret"></b></a>
 	                     <ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
 	                     	<shiro:hasPermission name="1">

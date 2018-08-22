@@ -9,6 +9,7 @@ import db.utilities.CDatabaseOracle;
 import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
+import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
 import utilities.CLogger;
 
@@ -63,7 +64,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				while(rs.next()){
 					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getDouble("ejecutado_dos_antes"), 
-							rs.getDouble("aprboado_anterior"),rs.getDouble("aprboado_anterior_mas_amp"), rs.getDouble("recomendado"));
+							rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"));
 					ret.add(entidad);
 				}
 			
@@ -148,7 +149,7 @@ public class CInstitucionalDAO {
 						"         AND e.unidad_ejecutora = 0 " + 
 						"         and p.tipo_presupuesto between ? and ? " + 
 						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
-						"ORDER BY p.entidad;");
+						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				switch(tipo_gasto) {
 					case 10: pstm.setInt(2, 11); pstm.setInt(3, 13); break;
@@ -216,6 +217,62 @@ public class CInstitucionalDAO {
 		}
 		catch(Exception e){
 			CLogger.write("4", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+		}
+		return ret;
+	}
+	
+	public static ArrayList<CInstitucionalTipoGastoRegion> getInstitucionalTipoGastoRegion(int ejercicio, int tipo_gasto){
+		ArrayList<CInstitucionalTipoGastoRegion> ret = new ArrayList<CInstitucionalTipoGastoRegion>();
+		Connection conn = null;
+		try{
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
+						"         p.entidad, " + 
+						"         e.nombre          entidad_nombre, " + 
+						"         SUM (p.recomendado) recomendado_total, " + 
+						"         sum(case when g.region = 1 then p.recomendado end) r1 , " + 
+						"         sum(case when g.region = 2 then p.recomendado end) r2 , " + 
+						"         sum(case when g.region = 3 then p.recomendado end) r3 , " + 
+						"         sum(case when g.region = 4 then p.recomendado end) r4 , " + 
+						"         sum(case when g.region = 5 then p.recomendado end) r5 , " + 
+						"         sum(case when g.region = 6 then p.recomendado end) r6 , " + 
+						"         sum(case when g.region = 7 then p.recomendado end) r7 , " + 
+						"         sum(case when g.region = 8 then p.recomendado end) r8 , " + 
+						"         sum(case when g.region = 9 then p.recomendado end) r9 , " + 
+						"         sum(case when g.region = 10 then p.recomendado end) r10 , " + 
+						"         sum(case when g.region = 11 then p.recomendado end) r11 " + 
+						"    FROM fp_p6_partidas p, cg_entidades e, cg_geograficos g " + 
+						"   WHERE     p.ejercicio = ? " + 
+						"         AND p.ejercicio = e.ejercicio " + 
+						"         AND p.entidad = e.entidad " + 
+						"         AND e.unidad_ejecutora = 0 " + 
+						"         AND g.geografico = p.geografico " + 
+						"         AND g.ejercicio = p.ejercicio " + 
+						"         and p.tipo_presupuesto between ? and ? " + 
+						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
+						"ORDER BY p.entidad");
+				pstm.setInt(1, ejercicio);
+				switch(tipo_gasto) {
+					case 10: pstm.setInt(2, 11); pstm.setInt(3, 13); break;
+					case 20: pstm.setInt(2, 21); pstm.setInt(3, 23); break;
+					case 30: pstm.setInt(2, 31); pstm.setInt(3, 31); break;
+				}
+				ResultSet rs = pstm.executeQuery();
+				while(rs.next()){
+					CInstitucionalTipoGastoRegion entidad = new CInstitucionalTipoGastoRegion(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"),
+							tipo_gasto, rs.getDouble("recomendado_total"), rs.getDouble("r1"),rs.getDouble("r2"),rs.getDouble("r3"),rs.getDouble("r4"),
+							rs.getDouble("r5"),rs.getDouble("r6"),rs.getDouble("r7"),rs.getDouble("r8"),rs.getDouble("r9"),rs.getDouble("r10"),rs.getDouble("r11"));
+					ret.add(entidad);
+				}
+			
+			}
+		}
+		catch(Exception e){
+			CLogger.write("5", CInstitucionalDAO.class, e);
 		}
 		finally{
 			CDatabaseOracle.close(conn);

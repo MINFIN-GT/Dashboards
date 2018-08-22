@@ -92,7 +92,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/admin/users',{
             	template: '<div load-on-demand="\'usersController\'" class="all_page"></div>'
             })
-
+            .when('/formulacion/cuadrosglobales',{
+            	template: '<div load-on-demand="\'cuadrosglobalesController\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -245,6 +247,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'usersController',
 	    	   script: '/app/components/admin/users.controller.js',
 	    	   template: '/app/components/admin/users.jsp'
+	       },
+	       {
+	    	   name: 'cuadrosglobalesController',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadrosglobales.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadrosglobales.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
