@@ -6,6 +6,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	
 	me.viewMillones = true;
 	me.anio = moment().year()+1;
+	me.showloading=[true,true,true,true,true,true,true,true,true,true,true];
 	
 	me.entidades = [];
 	me.total_aprobado_anterior_mas_ampliaciones=0.0;
@@ -59,6 +60,46 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	}
 	
 	
+	$http.post('/SInstitucional',  { action: 'getRecursosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+	   if(response.data.success){
+		   var stack_recurso=[];
+		   var stack_suma=[];
+	    	me.recursos=response.data.recursos;
+	    	for(var i=0; i<me.recursos.length-1; i++){
+	    		if(me.recursos[i+1].nivel>me.recursos[i].nivel){
+	    			stack_recurso.push(i);
+	    			stack_suma.push(0.0);
+	    		}
+	    		else if(me.recursos[i+1].nivel==me.recursos[i].nivel){
+	    			stack_suma[stack_suma.length-1] += me.recursos[i].recomendado;
+	    		}
+	    		else if(me.recursos[i+1].nivel<me.recursos[i].nivel){
+	    			var stack_anterior = me.recursos[i].recomendado;
+	    			for(var k=0;  k<(me.recursos[i].nivel-me.recursos[i+1].nivel);k++){
+		    			if(k==0){
+		    				stack_suma[stack_suma.length-1] +=stack_anterior;
+		    			}
+			    		stack_anterior = stack_suma[stack_suma.length-1];
+		    			me.recursos[stack_recurso[stack_recurso.length-1]].recomendado = stack_suma[stack_suma.length-1];
+		    			if(stack_suma.length>1){
+		    				stack_suma[stack_suma.length-2] += stack_anterior;
+		    			}
+		    			stack_recurso.pop();
+			    		stack_suma.pop();
+		    		}
+	    		}
+	    	}
+	    	stack_suma[stack_suma.length-1] += me.recursos[i].recomendado;
+    		while(stack_recurso.length>0){
+	    		stack_suma[stack_suma.length-2] += stack_suma[stack_suma.length-1];
+	    		me.recursos[stack_recurso[stack_recurso.length-1]].recomendado = stack_suma[stack_suma.length-1];
+	    		stack_recurso.pop();
+    			stack_suma.pop();
+	    	}
+	    }
+	    me.showloading[2]=false;
+	});
+	
 		$http.post('/SInstitucional',  { action: 'getInstitucionalTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 		    if(response.data.success){
 		    	me.entidades=response.data.entidades;
@@ -68,6 +109,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		me.total_recomendado += me.entidades[i].recomendado;
 		    	}
 		    }
+		    me.showloading[4]=false;
 		});
 		
 		$http.post('/SInstitucional',  { action: 'getInstitucionalTipoGasto', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
@@ -84,6 +126,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		}
 		    	}
 		    }
+		    me.showloading[5]=false;
 		});
 		
 		$http.post('/SInstitucional',  { action: 'getInstitucionalTipoGastoGrupoGasto', ejercicio: me.anio, t: (new Date()).getTime(), tipo_gasto: 10   }).then(function(response){
@@ -132,7 +175,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 				    		}
 				    	}
 				    }
-				    
+				    me.showloading[6]=false;
 				});
 			});
 		});
@@ -151,6 +194,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		}
 		    	}
 		    }
+		    me.showloading[7]=false;
 		});
 		
 		$http.post('/SInstitucional',  { action: 'getInstitucionalTipoGastoRegion', ejercicio: me.anio, t: (new Date()).getTime(), tipo_gasto: 10   }).then(function(response){
@@ -199,7 +243,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 				    		}
 				    	}
 				    }
-				    
+				    me.showloading[8]=false;
 				});
 			});
 		});
@@ -218,6 +262,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		}
 		    	}
 		    }
+		    me.showloading[9]=false;
 		});
 		
 		$http.post('/SInstitucional',  { action: 'getFinalidadEconomico', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
@@ -234,6 +279,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		}
 		    	}
 		    }
+		    me.showloading[10]=false;
 		});
 }
 ]);

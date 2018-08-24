@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 
 import dao.formulacion.CFinalidadDAO;
 import dao.formulacion.CInstitucionalDAO;
+import dao.formulacion.CRecursoDAO;
 import pojo.formulacion.CFinalidadEconomico;
 import pojo.formulacion.CFinalidadRegion;
 import pojo.formulacion.CInstitucionalFinalidad;
@@ -27,6 +28,7 @@ import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
+import pojo.formulacion.CRecursoEconomico;
 import utilities.Utils;
 
 /**
@@ -67,6 +69,19 @@ public class SInstitucional extends HttpServlet {
 		String action = map.get("action");
 		String response_text="";
 		int ejercicio = Utils.String2Int(map.get("ejercicio"), 0);
+		if(action.equals("getRecursosTotal")) {
+			if(ejercicio>0) {
+				ArrayList<CRecursoEconomico> entidades = CRecursoDAO.getRecursosTotal(ejercicio);
+				response.setHeader("Content-Encoding", "gzip");
+				response.setCharacterEncoding("UTF-8");
+				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	            response_text = String.join("", "\"recursos\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+	    }
 		if(action.equals("getInstitucionalTotal")) {
 			if(ejercicio>0) {
 				ArrayList<CInstitucionalTotal> entidades = CInstitucionalDAO.getInstitucionalTotal(ejercicio);

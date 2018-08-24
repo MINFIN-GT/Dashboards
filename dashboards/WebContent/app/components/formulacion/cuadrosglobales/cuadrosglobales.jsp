@@ -30,6 +30,7 @@
 		font-family: "Times New Roman";
 		font-size: 10px;
 		margin: 0 auto;
+		position: relative;
 	}
 	
 	.div_titulo{
@@ -37,6 +38,55 @@
 		margin-top: 20px;
 	}
 	
+	.tab1{
+		margin-left: 10px;
+	}
+	
+	.tab2{
+		margin-left: 20px;
+	}
+	
+	.tab3{
+		margin-left: 30px;
+	}
+	
+	.tab4{
+		margin-left: 40px;
+	}
+	
+	.tab5{
+		margin-left: 50px;
+	}
+	
+	.tab6{
+		margin-left: 60px;
+	}
+	
+	.negrillas{
+		font-weight:bold;
+	}
+	
+	.grid_loading_cuadros{
+		position: absolute;
+	    top:0;
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+	}
+	
+	.grid_loading_cuadros .msg {
+	  opacity: 1;
+	  background-color: rgba(238,238,238,0.85);
+	  text-align: center;
+	  width: 100%;
+	  height: 100%;
+	  display: table;
+	}
+	
+	.grid_loading_cuadros .msg span {
+	  display: table-cell;
+	  vertical-align: middle;
+	}
 </style>
 <div ng-controller="cuadrosglobalesController as ctrl" class="maincontainer" id="title" class="all_page">
 <h4>Cuadros Globales</h4>
@@ -44,8 +94,53 @@
 </div>
 <div class="row">
 	<uib-tabset active="active">
-	    <uib-tab index="0" heading="Institucional">
+		<uib-tab index="2" heading="Clasificación Econ. de los Recursos">
 	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[2]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
+	    		<div class="div_titulo">
+			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 3</div>
+			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
+			    	<div style="font-size: 12px; font-weight: bold;">Clasificación Económica de los Recursos</div>
+			    	<div style="font-size: 12px; font-weight: bold;">(Montos en Millones de Quetzales)</div>
+		    	</div>
+		    	<table st-table="ctrl.recursos" class="table">
+					<thead>
+					<tr>
+						<th style="text-align: center">Descripción</th>
+						<th style="text-align: center; width: 160px;border-right: 1px solid gray; border-left: 1px solid gray;">Ejecutado <br/>{{ ctrl.anio-2 }}</th>
+						<th style="text-align: center; width: 160px;border-right: 1px solid gray; border-left: 1px solid gray;">Aprobado <br/>{{ ctrl.anio-1 }} (*)</th>
+						<th style="text-align: center; width: 160px;">Recomendado <br/>{{ ctrl.anio }}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="row in ctrl.recursos">
+						<td><span class="{{ 'tab'+row.nivel }}"><span class="{{ row.negrillas==1 ? 'negrillas' : '' }}">{{ row.texto }}</span></span></td>
+						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.ejecutado_dos_antes, ctrl.viewMillones) }}</td>
+						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.aprobado_anterior_mas_amp, ctrl.viewMillones) }}</td>
+						<td style="text-align: right;">{{ ctrl.filtroMillones(row.recomendado, ctrl.viewMillones) }}</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
+			</div>
+	    </uib-tab>
+	    <uib-tab index="4" heading="Institucional">
+	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[4]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 5</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
@@ -79,8 +174,16 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="1" heading="Inst. y Subgrupo de Tipo de Gasto">
+	    <uib-tab index="5" heading="Inst. y Subgrupo de Tipo de Gasto">
 	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[5]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 6</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
@@ -114,8 +217,16 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="2" heading="Inst. por Tipo Presupuesto y Grupo Gasto" >
+	    <uib-tab index="6" heading="Inst. por Tipo Presupuesto y Grupo Gasto" >
 	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[6]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 7</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
@@ -170,8 +281,16 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="3" heading="Inst. por Finalidad">
+	    <uib-tab index="7" heading="Inst. por Finalidad">
 	    <div class="div_principal">
+	    	<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[7]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 8</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
@@ -205,8 +324,16 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="4" heading="Finalidad y Económico de G.">
+	    <uib-tab index="8" heading="Finalidad y Económico de G.">
 	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[8]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 9</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
@@ -240,8 +367,16 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="5" heading="Inst. Tipo de G. y Región">
+	    <uib-tab index="9" heading="Inst. Tipo de G. y Región">
 	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[9]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 10</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
@@ -296,8 +431,16 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="6" heading="Gasto según Región y Finalidad">
+	    <uib-tab index="10" heading="Gasto según Región y Finalidad">
 	    	<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[10]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
 	    		<div class="div_titulo">
 			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 11</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>

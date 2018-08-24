@@ -20,6 +20,11 @@ public class CProperties {
 	private static String oracle_password="";
 	private static String oracle_schema=null;
 	
+	private static String oracle_sicoinp_host="";
+	private static Integer oracle_sicoinp_port=null;
+	private static String oracle_sicoinp_user="";
+	private static String oracle_sicoinp_password="";
+	
 	static{
 		InputStream input;
 		properties = new Properties();
@@ -42,6 +47,12 @@ public class CProperties {
 			oracle_schema = properties.getProperty("oracle_schema");
 			oracle_user = properties.getProperty("oracle_user");
 			oracle_password = properties.getProperty("oracle_password");
+			
+			oracle_sicoinp_host = properties.getProperty("oracle_sicoinp_host");
+			oracle_sicoinp_port = properties.getProperty("oracle_sicoinp_port") != null ? 
+					Integer.parseInt(properties.getProperty("oracle_sicoinp_port")) : null;
+			oracle_sicoinp_user = properties.getProperty("oracle_sicoinp_user");
+			oracle_sicoinp_password = properties.getProperty("oracle_sicoinp_password");
 			
 			
 		}
@@ -163,5 +174,37 @@ public class CProperties {
 	
 	public void setmemsql_schema_estados_excepcion(String memsql_schema_estados_excepcion){
 		CProperties.memsql_schema_des = memsql_schema_estados_excepcion;
+	}
+
+	public static String getOracle_sicoinp_host() {
+		return oracle_sicoinp_host;
+	}
+
+	public static void setOracle_sicoinp_host(String oracle_sicoinp_host) {
+		CProperties.oracle_sicoinp_host = oracle_sicoinp_host;
+	}
+
+	public static Integer getOracle_sicoinp_port() {
+		return oracle_sicoinp_port;
+	}
+
+	public static void setOracle_sicoinp_port(Integer oracle_sicoinp_port) {
+		CProperties.oracle_sicoinp_port = oracle_sicoinp_port;
+	}
+
+	public static String getOracle_sicoinp_user() {
+		return oracle_sicoinp_user;
+	}
+
+	public static void setOracle_sicoinp_user(String oracle_sicoinp_user) {
+		CProperties.oracle_sicoinp_user = oracle_sicoinp_user;
+	}
+
+	public static String getOracle_sicoinp_password() {
+		return oracle_sicoinp_password;
+	}
+
+	public static void setOracle_sicoinp_password(String oracle_sicoinp_password) {
+		CProperties.oracle_sicoinp_password = oracle_sicoinp_password;
 	}
 }
