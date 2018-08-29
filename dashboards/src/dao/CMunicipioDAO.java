@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -14,9 +15,10 @@ public class CMunicipioDAO {
 	
 	public static CMunicipio getTown(Integer id){
 		CMunicipio ret=null;
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select * from municipio where id = ?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("select * from municipio where id = ?");
 				pstm.setInt(1, id);
 				ResultSet results = pstm.executeQuery();
 				if(results.next()){
@@ -29,16 +31,20 @@ public class CMunicipioDAO {
 			}
 		}
 		catch(Exception e){
-			
+			CLogger.write("1", CMunicipioDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;	
 	}
 	
 	public static ArrayList<CMunicipio> getMunicipios(){
 		final ArrayList<CMunicipio> towns=new ArrayList<CMunicipio>();
-		if(CDatabase.connect()){
-			try{
-				Statement statement =  CDatabase.getConnection().createStatement();
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				Statement statement =  conn.createStatement();
 				ResultSet results = statement.executeQuery("select * from municipio order by nombre");
 				while (results.next()){
 					CMunicipio town = new CMunicipio(results.getInt("codigo"),results.getString("nombre_mayuscula"), results.getString("nombre"), results.getString("latitud"), results.getString("longitud"),
@@ -47,12 +53,12 @@ public class CMunicipioDAO {
 				}
 				results.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CMunicipioDAO.class, e);
-			}
-			finally{
-				CDatabase.close();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CMunicipioDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		if(towns.size()==0)
 			return null;

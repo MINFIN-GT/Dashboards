@@ -14,9 +14,9 @@ CGrupoGasto grupoGasto;
 	
 	public static ArrayList<CGrupoGasto> getGruposGasto(int ejercicio){
 		final ArrayList<CGrupoGasto> gruposGasto=new ArrayList<CGrupoGasto>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select grupo_gasto, nombre from cp_grupos_gasto where ejercicio=? order by grupo_gasto");
 				pstm1.setInt(1, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
@@ -27,12 +27,12 @@ CGrupoGasto grupoGasto;
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CGrupoGastoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CGrupoGastoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return gruposGasto.size()>0 ? gruposGasto : null;
 	}

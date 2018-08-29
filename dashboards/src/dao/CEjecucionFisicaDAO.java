@@ -18,203 +18,201 @@ public class CEjecucionFisicaDAO {
 	public static ArrayList<CEjecucionFisicaMensualizada> getEjecucionFisicaMensual(Integer level,Integer ejercicio, Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
 			Integer proyecto, Integer actividad, Integer obra){		
 		final ArrayList<CEjecucionFisicaMensualizada> entidades=new ArrayList<CEjecucionFisicaMensualizada>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			String proyeccion="";
-			String group ="";
-			switch(level){
-				case 1: proyeccion="ef.entidad id,  "; 
-					group = "ef.entidad";
-					break;
-				case 2: proyeccion="ef.unidad_ejecutora id, "; 
-					 group = "ef.unidad_ejecutora";
-					 break;
-				case 3: proyeccion="ef.programa id, "; 
-					 group = "ef.programa";
-					 break;
-				case 4: proyeccion="ef.subprograma id, "; 
-					 group = "ef.subprograma";
-					 break;
-				case 5: proyeccion="ef.proyecto id, ";
-					 group = "ef.proyecto";
-					 break;
-				case 6: proyeccion="ef.actividad id, ef.obra, "; 
-					 group = "ef.actividad, ef.obra";
-					 break;
-			}
-			try{
-				if(!conn.isClosed()){
-					DateTime now = new DateTime();    
-					PreparedStatement pstm1 =  conn.prepareStatement("select ef.ejercicio,        " + 
-				 	 proyeccion+" " + 
-				 	"  sum(ep.ejecucion_1)/sum(ep.vigente_1) ejecucion_financiera_1,   " + 
-				 	"  sum(ep.ejecucion_2)/sum(ep.vigente_2) ejecucion_financiera_2,   " + 
-				 	"  sum(ep.ejecucion_3)/sum(ep.vigente_3) ejecucion_financiera_3,   " + 
-				 	"  sum(ep.ejecucion_4)/sum(ep.vigente_4) ejecucion_financiera_4,   " + 
-				 	"  sum(ep.ejecucion_5)/sum(ep.vigente_5) ejecucion_financiera_5,   " + 
-				 	"  sum(ep.ejecucion_6)/sum(ep.vigente_6) ejecucion_financiera_6,   " + 
-				 	"  sum(ep.ejecucion_7)/sum(ep.vigente_7) ejecucion_financiera_7,   " + 
-				 	"  sum(ep.ejecucion_8)/sum(ep.vigente_8) ejecucion_financiera_8,   " + 
-				 	"  sum(ep.ejecucion_9)/sum(ep.vigente_9) ejecucion_financiera_9,   " + 
-				 	"  sum(ep.ejecucion_10)/sum(ep.vigente_10) ejecucion_financiera_10,   " + 
-				 	"  sum(ep.ejecucion_11)/sum(ep.vigente_11) ejecucion_financiera_11,   " + 
-				 	"  sum(ep.ejecucion_12)/sum(ep.vigente_12) ejecucion_financiera_12,    " + 
-				 	"  sum(ef.ejecucion_porcentaje_1*ep.vigente_1)/sum(ep.vigente_1) ejecucion_fisica_1,   " + 
-				 	"  sum(ef.ejecucion_porcentaje_2*ep.vigente_2)/sum(ep.vigente_2) ejecucion_fisica_2,  " + 
-				 	"  sum(ef.ejecucion_porcentaje_3*ep.vigente_3)/sum(ep.vigente_3) ejecucion_fisica_3,  " + 
-				 	"  sum(ef.ejecucion_porcentaje_4*ep.vigente_4)/sum(ep.vigente_4) ejecucion_fisica_4,   " + 
-				 	"  sum(ef.ejecucion_porcentaje_5*ep.vigente_5)/sum(ep.vigente_5) ejecucion_fisica_5,  " + 
-				 	"  sum(ef.ejecucion_porcentaje_6*ep.vigente_6)/sum(ep.vigente_6) ejecucion_fisica_6,   " + 
-				 	"  sum(ef.ejecucion_porcentaje_7*ep.vigente_7)/sum(ep.vigente_7) ejecucion_fisica_7,   " + 
-				 	"  sum(ef.ejecucion_porcentaje_8*ep.vigente_8)/sum(ep.vigente_8) ejecucion_fisica_8,    " + 
-				 	"  sum(ef.ejecucion_porcentaje_9*ep.vigente_9)/sum(ep.vigente_9) ejecucion_fisica_9,    " + 
-				 	"  sum(ef.ejecucion_porcentaje_10*ep.vigente_10)/sum(ep.vigente_10) ejecucion_fisica_10,    " + 
-				 	"  sum(ef.ejecucion_porcentaje_11*ep.vigente_11)/sum(ep.vigente_11) ejecucion_fisica_11,   " + 
-				 	"  sum(ef.ejecucion_porcentaje_12*ep.vigente_12)/sum(ep.vigente_12) ejecucion_fisica_12       " + 
-				 	"  from (     " + 
-				 	"  select   ejercicio, entidad,      " + 
-				 	"  		unidad_ejecutora,        " + 
-				 	" 	 	programa,         " + 
-				 	" 	 	subprograma,         " + 
-				 	" 	 	proyecto,         " + 
-				 	" 	 	actividad, obra, " + 
-				 	" 		avg(ejecucion_porcentaje_1) ejecucion_porcentaje_1, " + 
-				 	" 		avg(ejecucion_porcentaje_2) ejecucion_porcentaje_2, " + 
-				 	" 		avg(ejecucion_porcentaje_3) ejecucion_porcentaje_3, " + 
-				 	" 		avg(ejecucion_porcentaje_4) ejecucion_porcentaje_4, " + 
-				 	" 		avg(ejecucion_porcentaje_5) ejecucion_porcentaje_5, " + 
-				 	" 		avg(ejecucion_porcentaje_6) ejecucion_porcentaje_6, " + 
-				 	" 		avg(ejecucion_porcentaje_7) ejecucion_porcentaje_7, " + 
-				 	" 		avg(ejecucion_porcentaje_8) ejecucion_porcentaje_8, " + 
-				 	" 		avg(ejecucion_porcentaje_9) ejecucion_porcentaje_9, " + 
-				 	" 		avg(ejecucion_porcentaje_10) ejecucion_porcentaje_10, " + 
-				 	" 		avg(ejecucion_porcentaje_11) ejecucion_porcentaje_11, " + 
-				 	" 		avg(ejecucion_porcentaje_12) ejecucion_porcentaje_12 " + 
-				 	" 		from( " + 
-				 	" 	 		select ejercicio, entidad, unidad_ejecutora, programa, subprograma, proyecto,  actividad, obra, codigo_meta,    " + 
-				 	" 		 	sum(case when mes=1 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=1 then modificacion else 0 end)) ejecucion_porcentaje_1,   " + 
-				 	" 		 	sum(case when mes<=2 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=2 then modificacion else 0 end)) ejecucion_porcentaje_2,   " + 
-				 	" 		 	sum(case when mes<=3 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=3 then modificacion else 0 end)) ejecucion_porcentaje_3,   " + 
-				 	" 		 	sum(case when mes<=4 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=4 then modificacion else 0 end)) ejecucion_porcentaje_4,   " + 
-				 	" 	 		sum(case when mes<=5 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=5 then modificacion else 0 end)) ejecucion_porcentaje_5,   " + 
-				 	" 		 	sum(case when mes<=6 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=6 then modificacion else 0 end)) ejecucion_porcentaje_6,   " + 
-				 	" 		 	sum(case when mes<=7 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=7 then modificacion else 0 end)) ejecucion_porcentaje_7,   " + 
-				 	" 		 	sum(case when mes<=8 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=8 then modificacion else 0 end)) ejecucion_porcentaje_8,   " + 
-				 	" 		 	sum(case when mes<=9 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=9 then modificacion else 0 end)) ejecucion_porcentaje_9,   " + 
-				 	"  			sum(case when mes<=10 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=10 then modificacion else 0 end)) ejecucion_porcentaje_10,   " + 
-				 	" 		 	sum(case when mes<=11 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=11 then modificacion else 0 end)) ejecucion_porcentaje_11,   " + 
-				 	" 	 		sum(case when mes<=12 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=12 then modificacion else 0 end)) ejecucion_porcentaje_12       " + 
-				 	" 	 		from mv_ejecucion_fisica       " + 
-				 	" 	 		where mes <= ?    " + 
-				 	"			and ejercicio = ? " +		
-				 	"			and entidad = ? " +
-				 	" 		   	group by ejercicio, entidad, entidad_nombre, unidad_ejecutora,        " + 
-				 	" 		 	programa,  subprograma,  proyecto,  actividad, obra, codigo_meta   " + 
-				 	" 		) t1     " + 
-				 	" 		group by ejercicio, entidad,      " + 
-				 	"  		unidad_ejecutora,        " + 
-				 	" 	 	programa,         " + 
-				 	" 	 	subprograma,         " + 
-				 	" 	 	proyecto,         " + 
-				 	" 	 	actividad, obra " + 
-				 	"  ) ef left outer join      " + 
-				 	"  (       " + 
-				 	"  	select ejercicio, entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra,    " + 
-				 	"  	sum(case when mes<=1 then ano_actual else 0 end) ejecucion_1,    " + 
-				 	"  	sum(case when mes<=2 then ano_actual else 0 end) ejecucion_2,   " + 
-				 	"  	sum(case when mes<=3 then ano_actual else 0 end) ejecucion_3,   " + 
-				 	"  	sum(case when mes<=4 then ano_actual else 0 end) ejecucion_4,   " + 
-				 	"  	sum(case when mes<=5 then ano_actual else 0 end) ejecucion_5,   " + 
-				 	"  	sum(case when mes<=6 then ano_actual else 0 end) ejecucion_6,   " + 
-				 	"  	sum(case when mes<=7 then ano_actual else 0 end) ejecucion_7,   " + 
-				 	"  	sum(case when mes<=8 then ano_actual else 0 end) ejecucion_8,   " + 
-				 	"  	sum(case when mes<=9 then ano_actual else 0 end) ejecucion_9,   " + 
-				 	"  	sum(case when mes<=10 then ano_actual else 0 end) ejecucion_10,   " + 
-				 	"  	sum(case when mes<=11 then ano_actual else 0 end) ejecucion_11,   " + 
-				 	"  	sum(case when mes<=12 then ano_actual else 0 end) ejecucion_12, " + 
-				 	" 	sum(case when mes=1 then vigente else 0 end) vigente_1,    " + 
-				 	"  	sum(case when mes=2 then vigente else 0 end) vigente_2, " + 
-				 	" 	sum(case when mes=3 then vigente else 0 end) vigente_3, " + 
-				 	" 	sum(case when mes=4 then vigente else 0 end) vigente_4, " + 
-				 	" 	sum(case when mes=5 then vigente else 0 end) vigente_5, " + 
-				 	" 	sum(case when mes=6 then vigente else 0 end) vigente_6, " + 
-				 	" 	sum(case when mes=7 then vigente else 0 end) vigente_7, " + 
-				 	" 	sum(case when mes=8 then vigente else 0 end) vigente_8, " + 
-				 	" 	sum(case when mes=9 then vigente else 0 end) vigente_9, " + 
-				 	" 	sum(case when mes=10 then vigente else 0 end) vigente_10, " + 
-				 	" 	sum(case when mes=11 then vigente else 0 end) vigente_11, " + 
-				 	" 	sum(case when mes=12 then vigente else 0 end) vigente_12       " + 
-				 	"  	from mv_ejecucion_presupuestaria     " + 
-				 	"  	where mes <= ?     " + 
-				 	"   and ejercicio = ? " +
-				 	"	and entidad = ? " +	
-				 	"  	group by ejercicio, entidad,entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra " + 
-				 	"  ) ep       " + 
-				 	"  on ( ef.entidad = ep.entidad " + 
-				 	"  and ef.unidad_ejecutora = ep.unidad_ejecutora " + 
-				 	"  and ef.programa = ep.programa " + 
-				 	"  and ef.subprograma = ep.subprograma " + 
-				 	"  and ef.proyecto = ep.proyecto " + 
-				 	"  and ef.actividad = ep.actividad " + 
-				 	"  and ef.obra = ep.obra     " + 
-				 	"  and ef.ejercicio = ep.ejercicio  ) " + 
-				 	" where ef.entidad = "+entidad + " " +
-				 	(unidad_ejecutora!=null ? " and ef.unidad_ejecutora = "+unidad_ejecutora : "")+
-				 	(programa!=null ? " and ef.programa = "+programa : "")+
-				 	(subprograma!=null ? " and ef.subprograma = "+subprograma : "")+
-				 	(proyecto!=null ? " and ef.proyecto = "+proyecto : "")+
-				 	(actividad!=null ? " and ef.actividad = "+actividad : "")+
-				 	(obra!=null ? " and ef.obra = "+obra : "")+
-				 	"  group by "+group);
-					pstm1.setInt(1, ejercicio<now.getYear() ? 12 : now.getMonthOfYear());
-					pstm1.setInt(2, ejercicio);
-					pstm1.setInt(3, entidad);
-					pstm1.setInt(4, ejercicio<now.getYear() ? 12 : now.getMonthOfYear());
-					pstm1.setInt(5, ejercicio);
-					pstm1.setInt(6, entidad);
-					ResultSet results=pstm1.executeQuery();
-					while (results.next()){
-						 CEjecucionFisicaMensualizada ejecucion = new CEjecucionFisicaMensualizada(
-						 		results.getInt("id"),
-						 		(obra!=null) ? results.getInt("obra") : null,
-						 		null,
-						 		results.getDouble("ejecucion_fisica_1")*100,
-						 		results.getDouble("ejecucion_fisica_2")*100,
-						 		results.getDouble("ejecucion_fisica_3")*100,
-						 		results.getDouble("ejecucion_fisica_4")*100,
-						 		results.getDouble("ejecucion_fisica_5")*100,
-						 		results.getDouble("ejecucion_fisica_6")*100,
-						 		results.getDouble("ejecucion_fisica_7")*100,
-						 		results.getDouble("ejecucion_fisica_8")*100,
-						 		results.getDouble("ejecucion_fisica_9")*100,
-						 		results.getDouble("ejecucion_fisica_10")*100,
-						 		results.getDouble("ejecucion_fisica_11")*100,
-						 		results.getDouble("ejecucion_fisica_12")*100,
-						 		results.getDouble("ejecucion_financiera_1")*100,
-						 		results.getDouble("ejecucion_financiera_2")*100,
-						 		results.getDouble("ejecucion_financiera_3")*100,
-						 		results.getDouble("ejecucion_financiera_4")*100,
-						 		results.getDouble("ejecucion_financiera_5")*100,
-						 		results.getDouble("ejecucion_financiera_6")*100,
-						 		results.getDouble("ejecucion_financiera_7")*100,
-						 		results.getDouble("ejecucion_financiera_8")*100,
-						 		results.getDouble("ejecucion_financiera_9")*100,
-						 		results.getDouble("ejecucion_financiera_10")*100,
-						 		results.getDouble("ejecucion_financiera_11")*100,
-						 		results.getDouble("ejecucion_financiera_12")*100
-						 );
-						 entidades.add(ejecucion);
-					}
-					results.close();
-					pstm1.close();
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				String proyeccion="";
+				String group ="";
+				switch(level){
+					case 1: proyeccion="ef.entidad id,  "; 
+						group = "ef.entidad";
+						break;
+					case 2: proyeccion="ef.unidad_ejecutora id, "; 
+						 group = "ef.unidad_ejecutora";
+						 break;
+					case 3: proyeccion="ef.programa id, "; 
+						 group = "ef.programa";
+						 break;
+					case 4: proyeccion="ef.subprograma id, "; 
+						 group = "ef.subprograma";
+						 break;
+					case 5: proyeccion="ef.proyecto id, ";
+						 group = "ef.proyecto";
+						 break;
+					case 6: proyeccion="ef.actividad id, ef.obra, "; 
+						 group = "ef.actividad, ef.obra";
+						 break;
 				}
+				DateTime now = new DateTime();    
+				PreparedStatement pstm1 =  conn.prepareStatement("select ef.ejercicio,        " + 
+			 	 proyeccion+" " + 
+			 	"  sum(ep.ejecucion_1)/sum(ep.vigente_1) ejecucion_financiera_1,   " + 
+			 	"  sum(ep.ejecucion_2)/sum(ep.vigente_2) ejecucion_financiera_2,   " + 
+			 	"  sum(ep.ejecucion_3)/sum(ep.vigente_3) ejecucion_financiera_3,   " + 
+			 	"  sum(ep.ejecucion_4)/sum(ep.vigente_4) ejecucion_financiera_4,   " + 
+			 	"  sum(ep.ejecucion_5)/sum(ep.vigente_5) ejecucion_financiera_5,   " + 
+			 	"  sum(ep.ejecucion_6)/sum(ep.vigente_6) ejecucion_financiera_6,   " + 
+			 	"  sum(ep.ejecucion_7)/sum(ep.vigente_7) ejecucion_financiera_7,   " + 
+			 	"  sum(ep.ejecucion_8)/sum(ep.vigente_8) ejecucion_financiera_8,   " + 
+			 	"  sum(ep.ejecucion_9)/sum(ep.vigente_9) ejecucion_financiera_9,   " + 
+			 	"  sum(ep.ejecucion_10)/sum(ep.vigente_10) ejecucion_financiera_10,   " + 
+			 	"  sum(ep.ejecucion_11)/sum(ep.vigente_11) ejecucion_financiera_11,   " + 
+			 	"  sum(ep.ejecucion_12)/sum(ep.vigente_12) ejecucion_financiera_12,    " + 
+			 	"  sum(ef.ejecucion_porcentaje_1*ep.vigente_1)/sum(ep.vigente_1) ejecucion_fisica_1,   " + 
+			 	"  sum(ef.ejecucion_porcentaje_2*ep.vigente_2)/sum(ep.vigente_2) ejecucion_fisica_2,  " + 
+			 	"  sum(ef.ejecucion_porcentaje_3*ep.vigente_3)/sum(ep.vigente_3) ejecucion_fisica_3,  " + 
+			 	"  sum(ef.ejecucion_porcentaje_4*ep.vigente_4)/sum(ep.vigente_4) ejecucion_fisica_4,   " + 
+			 	"  sum(ef.ejecucion_porcentaje_5*ep.vigente_5)/sum(ep.vigente_5) ejecucion_fisica_5,  " + 
+			 	"  sum(ef.ejecucion_porcentaje_6*ep.vigente_6)/sum(ep.vigente_6) ejecucion_fisica_6,   " + 
+			 	"  sum(ef.ejecucion_porcentaje_7*ep.vigente_7)/sum(ep.vigente_7) ejecucion_fisica_7,   " + 
+			 	"  sum(ef.ejecucion_porcentaje_8*ep.vigente_8)/sum(ep.vigente_8) ejecucion_fisica_8,    " + 
+			 	"  sum(ef.ejecucion_porcentaje_9*ep.vigente_9)/sum(ep.vigente_9) ejecucion_fisica_9,    " + 
+			 	"  sum(ef.ejecucion_porcentaje_10*ep.vigente_10)/sum(ep.vigente_10) ejecucion_fisica_10,    " + 
+			 	"  sum(ef.ejecucion_porcentaje_11*ep.vigente_11)/sum(ep.vigente_11) ejecucion_fisica_11,   " + 
+			 	"  sum(ef.ejecucion_porcentaje_12*ep.vigente_12)/sum(ep.vigente_12) ejecucion_fisica_12       " + 
+			 	"  from (     " + 
+			 	"  select   ejercicio, entidad,      " + 
+			 	"  		unidad_ejecutora,        " + 
+			 	" 	 	programa,         " + 
+			 	" 	 	subprograma,         " + 
+			 	" 	 	proyecto,         " + 
+			 	" 	 	actividad, obra, " + 
+			 	" 		avg(ejecucion_porcentaje_1) ejecucion_porcentaje_1, " + 
+			 	" 		avg(ejecucion_porcentaje_2) ejecucion_porcentaje_2, " + 
+			 	" 		avg(ejecucion_porcentaje_3) ejecucion_porcentaje_3, " + 
+			 	" 		avg(ejecucion_porcentaje_4) ejecucion_porcentaje_4, " + 
+			 	" 		avg(ejecucion_porcentaje_5) ejecucion_porcentaje_5, " + 
+			 	" 		avg(ejecucion_porcentaje_6) ejecucion_porcentaje_6, " + 
+			 	" 		avg(ejecucion_porcentaje_7) ejecucion_porcentaje_7, " + 
+			 	" 		avg(ejecucion_porcentaje_8) ejecucion_porcentaje_8, " + 
+			 	" 		avg(ejecucion_porcentaje_9) ejecucion_porcentaje_9, " + 
+			 	" 		avg(ejecucion_porcentaje_10) ejecucion_porcentaje_10, " + 
+			 	" 		avg(ejecucion_porcentaje_11) ejecucion_porcentaje_11, " + 
+			 	" 		avg(ejecucion_porcentaje_12) ejecucion_porcentaje_12 " + 
+			 	" 		from( " + 
+			 	" 	 		select ejercicio, entidad, unidad_ejecutora, programa, subprograma, proyecto,  actividad, obra, codigo_meta,    " + 
+			 	" 		 	sum(case when mes=1 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=1 then modificacion else 0 end)) ejecucion_porcentaje_1,   " + 
+			 	" 		 	sum(case when mes<=2 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=2 then modificacion else 0 end)) ejecucion_porcentaje_2,   " + 
+			 	" 		 	sum(case when mes<=3 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=3 then modificacion else 0 end)) ejecucion_porcentaje_3,   " + 
+			 	" 		 	sum(case when mes<=4 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=4 then modificacion else 0 end)) ejecucion_porcentaje_4,   " + 
+			 	" 	 		sum(case when mes<=5 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=5 then modificacion else 0 end)) ejecucion_porcentaje_5,   " + 
+			 	" 		 	sum(case when mes<=6 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=6 then modificacion else 0 end)) ejecucion_porcentaje_6,   " + 
+			 	" 		 	sum(case when mes<=7 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=7 then modificacion else 0 end)) ejecucion_porcentaje_7,   " + 
+			 	" 		 	sum(case when mes<=8 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=8 then modificacion else 0 end)) ejecucion_porcentaje_8,   " + 
+			 	" 		 	sum(case when mes<=9 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=9 then modificacion else 0 end)) ejecucion_porcentaje_9,   " + 
+			 	"  			sum(case when mes<=10 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=10 then modificacion else 0 end)) ejecucion_porcentaje_10,   " + 
+			 	" 		 	sum(case when mes<=11 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=11 then modificacion else 0 end)) ejecucion_porcentaje_11,   " + 
+			 	" 	 		sum(case when mes<=12 then ejecucion else 0 end)/(avg(cantidad)+sum(case when mes<=12 then modificacion else 0 end)) ejecucion_porcentaje_12       " + 
+			 	" 	 		from mv_ejecucion_fisica       " + 
+			 	" 	 		where mes <= ?    " + 
+			 	"			and ejercicio = ? " +		
+			 	"			and entidad = ? " +
+			 	" 		   	group by ejercicio, entidad, entidad_nombre, unidad_ejecutora,        " + 
+			 	" 		 	programa,  subprograma,  proyecto,  actividad, obra, codigo_meta   " + 
+			 	" 		) t1     " + 
+			 	" 		group by ejercicio, entidad,      " + 
+			 	"  		unidad_ejecutora,        " + 
+			 	" 	 	programa,         " + 
+			 	" 	 	subprograma,         " + 
+			 	" 	 	proyecto,         " + 
+			 	" 	 	actividad, obra " + 
+			 	"  ) ef left outer join      " + 
+			 	"  (       " + 
+			 	"  	select ejercicio, entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra,    " + 
+			 	"  	sum(case when mes<=1 then ano_actual else 0 end) ejecucion_1,    " + 
+			 	"  	sum(case when mes<=2 then ano_actual else 0 end) ejecucion_2,   " + 
+			 	"  	sum(case when mes<=3 then ano_actual else 0 end) ejecucion_3,   " + 
+			 	"  	sum(case when mes<=4 then ano_actual else 0 end) ejecucion_4,   " + 
+			 	"  	sum(case when mes<=5 then ano_actual else 0 end) ejecucion_5,   " + 
+			 	"  	sum(case when mes<=6 then ano_actual else 0 end) ejecucion_6,   " + 
+			 	"  	sum(case when mes<=7 then ano_actual else 0 end) ejecucion_7,   " + 
+			 	"  	sum(case when mes<=8 then ano_actual else 0 end) ejecucion_8,   " + 
+			 	"  	sum(case when mes<=9 then ano_actual else 0 end) ejecucion_9,   " + 
+			 	"  	sum(case when mes<=10 then ano_actual else 0 end) ejecucion_10,   " + 
+			 	"  	sum(case when mes<=11 then ano_actual else 0 end) ejecucion_11,   " + 
+			 	"  	sum(case when mes<=12 then ano_actual else 0 end) ejecucion_12, " + 
+			 	" 	sum(case when mes=1 then vigente else 0 end) vigente_1,    " + 
+			 	"  	sum(case when mes=2 then vigente else 0 end) vigente_2, " + 
+			 	" 	sum(case when mes=3 then vigente else 0 end) vigente_3, " + 
+			 	" 	sum(case when mes=4 then vigente else 0 end) vigente_4, " + 
+			 	" 	sum(case when mes=5 then vigente else 0 end) vigente_5, " + 
+			 	" 	sum(case when mes=6 then vigente else 0 end) vigente_6, " + 
+			 	" 	sum(case when mes=7 then vigente else 0 end) vigente_7, " + 
+			 	" 	sum(case when mes=8 then vigente else 0 end) vigente_8, " + 
+			 	" 	sum(case when mes=9 then vigente else 0 end) vigente_9, " + 
+			 	" 	sum(case when mes=10 then vigente else 0 end) vigente_10, " + 
+			 	" 	sum(case when mes=11 then vigente else 0 end) vigente_11, " + 
+			 	" 	sum(case when mes=12 then vigente else 0 end) vigente_12       " + 
+			 	"  	from mv_ejecucion_presupuestaria     " + 
+			 	"  	where mes <= ?     " + 
+			 	"   and ejercicio = ? " +
+			 	"	and entidad = ? " +	
+			 	"  	group by ejercicio, entidad,entidad, unidad_ejecutora, programa, subprograma, proyecto, actividad, obra " + 
+			 	"  ) ep       " + 
+			 	"  on ( ef.entidad = ep.entidad " + 
+			 	"  and ef.unidad_ejecutora = ep.unidad_ejecutora " + 
+			 	"  and ef.programa = ep.programa " + 
+			 	"  and ef.subprograma = ep.subprograma " + 
+			 	"  and ef.proyecto = ep.proyecto " + 
+			 	"  and ef.actividad = ep.actividad " + 
+			 	"  and ef.obra = ep.obra     " + 
+			 	"  and ef.ejercicio = ep.ejercicio  ) " + 
+			 	" where ef.entidad = "+entidad + " " +
+			 	(unidad_ejecutora!=null ? " and ef.unidad_ejecutora = "+unidad_ejecutora : "")+
+			 	(programa!=null ? " and ef.programa = "+programa : "")+
+			 	(subprograma!=null ? " and ef.subprograma = "+subprograma : "")+
+			 	(proyecto!=null ? " and ef.proyecto = "+proyecto : "")+
+			 	(actividad!=null ? " and ef.actividad = "+actividad : "")+
+			 	(obra!=null ? " and ef.obra = "+obra : "")+
+			 	"  group by "+group);
+				pstm1.setInt(1, ejercicio<now.getYear() ? 12 : now.getMonthOfYear());
+				pstm1.setInt(2, ejercicio);
+				pstm1.setInt(3, entidad);
+				pstm1.setInt(4, ejercicio<now.getYear() ? 12 : now.getMonthOfYear());
+				pstm1.setInt(5, ejercicio);
+				pstm1.setInt(6, entidad);
+				ResultSet results=pstm1.executeQuery();
+				while (results.next()){
+					 CEjecucionFisicaMensualizada ejecucion = new CEjecucionFisicaMensualizada(
+					 		results.getInt("id"),
+					 		(obra!=null) ? results.getInt("obra") : null,
+					 		null,
+					 		results.getDouble("ejecucion_fisica_1")*100,
+					 		results.getDouble("ejecucion_fisica_2")*100,
+					 		results.getDouble("ejecucion_fisica_3")*100,
+					 		results.getDouble("ejecucion_fisica_4")*100,
+					 		results.getDouble("ejecucion_fisica_5")*100,
+					 		results.getDouble("ejecucion_fisica_6")*100,
+					 		results.getDouble("ejecucion_fisica_7")*100,
+					 		results.getDouble("ejecucion_fisica_8")*100,
+					 		results.getDouble("ejecucion_fisica_9")*100,
+					 		results.getDouble("ejecucion_fisica_10")*100,
+					 		results.getDouble("ejecucion_fisica_11")*100,
+					 		results.getDouble("ejecucion_fisica_12")*100,
+					 		results.getDouble("ejecucion_financiera_1")*100,
+					 		results.getDouble("ejecucion_financiera_2")*100,
+					 		results.getDouble("ejecucion_financiera_3")*100,
+					 		results.getDouble("ejecucion_financiera_4")*100,
+					 		results.getDouble("ejecucion_financiera_5")*100,
+					 		results.getDouble("ejecucion_financiera_6")*100,
+					 		results.getDouble("ejecucion_financiera_7")*100,
+					 		results.getDouble("ejecucion_financiera_8")*100,
+					 		results.getDouble("ejecucion_financiera_9")*100,
+					 		results.getDouble("ejecucion_financiera_10")*100,
+					 		results.getDouble("ejecucion_financiera_11")*100,
+					 		results.getDouble("ejecucion_financiera_12")*100
+					 );
+					 entidades.add(ejecucion);
+				}
+				results.close();
+				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CEjecucionFisicaDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CEjecucionFisicaDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades;
 	}
@@ -222,10 +220,9 @@ public class CEjecucionFisicaDAO {
 	public static ArrayList<CEjecucionFisica> getEjecucion(Integer level,Integer ejercicio,Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
 			Integer proyecto, Integer actividad, Integer obra){		
 		final ArrayList<CEjecucionFisica> entidades=new ArrayList<CEjecucionFisica>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
-				if(!conn.isClosed()){
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 					String select = "";
 					String select_estructura = "";
 					String where_estructura = "";
@@ -343,14 +340,13 @@ public class CEjecucionFisicaDAO {
 					}
 					results.close();
 					pstm1.close();
-				}
 			}
-			catch(Exception e){
-				CLogger.write("2", CEjecucionFisicaDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CEjecucionFisicaDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades;
 	}
@@ -358,10 +354,9 @@ public class CEjecucionFisicaDAO {
 	public static ArrayList<CMeta> getMetas(Integer ejercicio,Integer entidad, Integer unidad_ejecutora, Integer programa, Integer subprograma,
 			Integer proyecto, Integer actividad, Integer obra){		
 		final ArrayList<CMeta> metas=new ArrayList<CMeta>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
-				if(!conn.isClosed()){
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 					PreparedStatement pstm1 =  conn.prepareStatement("select ef.*, m.descripcion, m.fecha_inicio, m.fecha_fin " + 
 							"from ( " + 
 							"select ef.ejercicio, ef.entidad, ef.unidad_ejecutora, ef.programa, ef.subprograma, ef.proyecto,  " + 
@@ -451,13 +446,12 @@ public class CEjecucionFisicaDAO {
 					results.close();
 					pstm1.close();
 				}
-			}
-			catch(Exception e){
-				CLogger.write("3", CEjecucionFisicaDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CEjecucionFisicaDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return metas;
 	}

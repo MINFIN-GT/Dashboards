@@ -14,9 +14,9 @@ public class CEventoGCDAO {
 	
 	public static ArrayList<CEventoGC> getEntidadesEventos(int ejercicio){
 		final ArrayList<CEventoGC> entidades = new ArrayList<CEventoGC>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM vw_evento_gc_group WHERE ano_publicacion=? ORDER BY nombre_corto");
 				pstm1.setInt(1, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
@@ -33,21 +33,21 @@ public class CEventoGCDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CEventoGCDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CEventoGCDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
 	
 	public static ArrayList<CModalidadGC> getModalidadesEventos(int ejercicio, int mes){
 		final ArrayList<CModalidadGC> modalidades = new ArrayList<CModalidadGC>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select modalidad, sum(total_eventos) total_eventos " + 
 						"from ( " + 
 						"	select case  " + 
@@ -79,22 +79,21 @@ public class CEventoGCDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("2", CEventoGCDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
 		}
-		
+		catch(Exception e){
+			CLogger.write("2", CEventoGCDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
 		return modalidades.size()>0 ? modalidades : null;
 	}
 	
 	public static ArrayList<CModalidadGC> getEstadosEventos(int ejercicio, int mes){
 		final ArrayList<CModalidadGC> estados = new ArrayList<CModalidadGC>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select estado, sum(total_eventos) total_eventos " + 
 						"from ( " + 
 						"select case  " + 
@@ -121,14 +120,13 @@ public class CEventoGCDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("3", CEventoGCDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
 		}
-		
+		catch(Exception e){
+			CLogger.write("3", CEventoGCDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
 		return estados.size()>0 ? estados : null;
 	}
 }

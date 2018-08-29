@@ -63,16 +63,16 @@ public class CDatabase {
 		}
 	}
 	
-	public static boolean connect(){
+	public static Connection connect(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(String.join("", "jdbc:mysql://",String.valueOf(host),":", String.valueOf(port),"/",schema,"?zeroDateTimeBehavior=convertToNull"), user, password);
-			return !connection.isClosed();
+			Connection connection = DriverManager.getConnection(String.join("", "jdbc:mysql://",String.valueOf(host),":", String.valueOf(port),"/",schema,"?zeroDateTimeBehavior=convertToNull"), user, password);
+			return !connection.isClosed() ? connection : null;
 		}
 		catch(Exception e){
 			CLogger.write("1", CDatabase.class, e);
 		}
-		return false;
+		return null;
 	}
 	
 	public static boolean connectDes(){

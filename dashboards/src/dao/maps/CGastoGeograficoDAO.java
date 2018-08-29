@@ -1,5 +1,6 @@
 package dao.maps;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -13,8 +14,9 @@ public class CGastoGeograficoDAO {
 
 	public static ArrayList<CGastoGeografico> getGastoGeneral(int mes, int ejercicio, String fuentes, String grupos) {
 		final ArrayList<CGastoGeografico> geograficos = new ArrayList<CGastoGeografico>();
-		if (CDatabase.connect()) {
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 
 				String query = "select  geo.nombre, muni.poblacion, geo.geografico, gasto.gasto from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
@@ -27,7 +29,7 @@ public class CGastoGeograficoDAO {
 						+ "left outer join municipio_demografia muni on ( muni.codigo_municipio = gasto.geografico ) "
 						+ "where geo.ejercicio = ? ";
 
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
+				PreparedStatement pstm = conn.prepareStatement(query);
 
 				pstm.setInt(1, mes);
 				pstm.setInt(2, ejercicio);
@@ -42,19 +44,21 @@ public class CGastoGeograficoDAO {
 				}
 				results.close();
 				pstm.close();
-			} catch (Exception e) {
-				CLogger.write("1", CGastoGeograficoDAO.class, e);
-			} finally {
-				CDatabase.close();
-			}
+			} 
+		}
+		catch (Exception e) {
+			CLogger.write("1", CGastoGeograficoDAO.class, e);
+		} finally {
+			CDatabase.close();
 		}
 		return geograficos.size() > 0 ? geograficos : null;
 	}
 
 	public static ArrayList<CGastoGeografico> getGastosCodedesMunis(int mes, int ejercicio, String renglones) {
 		final ArrayList<CGastoGeografico> geograficos = new ArrayList<CGastoGeografico>();
-		if (CDatabase.connect()) {
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 
 				String query = "select  geo.nombre, muni.poblacion, geo.geografico, gasto.gasto from( select geografico,  "
 						+ "sum(case when mes <= ? then ano_actual else 0 end) gasto "
@@ -65,7 +69,7 @@ public class CGastoGeograficoDAO {
 						+ "where geo.ejercicio = 2018";
 						
 
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
+				PreparedStatement pstm = conn.prepareStatement(query);
 
 				pstm.setInt(1, mes);
 				pstm.setInt(2, ejercicio);
@@ -80,11 +84,12 @@ public class CGastoGeograficoDAO {
 				}
 				results.close();
 				pstm.close();
-			} catch (Exception e) {
-				CLogger.write("1", CGastoGeograficoDAO.class, e);
-			} finally {
-				CDatabase.close();
-			}
+			} 
+		}
+		catch (Exception e) {
+			CLogger.write("1", CGastoGeograficoDAO.class, e);
+		} finally {
+			CDatabase.close();
 		}
 		return geograficos.size() > 0 ? geograficos : null;
 	}

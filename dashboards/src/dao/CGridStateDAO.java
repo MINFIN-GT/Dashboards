@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -11,9 +12,10 @@ public class CGridStateDAO {
 	
 	public static boolean saveGridState(CGridState gridstate){
 		boolean ret=false;
-		if(CDatabase.connect()){
-			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("INSERT INTO grid_state(username, grid, state) VALUES (?,?,?) "+ 
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm =  conn.prepareStatement("INSERT INTO grid_state(username, grid, state) VALUES (?,?,?) "+ 
 			"ON DUPLICATE KEY UPDATE state = ?");
 				pstm.setString(1, gridstate.getUsername());
 				pstm.setString(2, gridstate.getGrid());
@@ -23,21 +25,22 @@ public class CGridStateDAO {
 					ret=true;
 				pstm.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CGridStateDAO.class, e);
-			}
-			finally{
-				CDatabase.close();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CGridStateDAO.class, e);
+		}
+		finally{
+			CDatabase.close();
 		}
 		return ret;
 	}
 	
 	public static String getGridState(String username, String grid){
 		String ret = "";
-		if(CDatabase.connect()){
-			try{
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("SELECT * FROM grid_state WHERE username = ? AND grid = ?");
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("SELECT * FROM grid_state WHERE username = ? AND grid = ?");
 				pstm.setString(1, username);
 				pstm.setString(2, grid);
 				ResultSet rs = pstm.executeQuery();
@@ -48,12 +51,12 @@ public class CGridStateDAO {
 				pstm.close();
 				
 			}
-			catch(Exception e){
-				CLogger.write("2", CGridStateDAO.class, e);
-			}
-			finally{
-				CDatabase.close();
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CGridStateDAO.class, e);
+		}
+		finally{
+			CDatabase.close();
 		}
 		return ret;
 	}

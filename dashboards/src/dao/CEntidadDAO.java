@@ -17,9 +17,9 @@ public class CEntidadDAO {
 	public static ArrayList<CEntidad> getEntidades(int ejercicio) {
 		
 			final ArrayList<CEntidad> entidades=new ArrayList<CEntidad>();
-			if(CDatabase.connect()){
-				Connection conn = CDatabase.getConnection();
-				try{
+			Connection conn = CDatabase.connect();
+			try{
+				if(conn!=null && !conn.isClosed()){
 					PreparedStatement pstm1 =  conn.prepareStatement("select ejercicio, entidad, nombre from cg_entidades where ejercicio=? "
 							+ "AND (entidad between 11130003 AND 11130020 OR entidad = 11140021) order by entidad");
 					pstm1.setInt(1, ejercicio);
@@ -31,12 +31,12 @@ public class CEntidadDAO {
 					results.close();
 					pstm1.close();
 				}
-				catch(Exception e){
-					CLogger.write("1", CEntidadDAO.class, e);
-				}
-				finally{
-					CDatabase.close(conn);
-				}
+			}
+			catch(Exception e){
+				CLogger.write("1", CEntidadDAO.class, e);
+			}
+			finally{
+				CDatabase.close(conn);
 			}
 			return entidades.size()>0 ? entidades : null;
 		
@@ -45,9 +45,9 @@ public class CEntidadDAO {
 	public static ArrayList<CUnidadEjecutora> getUnidadesEjecutoras(int ejercicio, Integer entidad) {
 		
 		final ArrayList<CUnidadEjecutora> unidades_ejecutoras=new ArrayList<CUnidadEjecutora>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select distinct ejercicio, entidad, unidad_ejecutora, unidad_ejecutora_nombre from mv_estructura where ejercicio=? and entidad = ? and unidad_ejecutora>0 order by entidad, unidad_ejecutora");
 				pstm1.setInt(1, ejercicio);
 				pstm1.setInt(2, entidad);
@@ -60,12 +60,12 @@ public class CEntidadDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("2", CEntidadDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CEntidadDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return unidades_ejecutoras.size()>0 ? unidades_ejecutoras : null;
 	
@@ -73,9 +73,9 @@ public class CEntidadDAO {
 	
 	public static Double[] getPronosticosEgresos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1=null;
 				
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_egreso "
@@ -95,12 +95,12 @@ public class CEntidadDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("3", CEntidadDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CEntidadDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
@@ -109,9 +109,9 @@ public class CEntidadDAO {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
 		date = date.minusMonths(numero);
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String query="";
 				if(entidad>0)
 					query = "SELECT ejercicio, sum(m1) m1, sum(m2) m2,sum(m3) m3,sum(m4) m4,sum(m5) m5,sum(m6) m6,sum(m7) m7,sum(m8) m8, sum(m9) m9, sum(m10) m10, sum(m11) m11, sum(m12) m12 "
@@ -147,12 +147,12 @@ public class CEntidadDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("4", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("4", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
@@ -160,9 +160,9 @@ public class CEntidadDAO {
 	public static Double[][] getTodaHistoria(int entidad, int unidad_ejecutora) {
 		ArrayList<ArrayList<Double>> ret=new ArrayList<ArrayList<Double>>();
 		Double[][] ret_array=null;
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String query="";
 				if(entidad>0)
 					query = "SELECT ejercicio, sum(m1) m1,sum(m2) m2,sum(m3) m3,sum(m4) m4,sum(m5) m5,sum(m6) m6,sum(m7) m7,sum(m8) m8,sum(m9) m9,sum(m10) m10, sum(m11) m11, sum(m12) m12 "
@@ -191,12 +191,12 @@ public class CEntidadDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("5", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("5", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		ret_array=new Double[ret.size()][13];
 		for(int i=0; i<ret.size(); i++){
@@ -208,9 +208,9 @@ public class CEntidadDAO {
 	
 	public static Double[] getPronosticosEgresosSinRegularizaciones(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1=null;
 				
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_egreso_sin_regularizaciones "
@@ -230,12 +230,12 @@ public class CEntidadDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("6", CEntidadDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("6", CEntidadDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
@@ -244,9 +244,9 @@ public class CEntidadDAO {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
 		date = date.minusMonths(numero);
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String query="";
 				if(entidad>0)
 					query = "select ejercicio,   " + 
@@ -307,12 +307,12 @@ public class CEntidadDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("4", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("4", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}

@@ -16,9 +16,9 @@ import utilities.CLogger;
 public class CRecursoDAO {
 	public static ArrayList<CRecurso> getRecursos(int ejercicio){		
 		final ArrayList<CRecurso> recursos=new ArrayList<CRecurso>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM cp_recursos WHERE ejercicio=? ORDER BY recurso");		
 				pstm1.setInt(1, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
@@ -31,22 +31,21 @@ public class CRecursoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
 		}
-		
+		catch(Exception e){
+			CLogger.write("1", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
 		return recursos.size()>0 ? recursos : null;
 	}
 
 	public static ArrayList<CRecursoAuxiliar> getAuxiliares(int ejercicio, int recurso) {
 		final ArrayList<CRecursoAuxiliar> auxiliares=new ArrayList<CRecursoAuxiliar>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("SELECT * FROM cp_recursos_auxiliares WHERE ejercicio=? "+( recurso > 0 ? "and recurso=?" : "")+" ORDER BY recurso, recurso_auxiliar");		
 				pstm1.setInt(1, ejercicio);
 				if(recurso>0)
@@ -61,22 +60,21 @@ public class CRecursoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("2", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
 		}
-		
+		catch(Exception e){
+			CLogger.write("2", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
 		return auxiliares.size()>0 ? auxiliares : null;
 	}
 
 	public static Double[] getPronosticos(int ejercicio, int mes, String[] recursosIds, Map<String,Integer[]> auxiliaresIds, int ajustado, int numero) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String srecursosIds="";
 				String sauxiliaresIds="";
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
@@ -113,12 +111,12 @@ public class CRecursoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("3", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
@@ -127,9 +125,9 @@ public class CRecursoDAO {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
 		date = date.minusMonths(numero);
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String srecursosIds="";
 				String sauxiliaresIds="";
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
@@ -174,12 +172,12 @@ public class CRecursoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("4", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("4", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
@@ -187,9 +185,9 @@ public class CRecursoDAO {
 	public static Double[][] getTodaHistoria(String[] recursosIds, Map<String,Integer[]> auxiliaresIds) {
 		ArrayList<ArrayList<Double>> ret=new ArrayList<ArrayList<Double>>();
 		Double[][] ret_array=null;
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String srecursosIds="";
 				String sauxiliaresIds="";
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
@@ -226,12 +224,12 @@ public class CRecursoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("5", CRecursoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("5", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		ret_array=new Double[ret.size()][13];
 		for(int i=0; i<ret.size(); i++){
@@ -243,10 +241,10 @@ public class CRecursoDAO {
 	
 	public static CRecurso getRecursosTree(Integer ejercicio){
 		CRecurso ret = new CRecurso(ejercicio, 0, "RECURSOS", null, null, null, null, "RECURSO", -1, new ArrayList<CRecurso>(),0, null);
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			CRecurso hijo= null;
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				CRecurso hijo= null;
 				PreparedStatement pstm =  conn.prepareStatement("select * " + 
 						"from ( " + 
 							"SELECT c1.recurso parent, c.ejercicio ejercicio, c.recurso recurso, -1 auxiliar, c.nombre, c.grupo_ingreso, c.clase, c.seccion, c.grupo  " + 
@@ -283,9 +281,12 @@ public class CRecursoDAO {
 					}
 				}
 			}
-			catch(Throwable e){
-				CLogger.write("6", CRecursoDAO.class, e);
-			}
+		}
+		catch(Throwable e){
+			CLogger.write("6", CRecursoDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	} 
@@ -318,9 +319,9 @@ public class CRecursoDAO {
 	
 	public static ArrayList<CRecurso> getPronosticosDetalle(Integer ejercicio, Integer mes, Integer num_pronosticos,String[] recursosIds, Map<String,Integer[]> auxiliaresIds){
 		ArrayList<CRecurso> ret = new ArrayList<CRecurso>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String srecursosIds="";
 				String sauxiliaresIds="";
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
@@ -480,9 +481,12 @@ public class CRecursoDAO {
 				}
 				ret.add(recurso);
 			}
-			catch(Throwable e){
-				CLogger.write("6", CRecursoDAO.class, e);
-			}
+		}
+		catch(Throwable e){
+			CLogger.write("6", CRecursoDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	} 

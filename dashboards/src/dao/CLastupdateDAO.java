@@ -12,9 +12,9 @@ public class CLastupdateDAO {
 	
 	public static CLastupdate getLastupdate(String dashboard_name){
 		CLastupdate update=null;
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select * from update_log where dashboard_name=?");
 				pstm1.setString(1, dashboard_name);
 				ResultSet results = pstm1.executeQuery();	
@@ -24,12 +24,12 @@ public class CLastupdateDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CLastupdateDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CLastupdateDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return update;
 	}

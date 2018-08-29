@@ -15,9 +15,9 @@ public class CPrestamoDAO {
 	
 	public static ArrayList<CPrestamo> getEntidadesEjecucion(int nivel, Integer entidad, String prestamo_sigla, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
 		final ArrayList<CPrestamo> datos=new ArrayList<CPrestamo>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select p.entidad, p.entidad_nombre "+
@@ -67,21 +67,21 @@ public class CPrestamoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CPrestamoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CPrestamoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return datos.size()>0 ? datos : null;
 	}
 			
 	public static ArrayList<CPrestamo> getPrestamosEjecucion(int nivel, String prestamo_sigla, Integer entidad, Integer unidad_ejecutora, Integer programa,Integer subprograma, Integer proyecto, Integer actividad){
 		final ArrayList<CPrestamo> datos=new ArrayList<CPrestamo>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				DateTime now = new DateTime();
 				PreparedStatement  pstm1;
 				pstm1 = conn.prepareStatement("select p.prestamo_sigla, p.prestamo_nombre "+
@@ -131,12 +131,12 @@ public class CPrestamoDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CPrestamoDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CPrestamoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return datos.size()>0 ? datos : null;
 	}

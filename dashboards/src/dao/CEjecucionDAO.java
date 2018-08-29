@@ -16,9 +16,9 @@ public class CEjecucionDAO {
 	
 	public static ArrayList<CEjecucion> getEntidadesEjecucion(int ejercicio,int mes, String fuentes, String gruposGasto, boolean todosgrupos){		
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.entidad_nombre, a.*, c.anticipo_cuota, c.aprobado_cuota, c.anticipo_cuota_acumulado, c.aprobado_cuota_acumulado FROM " + 
 								"( " + 
 								"select  " + 
@@ -99,22 +99,21 @@ public class CEjecucionDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
 		}
-		
+		catch(Exception e){
+			CLogger.write("1", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
 		return entidades.size()>0 ? entidades : null;
 	}
 	
 	public static ArrayList<CEjecucion> getUnidadesEjecutorasEjecucion(int entidad, int ejercicio, int mes, String fuentes, String gruposGasto, boolean todosgrupos){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.unidad_ejecutora_nombre, a.*, c.anticipo_cuota, c.aprobado_cuota, c.anticipo_cuota_acumulado, c.aprobado_cuota_acumulado FROM " + 
 						"( " + 
 						"select  " + 
@@ -201,21 +200,21 @@ public class CEjecucionDAO {
 				pstm1.close();
 				
 			}
-			catch(Exception e){
-				CLogger.write("2", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
 	
 	public static ArrayList<CEjecucion> getProgramasEjecucion(int entidad, Integer unidad_ejecutora, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.programa, e.programa_nombre, a.* FROM " + 
 						"( " + 
 						"select  " + 
@@ -272,12 +271,12 @@ public class CEjecucionDAO {
 				pstm1.close();
 				
 			}
-			catch(Exception e){
-				CLogger.write("3", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
@@ -285,9 +284,9 @@ public class CEjecucionDAO {
 	public static ArrayList<CEjecucion> getSubProgramasEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
 			int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.subprograma, e.subprograma_nombre, a.* FROM " + 
 						"( " + 
 						"select  " + 
@@ -345,12 +344,12 @@ public class CEjecucionDAO {
 				pstm1.close();
 				
 			}
-			catch(Exception e){
-				CLogger.write("4", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("4", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
@@ -358,9 +357,9 @@ public class CEjecucionDAO {
 	public static ArrayList<CEjecucion> getProyectosEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
 			Integer subprograma, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.proyecto, e.proyecto_nombre, a.* FROM " + 
 						"( " + 
 						"select  " + 
@@ -418,14 +417,13 @@ public class CEjecucionDAO {
 				}
 				results.close();
 				pstm1.close();
-				
 			}
-			catch(Exception e){
-				CLogger.write("5", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("5", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}	
@@ -433,9 +431,9 @@ public class CEjecucionDAO {
 	public static ArrayList<CEjecucion> getActividadesObrasEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
 			Integer subprograma, Integer proyecto, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.actividad, e.obra, e.actividad_obra_nombre, a.* FROM " + 
 						"( " + 
 						"select  " + 
@@ -497,14 +495,13 @@ public class CEjecucionDAO {
 				}
 				results.close();
 				pstm1.close();
-				
 			}
-			catch(Exception e){
-				CLogger.write("6", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("6", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
@@ -512,9 +509,9 @@ public class CEjecucionDAO {
 	public static ArrayList<CEjecucion> getRenglonesEjecucion(int entidad, Integer unidad_ejecutora, Integer programa, 
 			Integer subprograma, Integer proyecto, Integer actividad, Integer obra, int ejercicio, int mes, String fuentes, String gruposGasto){
 		final ArrayList<CEjecucion> lista=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select r.renglon, r.nombre renglon_nombre, sg.nombre subgrupo_nombre, g.nombre grupo_nombre, a.* FROM " + 
 						"( " + 
 						"select  " + 
@@ -649,14 +646,13 @@ public class CEjecucionDAO {
 				egrupo.setAsignado(g_asignado);
 				results.close();
 				pstm1.close();
-				
 			}
-			catch(Exception e){
-				CLogger.write("7", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("7", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return lista.size()>0 ? lista : null;
 	}
@@ -665,9 +661,9 @@ public class CEjecucionDAO {
 			Integer unidad_ejecutora, Integer programa, Integer subprograma, Integer proyecto, Integer actividad, 
 			Integer obra, String fuentes, String gruposGasto){
 		final ArrayList<ArrayList<Double>> lista=new ArrayList<ArrayList<Double>>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				entidad = entidad==0 ?  null : entidad;
 				PreparedStatement pstm1 =  conn.prepareStatement("select "+(ejercicio-5)+" ejercicio, " + 
 						"	sum(case mes when 1 then ano_1 else 0 end) enero, " + 
@@ -846,23 +842,22 @@ public class CEjecucionDAO {
 				}
 				results.close();
 				pstm1.close();
-				
 			}
-			catch(Exception e){
-				CLogger.write("8", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("8", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return lista.size()>0 ? lista : null;
 	}
 	
 	public static Double[] getPronosticosEgresosContables(int ejercicio, int mes, String clase_registro, int unidad_ejecutora, int ajustado, int numero) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1=null;
 				
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_anticipo_contable "
@@ -882,12 +877,12 @@ public class CEjecucionDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("9", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("9", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
@@ -896,9 +891,9 @@ public class CEjecucionDAO {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
 		date = date.minusMonths(numero);
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				String query="select ejercicio, mes, sum(monto) monto from mv_anticipo_contable where (ejercicio between ? and ?) "+(clase_registro!=null ? " and clase_registro=? " : "") +
 						" group by ejercicio, mes "+
 						" order by ejercicio, mes";
@@ -921,12 +916,12 @@ public class CEjecucionDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("10", CEjecucionDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("10", CEjecucionDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}

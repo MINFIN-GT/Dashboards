@@ -13,9 +13,9 @@ public class CMetaDAO {
 	
 	public static ArrayList<CMeta> getMetasEntidades(int ano, int mes){
 		ArrayList<CMeta> ret = new ArrayList<CMeta>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select mp.entidad, mp.entidad_nombre, "
 						+ " sum( case when mp.codigo_meta=1 then  mp.vigente_"+mes+" else 0 end) vigente, "
 					    + " sum(case when mp.codigo_meta=1 then mp.asignado else 0 end) asignado, "
@@ -44,21 +44,21 @@ public class CMetaDAO {
 				rs.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CMetaDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CMetaDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
 	
 	public static ArrayList<CMeta> getMetasMetas(int ano, int mes){
 		ArrayList<CMeta> ret = new ArrayList<CMeta>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select id, nombre, sum( case when codigo_meta=1 then vigente_"+mes+" else 0 end) vigente, "
 						+ "sum(case when codigo_meta=1 then asignado else 0 end ) asignado, "
 						+ "sum(case when codigo_meta=1 then (vigente_"+mes+" - asignado) else 0 end) modificaciones, sum( case "+ 
@@ -80,21 +80,21 @@ public class CMetaDAO {
 				rs.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CMetaDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CMetaDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
 
 	public static ArrayList<Double[]> getEjecucionFinancieraFisicaMetasMeses(int ano, int mes) {
 		ArrayList<Double[]> ret = new ArrayList<Double[]>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select  mes, sum( case when codigo_meta=1 then gasto_total else 0 end ) gasto, sum( case when codigo_meta=1 then ( " + 
 						"	case mes " + 
 						"		when 1 then vigente_1 " + 
@@ -129,12 +129,12 @@ public class CMetaDAO {
 				rs.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("2", CMetaDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CMetaDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;
 	}

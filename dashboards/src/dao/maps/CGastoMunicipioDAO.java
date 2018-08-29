@@ -1,5 +1,6 @@
 package dao.maps;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -127,8 +128,9 @@ public class CGastoMunicipioDAO {
 			Number... estructuras) {
 		ArrayList<CGastoMunicipio> geograficos = new ArrayList<CGastoMunicipio>();
 
-		if (CDatabase.connect()) {
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				TIPO tipo;
 				switch (nivel) {
 				case 6: // ACTIVIDADES OBRAS
@@ -153,7 +155,7 @@ public class CGastoMunicipioDAO {
 
 				String query = getQuery(tipo, fuentes, grupos);
 
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement(query);
+				PreparedStatement pstm = conn.prepareStatement(query);
 				
 				pstm.setInt(1, mes);
 				pstm.setInt(2, mes);
@@ -224,13 +226,13 @@ public class CGastoMunicipioDAO {
 				results.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("1", CGastoGeograficoDAO.class, e);
-			} finally {
-				CDatabase.close();
-			}
+			} 
 		}
-
+		catch (Exception e) {
+			CLogger.write("1", CGastoGeograficoDAO.class, e);
+		} finally {
+			CDatabase.close();
+		}
 		return geograficos;
 	}
 

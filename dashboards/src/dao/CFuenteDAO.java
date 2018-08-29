@@ -14,9 +14,9 @@ public class CFuenteDAO {
 	
 	public static ArrayList<CFuente> getFuentes(int ejercicio){
 		final ArrayList<CFuente> fuentes=new ArrayList<CFuente>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select fuente, nombre from cg_fuentes where ejercicio=? order by fuente");
 				pstm1.setInt(1, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
@@ -27,12 +27,12 @@ public class CFuenteDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CFuenteDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CFuenteDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return fuentes.size()>0 ? fuentes : null;
 	}

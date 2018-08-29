@@ -128,9 +128,9 @@ public class CPrestamoDAO2 {
 	public static List<CPrestamo2> getPrestamos() {
 		List<CPrestamo2> prestamos = new ArrayList<CPrestamo2>();
 
-		if (CDatabase.connect()) {
-			Connection conn = CDatabase.getConnection();
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.PRESTAMOS));
 				ResultSet rs = pstm.executeQuery();
 
@@ -148,22 +148,22 @@ public class CPrestamoDAO2 {
 				rs.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("1", CPrestamoDAO2.class, e);
-			} finally {
-				CDatabase.close(conn);
-			}
+			} 
 		}
-
+		catch (Exception e) {
+			CLogger.write("1", CPrestamoDAO2.class, e);
+		} finally {
+			CDatabase.close(conn);
+		}
 		return prestamos;
 	}
 
 	public static List<CPrestamo2> getPrestamosByEntidad() {
 		List<CPrestamo2> prestamos = new ArrayList<CPrestamo2>();
 
-		if (CDatabase.connect()) {
-			Connection conn = CDatabase.getConnection();
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ENTIDADES));
 				ResultSet rs = pstm.executeQuery();
 
@@ -179,22 +179,22 @@ public class CPrestamoDAO2 {
 				rs.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("2", CPrestamoDAO2.class, e);
-			} finally {
-				CDatabase.close(conn);
-			}
+			} 
 		}
-
+		catch (Exception e) {
+			CLogger.write("2", CPrestamoDAO2.class, e);
+		} finally {
+			CDatabase.close(conn);
+		}
 		return prestamos;
 	}
 
 	public static List<CPrestamo2> getPrestamosByOrganismo() {
 		List<CPrestamo2> prestamos = new ArrayList<CPrestamo2>();
 
-		if (CDatabase.connect()) {
-			Connection conn = CDatabase.getConnection();
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ORGANISMOS));
 				ResultSet rs = pstm.executeQuery();
 
@@ -209,13 +209,13 @@ public class CPrestamoDAO2 {
 				rs.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("3", CPrestamoDAO2.class, e);
-			} finally {
-				CDatabase.close(conn);
-			}
+			} 
 		}
-
+		catch (Exception e) {
+			CLogger.write("3", CPrestamoDAO2.class, e);
+		} finally {
+			CDatabase.close(conn);
+		}
 		return prestamos;
 	}
 

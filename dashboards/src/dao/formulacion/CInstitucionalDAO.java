@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import db.utilities.CDatabase;
 import db.utilities.CDatabaseOracle;
 import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalTipoGasto;
@@ -18,24 +19,15 @@ public class CInstitucionalDAO {
 	public static ArrayList<CInstitucionalTotal> getInstitucionalTotal(int ejercicio){
 		ArrayList<CInstitucionalTotal> ret = new ArrayList<CInstitucionalTotal>();
 		Connection conn = null;
+		Connection conn_mem = null;
 		try{
 			conn = CDatabaseOracle.connect();
 			if(!conn.isClosed()){
+				conn_mem = CDatabase.connect();
 				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio, " + 
 						"         p.entidad, " + 
 						"         e.nombre_completo  entidad_nombre, " + 
-						"         (SELECT SUM (gd.monto_renglon) " + 
-						"            FROM sicoinprod.eg_gastos_hoja gh, sicoinprod.eg_gastos_detalle gd " + 
-						"           WHERE     gh.ejercicio = p.ejercicio - 2 " + 
-						"                 AND gh.entidad = p.entidad " + 
-						"                 AND gh.ejercicio = gd.ejercicio " + 
-						"                 AND gh.entidad = gd.entidad " + 
-						"                 AND gh.unidad_ejecutora = gd.unidad_ejecutora " + 
-						"                 AND gh.no_cur = gd.no_cur " + 
-						"                 AND gh.clase_registro IN ('DEV','CYD','RDP','REG') " + 
-						"                 AND gh.estado = 'APROBADO') " + 
-						"            ejecutado_dos_antes, " + 
-						"			(SELECT SUM (pa.aprobado) " + 
+						"         (SELECT SUM (pa.aprobado) " + 
 						"              FROM fp_p6_partidas pa " + 
 						"             WHERE pa.ejercicio = p.ejercicio - 1 AND pa.entidad = p.entidad) aprobado_anterior, " + 
 						"           (SELECT SUM (pa.aprobado) " + 
@@ -60,12 +52,27 @@ public class CInstitucionalDAO {
 						"ORDER BY p.entidad");
 				pstm.setInt(1, ejercicio);
 				ResultSet rs = pstm.executeQuery();
+				PreparedStatement pstm_mem = conn_mem.prepareStatement("select entidad,sum(ano_actual) total " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = 2017 " + 
+						"group by entidad " + 
+						"order by entidad");
+				ResultSet rs_mem = pstm_mem.executeQuery();
+				rs_mem.next();
 				while(rs.next()){
-					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getDouble("ejecutado_dos_antes"), 
-							rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"));
+					Double ejecutado_dos_antes=null;
+					if(rs_mem.getRow()>0) {
+						if(rs_mem.getDouble("entidad")<rs.getInt("entidad")){
+							while(rs_mem.getDouble("entidad")<rs.getInt("entidad"))
+								rs_mem.next();
+						}
+						if(rs_mem.getDouble("entidad")==rs.getInt("entidad"))
+							ejecutado_dos_antes = rs_mem.getDouble("total");
+					}
+					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), 
+							ejecutado_dos_antes, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"));
 					ret.add(entidad);
 				}
-			
 			}
 		}
 		catch(Exception e){
@@ -73,6 +80,7 @@ public class CInstitucionalDAO {
 		}
 		finally{
 			CDatabaseOracle.close(conn);
+			CDatabase.close(conn);
 		}
 		return ret;
 	}

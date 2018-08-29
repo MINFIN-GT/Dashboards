@@ -128,9 +128,9 @@ public class CDonacionDAO {
 	public static List<CDonacion> getDonaciones() {
 		List<CDonacion> donaciones = new ArrayList<CDonacion>();
 
-		if (CDatabase.connect()) {
-			Connection conn = CDatabase.getConnection();
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.DONACIONES));
 				ResultSet rs = pstm.executeQuery();
 
@@ -148,22 +148,22 @@ public class CDonacionDAO {
 				rs.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("1", CDonacionDAO.class, e);
-			} finally {
-				CDatabase.close(conn);
-			}
+			} 
 		}
-
+		catch (Exception e) {
+			CLogger.write("1", CDonacionDAO.class, e);
+		} finally {
+			CDatabase.close(conn);
+		}
 		return donaciones;
 	}
 
 	public static List<CDonacion> getDonacionesByEntidad() {
 		List<CDonacion> donaciones = new ArrayList<CDonacion>();
 
-		if (CDatabase.connect()) {
-			Connection conn = CDatabase.getConnection();
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ENTIDADES));
 				ResultSet rs = pstm.executeQuery();
 
@@ -179,22 +179,22 @@ public class CDonacionDAO {
 				rs.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("1", CDonacionDAO.class, e);
+			}
+		}
+		 catch (Exception e) {
+				CLogger.write("2", CDonacionDAO.class, e);
 			} finally {
 				CDatabase.close(conn);
 			}
-		}
-
 		return donaciones;
 	}
 
 	public static List<CDonacion> getDonacionesByOrganismo() {
 		List<CDonacion> donaciones = new ArrayList<CDonacion>();
 
-		if (CDatabase.connect()) {
-			Connection conn = CDatabase.getConnection();
-			try {
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm = conn.prepareStatement(getQuery(TIPO.ORGANISMOS));
 				ResultSet rs = pstm.executeQuery();
 
@@ -210,13 +210,13 @@ public class CDonacionDAO {
 				rs.close();
 				pstm.close();
 
-			} catch (Exception e) {
-				CLogger.write("1", CDonacionDAO.class, e);
-			} finally {
-				CDatabase.close(conn);
-			}
+			} 
 		}
-
+		catch (Exception e) {
+			CLogger.write("3", CDonacionDAO.class, e);
+		} finally {
+			CDatabase.close(conn);
+		}
 		return donaciones;
 	}
 

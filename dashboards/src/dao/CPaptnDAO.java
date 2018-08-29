@@ -14,9 +14,9 @@ public class CPaptnDAO {
 	
 	public static ArrayList<CEjecucion> getEntidadesEjecucion(int mes){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select * from mv_paptn_tablaentidades where mes = ? order by entidad");
 				pstm1.setInt(1, mes);
 				ResultSet results = pstm1.executeQuery();	
@@ -31,21 +31,21 @@ public class CPaptnDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("1", CPaptnDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CPaptnDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
 	
 	public static ArrayList<CEjecucion> getEjesEjecucion(int mes){
 		final ArrayList<CEjecucion> entidades=new ArrayList<CEjecucion>();
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select * from mv_paptn_tablaejes where mes = ? order by iorder");
 				pstm1.setInt(1, mes);
 				ResultSet results = pstm1.executeQuery();	
@@ -61,21 +61,21 @@ public class CPaptnDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("2", CPaptnDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("2", CPaptnDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return entidades.size()>0 ? entidades : null;
 	}
 	
 	public static Double[] getEstructurasFinanciamiento(int year){
 		Double[] ret=null;
-		if(CDatabase.connect()){
-			Connection conn = CDatabase.getConnection();
-			try{
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1 =  conn.prepareStatement("select * from mv_paptn_estructura_financiamiento where ejercicio = ?");
 				pstm1.setInt(1, year);
 				ResultSet results = pstm1.executeQuery();	
@@ -90,12 +90,12 @@ public class CPaptnDAO {
 				results.close();
 				pstm1.close();
 			}
-			catch(Exception e){
-				CLogger.write("3", CPaptnDAO.class, e);
-			}
-			finally{
-				CDatabase.close(conn);
-			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CPaptnDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
 		}
 		return ret;
 	}

@@ -1,6 +1,7 @@
 package dao;
 
 import java.net.URLEncoder;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -32,14 +33,16 @@ public class CUserDAO {
 	
 	public static boolean createUser(String username, String plainPassword, String firstname, String secondname, String lastname,
 			String secondlastname, String dependence, String position, String email){
+		boolean ret=false;
+		Connection conn = CDatabase.connect();
 		try{
 			RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 			ByteSource salt = rng.nextBytes();
 
 			CUser user = new CUser(username, new Sha256Hash(plainPassword, salt, 1024).toBase64(), firstname, secondname, lastname, secondlastname, 
 					dependence, position, salt.toBase64(), email);
-	        if(CDatabase.connect()){
-	        	PreparedStatement pstm = CDatabase.getConnection().prepareStatement("INSERT INTO user(username, password, firstname, secondname, lastname, secondlastname, dependence, position, salt, email) "
+			if(conn!=null && !conn.isClosed()){
+	        	PreparedStatement pstm = conn.prepareStatement("INSERT INTO user(username, password, firstname, secondname, lastname, secondlastname, dependence, position, salt, email) "
 	        			+ " VALUES(?,?,?,?,?,?,?,?,?,?) ");
 	        	pstm.setString(1, username);
 	        	pstm.setString(2, user.getPassword());
@@ -53,31 +56,35 @@ public class CUserDAO {
 	        	pstm.setString(10, email);
 	        	pstm.executeUpdate();
 	        	pstm.close();
-	        	CDatabase.close();
-	        	return true;
+	        	ret=true;
 	        	
 	        }
         }
         catch(Exception e){
         	CLogger.write("1", CUserDAO.class, e);
         }
-		return false;
+		finally {
+			CDatabase.close(conn);
+		}
+		return ret;
 	}
 	
 	public static boolean updateUser(String username, String plainPassword, String firstname, String secondname, String lastname,
-			String secondlastname, String dependence, String position, String email){
-		try{
-			RandomNumberGenerator rng=null;
-			ByteSource salt=null;
-			String password=null;
-			if(plainPassword!=null && plainPassword.length()>0){
-				rng = new SecureRandomNumberGenerator();
-				salt = rng.nextBytes();
-				password = new Sha256Hash(plainPassword, salt, 1024).toBase64();
-			}
+		String secondlastname, String dependence, String position, String email){
+		boolean ret=false;
+		RandomNumberGenerator rng=null;
+		ByteSource salt=null;
+		String password=null;
+		if(plainPassword!=null && plainPassword.length()>0){
+			rng = new SecureRandomNumberGenerator();
+			salt = rng.nextBytes();
+			password = new Sha256Hash(plainPassword, salt, 1024).toBase64();
+		}
 
-			if(CDatabase.connect()){
-	        	PreparedStatement pstm = CDatabase.getConnection().prepareStatement("UPDATE user SET "
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+	        	PreparedStatement pstm = conn.prepareStatement("UPDATE user SET "
 	        			+ "firstname = ?, secondname=?, lastname=?, secondlastname=?, dependence=?, position=?, email=? "
 	        			+ (salt!=null ? ", password=?, salt=? " : "" ) + " WHERE username = ?");
 	        	pstm.setString(1, firstname);
@@ -96,41 +103,47 @@ public class CUserDAO {
 	        		pstm.setString(8, username);
 	        	pstm.executeUpdate();
 	        	pstm.close();
-	        	CDatabase.close();
-	        	return true;
-	        }
+	        	ret = true;
+			}
         }
         catch(Exception e){
         	CLogger.write("2", CUserDAO.class, e);
         }
-		return false;
+		finally {
+			CDatabase.close(conn);
+		}
+		return ret;
 	}
 	
 	public static boolean userLoginHistory(String username){
+		boolean ret=false;
+		DateTime datetime = new DateTime();
+		Connection conn = CDatabase.connect();
 		try{
-			boolean ret=false;
-			DateTime datetime = new DateTime();
-	        if(CDatabase.connect()){
-	        	PreparedStatement pstm = CDatabase.getConnection().prepareStatement("INSERT INTO user_login VALUES(?,?)");
+			if(conn!=null && !conn.isClosed()){
+	        	PreparedStatement pstm = conn.prepareStatement("INSERT INTO user_login VALUES(?,?)");
 	        	pstm.setString(1, username);
 	        	pstm.setTimestamp(2, new Timestamp(datetime.getMillis()));
 	        	ret = pstm.executeUpdate() > 0;
 	        	pstm.close();
-	        	CDatabase.close();
-	        	return ret;
+	        	ret=true;
 	        }
         }
         catch(Exception e){
         	CLogger.write("3", CUserDAO.class, e);
         }
-        return false;
+		finally {
+			CDatabase.close(conn);
+		}
+        return ret;
 	}
 	
 	public static CUser getUser(String username){
 		CUser ret=null;
-		 try{
-		        if(CDatabase.connect()){
-		        	PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select * from user where username=?");
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+		        	PreparedStatement pstm = conn.prepareStatement("select * from user where username=?");
 		        	pstm.setString(1, username);
 		        	ResultSet rs = pstm.executeQuery();
 		        	if(rs.next()){
@@ -141,20 +154,25 @@ public class CUserDAO {
 		        	rs.close();
 		        	pstm.close();
 		        	CDatabase.close();
-		        }
-	        }
-	        catch(Exception e){
-	        	CLogger.write("4", CUserDAO.class, e);
-	        }
+		    }
+	    }
+	    catch(Exception e){
+	    	CLogger.write("4", CUserDAO.class, e);
+	    }
+		finally {
+			CDatabase.close(conn);
+		}
 		return ret;	
 	}
 	
 	public static boolean hasUserPermission(String username, String permission){
 		boolean ret=false;
+		
+		Integer permission_id = Integer.parseInt(permission);
+		Connection conn = CDatabase.connect();
 		try{
-			Integer permission_id = Integer.parseInt(permission);
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select count(*) from user_permiso where username = ? AND permiso_id = ?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("select count(*) from user_permiso where username = ? AND permiso_id = ?");
 				pstm.setString(1, username);
 				pstm.setInt(2, permission_id);
 				ResultSet rs = pstm.executeQuery();
@@ -162,21 +180,24 @@ public class CUserDAO {
 					ret = rs.getInt(1) > 0;
 				rs.close();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Throwable e){
 				CLogger.write("5", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
 	
 	public static boolean hasUserRole(String username, String role){
 		boolean ret=false;
+		Integer role_id = Integer.parseInt(role);
+		Connection conn = CDatabase.connect();
 		try{
-			Integer role_id = Integer.parseInt(role);
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select count(*) from user_role where username = ? AND role_id = ?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("select count(*) from user_role where username = ? AND role_id = ?");
 				pstm.setString(1, username);
 				pstm.setInt(2, role_id);
 				ResultSet rs = pstm.executeQuery();
@@ -184,20 +205,23 @@ public class CUserDAO {
 					ret = rs.getInt(1) > 0;
 				rs.close();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Throwable e){
 				CLogger.write("6", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
 	
 	public static ArrayList<CUser> getUsersList(){
 		ArrayList<CUser> users=new ArrayList<CUser>();
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select * from user order by username");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("select * from user order by username");
 				ResultSet rs = pstm.executeQuery();
 				while(rs.next()){
 					CUser user = new CUser(rs.getString("username"), null, rs.getString("firstname"), rs.getString("secondname"), 
@@ -207,34 +231,37 @@ public class CUserDAO {
 				}
 				rs.close();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Exception e){
 			CLogger.write("7", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return users;
 	}
 	
 	public static boolean updatePermissions(String username,String permissions){
 		boolean ret = false;
+		Connection conn=null;
 		try{
 			if(permissions!=null){
-				if(CDatabase.connect()){
+				conn = CDatabase.connect();
+				if(conn!=null && !conn.isClosed()){
 					String[] apermissions = permissions.split(",");
-					PreparedStatement pstm = CDatabase.getConnection().prepareStatement("delete from user_permiso where username = ?");
+					PreparedStatement pstm = conn.prepareStatement("delete from user_permiso where username = ?");
 					pstm.setString(1, username);
 					pstm.executeUpdate();
 					for(String permission : apermissions){
 						if(permission!=null && permission.length()>0){
-							pstm = CDatabase.getConnection().prepareStatement("INSERT INTO user_permiso VALUES(?,?)");
+							pstm = conn.prepareStatement("INSERT INTO user_permiso VALUES(?,?)");
 							pstm.setInt(1, Integer.parseInt(permission));
 							pstm.setString(2, username);
 							pstm.executeUpdate();
 						}
 					}
 					pstm.close();
-					CDatabase.close();
 					ret = true;
 				}
 			}
@@ -244,25 +271,29 @@ public class CUserDAO {
 		catch(Throwable e){
 			CLogger.write("8", CUserDAO.class, e);
 		}
+		finally {
+			CDatabase.close(conn);
+		}
 		return ret;
 	}
 	
 	public static boolean updateRol(String username,String rol){
 		boolean ret = false;
+		Connection conn=null;
 		try{
 			if(rol!=null){
-				if(CDatabase.connect()){
-					PreparedStatement pstm = CDatabase.getConnection().prepareStatement("delete from user_rol where username = ?");
+				conn = CDatabase.connect();
+				if(conn!=null && !conn.isClosed()){
+					PreparedStatement pstm = conn.prepareStatement("delete from user_rol where username = ?");
 					pstm.setString(1, username);
 					pstm.executeUpdate();
 					
-						pstm = CDatabase.getConnection().prepareStatement("INSERT INTO user_rol VALUES(?,?)");
+						pstm = conn.prepareStatement("INSERT INTO user_rol VALUES(?,?)");
 						pstm.setInt(1, Integer.parseInt(rol));
 						pstm.setString(2, username);
 						pstm.executeUpdate();
 					
 					pstm.close();
-					CDatabase.close();
 					ret = true;
 				}
 			}
@@ -272,14 +303,18 @@ public class CUserDAO {
 		catch(Throwable e){
 			CLogger.write("9", CUserDAO.class, e);
 		}
+		finally {
+			CDatabase.close(conn);
+		}
 		return ret;
 	}
 
 	public static ArrayList<CUserPermission> getUserPermissions(String username) {
 		ArrayList<CUserPermission> permissions=new ArrayList<CUserPermission>();
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select p.*, ifnull(up.permiso_id,0)>0 haspermission " + 
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("select p.*, ifnull(up.permiso_id,0)>0 haspermission " + 
 						"from permiso p " + 
 						"left outer join user_permiso up on (p.id = up.permiso_id and up.username = ?) order by p.nombre");
 				pstm.setString(1, username);
@@ -290,35 +325,40 @@ public class CUserDAO {
 				}
 				rs.close();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Exception e){
 			CLogger.write("10", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return permissions;
 	}
 
 	public static boolean deleteUser(String username) {
 		boolean ret = false;
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("delete from user_permiso where username = ?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("delete from user_permiso where username = ?");
 				pstm.setString(1, username);
 				pstm.executeUpdate();
-				pstm = CDatabase.getConnection().prepareStatement("delete from user_rol where username = ?");
+				pstm = conn.prepareStatement("delete from user_rol where username = ?");
 				pstm.setString(1, username);
 				pstm.executeUpdate();
-				pstm = CDatabase.getConnection().prepareStatement("delete from user where username = ?");
+				pstm = conn.prepareStatement("delete from user where username = ?");
 				pstm.setString(1, username);
 				pstm.executeUpdate();
 				pstm.close();
-				CDatabase.close();
 				ret = true;
 			}
 		}
 		catch(Throwable e){
 			CLogger.write("11", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
@@ -328,13 +368,14 @@ public class CUserDAO {
 		RandomNumberGenerator rng=new SecureRandomNumberGenerator();
 		ByteSource salt=rng.nextBytes();
 		String hash=new Sha256Hash(username, salt, 1024).toBase64();
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("DELETE FROM user_acceso_temporal WHERE username=?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("DELETE FROM user_acceso_temporal WHERE username=?");
 				pstm.setString(1, username);
 				pstm.executeUpdate();
 				pstm.close();
-				pstm = CDatabase.getConnection().prepareStatement("INSERT INTO user_acceso_temporal VALUES(?,?,?,1)");
+				pstm = conn.prepareStatement("INSERT INTO user_acceso_temporal VALUES(?,?,?,1)");
 				pstm.setString(1, username);
 				pstm.setTimestamp(2, new Timestamp(new DateTime().getMillis()));
 				pstm.setString(3, hash);
@@ -347,7 +388,9 @@ public class CUserDAO {
 		catch(Throwable e){
 			CLogger.write("12", CUserDAO.class, e);
 		}
-		
+		finally {
+			CDatabase.close(conn);
+		}
 		return ret;
 	}
 	
@@ -401,9 +444,10 @@ public class CUserDAO {
 	
 	public static String getUserEmail(String username){
 		String ret = null;
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("SELECT * FROM user_acceso_temporal WHERE username=?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("SELECT * FROM user_acceso_temporal WHERE username=?");
 				pstm.setString(1, username);
 				ResultSet rs = pstm.executeQuery();
 				if(rs.next()){
@@ -411,20 +455,23 @@ public class CUserDAO {
 				}
 				rs.close();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Throwable e){
 			CLogger.write("14", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
 
 	public static boolean checkTemporalAccess(String username, String hash) {
 		boolean ret=false;
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("SELECT count(*) total FROM user_acceso_temporal WHERE username=? AND hash=?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("SELECT count(*) total FROM user_acceso_temporal WHERE username=? AND hash=?");
 				pstm.setString(1, username);
 				pstm.setString(2, hash);
 				ResultSet rs = pstm.executeQuery();
@@ -433,11 +480,13 @@ public class CUserDAO {
 				}
 				rs.close();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Throwable e){
 			CLogger.write("15", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 		return ret;
 	}
@@ -452,36 +501,42 @@ public class CUserDAO {
 		salt = rng.nextBytes();
 		password = new Sha256Hash(plain_password, salt, 1024).toBase64();
 		
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-	        	PreparedStatement pstm = CDatabase.getConnection().prepareStatement("UPDATE user SET password=?, salt=?  WHERE username = ?");
+			if(conn!=null && !conn.isClosed()){
+	        	PreparedStatement pstm = conn.prepareStatement("UPDATE user SET password=?, salt=?  WHERE username = ?");
 	        	pstm.setString(1, password);
 		        pstm.setString(2, salt.toBase64());
 		        pstm.setString(3, username);
 	        	pstm.executeUpdate();
 	        	pstm.close();
-	        	CDatabase.close();
 	        	ret=true;
 			}
 		}
 		catch(Throwable e){
 			CLogger.write("16", CUserDAO.class, e);
 		}
+		finally {
+			CDatabase.close(conn);
+		}
 		return ret;
 	}
 
 	public static void deleteTemporalAccess(String username) {
+		Connection conn = CDatabase.connect();
 		try{
-			if(CDatabase.connect()){
-				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("DELETE FROM user_acceso_temporal WHERE username=?");
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm = conn.prepareStatement("DELETE FROM user_acceso_temporal WHERE username=?");
 				pstm.setString(1, username);
 				pstm.executeUpdate();
 				pstm.close();
-				CDatabase.close();
 			}
 		}
 		catch(Throwable e){
 			CLogger.write("17", CUserDAO.class, e);
+		}
+		finally {
+			CDatabase.close(conn);
 		}
 	}
 }
