@@ -54,9 +54,10 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				PreparedStatement pstm_mem = conn_mem.prepareStatement("select entidad,sum(ano_actual) total " + 
 						"from mv_ejecucion_presupuestaria " + 
-						"where ejercicio = 2017 " + 
+						"where ejercicio = ? " + 
 						"group by entidad " + 
 						"order by entidad");
+				pstm_mem.setInt(1, ejercicio-2);
 				ResultSet rs_mem = pstm_mem.executeQuery();
 				rs_mem.next();
 				while(rs.next()){
