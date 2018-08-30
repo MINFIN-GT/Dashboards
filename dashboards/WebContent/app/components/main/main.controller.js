@@ -92,8 +92,32 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/admin/users',{
             	template: '<div load-on-demand="\'usersController\'" class="all_page"></div>'
             })
-            .when('/formulacion/cuadrosglobales',{
-            	template: '<div load-on-demand="\'cuadrosglobalesController\'" class="all_page"></div>'
+            .when('/formulacion/cuadrosglobales/cuadro3',{
+            	template: '<div load-on-demand="\'cuadro3Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro4',{
+            	template: '<div load-on-demand="\'cuadro4Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro5',{
+            	template: '<div load-on-demand="\'cuadro5Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro6',{
+            	template: '<div load-on-demand="\'cuadro6Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro7',{
+            	template: '<div load-on-demand="\'cuadro7Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro8',{
+            	template: '<div load-on-demand="\'cuadro8Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro9',{
+            	template: '<div load-on-demand="\'cuadro9Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro10',{
+            	template: '<div load-on-demand="\'cuadro10Controller\'" class="all_page"></div>'
+            })
+            .when('/formulacion/cuadrosglobales/cuadro11',{
+            	template: '<div load-on-demand="\'cuadro11Controller\'" class="all_page"></div>'
             })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
@@ -252,6 +276,51 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'cuadrosglobalesController',
 	    	   script: '/app/components/formulacion/cuadrosglobales/cuadrosglobales.controller.js',
 	    	   template: '/app/components/formulacion/cuadrosglobales/cuadrosglobales.jsp'
+	       },
+	       {
+	    	   name: 'cuadro3Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro3.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro3.jsp'
+	       },
+	       {
+	    	   name: 'cuadro4Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro4.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro4.jsp'
+	       },
+	       {
+	    	   name: 'cuadro5Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro5.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro5.jsp'
+	       },
+	       {
+	    	   name: 'cuadro6Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro6.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro6.jsp'
+	       },
+	       {
+	    	   name: 'cuadro7Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro7.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro7.jsp'
+	       },
+	       {
+	    	   name: 'cuadro8Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro8.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro8.jsp'
+	       },
+	       {
+	    	   name: 'cuadro9Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro9.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro9.jsp'
+	       },
+	       {
+	    	   name: 'cuadro10Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro10.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro10.jsp'
+	       },
+	       {
+	    	   name: 'cuadro11Controller',
+	    	   script: '/app/components/formulacion/cuadrosglobales/cuadro11.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosglobales/cuadro11.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
