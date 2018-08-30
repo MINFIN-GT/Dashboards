@@ -1,6 +1,7 @@
 package servlets.formulacion;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
@@ -9,10 +10,14 @@ import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.shiro.codec.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,6 +36,8 @@ import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
 import pojo.formulacion.CRecursoEconomico;
+import utilities.CExcelFormulacion;
+import utilities.CLogger;
 import utilities.Utils;
 
 /**
@@ -189,12 +196,84 @@ public class SInstitucional extends HttpServlet {
 			else {
 				response_text = String.join("", "{\"success\":false }");
 			}
+		}else if(action.equals("exportarExcel")) {
+			int numeroCuadro = Utils.String2Int(map.get("numeroCuadro"), 0);
+			byte [] outArray = exportarExcel(ejercicio, numeroCuadro);
+			response.setContentType("application/ms-excel");
+			response.setContentLength(outArray.length);
+			response.setHeader("Cache-Control", "no-cache"); 
+			response.setHeader("Content-Disposition", "attachment; Cuadros Globales Recomendado " + ejercicio + ".xlsx");
+			ServletOutputStream outStream = response.getOutputStream();
+			outStream.write(outArray);
+			outStream.flush();
+			outStream.close();
 		}
-		 OutputStream output = response.getOutputStream();
+		
+		if(!action.equals("exportarExcel")) {
+			OutputStream output = response.getOutputStream();
 			GZIPOutputStream gz = new GZIPOutputStream(output);
 	        gz.write(response_text.getBytes("UTF-8"));
-         gz.close();
-         output.close();
+	        gz.close();
+	        output.close();
+		}
 	}
 
+	private byte[] exportarExcel(Integer ejercicio, Integer numeroCuadro) throws IOException{
+		byte [] outArray = null;
+		try{	
+			CExcelFormulacion excel= new CExcelFormulacion();	
+			ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();		
+			ArrayList<ArrayList<?>>	lstdatos = generarDatos(ejercicio, numeroCuadro);
+			Workbook wb = excel.generateExcel(lstdatos, ejercicio, numeroCuadro);
+			wb.write(outByteStream);
+			outByteStream.close();
+			outArray = Base64.encode(outByteStream.toByteArray());
+		}catch(Exception e){
+			CLogger.write("1", SInstitucional.class, e);
+		}
+		return outArray;
+	}
+	
+	private ArrayList<ArrayList<?>> generarDatos(Integer ejercicio, Integer numeroCuadro){
+		ArrayList<ArrayList<?>> datos = new ArrayList<>();
+		
+		try {
+			if(numeroCuadro == -1 || numeroCuadro == 0) {
+				datos.add(null);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 1) {
+				datos.add(null);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 2) {
+				ArrayList<CRecursoEconomico> eRecursoTotal = CRecursoDAO.getRecursosTotal(ejercicio);
+				datos.add(eRecursoTotal);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 3) {
+				ArrayList<CGastoEconomico> eGastoTotal = CGastoDAO.getGastosTotal(ejercicio);
+				datos.add(eGastoTotal);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 4) {
+				ArrayList<CInstitucionalTotal> eInstitucionalTotal = CInstitucionalDAO.getInstitucionalTotal(ejercicio);
+				datos.add(eInstitucionalTotal);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 5) {
+				ArrayList<CInstitucionalTipoGasto> eInstitucionalTipoGasto = CInstitucionalDAO.getInstitucionalTipoGasto(ejercicio);
+				datos.add(eInstitucionalTipoGasto);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 6) {
+				ArrayList<CInstitucionalTipoGastoGrupoGasto> eInstitucionalTipoGastoGrupoGasto = CInstitucionalDAO.getInstitucionalTipoGastoGrupoGasto(ejercicio, 10);
+				datos.add(eInstitucionalTipoGastoGrupoGasto);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 7) {
+				ArrayList<CInstitucionalFinalidad> eInstitucionalFinalidad = CInstitucionalDAO.getInstitucionalFinalidad(ejercicio);
+				datos.add(eInstitucionalFinalidad);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 8) {
+				ArrayList<CInstitucionalTipoGastoRegion> eInstitucionalTipoGastoRegion = CInstitucionalDAO.getInstitucionalTipoGastoRegion(ejercicio, 10);
+				datos.add(eInstitucionalTipoGastoRegion);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 9) {
+				ArrayList<CFinalidadRegion> fRegion = CFinalidadDAO.getFinalidadRegion(ejercicio);
+				datos.add(fRegion);
+			}else if(numeroCuadro ==-1 || numeroCuadro == 10) {
+				ArrayList<CFinalidadEconomico> fRecurso = CFinalidadDAO.getFinalidadRecurso(ejercicio);
+				datos.add(fRecurso);
+			}			
+		}catch(Exception e) {
+			CLogger.write("2", SInstitucional.class, e);
+		}
+		
+		return datos;
+	} 
 }

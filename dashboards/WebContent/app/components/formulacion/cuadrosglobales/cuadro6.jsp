@@ -87,6 +87,10 @@
 	  display: table-cell;
 	  vertical-align: middle;
 	}
+	
+	.table>tbody>tr:hover{
+		background-color: #ececec;
+	}
 </style>
 <div ng-controller="cuadro6Controller as ctrl" class="maincontainer" id="title" class="all_page">
 <h4>Cuadros Globales</h4>

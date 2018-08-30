@@ -23,17 +23,16 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	}
 	
 	
-		$http.post('/SInstitucional',  { action: 'getInstitucionalTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
-		    if(response.data.success){
-		    	me.entidades=response.data.entidades;
-		    	for(var i=0; i<me.entidades.length; i++){
-		    		me.total_aprobado_anterior_mas_ampliaciones += me.entidades[i].aprobado_anterior_mas_ampliaciones;
-		    		me.total_ejecutado_dos_antes += me.entidades[i].ejecutado_dos_antes;
-		    		me.total_recomendado += me.entidades[i].recomendado;
-		    	}
-		    }
-		    me.showloading=false;
-		});
-		
+	$http.post('/SInstitucional',  { action: 'getInstitucionalTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+	    if(response.data.success){
+	    	me.entidades=response.data.entidades;
+	    	for(var i=0; i<me.entidades.length; i++){
+	    		me.total_aprobado_anterior_mas_ampliaciones += me.entidades[i].aprobado_anterior_mas_ampliaciones;
+	    		me.total_ejecutado_dos_antes += me.entidades[i].ejecutado_dos_antes;
+	    		me.total_recomendado += me.entidades[i].recomendado;
+	    	}
+	    }
+	    me.showloading=false;
+	});
 }
 ]);
