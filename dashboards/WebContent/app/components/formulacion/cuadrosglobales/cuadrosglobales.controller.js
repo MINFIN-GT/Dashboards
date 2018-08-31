@@ -495,6 +495,6 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 						  })[0].click();
 					  }.bind(this), function errorCallback(response){				
 			});
-		}
+		} 
 }
 ]);

@@ -7,7 +7,7 @@
 </div>
 <div class="row">
 	<div style="float: right;">
-		<label class="btn btn-default" ng-click="ctrl.exportarExcel()" uib-tooltip="Exportar a Excel">
+		<label class="btn btn-default" ng-click="ctrl.exportarExcel()">
 		<span class="glyphicon glyphicon glyphicon-export" aria-hidden="true"></span></label>
 	</div>
 	<br/>
