@@ -128,6 +128,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/cuadrosglobales',{
             	template: '<div load-on-demand="\'cuadrosglobalesController\'" class="all_page"></div>'
             })
+            .when('/formulacion/maparecomendado',{
+            	template: '<div load-on-demand="\'maparecomendadoModule\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -345,6 +348,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'cuadrosglobalesController',
 	    	   script: '/app/components/formulacion/cuadrosglobales/cuadrosglobales.controller.js',
 	    	   template: '/app/components/formulacion/cuadrosglobales/cuadrosglobales.jsp'
+	       },
+	       {
+	    	   name: 'maparecomendadoModule',
+	    	   script: '/app/components/formulacion/mapas/formulacionGeografico.controller.js',
+	    	   template: '/app/components/formulacion/mapas/formulacionGeografico.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
