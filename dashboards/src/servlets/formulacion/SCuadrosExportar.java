@@ -146,22 +146,26 @@ public class SCuadrosExportar extends HttpServlet {
 				eInstitucionalTipoGastoGrupoGasto = CInstitucionalDAO.getInstitucionalTipoGastoGrupoGasto(ejercicio, 30);
 				datos.add(eInstitucionalTipoGastoGrupoGasto);
 			}
-			/*if(numeroCuadro ==-1 || numeroCuadro == 8) {
+			if(numeroCuadro ==-1 || numeroCuadro == 8) {
 				ArrayList<CInstitucionalFinalidad> eInstitucionalFinalidad = CInstitucionalDAO.getInstitucionalFinalidad(ejercicio);
 				datos.add(eInstitucionalFinalidad);
 			}
 			if(numeroCuadro ==-1 || numeroCuadro == 9) {
-				ArrayList<CInstitucionalTipoGastoRegion> eInstitucionalTipoGastoRegion = CInstitucionalDAO.getInstitucionalTipoGastoRegion(ejercicio, 10);
-				datos.add(eInstitucionalTipoGastoRegion);
+				ArrayList<CFinalidadEconomico> finalidades = CFinalidadDAO.getFinalidadRecurso(ejercicio);
+				datos.add(finalidades);
 			}
 			if(numeroCuadro ==-1 || numeroCuadro == 10) {
-				ArrayList<CFinalidadRegion> fRegion = CFinalidadDAO.getFinalidadRegion(ejercicio);
-				datos.add(fRegion);
+				ArrayList<CInstitucionalTipoGastoRegion> entidades = CInstitucionalDAO.getInstitucionalTipoGastoRegion(ejercicio,10);
+				datos.add(entidades);
+				entidades = CInstitucionalDAO.getInstitucionalTipoGastoRegion(ejercicio,20);
+				datos.add(entidades);
+				entidades = CInstitucionalDAO.getInstitucionalTipoGastoRegion(ejercicio,30);
+				datos.add(entidades);
 			}
 			if(numeroCuadro ==-1 || numeroCuadro == 11) {
-				ArrayList<CFinalidadEconomico> fRecurso = CFinalidadDAO.getFinalidadRecurso(ejercicio);
-				datos.add(fRecurso);
-			}*/			
+				ArrayList<CFinalidadRegion> finalidades = CFinalidadDAO.getFinalidadRegion(ejercicio);
+				datos.add(finalidades);
+			}		
 		}catch(Exception e) {
 			CLogger.write("2", SInstitucional.class, e);
 		}

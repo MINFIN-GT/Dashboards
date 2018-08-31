@@ -9,8 +9,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import pojo.formulacion.CFinalidadEconomico;
+import pojo.formulacion.CFinalidadRegion;
+import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
+import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
 
 public class CExcelFormulacion {	
@@ -300,16 +304,401 @@ public class CExcelFormulacion {
 					dataAsigGlob.setCellValue(valor);
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 8) {
+				sheet = workbook.getSheetAt(7);
+				Object objListaIntFinanlidad = lstDatos.get(5);
 				
+				ArrayList<CInstitucionalFinalidad> lstInstitucionalFinalidad = (ArrayList<CInstitucionalFinalidad>)objListaIntFinanlidad;
+
+				//Encabezado		
+				Cell cellDescripcion = sheet.getRow(2).getCell(1);
+				cellDescripcion.setCellValue("Presupuesto Recomendado " + ejercicio);
+				
+				for(int i=8; i<=26;i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstInstitucionalFinalidad.get(i-8).getEntidad_nombre());
+					
+					Double valor = lstInstitucionalFinalidad.get(i-8).getF01_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF01_monto()/1000000)) : null;
+					Cell dataServiciosPublicosGen = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataServiciosPublicosGen.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF02_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF02_monto()/1000000)) : null;
+					Cell dataDefensa = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataDefensa.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF03_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF03_monto()/1000000)) : null;
+					Cell dataOrdPubSegCiudadana = sheet.getRow(i).getCell(5);
+					if(valor != null)
+						dataOrdPubSegCiudadana.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF04_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF04_monto()/1000000)) : null;
+					Cell dataAtnDesastres = sheet.getRow(i).getCell(6);
+					if(valor != null)
+						dataAtnDesastres.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF05_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF05_monto()/1000000)) : null;
+					Cell dataAsuntosEconomicos = sheet.getRow(i).getCell(7);
+					if(valor != null)
+						dataAsuntosEconomicos.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF06_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF06_monto()/1000000)) : null;
+					Cell dataProtAmbiental = sheet.getRow(i).getCell(8);
+					if(valor != null)
+						dataProtAmbiental.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF07_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF07_monto()/1000000)) : null;
+					Cell dataUrbServComun = sheet.getRow(i).getCell(9);
+					if(valor != null)
+						dataUrbServComun.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF08_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF08_monto()/1000000)) : null;
+					Cell dataSalud = sheet.getRow(i).getCell(10);
+					if(valor != null)
+						dataSalud.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF09_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF09_monto()/1000000)) : null;
+					Cell dataActDepRecreCultRel = sheet.getRow(i).getCell(11);
+					if(valor != null)
+						dataActDepRecreCultRel.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF10_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF10_monto()/1000000)) : null;
+					Cell dataEducacion = sheet.getRow(i).getCell(12);
+					if(valor != null)
+						dataEducacion.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF11_monto()/1000000)) : null;
+					Cell dataProtSocial = sheet.getRow(i).getCell(13);
+					if(valor != null)
+						dataProtSocial.setCellValue(valor);
+					
+					valor = lstInstitucionalFinalidad.get(i-8).getF12_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalFinalidad.get(i-8).getF12_monto()/1000000)) : null;
+					Cell dataTransDeudaPublica = sheet.getRow(i).getCell(14);
+					if(valor != null)
+						dataTransDeudaPublica.setCellValue(valor);
+				}
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 9) {
+				sheet = workbook.getSheetAt(8);
+				Object objListaIntFinanlidad = lstDatos.get(6);
 				
+				ArrayList<CFinalidadEconomico> lstFinalidadEconomico = (ArrayList<CFinalidadEconomico>)objListaIntFinanlidad;
+				
+				//Encabezado		
+				Cell cellDescripcion = sheet.getRow(2).getCell(1);
+				cellDescripcion.setCellValue("Presupuesto Recomendado " + ejercicio);
+				
+				for(int i=8; i<=19;i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstFinalidadEconomico.get(i-8).getFinalidad_nombre());
+					
+					Double valor = lstFinalidadEconomico.get(i-8).getE1_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE1_monto()/1000000)) : null;
+					Cell dataRemuneraciones = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataRemuneraciones.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE2_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE2_monto()/1000000)) : null;
+					Cell dataBienesServicios = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataBienesServicios.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE3_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE3_monto()/1000000)) : null;
+					Cell dataRentasPropiedad = sheet.getRow(i).getCell(5);
+					if(valor != null)
+						dataRentasPropiedad.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE4_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE4_monto()/1000000)) : null;
+					Cell dataPresSeguridadSocial = sheet.getRow(i).getCell(6);
+					if(valor != null)
+						dataPresSeguridadSocial.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE5_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE5_monto()/1000000)) : null;
+					Cell dataTransCorrientes = sheet.getRow(i).getCell(7);
+					if(valor != null)
+						dataTransCorrientes.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE6_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE6_monto()/1000000)) : null;
+					Cell dataInvRealDirecta = sheet.getRow(i).getCell(8);
+					if(valor != null)
+						dataInvRealDirecta.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE7_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE7_monto()/1000000)) : null;
+					Cell dataTransCapital = sheet.getRow(i).getCell(9);
+					if(valor != null)
+						dataTransCapital.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE8_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE8_monto()/1000000)) : null;
+					Cell dataInvFinanciera = sheet.getRow(i).getCell(10);
+					if(valor != null)
+						dataInvFinanciera.setCellValue(valor);
+					
+					valor = lstFinalidadEconomico.get(i-8).getE9_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadEconomico.get(i-8).getE9_monto()/1000000)) : null;
+					Cell dataOtros = sheet.getRow(i).getCell(11);
+					if(valor != null)
+						dataOtros.setCellValue(valor);
+				}
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 10) {
+				sheet = workbook.getSheetAt(9);
+				Object objListaFinanciamiento = lstDatos.get(7);
+				Object objListaInversion = lstDatos.get(8);
+				Object objListaDeuda = lstDatos.get(9);
 				
+				ArrayList<CInstitucionalTipoGastoRegion> lstFinanciamientoGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaFinanciamiento;
+				ArrayList<CInstitucionalTipoGastoRegion> lstInversionGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaInversion;
+				ArrayList<CInstitucionalTipoGastoRegion> lstDeudaGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaDeuda;
+				
+				//Encabezado		
+				Cell cellDescripcion = sheet.getRow(2).getCell(1);
+				cellDescripcion.setCellValue("Presupuesto Recomendado " + ejercicio);
+				
+				//financiamiento
+				for(int i=9; i<=26;i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstFinanciamientoGrupoGasto.get(i-9).getEntidad_nombre());
+					
+					Double valor = lstFinanciamientoGrupoGasto.get(i-9).getR1_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR1_monto()/1000000)) : null;
+					Cell dataRegion1 = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataRegion1.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR2_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR2_monto()/1000000)) : null;
+					Cell dataRegion2 = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRegion2.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR3_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR3_monto()/1000000)) : null;
+					Cell dataRegion3 = sheet.getRow(i).getCell(5);
+					if(valor != null)
+						dataRegion3.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR4_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR4_monto()/1000000)) : null;
+					Cell dataRegion4 = sheet.getRow(i).getCell(6);
+					if(valor != null)
+						dataRegion4.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR5_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR5_monto()/1000000)) : null;
+					Cell dataRegion5 = sheet.getRow(i).getCell(7);
+					if(valor != null)
+						dataRegion5.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR6_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR6_monto()/1000000)) : null;
+					Cell dataRegion6 = sheet.getRow(i).getCell(8);
+					if(valor != null)
+						dataRegion6.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR7_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR7_monto()/1000000)) : null;
+					Cell dataRegion7 = sheet.getRow(i).getCell(9);
+					if(valor != null)
+						dataRegion7.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR8_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR8_monto()/1000000)) : null;
+					Cell dataRegion8 = sheet.getRow(i).getCell(10);
+					if(valor != null)
+						dataRegion8.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR9_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR9_monto()/1000000)) : null;
+					Cell dataRegion9 = sheet.getRow(i).getCell(11);
+					if(valor != null)
+						dataRegion9.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR10_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR10_monto()/1000000)) : null;
+					Cell dataRegion10 = sheet.getRow(i).getCell(12);
+					if(valor != null)
+						dataRegion10.setCellValue(valor);
+					
+					valor = lstFinanciamientoGrupoGasto.get(i-9).getR11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinanciamientoGrupoGasto.get(i-9).getR11_monto()/1000000)) : null;
+					Cell dataRegion11 = sheet.getRow(i).getCell(13);
+					if(valor != null)
+						dataRegion11.setCellValue(valor);
+				}
+				
+				//inversion
+				for(int i=29; i<=46;i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstInversionGrupoGasto.get(i-29).getEntidad_nombre());
+					
+					Double valor = lstInversionGrupoGasto.get(i-29).getR1_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR1_monto()/1000000)) : null;
+					Cell dataServiciosPersonales = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataServiciosPersonales.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR2_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR2_monto()/1000000)) : null;
+					Cell dataServiciosNoPersonales = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataServiciosNoPersonales.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR3_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR3_monto()/1000000)) : null;
+					Cell dataMateySumi = sheet.getRow(i).getCell(5);
+					if(valor != null)
+						dataMateySumi.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR4_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR4_monto()/1000000)) : null;
+					Cell dataPropPlanEquiInt = sheet.getRow(i).getCell(6);
+					if(valor != null)
+						dataPropPlanEquiInt.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR5_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR5_monto()/1000000)) : null;
+					Cell dataTransCorrientes = sheet.getRow(i).getCell(7);
+					if(valor != null)
+						dataTransCorrientes.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR6_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR6_monto()/1000000)) : null;
+					Cell dataTransCapital = sheet.getRow(i).getCell(8);
+					if(valor != null)
+						dataTransCapital.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR7_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR7_monto()/1000000)) : null;
+					Cell dataActFinan = sheet.getRow(i).getCell(9);
+					if(valor != null)
+						dataActFinan.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR8_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR8_monto()/1000000)) : null;
+					Cell dataDeudaPublica = sheet.getRow(i).getCell(10);
+					if(valor != null)
+						dataDeudaPublica.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR9_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR9_monto()/1000000)) : null;
+					Cell dataOtrosGastos = sheet.getRow(i).getCell(11);
+					if(valor != null)
+						dataOtrosGastos.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR10_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR10_monto()/1000000)) : null;
+					Cell dataAsigGlob = sheet.getRow(i).getCell(12);
+					if(valor != null)
+						dataAsigGlob.setCellValue(valor);
+					
+					valor = lstInversionGrupoGasto.get(i-29).getR11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInversionGrupoGasto.get(i-29).getR11_monto()/1000000)) : null;
+					Cell dataRegion11 = sheet.getRow(i).getCell(13);
+					if(valor != null)
+						dataRegion11.setCellValue(valor);
+				}
+				
+				//deuda
+				Double valor = lstDeudaGrupoGasto.get(0).getR1_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR1_monto()/1000000)) : null;
+				Cell dataServiciosPersonales = sheet.getRow(48).getCell(3);
+				if(valor != null)
+					dataServiciosPersonales.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR2_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR2_monto()/1000000)) : null;
+				Cell dataServiciosNoPersonales = sheet.getRow(48).getCell(4);
+				if(valor != null)
+					dataServiciosNoPersonales.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR3_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR3_monto()/1000000)) : null;
+				Cell dataMateySumi = sheet.getRow(48).getCell(5);
+				if(valor != null)
+					dataMateySumi.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR4_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR4_monto()/1000000)) : null;
+				Cell dataPropPlanEquiInt = sheet.getRow(48).getCell(6);
+				if(valor != null)
+					dataPropPlanEquiInt.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR5_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR5_monto()/1000000)) : null;
+				Cell dataTransCorrientes = sheet.getRow(48).getCell(7);
+				if(valor != null)
+					dataTransCorrientes.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR6_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR6_monto()/1000000)) : null;
+				Cell dataTransCapital = sheet.getRow(48).getCell(8);
+				if(valor != null)
+					dataTransCapital.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR7_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR7_monto()/1000000)) : null;
+				Cell dataActFinan = sheet.getRow(48).getCell(9);
+				if(valor != null)
+					dataActFinan.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR8_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR8_monto()/1000000)) : null;
+				Cell dataDeudaPublica = sheet.getRow(48).getCell(10);
+				if(valor != null)
+					dataDeudaPublica.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR9_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR9_monto()/1000000)) : null;
+				Cell dataOtrosGastos = sheet.getRow(48).getCell(11);
+				if(valor != null)
+					dataOtrosGastos.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR10_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR10_monto()/1000000)) : null;
+				Cell dataAsigGlob = sheet.getRow(48).getCell(12);
+				if(valor != null)
+					dataAsigGlob.setCellValue(valor);
+				
+				valor = lstDeudaGrupoGasto.get(0).getR11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstDeudaGrupoGasto.get(0).getR11_monto()/1000000)) : null;
+				Cell dataRegion11 = sheet.getRow(48).getCell(13);
+				if(valor != null)
+					dataRegion11.setCellValue(valor);
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 11) {
+				sheet = workbook.getSheetAt(10);
+				Object objListaFinanciamiento = lstDatos.get(10);
 				
+				ArrayList<CFinalidadRegion> lstFinalidadRegion = (ArrayList<CFinalidadRegion>)objListaFinanciamiento;
+				
+				//Encabezado		
+				Cell cellDescripcion = sheet.getRow(2).getCell(1);
+				cellDescripcion.setCellValue("Presupuesto Recomendado " + ejercicio);
+				
+				for(int i=8; i<=19; i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstFinalidadRegion.get(i-8).getFinalidad_nombre());
+					
+					Double valor = lstFinalidadRegion.get(i-8).getR1_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR1_monto()/1000000)) : null;
+					Cell dataRegion1 = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataRegion1.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR2_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR2_monto()/1000000)) : null;
+					Cell dataRegion2 = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRegion2.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR3_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR3_monto()/1000000)) : null;
+					Cell dataRegion3 = sheet.getRow(i).getCell(5);
+					if(valor != null)
+						dataRegion3.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR4_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR4_monto()/1000000)) : null;
+					Cell dataRegion4 = sheet.getRow(i).getCell(6);
+					if(valor != null)
+						dataRegion4.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR5_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR5_monto()/1000000)) : null;
+					Cell dataRegion5 = sheet.getRow(i).getCell(7);
+					if(valor != null)
+						dataRegion5.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR6_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR6_monto()/1000000)) : null;
+					Cell dataRegion6 = sheet.getRow(i).getCell(8);
+					if(valor != null)
+						dataRegion6.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR7_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR7_monto()/1000000)) : null;
+					Cell dataRegion7 = sheet.getRow(i).getCell(9);
+					if(valor != null)
+						dataRegion7.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR8_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR8_monto()/1000000)) : null;
+					Cell dataRegion8 = sheet.getRow(i).getCell(10);
+					if(valor != null)
+						dataRegion8.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR9_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR9_monto()/1000000)) : null;
+					Cell dataRegion9 = sheet.getRow(i).getCell(11);
+					if(valor != null)
+						dataRegion9.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR10_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR10_monto()/1000000)) : null;
+					Cell dataRegion10 = sheet.getRow(i).getCell(12);
+					if(valor != null)
+						dataRegion10.setCellValue(valor);
+					
+					valor = lstFinalidadRegion.get(i-8).getR11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstFinalidadRegion.get(i-8).getR11_monto()/1000000)) : null;
+					Cell dataRegion11 = sheet.getRow(i).getCell(13);
+					if(valor != null)
+						dataRegion11.setCellValue(valor);
+				}
 			}
 			inputStream.close();
 		}catch(Exception e) {
