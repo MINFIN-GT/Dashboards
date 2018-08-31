@@ -11,7 +11,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	me.filtroMillones=function(value, transform){
 		if(transform){
 			var millones = value/1000000;
-			return (value>0) ? $filter('currency')(millones.toFixed(1), '', 1) : null;
+			return (value>0) ?  $filter('currency')(millones.toFixed(1), '', 1) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(1), '', 1).substring(1) + ')' : null)  ;
 		}
 		else 
 			return value;
@@ -80,8 +80,17 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
     			stack_suma_aprobado_anterior_mas_amp.pop();
     			stack_suma_ejecutado_dos_antes.pop();
 	    	}
+    		$http.post('/SInstitucional',  { action: 'getTotalEjecutado', ejercicio: me.anio-2, t: (new Date()).getTime()   }).then(function(response){ 
+    			if(response.data.success){
+    				var total = response.data.total;
+    				var total_ejecutado_dos_antes_ingresos = me.recursos[0].ejecutado_dos_antes;
+    				me.recursos[37].ejecutado_dos_antes = total - total_ejecutado_dos_antes_ingresos;
+    				me.recursos[0].ejecutado_dos_antes = total;
+    			}
+    			me.showloading=false;
+    		});
 	    }
-	    me.showloading=false;
+	    
 	});
 }
 ]);
