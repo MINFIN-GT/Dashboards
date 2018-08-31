@@ -81,7 +81,7 @@ public class CInstitucionalDAO {
 		}
 		finally{
 			CDatabaseOracle.close(conn);
-			CDatabase.close(conn);
+			CDatabase.close(conn_mem);
 		}
 		return ret;
 	}
@@ -275,6 +275,30 @@ public class CInstitucionalDAO {
 		}
 		finally{
 			CDatabaseOracle.close(conn);
+		}
+		return ret;
+	}
+	
+	public static Double getTotalEjecutado(int ejercicio){
+		Double ret = 0.0;
+		Connection conn_mem = null;
+		try{
+			conn_mem = CDatabase.connect();
+				PreparedStatement pstm_mem = conn_mem.prepareStatement("select sum(ano_actual) total " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? ");
+				pstm_mem.setInt(1, ejercicio);
+				ResultSet rs_mem = pstm_mem.executeQuery();
+				if(rs_mem.next()){
+					ret=rs_mem.getDouble("total");
+				}
+			
+		}
+		catch(Exception e){
+			CLogger.write("5", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn_mem);
 		}
 		return ret;
 	}

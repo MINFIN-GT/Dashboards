@@ -1,0 +1,92 @@
+@charset "UTF-8";
+	.table {
+		border-style: double; 
+		width: 100%; 
+		margin: 20px auto;
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
+	
+	.table>tbody>tr>td{
+		padding: 8px;
+	    line-height: 1;
+	    vertical-align: top;
+	    border-top: none;
+	}
+	
+	.table>thead>tr>th{
+		border-bottom: double gray;
+		vertical-align: middle;
+	}
+	
+	.nota {
+	
+	}
+	
+	.div_principal{
+		width: 90%;
+		font-family: "Times New Roman";
+		font-size: 10px;
+		margin: 0 auto;
+		position: relative;
+	}
+	
+	.div_titulo{
+		text-align: center;
+		margin-top: 20px;
+	}
+	
+	.tab1{
+		margin-left: 10px;
+	}
+	
+	.tab2{
+		margin-left: 20px;
+	}
+	
+	.tab3{
+		margin-left: 30px;
+	}
+	
+	.tab4{
+		margin-left: 40px;
+	}
+	
+	.tab5{
+		margin-left: 50px;
+	}
+	
+	.tab6{
+		margin-left: 60px;
+	}
+	
+	.negrillas{
+		font-weight:bold;
+	}
+	
+	.grid_loading_cuadros{
+		position: absolute;
+	    top:0;
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+	}
+	
+	.grid_loading_cuadros .msg {
+	  opacity: 1;
+	  background-color: rgba(238,238,238,0.85);
+	  text-align: center;
+	  width: 100%;
+	  height: 100%;
+	  display: table;
+	}
+	
+	.grid_loading_cuadros .msg span {
+	  display: table-cell;
+	  vertical-align: middle;
+	}
+
+	.table>tbody>tr:hover{
+		background-color: #f2f2f2;
+		font-size: 16px;
+	}

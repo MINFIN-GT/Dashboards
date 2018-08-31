@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <link rel="stylesheet" type="text/css" href="/assets/css/main_cuadros.css" />
-<div ng-controller="cuadro3Controller as ctrl" class="maincontainer" id="title" class="all_page">
+<div ng-controller="cuadro2Controller as ctrl" class="maincontainer" id="title" class="all_page">
 <h4>Cuadros Globales</h4>
 <div class="row" style="margin-bottom: 10px;">
 </div>
@@ -16,12 +16,12 @@
 					</div>
 				</div>
 	    		<div class="div_titulo">
-			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 3</div>
+			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 2</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
-			    	<div style="font-size: 12px; font-weight: bold;">Clasificación Económica de los Recursos</div>
+			    	<div style="font-size: 12px; font-weight: bold;">Situación Financiera</div>
 			    	<div style="font-size: 12px; font-weight: bold;">(Montos en Millones de Quetzales)</div>
 		    	</div>
-		    	<table st-table="ctrl.recursos" class="table">
+		    	<table st-table="ctrl.lineas" class="table">
 					<thead>
 					<tr>
 						<th style="text-align: center">Descripción</th>
@@ -31,7 +31,7 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="row in ctrl.recursos">
+					<tr ng-repeat="row in ctrl.lineas">
 						<td><span class="{{ 'tab'+row.nivel }}"><span class="{{ row.negrillas==1 ? 'negrillas' : '' }}">{{ row.texto }}</span></span></td>
 						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.ejecutado_dos_antes, ctrl.viewMillones) }}</td>
 						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.aprobado_anterior_mas_amp, ctrl.viewMillones) }}</td>
