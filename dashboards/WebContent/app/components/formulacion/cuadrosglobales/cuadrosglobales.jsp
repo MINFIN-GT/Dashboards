@@ -6,6 +6,12 @@
 <div class="row" style="margin-bottom: 10px;">
 </div>
 <div class="row">
+	<div style="float: right;">
+		<label class="btn btn-default" ng-click="ctrl.exportarExcel()" uib-tooltip="Exportar a Excel">
+		<span class="glyphicon glyphicon glyphicon-export" aria-hidden="true"></span></label>
+	</div>
+	<br/>
+	<br/>
 	<uib-tabset active="active">
 		<uib-tab index="1" heading="Situación Financiera">
 			<div class="div_principal">

@@ -24,20 +24,24 @@ public class CExcelFormulacion {
 		Sheet sheet = null;
 		try {
 
-			String excelFilePath = "/TABLEROS/tpl_cuadros_globales.xls";
+			String excelFilePath = "/files/templates/tpl_cuadros_globales.xls";
 			FileInputStream inputStream = new FileInputStream(excelFilePath);
             workbook = WorkbookFactory.create(inputStream);
             workbook.setForceFormulaRecalculation(true);
             
 			if(numeroCuadro == -1 || numeroCuadro == 1) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 2) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 2) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 3) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 3) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 4) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 4) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 5) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 5) {
 				sheet = workbook.getSheetAt(4);
 				Object objLista = lstDatos.get(0);
 				ArrayList<CInstitucionalTotal> lstInstitucionalTotal = (ArrayList<CInstitucionalTotal>)objLista;
@@ -64,7 +68,8 @@ public class CExcelFormulacion {
 					Cell dataRecomendado = sheet.getRow(i).getCell(4);
 					dataRecomendado.setCellValue(Double.parseDouble(dosDecimales.format(lstInstitucionalTotal.get(i-39).getRecomendado()/1000000)));
 				}
-			}else if(numeroCuadro == -1 || numeroCuadro == 6) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 6) {
 				sheet = workbook.getSheetAt(5);
 				Object objLista = lstDatos.get(1);
 				ArrayList<CInstitucionalTipoGasto> lstInstitucionalTipoGasto = (ArrayList<CInstitucionalTipoGasto>)objLista;
@@ -116,7 +121,8 @@ public class CExcelFormulacion {
 					if(valor != null)
 						dataDeudaPublica.setCellValue(valor);
 				}
-			}else if(numeroCuadro == -1 || numeroCuadro == 7) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 7) {
 				sheet = workbook.getSheetAt(6);
 				Object objListaFinanciamiento = lstDatos.get(2);
 				Object objListaInversion = lstDatos.get(3);
@@ -292,13 +298,17 @@ public class CExcelFormulacion {
 				Cell dataAsigGlob = sheet.getRow(49).getCell(12);
 				if(valor != null)
 					dataAsigGlob.setCellValue(valor);
-			}else if(numeroCuadro == -1 || numeroCuadro == 8) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 8) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 9) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 9) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 10) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 10) {
 				
-			}else if(numeroCuadro == -1 || numeroCuadro == 11) {
+			}
+			if(numeroCuadro == -1 || numeroCuadro == 11) {
 				
 			}
 			inputStream.close();

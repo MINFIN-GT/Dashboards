@@ -483,5 +483,18 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    }
 		    me.showloading[10]=false;
 		});
+		
+		me.exportarExcel=function(){
+			$http.post('/SCuadrosExportar',  { action: 'exportarExcel', ejercicio: me.anio, numeroCuadro: -1, t: (new Date()).getTime()   }).then(
+					function successCallback(response) {
+						  var anchor = angular.element('<a/>');
+						  anchor.attr({
+							 href: 'data:application/ms-excel;base64,' + response.data,
+							 target: '_blank',
+							 download: 'Cuadros_Globales_Recomendado_' + me.anio + '.xls'
+						  })[0].click();
+					  }.bind(this), function errorCallback(response){				
+			});
+		}
 }
 ]);
