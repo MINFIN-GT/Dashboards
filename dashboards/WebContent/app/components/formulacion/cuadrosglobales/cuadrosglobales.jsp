@@ -98,6 +98,43 @@
 </div>
 <div class="row">
 	<uib-tabset active="active">
+		<uib-tab index="1" heading="Situación Financiera">
+			<div class="div_principal">
+	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[1]">
+				  	<div class="msg">
+				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+						  <br /><br />
+						  <b>Cargando, por favor espere...</b>
+					  </span>
+					</div>
+				</div>
+	    		<div class="div_titulo">
+			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 2</div>
+			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
+			    	<div style="font-size: 12px; font-weight: bold;">Situación Financiera</div>
+			    	<div style="font-size: 12px; font-weight: bold;">(Montos en Millones de Quetzales)</div>
+		    	</div>
+		    	<table st-table="ctrl.lineas" class="table">
+					<thead>
+					<tr>
+						<th style="text-align: center">Descripción</th>
+						<th style="text-align: center; width: 160px;border-right: 1px solid gray; border-left: 1px solid gray;">Ejecutado <br/>{{ ctrl.anio-2 }}</th>
+						<th style="text-align: center; width: 160px;border-right: 1px solid gray; border-left: 1px solid gray;">Aprobado <br/>{{ ctrl.anio-1 }} (*)</th>
+						<th style="text-align: center; width: 160px;">Recomendado <br/>{{ ctrl.anio }}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="row in ctrl.lineas">
+						<td><span class="{{ 'tab'+row.nivel }}"><span class="{{ row.negrillas==1 ? 'negrillas' : '' }}">{{ row.texto }}</span></span></td>
+						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.ejecutado_dos_antes, ctrl.viewMillones) }}</td>
+						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.aprobado_anterior_mas_amp, ctrl.viewMillones) }}</td>
+						<td style="text-align: right;">{{ ctrl.filtroMillones(row.recomendado, ctrl.viewMillones) }}</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
+			</div>
+		</uib-tab>
 		<uib-tab index="2" heading="Clasificación Econ. de los Recursos">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[2]">

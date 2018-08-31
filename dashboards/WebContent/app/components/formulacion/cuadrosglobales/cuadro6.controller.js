@@ -23,7 +23,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	me.filtroMillones=function(value, transform){
 		if(transform){
 			var millones = value/1000000;
-			return (value>0) ? $filter('currency')(millones.toFixed(1), '', 1) : null;
+			return (value>0) ?  $filter('currency')(millones.toFixed(1), '', 1) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(1), '', 1).substring(1) + ')' : null)  ;
 		}
 		else 
 			return value;

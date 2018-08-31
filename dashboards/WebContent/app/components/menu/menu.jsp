@@ -62,7 +62,8 @@
 	                <li uib-dropdown>
 	                	<a href="#" uib-dropdown-toggle><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Formulación <b class="caret"></b></a>
 	                	<ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-	                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro3">3. Econ. de los Recursos</a></li>
+	                			<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro2">2. Situación Financiera</a></li>
+	                			<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro3">3. Econ. de los Recursos</a></li>
 			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro4">4. Econ. del Gasto</a></li>
 			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro5">5. Econ. Institucional</a></li>
 			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro6">6. Inst. y SubGrupo de Tipo de Gasto</a></li>
@@ -71,6 +72,7 @@
 			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro9">9. Finalidad y Econ. del Gasto</a></li>
 			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro10">10. Inst. Tipo de G. y Renglón</a></li>
 			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro11">11. Gasto según Renglón y Finalidad</a></li>
+			                		<li role="menuitem"><a href="#!/formulacion/cuadrosglobales">Todos los cuadros</a></li>
 			            </ul>
 	                </li>
 	                <li uib-dropdown>
