@@ -39,7 +39,7 @@ public class CRecursoDAO {
 						"        and rfd.posicion = rf.posicion " + 
 						"    ) " + 
 						"    and r.ejercicio = ? " + 
-						") aprobado, ( " + 
+						") aprobado, nvl(( " + 
 						"    select sum(r.aprobado) " + 
 						"    from fp_r1_recursos r " + 
 						"    where r.recurso in (select rfd.dato_numero  " + 
@@ -48,7 +48,7 @@ public class CRecursoDAO {
 						"        and rfd.posicion = rf.posicion " + 
 						"    ) " + 
 						"    and r.ejercicio = ? " + 
-						") + nvl(( " + 
+						"),0) + nvl(( " + 
 						"    select sum(d.monto_aprobado) " + 
 						"    from er_modificaciones_hoja h, er_modificaciones_detalle d " + 
 						"    where h.ejercicio = ? " + 

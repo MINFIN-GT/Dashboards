@@ -261,13 +261,13 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	       },
 	       {
 	    	   name: 'ingresosController',
-	    	   script: '/app/components/proyeccion_ingresos/ingresos.controller.js',
-	    	   template: '/app/components/proyeccion_ingresos/ingresos.jsp'
+	    	   script: '/app/components/flujocaja/proyeccion_ingresos/ingresos.controller.js',
+	    	   template: '/app/components/flujocaja/proyeccion_ingresos/ingresos.jsp'
 	       },
 	       {
 	    	   name: 'egresosController',
-	    	   script: '/app/components/proyeccion_egresos/egresos.controller.js',
-	    	   template: '/app/components/proyeccion_egresos/egresos.jsp'
+	    	   script: '/app/components/flujocaja/proyeccion_egresos/egresos.controller.js',
+	    	   template: '/app/components/flujocaja/proyeccion_egresos/egresos.jsp'
 	       },
 	       {
 	    	   name: 'flujoController',

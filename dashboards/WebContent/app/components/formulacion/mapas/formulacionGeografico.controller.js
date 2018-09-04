@@ -123,7 +123,7 @@ function maparecomendadoController($uibModal, $http,NgMap) {
 		} else if (porcentaje >= 1) {
 			return "v";
 		} else {
-			return "d";
+			return "r";
 		}
 	}
 
@@ -207,35 +207,35 @@ function maparecomendadoController($uibModal, $http,NgMap) {
 		    styles:[{
 	    		where: 'Codigo IN ('+me.grupos['v'].join(',')+')',
 		        polygonOptions: {
-		          fillColor: '#008000',
+		          fillColor: '#47d147',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
 	    		where: 'Codigo IN ('+ me.grupos['va'].join(',') +')',
 		        polygonOptions: {
-		          fillColor: '#98fb98',
+		          fillColor: '#5cd65c',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
 	    		where: 'Codigo IN ('+ me.grupos['a'].join(',') +')',
 		        polygonOptions: {
-		          fillColor: '#ffff00',
+		          fillColor: '#85e085',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
 	    		where: 'Codigo IN ('+ me.grupos['ar'].join(',') +')',
 		        polygonOptions: {
-		          fillColor: '#ffdab9',
+		          fillColor: '#adebad',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
 	    		where: 'Codigo IN ('+ me.grupos['r'].join(',') +')',
 		        polygonOptions: {
-		          fillColor: '#ff0000',
+		          fillColor: '#d6f5d6',
 		          fillOpacity: 0.75
 		        }
 	        }

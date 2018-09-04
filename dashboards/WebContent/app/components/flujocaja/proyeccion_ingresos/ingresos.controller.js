@@ -52,39 +52,16 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			me.total_ejercicio=[];
 			me.total_pronosticos=0.0;
 			
+			me.pronosticos_por_recurso = [];
+			
 			me.nivel = 1;
 			me.recursos_selected=[];
+			me.recursos_selected_a=[];
 			me.auxiliares_selected=[];
 			
-			me.contextMenuOptions = function(row){
-				var ret = [];
-				if(this.level<2)
-					ret.push(['Secciones', function(){ $scope.ingreso.clickGo(row,2);  }]);
-				if(this.level<3)
-					ret.push(['Grupos', function(){ $scope.ingreso.clickGo(row,3); }]);
-				if(this.level<4)
-					ret.push(['Recursos', function(){ $scope.ingreso.clickGo(row,4); }]);
-				if(this.level<5)
-					ret.push(['Auxiliares', function(){ $scope.ingreso.clickGo(row,5); } ]);
-				return ret;
-			}
+			me.hide_tabla_recursos_blanks = false;
 			
-			$scope.grid_columns=[
-			      {  name: 'clase', width: 80, displayName: 'Clase', enableFiltering: false, cellClass: 'grid-align-right', type: 'number' },
-			      { name: 'seccion', width: 80, displayName: 'Sección', enableFiltering: false, cellClass: 'grid-align-right', type: 'number',
-			    	  cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span >{{ row.entity.seccion>0 ? row.entity.seccion : "" }}</span></div>'   
-			      },
-			      { name: 'grupo', width: 80, displayName: 'Grupo', enableFiltering: false, cellClass: 'grid-align-right', type: 'number',
-			    	  cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span >{{ row.entity.grupo>0 ? row.entity.grupo : "" }}</span></div>'  
-			      },
-			      { name: 'recurso', width: 80, displayName: 'Recurso', enableFiltering: false,cellClass: 'grid-align-right', type: 'number', 
-			    	  cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span >{{ row.entity.recurso>0 ? row.entity.recurso : "" }}</span></div>'
-			      },
-			      { name: 'auxiliar', width: 80, displayName: 'Auxiliar', enableFiltering: false, cellClass: 'grid-align-right', type: 'number', 
-			    	  cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span >{{ row.entity.auxiliar>0 ? row.entity.auxiliar : "" }}</span></div>'
-			      },
-			      { name: 'nombre', width: 300, displayName: 'Nombre' }
-			    ];
+			me.stack_sum = [];
 			
 			me.chartOptions= {
 					animation: {
@@ -182,6 +159,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					me.showloading = true;
 					me.sindatos=true;
 					me.recursos_selected=[];
+					me.recursos_selected_a=[];
 					me.auxiliares_selected={};
 					
 					var num_recursos=0;
@@ -197,16 +175,16 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 				    	    	if(n.children===undefined || n.children==null || n.children.length==0){
 				    	    		me.recursos_selected.push(n.recurso);
 				    	    	}
+				    	    	me.recursos_selected_a.push(n.recurso);
 				    	    }
 			    	    }
 			    	    if((n.children===undefined || n.children==null || n.children.length==0) && n.auxiliar==-1)
 			    	    	num_recursos++;
 			    	});
-					console.log(num_recursos+' '+me.recursos_selected.length);
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, 
 							recursosIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.recursos_selected),
 							auxiliaresIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.auxiliares_selected), numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-							mes: me.mes, ejercicio: me.anio  }).then(function(response){
+							mes: me.mes  }).then(function(response){
 					    if(response.data.success){
 					    	var date = moment([me.anio, me.mes-1, 1]);
 					    	date = date.subtract(12,'months');
@@ -260,38 +238,57 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    me.panel_recursos=false;
 					});
 					
-					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresosDetalle', ejercicio: me.anio, 
-						recursosIds: JSON.stringify(me.recursos_selected),
-						auxiliaresIds: JSON.stringify(me.auxiliares_selected), numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-						mes: me.mes, ejercicio: me.anio  }).then(function(response){
+					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresosPorRecurso', ejercicio: me.anio, 
+						recursosIds: JSON.stringify(me.recursos_selected_a),
+						mes: me.mes,   
+						numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12
+					}).then(function(response){
 							if(response.data.success){
-								if(response.data.pronosticos[0]!=null){
-									if($scope.grid_columns.length>5)
-										$scope.grid_columns.splice(6, $scope.grid_columns.length-5);
-									var date = moment([me.anio, me.mes-1, 1]);
-									for(var i=0; i<response.data.pronosticos[0].pronosticos.length; i++){
-										$scope.grid_columns.push({
-											 name: 'p'+i, width: 150, field:'pronosticos['+i+']', cellFilter: 'currency:"Q " : 0', displayName: me.meses[date.month()]+" "+date.year(), enableFiltering: false,
-												  enableSorting: false,
-											 	  cellClass: 'grid-align-right', 
-												  footerCellClass: 'grid-align-right', aggregationHideLabel: true, type: 'number',
-												  treeAggregationType: uiGridTreeViewConstants.aggregation.SUM,
-												  aggregationType: uiGridConstants.aggregationTypes.SUM, 
-												  cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span ng-hide="row.entity[\'$$\' + col.uid]">{{ row.entity.pronosticos['+i+'] | currency:"Q " : 0 }}</span><span ng-if="row.entity[\'$$\' + col.uid]"> {{row.entity["$$" + col.uid].value | currency:"Q " : 0 }}</span></div>',
-												  footerCellTemplate: '<div class="ui-grid-cell-contents">{{ col.getAggregationValue().substring(6) | currency:"Q " : 0 }}</div>'
-										});
-										date=date.add(1,'months');
+								me.pronosticos_por_recurso = response.data.pronosticos; 
+								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
+									if(me.pronosticos_por_recurso[i].nivel==1){
+										var sum=me.sumChildren(me.pronosticos_por_recurso,i, me.numero_pronosticos);
+										me.pronosticos_por_recurso[i].pronosticos = sum;
 									}
-									for(var i=0; i<response.data.pronosticos.length;i++){
-										if(response.data.pronosticos[i].auxiliar==0)
-											response.data.pronosticos[i].$$treeLevel = response.data.pronosticos[i].nivel-1;
+									var blank = true;
+									for(var j=0; j<me.pronosticos_por_recurso[i].pronosticos.length; j++){
+										blank = blank && (me.pronosticos_por_recurso[i].pronosticos[j]==null || me.pronosticos_por_recurso[i].pronosticos[j]==0);
 									}
-									me.recursos_gridOptions.data=response.data.pronosticos;
-									me.showloading = false;
+									me.pronosticos_por_recurso[i].blank = blank;
 								}
+								me.showloading = false;
 							}
 						});	
 				
+			}
+			
+			me.sumChildren=function(array, pos, length){
+				var sum=[];
+				for(var j=0; j<length; j++)
+					sum.push(0.0);
+				for(var i=pos+1; i<array.length && array[i].nivel!=array[pos].nivel; i++){
+					if(i+1 < array.length){
+						if(array[i].nivel<array[i+1].nivel){
+							array[i].pronosticos=me.sumChildren(array,i, length);
+							for(var j=0;j<length; j++)
+								sum[j]+=array[i].pronosticos[j];
+							var pos_act = i;
+							while(array[pos_act].nivel<array[i+1].nivel && i<array.length-2)
+								i++;
+						}
+						else if(array[i].nivel>array[i+1].nivel){
+							for(var j=0;j<length; j++)
+								sum[j]+=array[i].pronosticos[j];
+							return sum;
+						}
+						else
+							for(var j=0;j<length; j++)
+								sum[j]+=array[i].pronosticos[j];
+					}
+					else
+						return array[i].pronosticos;
+				}
+				return sum;
 			}
 			
 			me.filtroQuetzales=function(value){
@@ -303,6 +300,14 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			}
 			
 			me.filtroQuetzalesP=function(value){
+				if(me.viewQuetzales_p){
+					return $filter('currency')(value, 'Q ', 2);
+				}
+				else 
+					return value;
+			}
+			
+			me.filtroQuetzalesR=function(value){
 				if(me.viewQuetzales_p){
 					return $filter('currency')(value, 'Q ', 2);
 				}
@@ -336,57 +341,6 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 				
 			}
 			
-			me.recursos_gridOptions = {
-				    enableSorting: true,
-				    enableFiltering: true,
-				    enableRowSelection: true,
-				    selectionRowHeaderWidth: 35,
-				    multiSelect: true,
-				    modifierKeysToMultiSelect: false,
-				    noUnselect: false,
-				    showColumnFooter: true,
-				    enableRowHeaderSelection: false,
-				    showGridFooter:true,
-				    headerRowHeight: 50,
-				    columnDefs: $scope.grid_columns,
-				    onRegisterApi: function( gridApi ) {
-				      $scope.gridApi = gridApi;
-				      $scope.gridApi.grid.registerDataChangeCallback(function() {
-				          //$scope.gridApi.treeBase.expandAllRows();
-				    	 
-				      });
-				      $scope.gridApi.core.on.rowsRendered( $scope, function() {
-				    	  
-				      });
-				      $scope.gridApi.selection.on.rowSelectionChanged($scope,function(row){ 
-				       
-				    	 
-				      });
-				      
-				      /*if($routeParams.reset_grid=='gt1'){
-				    	  this.saveState();
-				      }
-				      else{
-				    	  var grid_data = { action: 'getstate', grid:'pronosticos_ingresos', t: (new Date()).getTime()};
-				    	  $http.post('/SSaveGridState', grid_data).then(function(response){
-					    	  if(response.data.success && response.data.state!='')
-					    	  $scope.gridApi.saveState.restore( $scope, response.data.state);
-					    	  $scope.gridApi.colMovable.on.columnPositionChanged($scope, this.saveState);
-						      $scope.gridApi.colResizable.on.columnSizeChanged($scope, this.saveState);
-						      $scope.gridApi.core.on.columnVisibilityChanged($scope, this.saveState);
-						      $scope.gridApi.core.on.sortChanged($scope, this.saveState);
-						  });
-				      }*/
-				    }
-				  };
-			
-			me.saveState=function() {
-				//var state = $scope.gridApi.saveState.save();
-				//var grid_data = { action: 'savestate', grid:'pronosticos_ingresos', state: JSON.stringify(state), t: (new Date()).getTime() }; 
-				//$http.post('/SSaveGridState', grid_data).then(function(response){
-				//});
-			}
-			
 			me.checkAll=function(selected){
 				if(selected)
 					ivhTreeviewMgr.selectAll(me.recursos);
@@ -394,9 +348,6 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					ivhTreeviewMgr.deselectAll(me.recursos);
 			}
 			
-			me.selectRecurso=function(ivhNode, ivhIsSelected){
-				
-			}
 			
 			
 		}

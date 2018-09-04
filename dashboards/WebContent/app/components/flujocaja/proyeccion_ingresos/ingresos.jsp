@@ -29,6 +29,22 @@
 		border-bottom: 1px solid #c3c3c3;
 		border-right: 1px solid #c3c3c3;
 	}
+	
+	.tab1{
+		padding-left: 10px;
+	}
+	
+	.tab2{
+		padding-left: 20px;
+	}
+	
+	.tab3{
+		padding-left: 30px;
+	}
+	
+	.tab4{
+		padding-left: 40px;
+	}
 
 </style>    
     
@@ -167,20 +183,22 @@
 		</div>
 		<div style="text-align: center;" ng-show="ingreso.sindatos && ingreso.recurso==0">Sin datos históricos suficientes para generar los prónosticos</div>
 	</uib-tab>
-	<uib-tab index="2" heading="Detalle">
-		<div ui-grid="ingreso.recursos_gridOptions" ui-grid-save-state ui-grid-move-columns ui-grid-resize-columns ui-grid-selection ui-grid-pinning ui-grid-tree-view class="grid" style="height: 710px;">
-				  <div class="grid_loading" ng-hide="!ingreso.showloading">
-				  	<div class="msg">
-				      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
-						  <br /><br />
-						  <b>Cargando, por favor espere...</b>
-					  </span>
-					</div>
-				  </div>
-			</div>
-	</uib-tab>
-	<uib-tab index="3" heading="Económico">
-		
+	<uib-tab index="2" heading="Por Recurso">
+		<br />
+		<table style="white-space: nowrap; font-size: 12px;" class="table table-hover">
+			<thead>
+				<tr>
+					<th>Recurso</th>
+					<th style="text-align: center;"ng-repeat="label in ingreso.chartLabels.slice(12) track by $index">{{ label }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="{{ ingreso.hide_tabla_recursos_blanks && row.blank }}">
+					<td style="padding-left: {{ row.nivel*10 }}px; font-weight: {{ row.nivel<4 ? 'bold' : 'normal'}};">{{ row.recurso + ' ' + row.nombre }}</td>
+					<td style="text-align: right;" ng-repeat="dato in row.pronosticos track by $index">{{ dato>0 ? ingreso.filtroRQuetzales(dato.toFixed(2)) : null }}</td>
+				</tr>
+			</tbody>
+		</table>
 	</uib-tab>
 </uib-tabset>
 <br/>
