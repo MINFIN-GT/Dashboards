@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import pojo.formulacion.CFinalidadEconomico;
 import pojo.formulacion.CFinalidadRegion;
+import pojo.formulacion.CGastoEconomico;
 import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
@@ -43,16 +44,46 @@ public class CExcelFormulacion {
 				
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 4) {
+				sheet = workbook.getSheetAt(3);
+				Object objLista = lstDatos.get(0);
+				ArrayList<CGastoEconomico> lstGastoEconomico = (ArrayList<CGastoEconomico>)objLista;
 				
+				//Encabezado		
+				Cell cellEjecutadoDosAnios = sheet.getRow(5).getCell(2);
+				cellEjecutadoDosAnios.setCellValue("Ejecutado " + (ejercicio-2));
+				Cell cellAprobado = sheet.getRow(5).getCell(3);
+				cellAprobado.setCellValue("Aprobado " + (ejercicio-1) + " (*)");
+				Cell cellRecomendado = sheet.getRow(5).getCell(4);
+				cellRecomendado.setCellValue("Recomendado " + ejercicio);
+				
+				for(int i=7; i<=66;i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-7).getTexto());
+					
+					Double valor = lstGastoEconomico.get(i-7).getejecutado_dos_antes() != null ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-7).getejecutado_dos_antes()/1000000)) : null;
+					Cell dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-7).getaprobado_anterior_mas_amp() != null ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-7).getaprobado_anterior_mas_amp()/1000000)) : null;
+					Cell dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-7).getRecomendado() != null ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-7).getRecomendado()/1000000)) : null;
+					Cell dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);									
+				}
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 5) {
 				sheet = workbook.getSheetAt(4);
-				Object objLista = lstDatos.get(0);
+				Object objLista = lstDatos.get(1);
 				ArrayList<CInstitucionalTotal> lstInstitucionalTotal = (ArrayList<CInstitucionalTotal>)objLista;
 				
 				//Encabezado		
 				Cell cellDescripcion = sheet.getRow(36).getCell(1);
-				cellDescripcion.setCellValue("InstituciÃ³n");
+				cellDescripcion.setCellValue("Institución");
 				
 				Cell cellEjecutadoDosAnios = sheet.getRow(36).getCell(2);
 				cellEjecutadoDosAnios.setCellValue("Ejecutado " + (ejercicio-2));
@@ -75,7 +106,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 6) {
 				sheet = workbook.getSheetAt(5);
-				Object objLista = lstDatos.get(1);
+				Object objLista = lstDatos.get(2);
 				ArrayList<CInstitucionalTipoGasto> lstInstitucionalTipoGasto = (ArrayList<CInstitucionalTipoGasto>)objLista;
 				
 				//Encabezado		
@@ -128,9 +159,9 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 7) {
 				sheet = workbook.getSheetAt(6);
-				Object objListaFinanciamiento = lstDatos.get(2);
-				Object objListaInversion = lstDatos.get(3);
-				Object objListaDeuda = lstDatos.get(4);
+				Object objListaFinanciamiento = lstDatos.get(3);
+				Object objListaInversion = lstDatos.get(4);
+				Object objListaDeuda = lstDatos.get(5);
 				
 				ArrayList<CInstitucionalTipoGastoGrupoGasto> lstFinanciamientoGrupoGasto = (ArrayList<CInstitucionalTipoGastoGrupoGasto>)objListaFinanciamiento;
 				ArrayList<CInstitucionalTipoGastoGrupoGasto> lstInversionGrupoGasto = (ArrayList<CInstitucionalTipoGastoGrupoGasto>)objListaInversion;
@@ -305,7 +336,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 8) {
 				sheet = workbook.getSheetAt(7);
-				Object objListaIntFinanlidad = lstDatos.get(5);
+				Object objListaIntFinanlidad = lstDatos.get(6);
 				
 				ArrayList<CInstitucionalFinalidad> lstInstitucionalFinalidad = (ArrayList<CInstitucionalFinalidad>)objListaIntFinanlidad;
 
@@ -380,7 +411,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 9) {
 				sheet = workbook.getSheetAt(8);
-				Object objListaIntFinanlidad = lstDatos.get(6);
+				Object objListaIntFinanlidad = lstDatos.get(7);
 				
 				ArrayList<CFinalidadEconomico> lstFinalidadEconomico = (ArrayList<CFinalidadEconomico>)objListaIntFinanlidad;
 				
@@ -440,9 +471,9 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 10) {
 				sheet = workbook.getSheetAt(9);
-				Object objListaFinanciamiento = lstDatos.get(7);
-				Object objListaInversion = lstDatos.get(8);
-				Object objListaDeuda = lstDatos.get(9);
+				Object objListaFinanciamiento = lstDatos.get(8);
+				Object objListaInversion = lstDatos.get(9);
+				Object objListaDeuda = lstDatos.get(10);
 				
 				ArrayList<CInstitucionalTipoGastoRegion> lstFinanciamientoGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaFinanciamiento;
 				ArrayList<CInstitucionalTipoGastoRegion> lstInversionGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaInversion;
@@ -632,7 +663,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 11) {
 				sheet = workbook.getSheetAt(10);
-				Object objListaFinanciamiento = lstDatos.get(10);
+				Object objListaFinanciamiento = lstDatos.get(11);
 				
 				ArrayList<CFinalidadRegion> lstFinalidadRegion = (ArrayList<CFinalidadRegion>)objListaFinanciamiento;
 				

@@ -125,11 +125,11 @@ public class SCuadrosExportar extends HttpServlet {
 			if(numeroCuadro ==-1 || numeroCuadro == 3) {
 				ArrayList<CRecursoEconomico> eRecursoTotal = CRecursoDAO.getRecursosTotal(ejercicio);
 				datos.add(eRecursoTotal);
-			}
+			}*/
 			if(numeroCuadro ==-1 || numeroCuadro == 4) {
 				ArrayList<CGastoEconomico> eGastoTotal = CGastoDAO.getGastosTotal(ejercicio);
 				datos.add(eGastoTotal);
-			}*/
+			}
 			if(numeroCuadro ==-1 || numeroCuadro == 5) {
 				ArrayList<CInstitucionalTotal> eInstitucionalTotal = CInstitucionalDAO.getInstitucionalTotal(ejercicio);
 				datos.add(eInstitucionalTotal);
