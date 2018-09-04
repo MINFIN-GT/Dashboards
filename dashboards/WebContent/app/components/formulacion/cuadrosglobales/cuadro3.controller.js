@@ -86,6 +86,8 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
     				var total_ejecutado_dos_antes_ingresos = me.recursos[0].ejecutado_dos_antes;
     				me.recursos[37].ejecutado_dos_antes = total - total_ejecutado_dos_antes_ingresos;
     				me.recursos[0].ejecutado_dos_antes = total;
+    				me.recursos[36].ejecutado_dos_antes = me.recursos[37].ejecutado_dos_antes;
+    				me.recursos[35].ejecutado_dos_antes = me.recursos[36].ejecutado_dos_antes + me.recursos[38].ejecutado_dos_antes;
     			}
     			me.showloading=false;
     		});

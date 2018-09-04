@@ -11,10 +11,19 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	me.filtroMillones=function(value, transform){
 		if(transform){
 			var millones = value/1000000;
-			return (value>0) ?  $filter('currency')(millones.toFixed(1), '', 1) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(1), '', 1).substring(1) + ')' : null)  ;
+			return (value>0) ?  $filter('currency')(millones, '', 1) : ( value<0 ? '(' + $filter('currency')(millones, '', 1).substring(1) + ')' : null)  ;
 		}
 		else 
 			return value;
+	}
+	
+	function roundWithPrecision(num, precision) {
+			if(num!=null){
+			  var multiplier = Math.pow(10, precision);
+			  return Math.round( num * multiplier ) / multiplier;
+			}
+			else
+				return null;
 	}
 	
 	
@@ -22,9 +31,19 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		var columnas=['ejecutado_dos_antes','aprobado_anterior_mas_amp', 'recomendado'];  
 		if(response.data.success){
 			   me.recursos=response.data.recursos;
+			   /*for(var i=0; i<me.recursos.length;i++){
+				   me.recursos[i].ejecutado_dos_antes = me.recursos[i].ejecutado_dos_antes/1000000.00;
+				   me.recursos[i].aprobado_anterior_mas_amp = me.recursos[i].aprobado_anterior_mas_amp/1000000.00;
+				   me.recursos[i].recomendado = me.recursos[i].recomendado/1000000.00;
+			   }*/
 		       $http.post('/SInstitucional',  { action: 'getGastosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 				   if(response.data.success){
 					   me.gastos=response.data.gastos;
+					   /*for(var i=0; i<me.gastos.length;i++){
+						   me.gastos[i].ejecutado_dos_antes = me.gastos[i].ejecutado_dos_antes/1000000.00;
+						   me.gastos[i].aprobado_anterior_mas_amp = me.gastos[i].aprobado_anterior_mas_amp/1000000.00;
+						   me.gastos[i].recomendado = me.gastos[i].recomendado/1000000.00;
+					   }*/
 					   $http.post('/SSituacion',  { action: 'getReporte', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 						   if(response.data.success){
 							   me.lineas=response.data.lineas;
@@ -103,12 +122,14 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 								   me.lineas[39][columnas[i]] = me.recursos[40][columnas[i]];
 								   me.lineas[40][columnas[i]] = me.gastos[57][columnas[i]] + me.gastos[58][columnas[i]];
 								   
-								   me.lineas[37][columnas[i]] = me.lineas[38][columnas[i]] + me.lineas[39][columnas[i]] + me.lineas[40][columnas[i]];
+								   me.lineas[37][columnas[i]] = me.lineas[38][columnas[i]] + me.lineas[39][columnas[i]] - me.lineas[40][columnas[i]];
 								   
 								   
 								   
 								   me.lineas[42][columnas[i]] = me.recursos[37][columnas[i]];
 								   me.lineas[41][columnas[i]] = me.recursos[37][columnas[i]];
+								   
+								   me.lineas[33][columnas[i]] = me.lineas[34][columnas[i]] + me.lineas[37][columnas[i]] + me.lineas[41][columnas[i]];
 							   }
 							   var total_ingresos=0;
 							   for(var k=0; k<me.recursos.length; k++)
@@ -120,6 +141,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 								   
 							   me.lineas[42].ejecutado_dos_antes = total_egresos - total_ingresos;
 							   me.lineas[41].ejecutado_dos_antes = total_egresos - total_ingresos;
+							   me.lineas[33].ejecutado_dos_antes = me.lineas[34].ejecutado_dos_antes + me.lineas[37].ejecutado_dos_antes + me.lineas[41].ejecutado_dos_antes;
 							   me.showloading=false;
 						   }
 						});

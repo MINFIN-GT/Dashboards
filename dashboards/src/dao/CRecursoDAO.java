@@ -490,4 +490,83 @@ public class CRecursoDAO {
 		}
 		return ret;
 	} 
+	
+	public static ArrayList<CRecurso> getPronosticosPorRecurso(int ejercicio, int mes, String[] recursosIds, int ajustado, int numero) {
+		ArrayList<CRecurso> ret=new ArrayList<CRecurso>();
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				String srecursosIds="";
+				DateTime inicio = new DateTime(ejercicio, mes, 1, 0, 0);
+				DateTime fin = inicio.plusMonths(numero);
+				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
+					srecursosIds+=","+recursosIds[i];
+				}
+				PreparedStatement pstm1=null;
+				pstm1 =  conn.prepareStatement("select ifnull(pi.ejercicio,r.ejercicio) ejercicio, pi.mes,  " + 
+						"ifnull(pi.recurso,r.recurso) recurso, r.nombre, " +
+						"case  " + 
+						"when mod(r.recurso,1000)=0 then 1  " + 
+						"when mod(r.recurso,100)=0 then 2 " + 
+						"when mod(r.recurso,10)=0 then 3 " + 
+						"else 4 " + 
+						"end nivel, " +
+						"sum(pi.monto) monto " + 
+						"from cp_recursos r " + 
+						"left outer join mvp_ingreso_recurso_auxiliar pi " + 
+						"on (  " + 
+						"pi.ejercicio >= r.ejercicio " + 
+						"and pi.recurso = r.recurso " + 
+						"and pi.auxiliar = 0 " + 
+						"and pi.fuente = 0 " + 
+						") " + 
+						"where r.ejercicio = ? " + 
+						"and ((pi.ejercicio=? and pi.mes>=?) or  " + 
+						"		(pi.ejercicio=? and pi.mes<=?) or " + 
+						"		(pi.ejercicio>? and pi.ejercicio<?) or " + 
+						"		pi.ejercicio is null) " + 
+						"and (pi.ajustado=? OR pi.ajustado is null) " +
+						"and r.recurso IN (" + srecursosIds.substring(1) + ") " +
+						"and r.recurso >= 10000 " +
+						"group by pi.ejercicio, pi.mes, pi.recurso, r.nombre " + 
+						"order by r.recurso, pi.ejercicio, pi.mes");		
+					pstm1.setInt(1, ejercicio);
+					pstm1.setInt(2, ejercicio);
+					pstm1.setInt(3, mes);
+					pstm1.setInt(4, fin.getYear());
+					pstm1.setInt(5, fin.getMonthOfYear());
+					pstm1.setInt(6, ejercicio);
+					pstm1.setInt(7, fin.getYear());
+					pstm1.setInt(8, ajustado);
+				ResultSet results = pstm1.executeQuery();
+				int recurso_actual = 0;
+				CRecurso recurso=null;
+				int pronostico_posicion = 0;
+				while (results.next()){
+					if(results.getInt("recurso")!=recurso_actual) {
+						if(recurso!=null)
+							ret.add(recurso);
+						recurso = new CRecurso(results.getInt("ejercicio"), results.getInt("recurso"), results.getString("nombre"), 0, 
+							0, 0, 0, null, null, null, results.getInt("nivel"), new Double[numero]);
+						pronostico_posicion = 0;
+						recurso_actual=results.getInt("recurso");
+					}
+					Double monto = results.getDouble("monto");
+					recurso.getPronosticos()[pronostico_posicion] = monto;
+					pronostico_posicion++;
+				}
+				if(recurso!=null)
+					ret.add(recurso);
+				results.close();
+				pstm1.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CRecursoDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return (ret.size()>0 ? ret : null);
+	}
 }

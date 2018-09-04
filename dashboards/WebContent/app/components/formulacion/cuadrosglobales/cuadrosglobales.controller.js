@@ -59,6 +59,197 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 			return value;
 	}
 	
+me.pibs = [ 522796.1, 559411.3, 642367.1 ];
+	
+	me.filtroPorcentaje=function(value){
+		var decimales=1;
+		value = value*100;
+		if(value>=0.1)
+			decimales=1;
+		else if(value<0.1 && value>=0.01)
+			decimales=2;
+		else if(value<0.01 && value>-0.01)
+			decimales=3;
+		else if(value<=-0.01 && value>-0.1)
+			decimales=2;
+		else
+			decimales=1;
+		var ret = (value>0) ?  $filter('currency')(value.toFixed(decimales), '', decimales) : ( value<0 ? '(' + $filter('currency')(value.toFixed(decimales), '', decimales).substring(1) + ')' : null);
+		return ret.substring(ret.length-1,1)=='0' ? ret.substring(0,ret.length-1) : ret;
+	}
+	
+	me.filtroCurrency=function(value){
+		return $filter('currency')(value.toFixed(1), '', 1);
+	}
+	
+	
+	$http.post('/SInstitucional',  { action: 'getRecursosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+		var columnas=['ejecutado_dos_antes','aprobado_anterior_mas_amp', 'recomendado'];  
+		if(response.data.success){
+			   me.recursos_c1=response.data.recursos;
+			   $http.post('/SInstitucional',  { action: 'getGastosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+				   if(response.data.success){
+					   me.gastos_c1=response.data.gastos;
+					   $http.post('/SIndicadoresFiscal',  { action: 'getReporte', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+						   if(response.data.success){
+							   me.lineas_c1=response.data.lineas;
+							   me.lineas_cuadro_2 = [];
+							   for(var i=0; i<43; i++){
+								    me.lineas_cuadro_2.push({
+								    	ejecutado_dos_antes: 0,
+								    	aprobado_anterior_mas_amp: 0,
+								    	recomendado: 0
+								    });
+							   }	   
+							   for(var i=0; i<columnas.length; i++){
+								   me.lineas_cuadro_2[3][columnas[i]] = me.recursos_c1[4][columnas[i]] + me.recursos_c1[5][columnas[i]] +
+								   		me.recursos_c1[6][columnas[i]] + me.recursos_c1[7][columnas[i]] + me.recursos_c1[8][columnas[i]];
+								   
+								   me.lineas_cuadro_2[4][columnas[i]] = me.recursos_c1[10][columnas[i]] + me.recursos_c1[12][columnas[i]] +
+							   		me.recursos_c1[13][columnas[i]] + me.recursos_c1[14][columnas[i]] + me.recursos_c1[15][columnas[i]] +
+							   		me.recursos_c1[16][columnas[i]] + me.recursos_c1[17][columnas[i]];
+								   
+								   me.lineas_cuadro_2[5][columnas[i]] =  me.recursos_c1[23][columnas[i]];
+								   
+								   me.lineas_cuadro_2[6][columnas[i]] =  me.recursos_c1[19][columnas[i]] + me.recursos_c1[20][columnas[i]] +
+								   me.recursos_c1[21][columnas[i]] + me.recursos_c1[22][columnas[i]];
+								   
+								   me.lineas_cuadro_2[7][columnas[i]] =  me.recursos_c1[24][columnas[i]];
+								   
+								   me.lineas_cuadro_2[8][columnas[i]] =  me.recursos_c1[26][columnas[i]] + me.recursos_c1[27][columnas[i]] + me.recursos_c1[28][columnas[i]];
+								   
+								   me.lineas_cuadro_2[9][columnas[i]] =  me.recursos_c1[30][columnas[i]] + me.recursos_c1[31][columnas[i]];
+								   
+								   me.lineas_cuadro_2[10][columnas[i]] =  me.recursos_c1[33][columnas[i]] + me.recursos_c1[34][columnas[i]];
+								   
+								   me.lineas_cuadro_2[2][columnas[i]] = me.lineas_cuadro_2[3][columnas[i]] + me.lineas_cuadro_2[4][columnas[i]];
+								   
+								   me.lineas_cuadro_2[1][columnas[i]] = me.lineas_cuadro_2[2][columnas[i]] + me.lineas_cuadro_2[5][columnas[i]] +
+								   		me.lineas_cuadro_2[6][columnas[i]] + me.lineas_cuadro_2[7][columnas[i]] + me.lineas_cuadro_2[8][columnas[i]] +
+								   		me.lineas_cuadro_2[9][columnas[i]];
+								   
+								   me.lineas_cuadro_2[0][columnas[i]] = me.lineas_cuadro_2[1][columnas[i]] + me.lineas_cuadro_2[10][columnas[i]];
+								   
+								   me.lineas_cuadro_2[14][columnas[i]] = me.gastos_c1[4][columnas[i]] + me.gastos_c1[5][columnas[i]] + me.gastos_c1[6][columnas[i]] + me.gastos_c1[7][columnas[i]];
+								   me.lineas_cuadro_2[15][columnas[i]] = me.gastos_c1[9][columnas[i]] + me.gastos_c1[10][columnas[i]] + me.gastos_c1[11][columnas[i]];
+								   me.lineas_cuadro_2[16][columnas[i]] = me.gastos_c1[12][columnas[i]] ;
+								   me.lineas_cuadro_2[17][columnas[i]] = me.gastos_c1[13][columnas[i]];
+								   me.lineas_cuadro_2[20][columnas[i]] = me.gastos_c1[16][columnas[i]];
+								   me.lineas_cuadro_2[21][columnas[i]] = me.gastos_c1[17][columnas[i]];
+								   me.lineas_cuadro_2[22][columnas[i]] = me.gastos_c1[18][columnas[i]];
+								   me.lineas_cuadro_2[23][columnas[i]] = me.gastos_c1[19][columnas[i]];
+								   me.lineas_cuadro_2[24][columnas[i]] = me.gastos_c1[20][columnas[i]];
+								   
+								   me.lineas_cuadro_2[25][columnas[i]]= me.gastos_c1[22][columnas[i]] +  me.gastos_c1[25][columnas[i]] +  me.gastos_c1[26][columnas[i]] +
+							   		me.gastos_c1[28][columnas[i]] +  me.gastos_c1[30][columnas[i]] +  me.gastos_c1[31][columnas[i]];
+								   
+								   me.lineas_cuadro_2[27][columnas[i]]=0;
+								   for(var j=35; j<43; j++)
+									   me.lineas_cuadro_2[27][columnas[i]] += me.gastos_c1[j][columnas[i]];
+								   
+								   me.lineas_cuadro_2[28][columnas[i]]= me.gastos_c1[44][columnas[i]] + me.gastos_c1[47][columnas[i]] + me.gastos_c1[48][columnas[i]] +
+								   		me.gastos_c1[49][columnas[i]] +  me.gastos_c1[50][columnas[i]] +  me.gastos_c1[51][columnas[i]] +  me.gastos_c1[53][columnas[i]] +  me.gastos_c1[54][columnas[i]];
+								   
+								   me.lineas_cuadro_2[29][columnas[i]] = me.gastos_c1[55][columnas[i]];
+								   
+								   me.lineas_cuadro_2[19][columnas[i]] = me.lineas_cuadro_2[20][columnas[i]] + me.lineas_cuadro_2[21][columnas[i]]; 
+								   me.lineas_cuadro_2[18][columnas[i]] = me.lineas_cuadro_2[19][columnas[i]] + me.lineas_cuadro_2[22][columnas[i]] + me.lineas_cuadro_2[23][columnas[i]];
+								   
+								   me.lineas_cuadro_2[13][columnas[i]] = me.lineas_cuadro_2[14][columnas[i]] + me.lineas_cuadro_2[15][columnas[i]] + me.lineas_cuadro_2[16][columnas[i]] + me.lineas_cuadro_2[17][columnas[i]];
+								   me.lineas_cuadro_2[12][columnas[i]] = me.lineas_cuadro_2[13][columnas[i]] + me.lineas_cuadro_2[18][columnas[i]] + me.lineas_cuadro_2[24][columnas[i]] + me.lineas_cuadro_2[25][columnas[i]];
+								   
+								   me.lineas_cuadro_2[26][columnas[i]] = me.lineas_cuadro_2[27][columnas[i]] + me.lineas_cuadro_2[28][columnas[i]] + me.lineas_cuadro_2[29][columnas[i]];
+								   
+								   me.lineas_cuadro_2[11][columnas[i]] = me.lineas_cuadro_2[12][columnas[i]] + me.lineas_cuadro_2[26][columnas[i]]; 
+								   
+								   
+								   me.lineas_cuadro_2[30][columnas[i]] = me.lineas_cuadro_2[0][columnas[i]] - me.lineas_cuadro_2[11][columnas[i]];
+								   me.lineas_cuadro_2[31][columnas[i]] = me.lineas_cuadro_2[0][columnas[i]] - me.lineas_cuadro_2[11][columnas[i]] + me.lineas_cuadro_2[19][columnas[i]];
+								   me.lineas_cuadro_2[32][columnas[i]] = me.lineas_cuadro_2[1][columnas[i]] - me.lineas_cuadro_2[12][columnas[i]];
+								   
+								   me.lineas_cuadro_2[35][columnas[i]] = me.recursos_c1[41][columnas[i]];
+								   me.lineas_cuadro_2[36][columnas[i]] = me.gastos_c1[59][columnas[i]];
+								   me.lineas_cuadro_2[34][columnas[i]] = me.lineas_cuadro_2[35][columnas[i]] - me.lineas_cuadro_2[36][columnas[i]];
+								   
+								   
+								   me.lineas_cuadro_2[38][columnas[i]] = me.recursos_c1[39][columnas[i]];
+								   me.lineas_cuadro_2[39][columnas[i]] = me.recursos_c1[40][columnas[i]];
+								   me.lineas_cuadro_2[40][columnas[i]] = me.gastos_c1[57][columnas[i]] + me.gastos_c1[58][columnas[i]];
+								   
+								   me.lineas_cuadro_2[37][columnas[i]] = me.lineas_cuadro_2[38][columnas[i]] + me.lineas_cuadro_2[39][columnas[i]] - me.lineas_cuadro_2[40][columnas[i]];
+								   
+								   me.lineas_cuadro_2[42][columnas[i]] = me.recursos_c1[37][columnas[i]];
+								   me.lineas_cuadro_2[41][columnas[i]] = me.recursos_c1[37][columnas[i]];
+								   
+								   me.lineas_cuadro_2[33][columnas[i]] = me.lineas_cuadro_2[34][columnas[i]] + me.lineas_cuadro_2[37][columnas[i]] + me.lineas_cuadro_2[41][columnas[i]];
+								   
+							   }
+							   var total_ingresos=0;
+							   for(var k=0; k<me.recursos_c1.length; k++)
+								   total_ingresos+=(me.recursos_c1[k].ejecutado_dos_antes!=null) ? me.recursos_c1[k].ejecutado_dos_antes : 0;
+							   
+							   var total_egresos={
+									   ejecutado_dos_antes: 0,
+									   aprobado_anterior_mas_amp: 0,
+									   recomendado: 0
+							   };
+							   for(var k=0; k<me.gastos_c1.length; k++){
+								   total_egresos.ejecutado_dos_antes+=me.gastos_c1[k].ejecutado_dos_antes!=null ? me.gastos_c1[k].ejecutado_dos_antes : 0;
+								   total_egresos.aprobado_anterior_mas_amp+=me.gastos_c1[k].aprobado_anterior_mas_amp!=null ? me.gastos_c1[k].aprobado_anterior_mas_amp : 0;
+								   total_egresos.recomendado+=me.gastos_c1[k].recomendado!=null ? me.gastos_c1[k].recomendado : 0;
+							   }
+								   
+							   me.lineas_cuadro_2[42].ejecutado_dos_antes = total_egresos.ejecutado_dos_antes - total_ingresos;
+							   me.lineas_cuadro_2[41].ejecutado_dos_antes = total_egresos.ejecutado_dos_antes - total_ingresos;
+							   me.lineas_cuadro_2[33].ejecutado_dos_antes = me.lineas_cuadro_2[34].ejecutado_dos_antes + me.lineas_cuadro_2[37].ejecutado_dos_antes + me.lineas_cuadro_2[41].ejecutado_dos_antes;
+							   
+							   me.showloading=false;
+							   
+							   for(var i=0; i<columnas.length; i++){
+								   me.lineas_c1[0][columnas[i]] = (me.lineas_cuadro_2[0][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[1][columnas[i]] = (me.lineas_cuadro_2[1][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[2][columnas[i]] = (me.lineas_cuadro_2[2][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[3][columnas[i]] = ((me.lineas_cuadro_2[5][columnas[i]]+me.lineas_cuadro_2[6][columnas[i]] + me.lineas_cuadro_2[7][columnas[i]] 
+								   + me.lineas_cuadro_2[8][columnas[i]] + me.lineas_cuadro_2[9][columnas[i]])/(me.pibs[i]*1000000));
+								   me.lineas_c1[4][columnas[i]] = (me.lineas_cuadro_2[10][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[5][columnas[i]] = (me.lineas_cuadro_2[11][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[6][columnas[i]] = (me.lineas_cuadro_2[12][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[7][columnas[i]] = (me.lineas_cuadro_2[13][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[8][columnas[i]] = (me.lineas_cuadro_2[18][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[9][columnas[i]] = (me.lineas_cuadro_2[24][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[10][columnas[i]] = (me.lineas_cuadro_2[25][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[11][columnas[i]] = (me.lineas_cuadro_2[26][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[12][columnas[i]] = (me.lineas_cuadro_2[27][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[13][columnas[i]] = (me.lineas_cuadro_2[28][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[14][columnas[i]] = (me.lineas_cuadro_2[29][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[15][columnas[i]] = (me.lineas_cuadro_2[32][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[16][columnas[i]] = (me.lineas_cuadro_2[31][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[17][columnas[i]] = (me.lineas_cuadro_2[30][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[18][columnas[i]] = (me.lineas_cuadro_2[33][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[19][columnas[i]] = ((me.lineas_cuadro_2[34][columnas[i]]+me.lineas_cuadro_2[37][columnas[i]])/(me.pibs[i]*1000000));
+								   me.lineas_c1[20][columnas[i]] = (me.lineas_cuadro_2[42][columnas[i]]/(me.pibs[i]*1000000));
+								   me.lineas_c1[21][columnas[i]] = (total_egresos[columnas[i]]/(me.pibs[i]*1000000));
+								   
+								   me.lineas_c1[22][columnas[i]] = ((me.lineas_cuadro_2[19][columnas[i]]+me.lineas_cuadro_2[36][columnas[i]]+me.lineas_cuadro_2[40][columnas[i]])/(me.pibs[i]*1000000));
+								   
+								   me.lineas_c1[23][columnas[i]] =(me.lineas_cuadro_2[2][columnas[i]]/me.lineas_cuadro_2[0][columnas[i]]);
+								   me.lineas_c1[24][columnas[i]] =((me.lineas_cuadro_2[5][columnas[i]]+me.lineas_cuadro_2[6][columnas[i]] + me.lineas_cuadro_2[7][columnas[i]] 
+								   + me.lineas_cuadro_2[8][columnas[i]] + me.lineas_cuadro_2[9][columnas[i]])/me.lineas_cuadro_2[0][columnas[i]]);
+								   me.lineas_c1[25][columnas[i]] =(me.lineas_cuadro_2[10][columnas[i]]/me.lineas_cuadro_2[0][columnas[i]]);
+								   me.lineas_c1[26][columnas[i]] =(me.lineas_cuadro_2[19][columnas[i]]/me.lineas_cuadro_2[0][columnas[i]]);
+								   
+								   me.lineas_c1[27][columnas[i]] =(me.lineas_cuadro_2[12][columnas[i]]-me.lineas_cuadro_2[19][columnas[i]])/total_egresos[columnas[i]];
+								   me.lineas_c1[28][columnas[i]] =(me.lineas_cuadro_2[26][columnas[i]]/total_egresos[columnas[i]]);
+								   me.lineas_c1[29][columnas[i]] =((me.lineas_cuadro_2[19][columnas[i]]+me.lineas_cuadro_2[36][columnas[i]]+me.lineas_cuadro_2[40][columnas[i]])/total_egresos[columnas[i]]);
+							   }
+						   }
+						});
+				   }
+				});
+		   }
+		    
+		});
+	
 	$http.post('/SInstitucional',  { action: 'getRecursosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 		var columnas=['ejecutado_dos_antes','aprobado_anterior_mas_amp', 'recomendado'];  
 		if(response.data.success){
@@ -150,6 +341,8 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 								   
 								   me.lineas[42][columnas[i]] = me.recursos_tot[37][columnas[i]];
 								   me.lineas[41][columnas[i]] = me.recursos_tot[37][columnas[i]];
+								   
+								   me.lineas[33][columnas[i]] = me.lineas[34][columnas[i]] + me.lineas[37][columnas[i]] - me.lineas[41][columnas[i]];
 							   }
 							   var total_ingresos=0;
 							   for(var k=0; k<me.recursos_tot.length; k++)

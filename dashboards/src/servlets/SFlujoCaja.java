@@ -176,6 +176,17 @@ public class SFlujoCaja extends HttpServlet {
 			response_text = String.join("", "\"recursos\":",new GsonBuilder().serializeNulls().create().toJson(root));
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
+		else if(action.equals("getPronosticosIngresosPorRecurso")) {
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
+			String[] recursosIds = map.get("recursosIds")!=null && map.get("recursosIds").length()>2 ?  map.get("recursosIds").substring(1,map.get("recursosIds").length()-2).split(",") : null;
+			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
+			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
+			ArrayList<CRecurso> pronosticos = CRecursoDAO.getPronosticosPorRecurso(ejercicio, mes,recursosIds, ajustado, numero);
+			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
+			response_text = String.join("", "\"pronosticos\":",response_text);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
         OutputStream output = response.getOutputStream();
 		GZIPOutputStream gz = new GZIPOutputStream(output);
         gz.write(response_text.getBytes("UTF-8"));

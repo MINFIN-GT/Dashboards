@@ -35,7 +35,7 @@ public class CGastoDAO {
 						"where rf.reporte = 'CUADRO_4' " + 
 						"group by rf.posicion, rf.texto, rf.nivel, rf.negrillas " + 
 						"order by rf.posicion");
-				pstm.setInt(1, ejercicio-1);
+				pstm.setInt(1, (ejercicio==2019) ? ejercicio-2 : ejercicio-1);
 				ResultSet rs_aprobado = pstm.executeQuery();
 				PreparedStatement pstm_amp =  conn.prepareStatement("select rf.posicion, sum(mo.modificaciones) modificaciones " + 
 						"from sicoinp_hreyes.reporte_formulacion rf " + 
@@ -114,7 +114,14 @@ public class CGastoDAO {
 							rs_recomendado.getDouble("recomendado"), rs_aprobado.getInt("negrillas"));
 					ret.add(gasto);
 				}
-			
+				if(ejercicio==2019) {
+					ret.get(9).setaprobado_anterior(7109164618.0);
+					ret.get(9).setaprobado_anterior_mas_amp(7109164618.0);
+					ret.get(16).setaprobado_anterior(4852119995.0);
+					ret.get(16).setaprobado_anterior_mas_amp(4852119995.0);
+					ret.get(17).setaprobado_anterior(2905377537.0);
+					ret.get(17).setaprobado_anterior_mas_amp(2905377537.0);
+				}
 			}
 		}
 		catch(Exception e){

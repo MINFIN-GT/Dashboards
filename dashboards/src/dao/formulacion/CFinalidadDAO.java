@@ -110,6 +110,10 @@ public class CFinalidadDAO {
 							-finalidad.getE8_monto());
 					ret.add(finalidad);
 				}
+				if(ejercicio==2019) {
+					ret.get(ret.size()-1).setE3_monto(ret.get(ret.size()-1).getE3_monto()+ret.get(ret.size()-1).getE2_monto());
+					ret.get(ret.size()-1).setE2_monto(0.0);
+				}
 			
 			}
 		}
