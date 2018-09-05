@@ -682,12 +682,11 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 		me.exportarExcel=function(){
 			me.showloading_excel=true;
 			$http.post('/SCuadrosExportar',  { action: 'exportarExcel', ejercicio: me.anio, numeroCuadro: -1, t: (new Date()).getTime()   }).then(
-					function successCallback(response, status, headers) {
+					function successCallback(response) {
 						
-						headers = headers();
 						 
-				        var filename = headers['x-filename'];
-				        var contentType = headers['content-type'];
+				        var filename = response.headers('x-filename');
+				        var contentType = response.headers('content-type');
 				 
 				        var linkElement = document.createElement('a');
 				        
