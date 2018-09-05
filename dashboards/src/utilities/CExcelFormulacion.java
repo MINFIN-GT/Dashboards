@@ -300,41 +300,41 @@ public class CExcelFormulacion {
 				cellEjecutadoDosAnios.setCellValue("Presupuesto Recomendado " + ejercicio);
 				
 				//Tabla
-				for(int i=46; i<= 64; i++) {
+				for(int i=47; i<= 65; i++) {
 					Cell dataDescripcion = sheet.getRow(i).getCell(1);
-					dataDescripcion.setCellValue(lstInstitucionalTipoGasto.get(i-46).getEntidad_nombre());
+					dataDescripcion.setCellValue(lstInstitucionalTipoGasto.get(i-47).getEntidad_nombre());
 					
-					Double valor = lstInstitucionalTipoGasto.get(i-46).getTp11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp11_monto()/1000000)) : null;
+					Double valor = lstInstitucionalTipoGasto.get(i-47).getTp11_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp11_monto()/1000000)) : null;
 					Cell dataAdministracion = sheet.getRow(i).getCell(3);
 					if(valor != null)
 						dataAdministracion.setCellValue(valor);
 					
-					valor = lstInstitucionalTipoGasto.get(i-46).getTp12_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp12_monto()/1000000)) : null;
+					valor = lstInstitucionalTipoGasto.get(i-47).getTp12_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp12_monto()/1000000)) : null;
 					Cell dataDesaHumano = sheet.getRow(i).getCell(4);
 					if(valor != null)
 						dataDesaHumano.setCellValue(valor);
 					
-					valor = lstInstitucionalTipoGasto.get(i-46).getTp13_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp13_monto()/1000000)) : null;
+					valor = lstInstitucionalTipoGasto.get(i-47).getTp13_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp13_monto()/1000000)) : null;
 					Cell dataTransCorrientes = sheet.getRow(i).getCell(5);
 					if(valor != null)
 						dataTransCorrientes.setCellValue(valor);
 					
-					valor = lstInstitucionalTipoGasto.get(i-46).getTp21_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp21_monto()/1000000)) : null;
+					valor = lstInstitucionalTipoGasto.get(i-47).getTp21_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp21_monto()/1000000)) : null;
 					Cell dataInvFisica = sheet.getRow(i).getCell(6);
 					if(valor != null)
 						dataInvFisica.setCellValue(valor);
 					
-					valor = lstInstitucionalTipoGasto.get(i-46).getTp22_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp22_monto()/1000000)) : null;
+					valor = lstInstitucionalTipoGasto.get(i-47).getTp22_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp22_monto()/1000000)) : null;
 					Cell dataTransCapital = sheet.getRow(i).getCell(7);
 					if(valor != null)
 						dataTransCapital.setCellValue(valor);
 					
-					valor = lstInstitucionalTipoGasto.get(i-46).getTp23_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp23_monto()/1000000)) : null;
+					valor = lstInstitucionalTipoGasto.get(i-47).getTp23_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp23_monto()/1000000)) : null;
 					Cell dataInvFinanciera = sheet.getRow(i).getCell(8);
 					if(valor != null)
 						dataInvFinanciera.setCellValue(valor);
 					
-					valor = lstInstitucionalTipoGasto.get(i-46).getTp31_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-46).getTp31_monto()/1000000)) : null;
+					valor = lstInstitucionalTipoGasto.get(i-47).getTp31_monto() != 0 ? Double.parseDouble(dosDecimales.format(lstInstitucionalTipoGasto.get(i-47).getTp31_monto()/1000000)) : null;
 					Cell dataDeudaPublica = sheet.getRow(i).getCell(9);
 					if(valor != null)
 						dataDeudaPublica.setCellValue(valor);
