@@ -50,6 +50,8 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	me.economicos=[];
 	me.total_finalidad_economico = [];
 	
+	me.showloading_excel = false;
+	
 	me.filtroMillones=function(value, transform){
 		if(transform){
 			var millones = value/1000000;
@@ -678,6 +680,7 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 		});
 		
 		me.exportarExcel=function(){
+			me.showloading_excel=true;
 			$http.post('/SCuadrosExportar',  { action: 'exportarExcel', ejercicio: me.anio, numeroCuadro: -1, t: (new Date()).getTime()   }).then(
 					function successCallback(response) {
 						  var anchor = angular.element('<a/>');
@@ -686,6 +689,7 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 							 target: '_blank',
 							 download: 'Cuadros_Globales_Recomendado_' + me.anio + '.xls'
 						  })[0].click();
+						  me.showloading_excel=false;
 					  }.bind(this), function errorCallback(response){				
 			});
 		} 

@@ -6,9 +6,11 @@
 <div class="row" style="margin-bottom: 10px;">
 </div>
 <div class="row">
-	<div style="float: right;">
-		<label class="btn btn-default" ng-click="ctrl.exportarExcel()">
-		<span class="glyphicon glyphicon glyphicon-export" aria-hidden="true"></span></label>
+	<div style="text-align: right;">
+		<span ng-show="ctrl.showloading_excel">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
+		<button type="button" class="btn btn-default" ng-click="ctrl.exportarExcel()" uib-tooltip="Exportar cuadros a Excel" tooltip-placement="left" ng-disabled="ctrl.showloading_excel">
+			<span class="glyphicon glyphicon glyphicon-export" aria-hidden="true"></span>
+		</button>
 	</div>
 	<br/>
 	<br/>

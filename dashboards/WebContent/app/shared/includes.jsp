@@ -17,6 +17,7 @@
 <link rel="stylesheet" type="text/css" href="/assets/css/angular-resizable.min.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/ivh-treeview/ivh-treeview.min.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/ivh-treeview/ivh-treeview-theme-basic.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/treeGrid.css" />
 
 <script type="text/javascript" src="/assets/libs/angular/angular.js"></script>
 <script type="text/javascript" src="/assets/libs/angular/angular-route.min.js"></script>
@@ -52,6 +53,7 @@
 <script type="text/javascript" src="/assets/libs/angular-resizable.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/angular-flash.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/ivh-treeview.min.js"></script> 
+<script type="text/javascript" src="/assets/libs/tree-grid-directive.js"></script> 
 
 <script type="text/javascript" src="/assets/libs/utilities.js"></script> 
 <script type="text/javascript" src="/assets/libs/Utilidades.js"></script> 

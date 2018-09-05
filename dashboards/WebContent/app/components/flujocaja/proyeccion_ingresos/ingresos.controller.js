@@ -45,12 +45,14 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			
 			me.viewQuetzales=true;
 			me.viewQuetzales_p=true;
+			me.viewQuetzales_r=true;
 			
 			me.sindatos=false;
 			
 			me.numero_pronosticos=12;
 			me.total_ejercicio=[];
 			me.total_pronosticos=0.0;
+			me.totales=[];
 			
 			me.pronosticos_por_recurso = [];
 			
@@ -59,7 +61,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			me.recursos_selected_a=[];
 			me.auxiliares_selected=[];
 			
-			me.hide_tabla_recursos_blanks = false;
+			me.hide_tabla_recursos_blanks = true;
 			
 			me.stack_sum = [];
 			
@@ -244,7 +246,14 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 						numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12
 					}).then(function(response){
 							if(response.data.success){
+								me.totales=[];
+								for(var i=0; i<me.numero_pronosticos; i++)
+									me.totales.push(0.0);
 								me.pronosticos_por_recurso = response.data.pronosticos; 
+								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
+									for(var j=0; j<me.pronosticos_por_recurso[i].pronosticos.length; j++)
+										me.totales[j] += (me.pronosticos_por_recurso[i].pronosticos[j]!=null) ? me.pronosticos_por_recurso[i].pronosticos[j] : 0.0;
+								}
 								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
 									if(me.pronosticos_por_recurso[i].nivel==1){
 										var sum=me.sumChildren(me.pronosticos_por_recurso,i, me.numero_pronosticos);
@@ -308,7 +317,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			}
 			
 			me.filtroQuetzalesR=function(value){
-				if(me.viewQuetzales_p){
+				if(me.viewQuetzales_r){
 					return $filter('currency')(value, 'Q ', 2);
 				}
 				else 

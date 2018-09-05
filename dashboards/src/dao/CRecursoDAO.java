@@ -98,7 +98,7 @@ public class CRecursoDAO {
 							(srecursosIds.length()>0 ? sauxiliaresIds  : (sauxiliaresIds.length()>0 ? sauxiliaresIds.substring(3) : "")) + 
 							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " ) "  : "") +
 							(recursosIds==null && auxiliaresIds==null ? " AND auxiliar>0 " : "") +
-							" AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
+							" AND ajustado = ? AND recurso>=10000 GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
 					pstm1.setInt(1, ejercicio);
 					pstm1.setInt(2, mes);
 					pstm1.setInt(3, ejercicio);
@@ -517,7 +517,7 @@ public class CRecursoDAO {
 						"on (  " + 
 						"pi.ejercicio >= r.ejercicio " + 
 						"and pi.recurso = r.recurso " + 
-						"and pi.auxiliar = 0 " + 
+						"and pi.auxiliar > 0 " + 
 						"and pi.fuente = 0 " + 
 						") " + 
 						"where r.ejercicio = ? " + 
