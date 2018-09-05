@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -19,7 +18,6 @@ import org.apache.shiro.codec.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import dao.formulacion.CuadroExportarDAO;
 import utilities.CExcelFormulacion;
 import utilities.CLogger;
 import utilities.Utils;

@@ -2,7 +2,6 @@ package utilities;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,10 +24,9 @@ public class CExcelFormulacion {
 	}
 	
 	public Workbook generateExcel(Integer ejercicio) {		
-		Workbook workbook = new HSSFWorkbook();
+		Workbook workbook = null;
 		Sheet sheet = null;
 		try {
-
 			String excelFilePath = "/files/templates/tpl_cuadros_globales.xls";
 			FileInputStream inputStream = new FileInputStream(excelFilePath);
             workbook = WorkbookFactory.create(inputStream);
