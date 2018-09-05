@@ -68,7 +68,7 @@ public class SCuadrosExportar extends HttpServlet {
 				response.setContentType("application/ms-excel");
 				response.setContentLength(outArray.length);
 				response.setHeader("Cache-Control", "no-cache"); 
-				response.setHeader("Content-Disposition", "attachment; Cuadros Globales Recomendado " + ejercicio + ".xlsx");
+				response.setHeader("Content-Disposition", "attachment; Cuadros_Globales_Recomendado " + ejercicio + ".xls");
 				ServletOutputStream outStream = response.getOutputStream();
 				outStream.write(outArray);
 				outStream.flush();
