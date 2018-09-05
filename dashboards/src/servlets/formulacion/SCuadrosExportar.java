@@ -87,8 +87,7 @@ public class SCuadrosExportar extends HttpServlet {
 		try{	
 			CExcelFormulacion excel= new CExcelFormulacion();	
 			outByteStream = new ByteArrayOutputStream(10204);		
-			ArrayList<ArrayList<?>>	lstdatos = CuadroExportarDAO.generarDatos(ejercicio);
-			wb = excel.generateExcel(lstdatos, ejercicio, numeroCuadro);
+			wb = excel.generateExcel(ejercicio);
 			wb.write(outByteStream);
 			outByteStream.close();
 			outArray = Base64.encode(outByteStream.toByteArray());
