@@ -316,5 +316,37 @@ public class CEntidadDAO {
 		}
 		return ret.toArray(new Double[ret.size()]);
 	}
+	
+	/*public static ArrayList<CGasto> getPronosticosEgresosTree(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+		ArrayList<CGasto> ret=new ArrayList<CGasto>();
+		Connection conn = CDatabase.connect();
+		try{
+			if(conn!=null && !conn.isClosed()){
+				PreparedStatement pstm1=null;
+				
+				pstm1 =  conn.prepareStatement("");		
+					pstm1.setInt(1, ejercicio);
+					pstm1.setInt(2, mes);
+					pstm1.setInt(3, ejercicio);
+					pstm1.setInt(4, entidad);
+					pstm1.setInt(5, unidad_ejecutora);
+					pstm1.setInt(6, ajustado);
+					pstm1.setInt(7, numero);
+				ResultSet results = pstm1.executeQuery();	
+				while (results.next()){
+					ret.add(results.getDouble("monto"));
+				}
+				results.close();
+				pstm1.close();
+			}
+		}
+		catch(Exception e){
+			CLogger.write("3", CEntidadDAO.class, e);
+		}
+		finally{
+			CDatabase.close(conn);
+		}
+		return ret;
+	}*/
 
 }

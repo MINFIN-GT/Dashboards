@@ -76,102 +76,102 @@
 	</div>
 </div>
 <br/>
-<div class="row" style="margin-bottom: 10px;">
-	<div class="col-sm-12">
-		<div>Entidad</div>
-		<div angucomplete-alt id="entidad"
-              placeholder="Busqueda de entidades"
-              pause="100"
-              selected-object="egreso.cambioEntidad"
-              local-data="egreso.entidades"
-              search-fields="nombre_control"
-              title-field="nombre_control"
-              description-field=""
-              minlength="1"
-              input-class="input-angucomplete"
-              match-class="highlight"
-              focus-out="egreso.blurEntidad()"
-              inputname="entidad"
-              disable-input="egreso.showloading"></div>
-    </div>
-    <div class="col-sm-12" style="margin-top: -20px;">
-    	<div>Unidad Ejecutora</div>
-		<div angucomplete-alt id="unidad_ejecutora"
-              placeholder="Busqueda de unidades ejecutoras"
-              pause="100"
-              selected-object="egreso.cambioUnidadEjecutora"
-              local-data="egreso.unidades_ejecutoras"
-              search-fields="nombre_control"
-              title-field="nombre_control"
-              description-field=""
-              minlength="1"
-              input-class="input-angucomplete"
-              match-class="highlight"
-              focus-out="egreso.blurUnidadEjecutora()"
-              inputname="auxiliar" 
-              disable-input="egreso.entidad==null || egreso.showloading"></div>
-    </div>
-</div>
-<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="!egreso.sindatos">
-	<div style="width: 800px; height: 400px; margin: 0 auto;">
-		<canvas class="chart-base" chart-type="egreso.chartType" chart-data="egreso.chartData"
-					chart-labels="egreso.chartLabels" chart-series="egreso.chartSeries" chart-options="egreso.chartOptions" chart-colors="egreso.chartColors"
-					chart-dataset-override="egreso.chartDataset">
-				</canvas>
-	</div>
-</div>
-<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="egreso.chartLoaded && !egreso.sindatos">
-	<div>Pronósticos</div>
-	<div style="text-align: center;">
-		<div style="width: 90%; text-align: right;">
-		<button type="button" class="btn btn-default" ng-model="egreso.viewQuetzales_p" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-        	Q
-   		</button>
-   		</div>
-   		<br/>
-		<table class="table_pronosticos">
-			<thead>
-				<tr>
-					<td align="center" ng-repeat="label in egreso.chartLabels.slice(12) track by $index">{{ label }}</td>
-					<td align="center">Total</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td align="right" ng-repeat="dato_pronostico in egreso.chartData[1].slice(12) track by $index">{{ egreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
-					<td align="right">{{ egreso.filtroQuetzales(egreso.total_pronosticos.toFixed(2)) }}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<br/>
-	<div>Historia</div>
-	<div style="text-align: center;">
-		<div style="width: 90%; text-align: right;">
-		<button type="button" class="btn btn-default" ng-model="egreso.viewQuetzales" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-        	Q
-   		</button>
-   		</div>
-   		<br/>
-		<table class="table_historicos">
-			<thead>
-				<tr>
-					<td>Año</td>
-					<td ng-repeat="mes in egreso.meses">{{ mes }}</td>
-					<td>Total</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="ejercicio in egreso.historia track by $index">
-					<td align="center">{{ ejercicio[0] }}</td>
-					<td align="right" ng-repeat="dato in ejercicio.slice(1) track by $index">{{ egreso.filtroQuetzales(dato.toFixed(2)) }}</td>
-					<td align="right">{{ egreso.filtroQuetzales(egreso.total_ejercicio[$index].toFixed(2)) }}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-<div style="text-align: center;" ng-show="egreso.sindatos && egreso.entidad==0">Sin datos históricos suficientes para generar los prónosticos</div>
+		<div class="row" style="margin-bottom: 10px; margin-top:15px;">
+			<div class="col-sm-12">
+				<div>Entidad</div>
+				<div angucomplete-alt id="entidad"
+		              placeholder="Busqueda de entidades"
+		              pause="100"
+		              selected-object="egreso.cambioEntidad"
+		              local-data="egreso.entidades"
+		              search-fields="nombre_control"
+		              title-field="nombre_control"
+		              description-field=""
+		              minlength="1"
+		              input-class="input-angucomplete"
+		              match-class="highlight"
+		              focus-out="egreso.blurEntidad()"
+		              inputname="entidad"
+		              disable-input="egreso.showloading"></div>
+		    </div>
+		    <div class="col-sm-12" style="margin-top: -20px;">
+		    	<div>Unidad Ejecutora</div>
+				<div angucomplete-alt id="unidad_ejecutora"
+		              placeholder="Busqueda de unidades ejecutoras"
+		              pause="100"
+		              selected-object="egreso.cambioUnidadEjecutora"
+		              local-data="egreso.unidades_ejecutoras"
+		              search-fields="nombre_control"
+		              title-field="nombre_control"
+		              description-field=""
+		              minlength="1"
+		              input-class="input-angucomplete"
+		              match-class="highlight"
+		              focus-out="egreso.blurUnidadEjecutora()"
+		              inputname="auxiliar" 
+		              disable-input="egreso.entidad==null || egreso.showloading"></div>
+		    </div>
+		</div>
+		<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="!egreso.sindatos">
+			<div style="width: 800px; height: 400px; margin: 0 auto;">
+				<canvas class="chart-base" chart-type="egreso.chartType" chart-data="egreso.chartData"
+							chart-labels="egreso.chartLabels" chart-series="egreso.chartSeries" chart-options="egreso.chartOptions" chart-colors="egreso.chartColors"
+							chart-dataset-override="egreso.chartDataset">
+						</canvas>
+			</div>
+		</div>
+		<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="egreso.chartLoaded && !egreso.sindatos">
+			<div>Pronósticos</div>
+			<div style="text-align: center;">
+				<div style="width: 90%; text-align: right;">
+				<button type="button" class="btn btn-default" ng-model="egreso.viewQuetzales_p" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+		        	Q
+		   		</button>
+		   		</div>
+		   		<br/>
+				<table class="table_pronosticos">
+					<thead>
+						<tr>
+							<td align="center" ng-repeat="label in egreso.chartLabels.slice(12) track by $index">{{ label }}</td>
+							<td align="center">Total</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td align="right" ng-repeat="dato_pronostico in egreso.chartData[1].slice(12) track by $index">{{ egreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
+							<td align="right">{{ egreso.filtroQuetzales(egreso.total_pronosticos.toFixed(2)) }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br/>
+			<div>Historia</div>
+			<div style="text-align: center;">
+				<div style="width: 90%; text-align: right;">
+				<button type="button" class="btn btn-default" ng-model="egreso.viewQuetzales" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+		        	Q
+		   		</button>
+		   		</div>
+		   		<br/>
+				<table class="table_historicos">
+					<thead>
+						<tr>
+							<td>Año</td>
+							<td ng-repeat="mes in egreso.meses">{{ mes }}</td>
+							<td>Total</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ejercicio in egreso.historia track by $index">
+							<td align="center">{{ ejercicio[0] }}</td>
+							<td align="right" ng-repeat="dato in ejercicio.slice(1) track by $index">{{ egreso.filtroQuetzales(dato.toFixed(2)) }}</td>
+							<td align="right">{{ egreso.filtroQuetzales(egreso.total_ejercicio[$index].toFixed(2)) }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div style="text-align: center;" ng-show="egreso.sindatos && egreso.entidad==0">Sin datos históricos suficientes para generar los prónosticos</div>
 <br/>
 <br/>
 <br/>

@@ -2,7 +2,7 @@
  * 
  */
 
-angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','angucomplete-alt']).controller('egresosController',['$scope','$routeParams','$http','$interval',
+angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','angucomplete-alt','treeGrid']).controller('egresosController',['$scope','$routeParams','$http','$interval',
 	'$location','$timeout','$filter',
 	   function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	

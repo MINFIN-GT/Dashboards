@@ -149,7 +149,7 @@
 					<tbody>
 						<tr>
 							<td align="right" ng-repeat="dato_pronostico in ingreso.chartData[1].slice(12) track by $index">{{ ingreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
-							<td align="right">{{ ingreso.filtroQuetzales(ingreso.total_pronosticos.toFixed(2)) }}</td>
+							<td align="right">{{ ingreso.filtroQuetzalesP(ingreso.total_pronosticos.toFixed(2)) }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -185,20 +185,39 @@
 	</uib-tab>
 	<uib-tab index="2" heading="Por Recurso">
 		<br />
-		<table style="white-space: nowrap; font-size: 12px;" class="table table-hover">
-			<thead>
-				<tr>
-					<th>Recurso</th>
-					<th style="text-align: center;"ng-repeat="label in ingreso.chartLabels.slice(12) track by $index">{{ label }}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="{{ ingreso.hide_tabla_recursos_blanks && row.blank }}">
-					<td style="padding-left: {{ row.nivel*10 }}px; font-weight: {{ row.nivel<4 ? 'bold' : 'normal'}};">{{ row.recurso + ' ' + row.nombre }}</td>
-					<td style="text-align: right;" ng-repeat="dato in row.pronosticos track by $index">{{ dato>0 ? ingreso.filtroRQuetzales(dato.toFixed(2)) : null }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div style="width: 90%;">
+				<button type="button" class="btn btn-default" ng-model="ingreso.hide_tabla_recursos_blanks" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"
+				uib-tooltip="Ocultar filas en blanco" tooltip-placement="top">
+		        	<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+		   		</button>
+				<button type="button" class="btn btn-default" ng-model="ingreso.viewQuetzales_r" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"
+				uib-tooltip="Mostrar datos sin formato" tooltip-placement="top">
+		        	Q
+		   		</button>
+		</div>
+		<br/>
+		<div style="width: 100%; overflow-x: scroll;">
+			<table style="white-space: nowrap; font-size: 12px;" class="table table-hover">
+				<thead>
+					<tr>
+						<th>Recurso</th>
+						<th style="text-align: center;"ng-repeat="label in ingreso.chartLabels.slice(12) track by $index">{{ label }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="ingreso.hide_tabla_recursos_blanks && row.blank">
+						<td style="padding-left: {{ row.nivel*10 }}px; font-weight: {{ row.nivel<4 ? 'bold' : 'normal'}};">{{ row.recurso + ' ' + row.nombre }}</td>
+						<td style="text-align: right;" ng-repeat="dato in row.pronosticos track by $index">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) : null }}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr style="text-align: right; font-weight: bold;">
+						<td>Total</td>
+						<td ng-repeat="dato in ingreso.totales track by $index">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) :  null}}</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
 	</uib-tab>
 </uib-tabset>
 <br/>
