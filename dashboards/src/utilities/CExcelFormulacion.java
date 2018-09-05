@@ -17,6 +17,7 @@ import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
+import pojo.formulacion.CRecursoEconomico;
 
 public class CExcelFormulacion {	
 	public CExcelFormulacion() {
@@ -41,11 +42,199 @@ public class CExcelFormulacion {
 				
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 3) {
+				sheet = workbook.getSheetAt(2);
+				Object objLista = lstDatos.get(0);
+				ArrayList<CRecursoEconomico> lstGastoEconomico = (ArrayList<CRecursoEconomico>)objLista;
 				
+				//Encabezado		
+				Cell cellEjecutadoDosAnios = sheet.getRow(5).getCell(2);
+				cellEjecutadoDosAnios.setCellValue("Ejecutado " + (ejercicio-2));
+				Cell cellAprobado = sheet.getRow(5).getCell(3);
+				cellAprobado.setCellValue("Aprobado " + (ejercicio-1) + " (*)");
+				Cell cellRecomendado = sheet.getRow(5).getCell(4);
+				cellRecomendado.setCellValue("Recomendado " + ejercicio);
+				
+				for(int i=7;i<=24; i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-7).getTexto());
+					
+					Double valor = lstGastoEconomico.get(i-7).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-7).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-7).getejecutado_dos_antes()/1000000)) : null;
+					Cell dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-7).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-7).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-7).getaprobado_anterior_mas_amp()/1000000)) : null;
+					Cell dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-7).getRecomendado() != null && lstGastoEconomico.get(i-7).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-7).getRecomendado()/1000000)) : null;
+					Cell dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);	
+				}
+				
+				for(int i=26;i<=30; i++) {
+					Cell dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-8).getTexto());
+					
+					Double valor = lstGastoEconomico.get(i-8).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-8).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-8).getejecutado_dos_antes()/1000000)) : null;
+					Cell dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-8).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-8).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-8).getaprobado_anterior_mas_amp()/1000000)) : null;
+					Cell dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-8).getRecomendado() != null && lstGastoEconomico.get(i-8).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-8).getRecomendado()/1000000)) : null;
+					Cell dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);	
+				}
+				
+				//Contribuciones a la seguridad social
+				Cell dataDescripcion = sheet.getRow(32).getCell(1);
+				dataDescripcion.setCellValue(lstGastoEconomico.get(23).getTexto());
+				
+				Double valor = lstGastoEconomico.get(23).getejecutado_dos_antes() != null && lstGastoEconomico.get(23).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(23).getejecutado_dos_antes()/1000000)) : null;
+				Cell dataEjecutadoDosAntes = sheet.getRow(32).getCell(2);
+				if(valor != null)
+					dataEjecutadoDosAntes.setCellValue(valor);
+				
+				valor = lstGastoEconomico.get(23).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(23).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(23).getaprobado_anterior_mas_amp()/1000000)) : null;
+				Cell dataAprobado = sheet.getRow(32).getCell(3);
+				if(valor != null)
+					dataAprobado.setCellValue(valor);
+				
+				valor = lstGastoEconomico.get(23).getRecomendado() != null && lstGastoEconomico.get(23).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(23).getRecomendado()/1000000)) : null;
+				Cell dataRecomendado = sheet.getRow(32).getCell(4);
+				if(valor != null)
+					dataRecomendado.setCellValue(valor);	
+				
+				//Ventas de bienes y servicios de la administración pública
+				dataDescripcion = sheet.getRow(34).getCell(1);
+				dataDescripcion.setCellValue(lstGastoEconomico.get(24).getTexto());
+				
+				valor = lstGastoEconomico.get(24).getejecutado_dos_antes() != null && lstGastoEconomico.get(24).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(24).getejecutado_dos_antes()/1000000)) : null;
+				dataEjecutadoDosAntes = sheet.getRow(34).getCell(2);
+				if(valor != null)
+					dataEjecutadoDosAntes.setCellValue(valor);
+				
+				valor = lstGastoEconomico.get(24).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(24).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(24).getaprobado_anterior_mas_amp()/1000000)) : null;
+				dataAprobado = sheet.getRow(34).getCell(3);
+				if(valor != null)
+					dataAprobado.setCellValue(valor);
+				
+				valor = lstGastoEconomico.get(24).getRecomendado() != null && lstGastoEconomico.get(24).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(24).getRecomendado()/1000000)) : null;
+				dataRecomendado = sheet.getRow(34).getCell(4);
+				if(valor != null)
+					dataRecomendado.setCellValue(valor);
+				
+				for(int i=36;i<=39;i++) {
+					dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-11).getTexto());
+					
+					valor = lstGastoEconomico.get(i-11).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-11).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-11).getejecutado_dos_antes()/1000000)) : null;
+					dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-11).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-11).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-11).getaprobado_anterior_mas_amp()/1000000)) : null;
+					dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-11).getRecomendado() != null && lstGastoEconomico.get(i-11).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-11).getRecomendado()/1000000)) : null;
+					dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);
+				}
+				
+				for(int i=41;i<=43;i++) {
+					dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-12).getTexto());
+					
+					valor = lstGastoEconomico.get(i-12).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-12).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-12).getejecutado_dos_antes()/1000000)) : null;
+					dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-12).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-12).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-12).getaprobado_anterior_mas_amp()/1000000)) : null;
+					dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-12).getRecomendado() != null && lstGastoEconomico.get(i-12).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-12).getRecomendado()/1000000)) : null;
+					dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);
+				}
+				
+				for(int i=45;i<=47;i++) {
+					dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-13).getTexto());
+					
+					valor = lstGastoEconomico.get(i-13).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-13).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-13).getejecutado_dos_antes()/1000000)) : null;
+					dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-13).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-13).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-13).getaprobado_anterior_mas_amp()/1000000)) : null;
+					dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-13).getRecomendado() != null && lstGastoEconomico.get(i-13).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-13).getRecomendado()/1000000)) : null;
+					dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);
+				}
+				
+				for(int i=49;i<=51;i++) {
+					dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-14).getTexto());
+					
+					valor = lstGastoEconomico.get(i-14).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-14).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-14).getejecutado_dos_antes()/1000000)) : null;
+					dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-14).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-14).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-14).getaprobado_anterior_mas_amp()/1000000)) : null;
+					dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-14).getRecomendado() != null && lstGastoEconomico.get(i-14).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-14).getRecomendado()/1000000)) : null;
+					dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);
+				}
+				
+				for(int i=53;i<=56;i++) {
+					dataDescripcion = sheet.getRow(i).getCell(1);
+					dataDescripcion.setCellValue(lstGastoEconomico.get(i-15).getTexto());
+					
+					valor = lstGastoEconomico.get(i-15).getejecutado_dos_antes() != null && lstGastoEconomico.get(i-15).getejecutado_dos_antes() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-15).getejecutado_dos_antes()/1000000)) : null;
+					dataEjecutadoDosAntes = sheet.getRow(i).getCell(2);
+					if(valor != null)
+						dataEjecutadoDosAntes.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-15).getaprobado_anterior_mas_amp() != null && lstGastoEconomico.get(i-15).getaprobado_anterior_mas_amp() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-15).getaprobado_anterior_mas_amp()/1000000)) : null;
+					dataAprobado = sheet.getRow(i).getCell(3);
+					if(valor != null)
+						dataAprobado.setCellValue(valor);
+					
+					valor = lstGastoEconomico.get(i-15).getRecomendado() != null && lstGastoEconomico.get(i-15).getRecomendado() != 0 ? Double.parseDouble(dosDecimales.format(lstGastoEconomico.get(i-15).getRecomendado()/1000000)) : null;
+					dataRecomendado = sheet.getRow(i).getCell(4);
+					if(valor != null)
+						dataRecomendado.setCellValue(valor);
+				}
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 4) {
 				sheet = workbook.getSheetAt(3);
-				Object objLista = lstDatos.get(0);
+				Object objLista = lstDatos.get(1);
 				ArrayList<CGastoEconomico> lstGastoEconomico = (ArrayList<CGastoEconomico>)objLista;
 				
 				//Encabezado		
@@ -78,7 +267,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 5) {
 				sheet = workbook.getSheetAt(4);
-				Object objLista = lstDatos.get(1);
+				Object objLista = lstDatos.get(2);
 				ArrayList<CInstitucionalTotal> lstInstitucionalTotal = (ArrayList<CInstitucionalTotal>)objLista;
 				
 				//Encabezado		
@@ -106,7 +295,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 6) {
 				sheet = workbook.getSheetAt(5);
-				Object objLista = lstDatos.get(2);
+				Object objLista = lstDatos.get(3);
 				ArrayList<CInstitucionalTipoGasto> lstInstitucionalTipoGasto = (ArrayList<CInstitucionalTipoGasto>)objLista;
 				
 				//Encabezado		
@@ -159,9 +348,9 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 7) {
 				sheet = workbook.getSheetAt(6);
-				Object objListaFinanciamiento = lstDatos.get(3);
-				Object objListaInversion = lstDatos.get(4);
-				Object objListaDeuda = lstDatos.get(5);
+				Object objListaFinanciamiento = lstDatos.get(4);
+				Object objListaInversion = lstDatos.get(5);
+				Object objListaDeuda = lstDatos.get(6);
 				
 				ArrayList<CInstitucionalTipoGastoGrupoGasto> lstFinanciamientoGrupoGasto = (ArrayList<CInstitucionalTipoGastoGrupoGasto>)objListaFinanciamiento;
 				ArrayList<CInstitucionalTipoGastoGrupoGasto> lstInversionGrupoGasto = (ArrayList<CInstitucionalTipoGastoGrupoGasto>)objListaInversion;
@@ -336,7 +525,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 8) {
 				sheet = workbook.getSheetAt(7);
-				Object objListaIntFinanlidad = lstDatos.get(6);
+				Object objListaIntFinanlidad = lstDatos.get(7);
 				
 				ArrayList<CInstitucionalFinalidad> lstInstitucionalFinalidad = (ArrayList<CInstitucionalFinalidad>)objListaIntFinanlidad;
 
@@ -411,7 +600,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 9) {
 				sheet = workbook.getSheetAt(8);
-				Object objListaIntFinanlidad = lstDatos.get(7);
+				Object objListaIntFinanlidad = lstDatos.get(8);
 				
 				ArrayList<CFinalidadEconomico> lstFinalidadEconomico = (ArrayList<CFinalidadEconomico>)objListaIntFinanlidad;
 				
@@ -471,9 +660,9 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 10) {
 				sheet = workbook.getSheetAt(9);
-				Object objListaFinanciamiento = lstDatos.get(8);
-				Object objListaInversion = lstDatos.get(9);
-				Object objListaDeuda = lstDatos.get(10);
+				Object objListaFinanciamiento = lstDatos.get(9);
+				Object objListaInversion = lstDatos.get(10);
+				Object objListaDeuda = lstDatos.get(11);
 				
 				ArrayList<CInstitucionalTipoGastoRegion> lstFinanciamientoGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaFinanciamiento;
 				ArrayList<CInstitucionalTipoGastoRegion> lstInversionGrupoGasto = (ArrayList<CInstitucionalTipoGastoRegion>)objListaInversion;
@@ -663,7 +852,7 @@ public class CExcelFormulacion {
 			}
 			if(numeroCuadro == -1 || numeroCuadro == 11) {
 				sheet = workbook.getSheetAt(10);
-				Object objListaFinanciamiento = lstDatos.get(11);
+				Object objListaFinanciamiento = lstDatos.get(12);
 				
 				ArrayList<CFinalidadRegion> lstFinalidadRegion = (ArrayList<CFinalidadRegion>)objListaFinanciamiento;
 				
