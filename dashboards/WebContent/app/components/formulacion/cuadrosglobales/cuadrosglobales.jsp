@@ -15,7 +15,7 @@
 	<br/>
 	<br/>
 	<uib-tabset active="active">
-		<uib-tab index="0" heading="Principales Indicadores">
+		<uib-tab index="0" heading="1. Principales Indicadores">
 			<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[0]">
 				  	<div class="msg">
@@ -86,7 +86,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 		</uib-tab>
-		<uib-tab index="1" heading="Situación Financiera">
+		<uib-tab index="1" heading="2. Situación Financiera">
 			<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[1]">
 				  	<div class="msg">
@@ -102,7 +102,7 @@
 			    	<div style="font-size: 12px; font-weight: bold;">Situación Financiera</div>
 			    	<div style="font-size: 12px; font-weight: bold;">(Montos en Millones de Quetzales)</div>
 		    	</div>
-		    	<table st-table="ctrl.lineas" class="table">
+		    	<table st-table="ctrl.lineas_c2" class="table">
 					<thead>
 					<tr>
 						<th style="text-align: center">Descripción</th>
@@ -112,7 +112,7 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="row in ctrl.lineas">
+					<tr ng-repeat="row in ctrl.lineas_c2">
 						<td><span class="{{ 'tab'+row.nivel }}"><span class="{{ row.negrillas==1 ? 'negrillas' : '' }}">{{ row.texto }}</span></span></td>
 						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.ejecutado_dos_antes, ctrl.viewMillones) }}</td>
 						<td style="text-align: right; border-right: 1px solid gray; border-left: 1px solid gray;">{{ ctrl.filtroMillones(row.aprobado_anterior_mas_amp, ctrl.viewMillones) }}</td>
@@ -123,7 +123,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 		</uib-tab>
-		<uib-tab index="2" heading="Clasificación Econ. de los Recursos">
+		<uib-tab index="2" heading="3. Clasificación Econ. de los Recursos">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[2]">
 				  	<div class="msg">
@@ -160,7 +160,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="3" heading="Clasificación Econ. del Gasto">
+	    <uib-tab index="3" heading="4. Clasificación Econ. del Gasto">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[3]">
 				  	<div class="msg">
@@ -197,7 +197,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="4" heading="Institucional">
+	    <uib-tab index="4" heading="5. Institucional">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[4]">
 				  	<div class="msg">
@@ -240,7 +240,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="5" heading="Inst. y Subgrupo de Tipo de Gasto">
+	    <uib-tab index="5" heading="6. Inst. y Subgrupo de Tipo de Gasto">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[5]">
 				  	<div class="msg">
@@ -283,7 +283,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="6" heading="Inst. por Tipo Presupuesto y Grupo Gasto" >
+	    <uib-tab index="6" heading="7. Inst. por Tipo Presupuesto y Grupo Gasto" >
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[6]">
 				  	<div class="msg">
@@ -347,7 +347,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="7" heading="Inst. por Finalidad">
+	    <uib-tab index="7" heading="8. Inst. por Finalidad">
 	    <div class="div_principal">
 	    	<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[7]">
 				  	<div class="msg">
@@ -390,7 +390,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="8" heading="Finalidad y Económico de G.">
+	    <uib-tab index="8" heading="9. Finalidad y Económico de G.">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[8]">
 				  	<div class="msg">
@@ -433,7 +433,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="9" heading="Inst. Tipo de G. y Región">
+	    <uib-tab index="9" heading="10. Inst. Tipo de G. y Región">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[9]">
 				  	<div class="msg">
@@ -497,7 +497,7 @@
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>
 	    </uib-tab>
-	    <uib-tab index="10" heading="Gasto según Región y Finalidad">
+	    <uib-tab index="10" heading="11. Gasto según Región y Finalidad">
 	    	<div class="div_principal">
 	    		<div class="grid_loading_cuadros" ng-hide="!ctrl.showloading[10]">
 				  	<div class="msg">
