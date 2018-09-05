@@ -35,12 +35,6 @@ public class CExcelFormulacion {
             workbook = WorkbookFactory.create(inputStream);
             workbook.setForceFormulaRecalculation(true);
             
-			if(numeroCuadro == -1 || numeroCuadro == 1) {
-				
-			}
-			if(numeroCuadro == -1 || numeroCuadro == 2) {
-				
-			}
 			if(numeroCuadro == -1 || numeroCuadro == 3) {
 				sheet = workbook.getSheetAt(2);
 				Object objLista = lstDatos.get(0);
