@@ -683,12 +683,34 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 			me.showloading_excel=true;
 			$http.post('/SCuadrosExportar',  { action: 'exportarExcel', ejercicio: me.anio, numeroCuadro: -1, t: (new Date()).getTime()   }).then(
 					function successCallback(response) {
-						  var anchor = angular.element('<a/>');
+						
+						headers = headers();
+						 
+				        var filename = headers['x-filename'];
+				        var contentType = headers['content-type'];
+				 
+				        var linkElement = document.createElement('a');
+				        
+				        var blob = new Blob([response.data], { type: contentType });
+				        var url = window.URL.createObjectURL(blob);
+				 
+				        linkElement.setAttribute('href', url);
+				        linkElement.setAttribute("download", filename);
+				 
+				        var clickEvent = new MouseEvent("click", {
+				              "view": window,
+				              "bubbles": true,
+				              "cancelable": false
+				        });
+				        linkElement.dispatchEvent(clickEvent);
+				            
+				            
+						  /*var anchor = angular.element('<a/>');
 						  anchor.attr({
 							 href: 'data:application/ms-excel;base64,' + response.data,
 							 target: '_blank',
 							 download: 'Cuadros_Globales_Recomendado_' + me.anio + '.xls'
-						  })[0].click();
+						  })[0].click();*/
 						  me.showloading_excel=false;
 					  }.bind(this), function errorCallback(response){				
 			});
