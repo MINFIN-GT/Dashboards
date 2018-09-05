@@ -14,20 +14,6 @@ import pojo.formulacion.CRecursoEconomico;
 import utilities.CLogger;
 
 public class CuadroExportarDAO {
-	public static ArrayList<ArrayList<?>> generarDatos(Integer ejercicio){
-		ArrayList<ArrayList<?>> datos = new ArrayList<>();
-		
-		try {			
-			//Cuadro 11
-			ArrayList<CFinalidadRegion> finalidadesRegion = CFinalidadDAO.getFinalidadRegion(ejercicio);
-			datos.add(finalidadesRegion);
-		}catch(Exception e) {
-			CLogger.write("1", CuadroExportarDAO.class, e);
-		}
-		
-		return datos;
-	} 
-	
 	//CUADRO_3
 	public static ArrayList<CRecursoEconomico> getLstRecursosTotal(Integer ejercicio){
 		ArrayList<CRecursoEconomico> recursoTotal = null;
