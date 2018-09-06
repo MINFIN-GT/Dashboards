@@ -36,6 +36,11 @@ public class CExcelFormulacion {
             //CUADRO_3
 			sheet = workbook.getSheetAt(2);
 			ArrayList<CRecursoEconomico> lstRecursoEconomico = CuadroExportarDAO.getLstRecursosTotal(ejercicio);
+			
+			Double totalRecursos = 0.0;
+			for(int i=0;i<lstRecursoEconomico.size();i++) {
+				totalRecursos += lstRecursoEconomico.get(i).getejecutado_dos_antes() != null ? lstRecursoEconomico.get(i).getejecutado_dos_antes() : 0;
+			}
 				
 			//Encabezado		
 			Cell cellEjecutadoDosAnios = sheet.getRow(5).getCell(2);
@@ -205,7 +210,7 @@ public class CExcelFormulacion {
 			
 			Double total = CInstitucionalDAO.getTotalEjecutado(ejercicio-2);
 			dataEjecutadoDosAntes = sheet.getRow(51).getCell(2);
-			dataEjecutadoDosAntes.setCellValue(total-sheet.getRow(7).getCell(2).getNumericCellValue());
+			dataEjecutadoDosAntes.setCellValue((total - totalRecursos)/1000000); 
 				
 			for(int i=53;i<=56;i++) {
 				dataDescripcion = sheet.getRow(i).getCell(1);
