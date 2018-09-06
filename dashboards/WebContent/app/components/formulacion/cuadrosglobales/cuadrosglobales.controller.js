@@ -190,8 +190,8 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 					   
 				   }
 				   
-				   me.lineas_cuadro_2[42].ejecutado_dos_antes = total_egresos.ejecutado_dos_antes - total_ingresos;
-				   me.lineas_cuadro_2[41].ejecutado_dos_antes = total_egresos.ejecutado_dos_antes - total_ingresos;
+				   me.lineas_cuadro_2[42].ejecutado_dos_antes = me.total_egresos.ejecutado_dos_antes - me.total_ingresos;
+				   me.lineas_cuadro_2[41].ejecutado_dos_antes = me.total_egresos.ejecutado_dos_antes - me.total_ingresos;
 				   me.lineas_cuadro_2[33].ejecutado_dos_antes = me.lineas_cuadro_2[34].ejecutado_dos_antes + me.lineas_cuadro_2[37].ejecutado_dos_antes + me.lineas_cuadro_2[41].ejecutado_dos_antes;
 				   
 				   me.showloading=false;
@@ -219,7 +219,7 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 					   me.lineas_c1[18][columnas[i]] = (me.lineas_cuadro_2[33][columnas[i]]/(me.pibs[i]*1000000));
 					   me.lineas_c1[19][columnas[i]] = ((me.lineas_cuadro_2[34][columnas[i]]+me.lineas_cuadro_2[37][columnas[i]])/(me.pibs[i]*1000000));
 					   me.lineas_c1[20][columnas[i]] = (me.lineas_cuadro_2[42][columnas[i]]/(me.pibs[i]*1000000));
-					   me.lineas_c1[21][columnas[i]] = (total_egresos[columnas[i]]/(me.pibs[i]*1000000));
+					   me.lineas_c1[21][columnas[i]] = (me.total_egresos[columnas[i]]/(me.pibs[i]*1000000));
 					   
 					   me.lineas_c1[22][columnas[i]] = ((me.lineas_cuadro_2[19][columnas[i]]+me.lineas_cuadro_2[36][columnas[i]]+me.lineas_cuadro_2[40][columnas[i]])/(me.pibs[i]*1000000));
 					   
@@ -229,9 +229,9 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 					   me.lineas_c1[25][columnas[i]] =(me.lineas_cuadro_2[10][columnas[i]]/me.lineas_cuadro_2[0][columnas[i]]);
 					   me.lineas_c1[26][columnas[i]] =(me.lineas_cuadro_2[19][columnas[i]]/me.lineas_cuadro_2[0][columnas[i]]);
 					   
-					   me.lineas_c1[27][columnas[i]] =(me.lineas_cuadro_2[12][columnas[i]]-me.lineas_cuadro_2[19][columnas[i]])/total_egresos[columnas[i]];
-					   me.lineas_c1[28][columnas[i]] =(me.lineas_cuadro_2[26][columnas[i]]/total_egresos[columnas[i]]);
-					   me.lineas_c1[29][columnas[i]] =((me.lineas_cuadro_2[19][columnas[i]]+me.lineas_cuadro_2[36][columnas[i]]+me.lineas_cuadro_2[40][columnas[i]])/total_egresos[columnas[i]]);
+					   me.lineas_c1[27][columnas[i]] =(me.lineas_cuadro_2[12][columnas[i]]-me.lineas_cuadro_2[19][columnas[i]])/me.total_egresos[columnas[i]];
+					   me.lineas_c1[28][columnas[i]] =(me.lineas_cuadro_2[26][columnas[i]]/me.total_egresos[columnas[i]]);
+					   me.lineas_c1[29][columnas[i]] =((me.lineas_cuadro_2[19][columnas[i]]+me.lineas_cuadro_2[36][columnas[i]]+me.lineas_cuadro_2[40][columnas[i]])/me.total_egresos[columnas[i]]);
 				   }
 			   }
 			});
@@ -327,16 +327,9 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 						   
 						   me.lineas_c2[33][columnas[i]] = me.lineas_c2[34][columnas[i]] + me.lineas_c2[37][columnas[i]] - me.lineas_c2[41][columnas[i]];
 					   }
-					   var total_ingresos=0;
-					   for(var k=0; k<me.recursos.length; k++)
-						   total_ingresos+=(me.recursos[k].ejecutado_dos_antes!=null) ? me.recursos[k].ejecutado_dos_antes : 0;
-					   
-					   var total_egresos=0;
-					   for(var k=0; k<me.gastos.length; k++)
-						   total_egresos+=me.gastos[k].ejecutado_dos_antes!=null ? me.gastos[k].ejecutado_dos_antes : 0;
-						   
-					   me.lineas_c2[42].ejecutado_dos_antes = total_egresos - total_ingresos;
-					   me.lineas_c2[41].ejecutado_dos_antes = total_egresos - total_ingresos;
+					      
+					   me.lineas_c2[42].ejecutado_dos_antes = me.total_egresos.ejecutado_dos_antes - me.total_ingresos;
+					   me.lineas_c2[41].ejecutado_dos_antes = me.total_egresos.ejecutado_dos_antes - me.total_ingresos;
 					   me.showloading[1]=false;
 					   me.calcularCuadro1();
 				   }

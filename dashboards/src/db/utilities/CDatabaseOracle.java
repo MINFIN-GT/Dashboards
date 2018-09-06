@@ -22,7 +22,7 @@ public class CDatabaseOracle {
 		catch(Exception e){
 			if(connection==null) {
 				try {
-					connection = DriverManager.getConnection("jdbc:oracle:thin:@//172.18.25.121"+
+					connection = DriverManager.getConnection("jdbc:oracle:thin:@//172.18.28.51"+
 							":"+CProperties.getOracle_sicoinp_port()+"/DBFORMU", CProperties.getOracle_sicoinp_user(),CProperties.getOracle_sicoinp_password());
 					return !connection.isClosed() ?  connection : null;
 				} catch (SQLException e1) {
