@@ -66,6 +66,8 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	
 	me.lineas_c1=[];
 	me.lineas_c2=[];
+	me.total_ingresos = 0.0;
+	me.total_egresos = {};
 	
 me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 	
@@ -187,21 +189,7 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 					   me.lineas_cuadro_2[33][columnas[i]] = me.lineas_cuadro_2[34][columnas[i]] + me.lineas_cuadro_2[37][columnas[i]] + me.lineas_cuadro_2[41][columnas[i]];
 					   
 				   }
-				   var total_ingresos=0;
-				   for(var k=0; k<me.recursos.length; k++)
-					   total_ingresos+=(me.recursos[k].ejecutado_dos_antes!=null) ? me.recursos[k].ejecutado_dos_antes : 0;
 				   
-				   var total_egresos={
-						   ejecutado_dos_antes: 0,
-						   aprobado_anterior_mas_amp: 0,
-						   recomendado: 0
-				   };
-				   for(var k=0; k<me.gastos.length; k++){
-					   total_egresos.ejecutado_dos_antes+=me.gastos[k].ejecutado_dos_antes!=null ? me.gastos[k].ejecutado_dos_antes : 0;
-					   total_egresos.aprobado_anterior_mas_amp+=me.gastos[k].aprobado_anterior_mas_amp!=null ? me.gastos[k].aprobado_anterior_mas_amp : 0;
-					   total_egresos.recomendado+=me.gastos[k].recomendado!=null ? me.gastos[k].recomendado : 0;
-				   }
-					   
 				   me.lineas_cuadro_2[42].ejecutado_dos_antes = total_egresos.ejecutado_dos_antes - total_ingresos;
 				   me.lineas_cuadro_2[41].ejecutado_dos_antes = total_egresos.ejecutado_dos_antes - total_ingresos;
 				   me.lineas_cuadro_2[33].ejecutado_dos_antes = me.lineas_cuadro_2[34].ejecutado_dos_antes + me.lineas_cuadro_2[37].ejecutado_dos_antes + me.lineas_cuadro_2[41].ejecutado_dos_antes;
@@ -363,6 +351,11 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 		   var stack_suma_aprobado_anterior_mas_amp=[];
 		   var stack_suma_ejecutado_dos_antes=[];
 		   me.recursos=response.data.recursos;
+		   me.total_ingresos=0;
+		   
+		   for(var k=0; k<me.recursos.length; k++)
+			   me.total_ingresos+=(me.recursos[k].ejecutado_dos_antes!=null) ? me.recursos[k].ejecutado_dos_antes : 0;
+		   
 		   me.recursos_calculados=true;
 		   me.calcularCuadro2();
 	    	for(var i=0; i<me.recursos.length-1; i++){
@@ -431,6 +424,18 @@ me.pibs = [ 522796.1, 559411.3, 642367.1 ];
 			   var stack_suma_aprobado_anterior_mas_amp=[];
 			   var stack_suma_ejecutado_dos_antes=[];
 			   me.gastos=response.data.gastos;
+			   
+			   me.total_egresos={
+					   ejecutado_dos_antes: 0,
+					   aprobado_anterior_mas_amp: 0,
+					   recomendado: 0
+			   };
+			   for(var k=0; k<me.gastos.length; k++){
+				   me.total_egresos.ejecutado_dos_antes+=me.gastos[k].ejecutado_dos_antes!=null ? me.gastos[k].ejecutado_dos_antes : 0;
+				   me.total_egresos.aprobado_anterior_mas_amp+=me.gastos[k].aprobado_anterior_mas_amp!=null ? me.gastos[k].aprobado_anterior_mas_amp : 0;
+				   me.total_egresos.recomendado+=me.gastos[k].recomendado!=null ? me.gastos[k].recomendado : 0;
+			   }
+			   
 			   me.gastos_calculados=true;
 			   me.calcularCuadro2();
 		    	for(var i=0; i<me.gastos.length-1; i++){
