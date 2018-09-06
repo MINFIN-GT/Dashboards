@@ -38,11 +38,11 @@ public class CExcelFormulacion {
 				
 			//Encabezado		
 			Cell cellEjecutadoDosAnios = sheet.getRow(5).getCell(2);
-			cellEjecutadoDosAnios.setCellValue("Ejecutado " + (ejercicio-2));
+			cellEjecutadoDosAnios.setCellValue("Ejecutado \n" + (ejercicio-2));
 			Cell cellAprobado = sheet.getRow(5).getCell(3);
-			cellAprobado.setCellValue("Aprobado " + (ejercicio-1) + " (*)");
+			cellAprobado.setCellValue("Aprobado \n" + (ejercicio-1) + " (*)");
 			Cell cellRecomendado = sheet.getRow(5).getCell(4);
-			cellRecomendado.setCellValue("Recomendado " + ejercicio);
+			cellRecomendado.setCellValue("Recomendado \n" + ejercicio);
 				
 			for(int i=7;i<=24; i++) {
 				Cell dataDescripcion = sheet.getRow(i).getCell(1);
@@ -228,11 +228,11 @@ public class CExcelFormulacion {
 			
 			//Encabezado		
 			cellEjecutadoDosAnios = sheet.getRow(5).getCell(2);
-			cellEjecutadoDosAnios.setCellValue("Ejecutado " + (ejercicio-2));
+			cellEjecutadoDosAnios.setCellValue("Ejecutado \n" + (ejercicio-2));
 			cellAprobado = sheet.getRow(5).getCell(3);
-			cellAprobado.setCellValue("Aprobado " + (ejercicio-1) + " (*)");
+			cellAprobado.setCellValue("Aprobado \n" + (ejercicio-1) + " (*)");
 			cellRecomendado = sheet.getRow(5).getCell(4);
-			cellRecomendado.setCellValue("Recomendado " + ejercicio);
+			cellRecomendado.setCellValue("Recomendado \n" + ejercicio);
 			
 			for(int i=7; i<=66;i++) {
 				dataDescripcion = sheet.getRow(i).getCell(1);
@@ -263,11 +263,11 @@ public class CExcelFormulacion {
 			cellDescripcion.setCellValue("Institución");
 			
 			cellEjecutadoDosAnios = sheet.getRow(36).getCell(2);
-			cellEjecutadoDosAnios.setCellValue("Ejecutado " + (ejercicio-2));
+			cellEjecutadoDosAnios.setCellValue("Ejecutado \n" + (ejercicio-2));
 			cellAprobado = sheet.getRow(36).getCell(3);
-			cellAprobado.setCellValue("Aprobado " + (ejercicio-1) + " (*)");
+			cellAprobado.setCellValue("Aprobado \n" + (ejercicio-1) + " (*)");
 			cellRecomendado = sheet.getRow(36).getCell(4);
-			cellRecomendado.setCellValue("Recomendado " + ejercicio);
+			cellRecomendado.setCellValue("Recomendado \n" + ejercicio);
 							
 			//Tabla
 			for(int i=39; i<= 57; i++) {
