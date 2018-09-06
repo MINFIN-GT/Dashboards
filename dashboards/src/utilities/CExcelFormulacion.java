@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import dao.formulacion.CInstitucionalDAO;
 import dao.formulacion.CuadroExportarDAO;
 import pojo.formulacion.CFinalidadEconomico;
 import pojo.formulacion.CFinalidadRegion;
@@ -201,6 +202,10 @@ public class CExcelFormulacion {
 				if(valor != null)
 					dataRecomendado.setCellValue(valor);
 			}
+			
+			Double total = CInstitucionalDAO.getTotalEjecutado(ejercicio-2);
+			dataEjecutadoDosAntes = sheet.getRow(51).getCell(2);
+			dataEjecutadoDosAntes.setCellValue(total-sheet.getRow(7).getCell(2).getNumericCellValue());
 				
 			for(int i=53;i<=56;i++) {
 				dataDescripcion = sheet.getRow(i).getCell(1);
