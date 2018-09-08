@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 
 import db.utilities.CDatabase;
 import pojo.CEntidad;
+import pojo.CGasto;
 import pojo.CUnidadEjecutora;
 import utilities.CLogger;
 
@@ -309,7 +310,7 @@ public class CEntidadDAO {
 			}
 		}
 		catch(Exception e){
-			CLogger.write("4", CRecursoDAO.class, e);
+			CLogger.write("7", CRecursoDAO.class, e);
 		}
 		finally{
 			CDatabase.close(conn);
@@ -317,36 +318,90 @@ public class CEntidadDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	/*public static ArrayList<CGasto> getPronosticosEgresosTree(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+	public static ArrayList<CGasto> getPronosticosEgresosTree(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
 		ArrayList<CGasto> ret=new ArrayList<CGasto>();
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
+				DateTime inicio = new DateTime(ejercicio, mes, 1, 0, 0);
+				DateTime fin = inicio.plusMonths(numero);
 				PreparedStatement pstm1=null;
-				
-				pstm1 =  conn.prepareStatement("");		
+				pstm1 =  conn.prepareStatement("SELECT eg.ejercicio, eg.mes, e.entidad, e.unidad_ejecutora, e.nombre, e.ues, sum(monto) monto  " + 
+						"FROM cg_entidades e left outer join mvp_egreso eg  " + 
+						"on (e.entidad = eg.entidad and e.unidad_ejecutora = eg.unidad_ejecutora) " + 
+						"WHERE e.ejercicio = ? " + 
+						"and ((eg.ejercicio=? AND eg.mes>=?)  " + 
+						"OR (eg.ejercicio=? and eg.mes<=?)  " + 
+						"OR (eg.ejercicio>? and eg.ejercicio<?))  " + 
+						"AND eg.entidad>0  " + 
+						"AND eg.ajustado = ?  " + 
+						"GROUP BY e.entidad, e.unidad_ejecutora, eg.ejercicio, eg.mes, e.nombre, e.ues " + 
+						"ORDER BY e.entidad, e.unidad_ejecutora, eg.ejercicio, eg.mes");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, mes);
-					pstm1.setInt(3, ejercicio);
-					pstm1.setInt(4, entidad);
-					pstm1.setInt(5, unidad_ejecutora);
-					pstm1.setInt(6, ajustado);
-					pstm1.setInt(7, numero);
+					pstm1.setInt(2, ejercicio);
+					pstm1.setInt(3, mes);
+					pstm1.setInt(4, fin.getYear());
+					pstm1.setInt(5, fin.getMonthOfYear());
+					pstm1.setInt(6, ejercicio);
+					pstm1.setInt(7, fin.getYear());
+					pstm1.setInt(8, ajustado);
 				ResultSet results = pstm1.executeQuery();	
+				CGasto papa=null;
+				CGasto nodo=null;
+				int pos=0;
 				while (results.next()){
-					ret.add(results.getDouble("monto"));
+					if(results.getInt("unidad_ejecutora")==0 && results.getInt("ues")>0){ //papa co hijos
+						if(papa!=null) {
+							ret.add(papa);
+							papa=null;
+						}
+						papa = new CGasto(results.getInt("ejercicio"),results.getInt("entidad"),results.getString("nombre"),
+							   new Double[numero], new ArrayList<CGasto>());
+						while(results.next()&&results.getInt("entidad")==papa.getCodigo()&&results.getInt("unidad_ejecutora")==0);
+					}
+					else if(results.getInt("unidad_ejecutora")==0 && results.getInt("ues")==0) { //entidad sin hijos
+						nodo = new CGasto(results.getInt("ejercicio"),results.getInt("entidad"),results.getString("nombre"),
+								new Double[numero], new ArrayList<CGasto>());
+						nodo.getPronosticos()[0]=results.getDouble("monto");
+						pos=1;
+						while(results.next()&&results.getInt("entidad")==nodo.getCodigo()) {
+							nodo.getPronosticos()[pos]=results.getDouble("monto");
+							pos++;
+						}
+						if(papa!=null) {
+							ret.add(papa);
+							papa=null;
+						}
+						ret.add(nodo);
+					}
+					else if(results.getInt("unidad_ejecutora")>0) { //hijo
+						nodo = new CGasto(results.getInt("ejercicio"),results.getInt("unidad_ejecutora"),results.getString("nombre"),
+								new Double[numero], new ArrayList<CGasto>());
+						nodo.getPronosticos()[0]=results.getDouble("monto");
+						pos=1;
+						while(results.next()&&results.getInt("unidad_ejecutora")==nodo.getCodigo()) {
+							nodo.getPronosticos()[pos]=results.getDouble("monto");
+							pos++;
+						}
+						papa.getChildren().add(nodo);
+					}
+					if(!results.isLast())
+						results.previous();
+				}
+				if(papa!=null) {
+					ret.add(papa);
 				}
 				results.close();
 				pstm1.close();
 			}
 		}
 		catch(Exception e){
-			CLogger.write("3", CEntidadDAO.class, e);
+			CLogger.write("8", CEntidadDAO.class, e);
 		}
 		finally{
 			CDatabase.close(conn);
 		}
-		return ret;
-	}*/
+		return ret.size()>0 ? ret : null;
+	}
 
 }

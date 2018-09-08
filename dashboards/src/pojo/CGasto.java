@@ -6,10 +6,10 @@ public class CGasto {
 	int ejercicio;
 	int codigo;
 	String nombre;
-	Double pronosticos;
+	Double[] pronosticos;
 	ArrayList<CGasto> children;
 	
-	public CGasto(int ejercicio, int codigo, String nombre, Double pronosticos, ArrayList<CGasto> children) {
+	public CGasto(int ejercicio, int codigo, String nombre, Double[] pronosticos, ArrayList<CGasto> children) {
 		super();
 		this.ejercicio = ejercicio;
 		this.codigo = codigo;
@@ -42,11 +42,11 @@ public class CGasto {
 		this.nombre = nombre;
 	}
 
-	public Double getPronosticos() {
+	public Double[] getPronosticos() {
 		return pronosticos;
 	}
 
-	public void setPronosticos(Double pronosticos) {
+	public void setPronosticos(Double[] pronosticos) {
 		this.pronosticos = pronosticos;
 	}
 

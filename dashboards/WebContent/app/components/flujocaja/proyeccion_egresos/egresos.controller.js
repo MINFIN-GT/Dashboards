@@ -29,6 +29,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			
 			me.viewQuetzales=true;
 			me.viewQuetzales_p=true;
+			me.viewQuetzales_d=true;
 			
 			me.sindatos=false;
 			
@@ -36,6 +37,16 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			
 			me.total_ejercicio=[];
 			me.total_pronosticos=0.0;
+			
+			me.tree_data_original=[];
+			me.tree_data=[];
+			me.tree_cols=[{
+				field: 'codigo',
+				displayName: 'Código'
+			},{
+				field: 'nombre',
+				displayName: 'Entidad'
+			}];
 			
 			me.chartOptions= {
 					animation: {
@@ -196,6 +207,31 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 						    			total += me.historia[i][j];
 						    		me.total_ejercicio.push(total);
 						    	}
+						    	$http.post('/SFlujoCaja', { action: 'getPronosticosEgresosTree', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
+										mes: me.mes, ejercicio: me.anio  }).then(function(response){
+											if(response.data.success){
+												me.tree_data=response.data.arbol;
+												for(var labels=12; labels<me.chartLabels.length; labels++){
+													me.tree_cols.push({
+														field: 'pronosticos',
+														displayName: me.chartLabels[labels]
+													});
+												}
+												for(var i=0; i<me.tree_data.length; i++){
+													if(me.tree_data[i].children!=null){
+														for(var j=0; j<me.tree_data[i].children.length; j++){
+															for(var k=0; k<me.tree_data[i].children[j].pronosticos.length; k++){
+																$filter('currency')(me.tree_data[i].children[j].pronosticos[k], 'Q ', 2);
+																me.tree_data[i].pronosticos[k]+=me.tree_data[i].children[j].pronosticos[k];
+															}
+														}
+													}
+												}
+												me.tree_data_original = JSON.parse(JSON.stringify(me.tree_data));
+												me.aplicarFormatoDetalle();
+											}
+									
+								});
 						    }
 						    me.showloading = false;
 						});
@@ -207,6 +243,24 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					me.unidades_ejecutoras=[];
 					me.chartLoaded=false;
 				}
+			}
+			
+			me.aplicarFormatoDetalle=function(){
+				var data_formateada = JSON.parse(JSON.stringify(me.tree_data_original));
+				for(var i=0; i<data_formateada.length; i++){
+					for(var j=0; j<data_formateada[i].children.length; j++){
+						for(var k=0; k<data_formateada[i].children[j].pronosticos.length; k++)
+							data_formateada[i].children[j].pronosticos[k]= (me.viewQuetzales_d) ? 
+									$filter('currency')(data_formateada[i].children[j].pronosticos[k], 'Q ', 2) :
+										(data_formateada[i].children[j].pronosticos[k] !=null ? data_formateada[i].children[j].pronosticos[k].toFixed(2) : null);
+						
+					}
+					for(var k=0; k<data_formateada[i].pronosticos.length; k++)
+						data_formateada[i].pronosticos[k]= (me.viewQuetzales_d) ? 
+								$filter('currency')(data_formateada[i].pronosticos[k], 'Q ', 2) :
+									(data_formateada[i].pronosticos[k].toFixed(2)!=null ? data_formateada[i].pronosticos[k].toFixed(2) : null);
+				}
+				me.tree_data = data_formateada;
 			}
 			
 			me.cambioUnidadEjecutora=function(selected){
@@ -262,6 +316,33 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					    			total += me.historia[i][j];
 					    		me.total_ejercicio.push(total);
 					    	}
+					    	$http.post('/SFlujoCaja', { action: 'getPronosticosEgresosTree', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
+									mes: me.mes, ejercicio: me.anio  }).then(function(response){
+										if(response.data.success){
+											me.tree_data=response.data.arbol;
+											for(var labels=12; labels<me.chartLabels.length; labels++){
+												me.tree_cols.push({
+													field: 'pronosticos',
+													displayName: me.chartLabels[labels]
+												});
+											}
+											for(var i=0; i<me.tree_data.length; i++){
+												if(me.tree_data[i].children!=null){
+													for(var j=0; j<me.tree_data[i].children.length; j++){
+														for(var k=0; k<me.tree_data[i].children[j].pronosticos.length; k++){
+															$filter('currency')(me.tree_data[i].children[j].pronosticos[k], 'Q ', 2);
+															me.tree_data[i].pronosticos[k]+=me.tree_data[i].children[j].pronosticos[k];
+														}
+													}
+													for(var k=0; k<me.tree_data[i].pronosticos.length;k++)
+														me.tree_data[i].pronosticos[k] = $filter('currency')(me.tree_data[i].pronosticos[k], 'Q ', 2);
+												}
+											}
+											me.tree_data_original = JSON.parse(JSON.stringify(me.tree_data));
+											me.aplicarFormatoDetalle();
+										}
+								
+							});
 					    }
 						me.showloading = false;
 					});

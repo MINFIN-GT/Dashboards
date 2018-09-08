@@ -29,10 +29,48 @@
 		border-bottom: 1px solid #c3c3c3;
 		border-right: 1px solid #c3c3c3;
 	}
+	
+	.glyphicon {
+	    position: relative;
+	    top: 1px;
+	    display: inline-block;
+	    font-family: 'Glyphicons Halflings';
+	    font-style: normal;
+	    font-size: 10px;
+	    line-height: 1;
+	    -webkit-font-smoothing: antialiased;
+	    -moz-osx-font-smoothing: grayscale;
+	}
 
 </style>    
     
 <div ng-controller="egresosController as egreso" class="maincontainer" id="title" class="all_page">
+<script type="text/ng-template" id="treeGrid.html">
+	<div class="table-responsive">
+   <table class="table tree-grid" style="white-space: nowrap;">
+   <thead>
+     <tr>
+       <th><a ng-if="expandingProperty.sortable" ng-click="sortBy(expandingProperty)">{{expandingProperty.displayName || expandingProperty.field || expandingProperty}}</a><span ng-if="!expandingProperty.sortable">{{expandingProperty.displayName || expandingProperty.field || expandingProperty}}</span><i ng-if="expandingProperty.sorted" class="{{expandingProperty.sortingIcon}} pull-right"></i></th>
+       <th ng-repeat="col in colDefinitions"><a ng-if="col.sortable" ng-click="sortBy(col)">{{col.displayName || col.field}}</a><span ng-if="!col.sortable">{{col.displayName || col.field}}</span><i ng-if="col.sorted" class="{{col.sortingIcon}} pull-right"></i></th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions:true track by row.branch.uid"
+       ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
+       <td style="width: 10px;"><a ng-click="user_clicks_branch(row.branch)"><i ng-class="row.tree_icon"
+              ng-click="row.branch.expanded = !row.branch.expanded"
+              class="indented tree-icon"></i></a><span class="indented tree-label" ng-click="on_user_click(row.branch)">
+             {{row.branch[expandingProperty.field] || row.branch[expandingProperty]}}</span>
+       </td>
+       <td ng-repeat="col in colDefinitions track by $index" style="{{ $index!=1 ? 'text-align: right; width:10px;' : ''}}">
+         <div ng-if="col.cellTemplate" compile="col.cellTemplate" cell-template-scope="col.cellTemplateScope"></div>
+         <div ng-if="!col.cellTemplate">{{$index>1 ? row.branch[col.field][$index-2] : row.branch[col.field]}}</div>
+       </td>
+     </tr>
+   </tbody>
+ </table>
+</div>
+</script>
 <h4>Egresos</h4>
 <h5>Pronósticos</h5>
 <br/>
@@ -112,6 +150,8 @@
 		              disable-input="egreso.entidad==null || egreso.showloading"></div>
 		    </div>
 		</div>
+<uib-tabset active="1">
+	<uib-tab index="1" heading="Gráfica">
 		<div style="margin-bottom: 10px; margin-top: 20px; text-align: center;" ng-show="!egreso.sindatos">
 			<div style="width: 800px; height: 400px; margin: 0 auto;">
 				<canvas class="chart-base" chart-type="egreso.chartType" chart-data="egreso.chartData"
@@ -172,6 +212,21 @@
 			</div>
 		</div>
 		<div style="text-align: center;" ng-show="egreso.sindatos && egreso.entidad==0">Sin datos históricos suficientes para generar los prónosticos</div>
+		</uib-tab>
+		<uib-tab index="2" heading="Detalle">
+			<br/>
+			<br/>
+			<button type="button" class="btn btn-default" ng-model="egreso.viewQuetzales_d" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"
+			ng-change="egreso.aplicarFormatoDetalle()"
+			>
+		        	Q
+		   		</button>
+			<br/>
+			<tree-grid style="font-size: 12px;" tree-data="egreso.tree_data" template-url="treeGrid.html" icon-expand="glyphicon glyphicon-plus"
+    			icon-collapse="glyphicon glyphicon-minus" icon-leaf="glyphicon glyphicon-menu-right"
+    			col-defs="egreso.tree_cols" expand-on="codigo" tree-control="egreso.detalleTree"></tree-grid>
+		</uib-tab>
+	</uib-tabset>
 <br/>
 <br/>
 <br/>

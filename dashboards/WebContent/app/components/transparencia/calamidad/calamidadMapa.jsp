@@ -156,7 +156,7 @@
 		</ng-map>
 	</div>
 	<div style="text-align: center;">
-		<table align="center" style="font-size: 10px;">
+		<table style="font-size: 10px;">
 			<tr>
 				<td style="padding: 10px;"><span class="glyphicon glyphicon-stop" style="color: #FF0000;"></span> Ubicación Volcán de Fuego</td>
 				<td style="padding: 10px;"><span class="glyphicon glyphicon-stop" style="color: #38761D;"></span> Ejecución en programa 94 y Subprograma {{ control.subprograma }}</td>

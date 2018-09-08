@@ -7,10 +7,10 @@
  */
 .tree-grid-animate-enter,
 .tree-grid-row.ng-enter {
-    -moz-transition: 200ms linear all;
+    /*-moz-transition: 200ms linear all;
     -o-transition: 200ms linear all;
     -webkit-transition: 200ms linear all;
-    transition: 200ms linear all;
+    transition: 200ms linear all;*/
     position: relative;
     display: block;
     opacity: 0;
@@ -25,10 +25,10 @@
 
 .tree-grid-animate-leave,
 .tree-grid-row.ng-leave {
-    -moz-transition: 200ms linear all;
+    /*-moz-transition: 200ms linear all;
 	-o-transition: 200ms linear all;
 	-webkit-transition: 200ms linear all;
-    transition: 200ms linear all;
+    transition: 200ms linear all;*/
     position: relative;
     display: block;
     height: 30px;

@@ -25,6 +25,7 @@ import dao.CEntidadDAO;
 import dao.CRecursoDAO;
 import dao.CTesoreria;
 import pojo.CEntidad;
+import pojo.CGasto;
 import pojo.CRecurso;
 import pojo.CRecursoAuxiliar;
 import pojo.CTesoreriaCuenta;
@@ -144,6 +145,18 @@ public class SFlujoCaja extends HttpServlet {
 			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
 			String response_text_historia = new GsonBuilder().serializeNulls().create().toJson(data_historia);
 	        response_text = String.join("", "\"pronosticos\":",response_text,", \"historicos\":", response_text_historicos,",\"historia\":", response_text_historia);
+	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
+		else if(action.equals("getPronosticosEgresosTree")){
+			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
+			int entidad = map.get("entidadId")!=null ? Integer.parseInt(map.get("entidadId")) : 0;
+			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
+			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
+			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
+			ArrayList<CGasto> arbol = CEntidadDAO.getPronosticosEgresosTree(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
+			response_text=new GsonBuilder().serializeNulls().create().toJson(arbol);
+			response_text = String.join("", "\"arbol\":",response_text);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
 		else if(action.equals("getPronosticosFlujo")){
