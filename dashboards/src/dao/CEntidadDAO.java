@@ -331,7 +331,7 @@ public class CEntidadDAO {
 						"on (e.entidad = eg.entidad and e.unidad_ejecutora = eg.unidad_ejecutora) " + 
 						"WHERE e.ejercicio = ? " + 
 						"and ((eg.ejercicio=? AND eg.mes>=?)  " + 
-						"OR (eg.ejercicio=? and eg.mes<=?)  " + 
+						"OR (eg.ejercicio=? and eg.mes<?)  " + 
 						"OR (eg.ejercicio>? and eg.ejercicio<?))  " + 
 						"AND eg.entidad>0  " + 
 						"AND eg.ajustado = ?  " + 
