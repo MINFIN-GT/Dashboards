@@ -72,7 +72,7 @@
 </div>
 </script>
 <h4>Egresos</h4>
-<h5>Pronósticos</h5>
+<h5>Pronósticos ({{ egreso.titulo_detalle }})</h5>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12" style="padding-left: 0px;">
@@ -110,8 +110,9 @@
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12">Número de meses a proyectar:
-		<input type="number" ng-model="egreso.numero_pronosticos" min="1" max="24" style="text-align: right;" ng-disabled="egreso.showloading"/>
-	</div>
+		<input type="number" ng-model="egreso.numero_pronosticos" min="1" max="24" style="text-align: right;" ng-disabled="egreso.showloading"/><br/>
+		<input type="checkbox" ng-model="egreso.con_regularizaciones" ng-click="egreso.cambiarData()" ng-disabled="egreso.showloading">Con Regularizaciones
+    </div>
 </div>
 <br/>
 		<div class="row" style="margin-bottom: 10px; margin-top:15px;">
@@ -211,20 +212,20 @@
 				</table>
 			</div>
 		</div>
-		<div style="text-align: center;" ng-show="egreso.sindatos && egreso.entidad==0">Sin datos históricos suficientes para generar los prónosticos</div>
+		<div style="text-align: center;" ng-show="egreso.sindatos && egreso.entidad==0 && !egreso.showloading">Sin datos históricos suficientes para generar los prónosticos</div>
 		</uib-tab>
 		<uib-tab index="2" heading="Detalle">
 			<br/>
 			<br/>
 			<button type="button" class="btn btn-default" ng-model="egreso.viewQuetzales_d" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"
-			ng-change="egreso.aplicarFormatoDetalle()"
+			ng-change="egreso.aplicarFormatoDetalle()" ng-show="!egreso.showloading"
 			>
 		        	Q
 		   		</button>
 			<br/>
 			<tree-grid style="font-size: 12px;" tree-data="egreso.tree_data" template-url="treeGrid.html" icon-expand="glyphicon glyphicon-plus"
     			icon-collapse="glyphicon glyphicon-minus" icon-leaf="glyphicon glyphicon-menu-right"
-    			col-defs="egreso.tree_cols" expand-on="codigo" tree-control="egreso.detalleTree"></tree-grid>
+    			col-defs="egreso.tree_cols" expand-on="codigo" tree-control="egreso.detalleTree" ng-show="!egreso.showloading"></tree-grid>
 		</uib-tab>
 	</uib-tabset>
 <br/>

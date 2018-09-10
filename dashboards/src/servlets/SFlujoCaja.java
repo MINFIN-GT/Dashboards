@@ -138,9 +138,13 @@ public class SFlujoCaja extends HttpServlet {
 			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
 			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
-			Double[] pronosticos = CEntidadDAO.getPronosticosEgresos(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
-			Double[] historicos = CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, mes, entidad,unidad_ejecutora, 12);
-			Double[][] data_historia = CEntidadDAO.getTodaHistoria(entidad,unidad_ejecutora);
+			int con_regularizaciones = map.get("con_regularizaciones")!=null ? Integer.parseInt(map.get("con_regularizaciones")) : 0;
+			Double[] pronosticos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresos(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero) :
+				CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero) ;
+			Double[] historicos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, mes, entidad,unidad_ejecutora, 12) : 
+				CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, mes, entidad,unidad_ejecutora, 12);
+			Double[][] data_historia = (con_regularizaciones==1) ? CEntidadDAO.getTodaHistoria(entidad,unidad_ejecutora) : 
+				CEntidadDAO.getTodaHistoriaSinRegularizaciones(entidad,unidad_ejecutora);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
 			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
 			String response_text_historia = new GsonBuilder().serializeNulls().create().toJson(data_historia);
@@ -154,7 +158,9 @@ public class SFlujoCaja extends HttpServlet {
 			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
 			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
-			ArrayList<CGasto> arbol = CEntidadDAO.getPronosticosEgresosTree(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
+			int con_regularizaciones = map.get("con_regularizaciones")!=null ? Integer.parseInt(map.get("con_regularizaciones")) : 0;
+			ArrayList<CGasto> arbol = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresosTree(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero) :
+				CEntidadDAO.getPronosticosEgresosTreeSinRegularizaciones(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(arbol);
 			response_text = String.join("", "\"arbol\":",response_text);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
