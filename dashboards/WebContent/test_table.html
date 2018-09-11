@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+//scroll to bottom
+function convertTreeToList(root) {
+    var stack = [], array = [], hashMap = {};
+    stack.push(root);
+    
+    while(stack.length !== 0) {
+        var node = stack.pop();
+        if(node.children === null) {
+            visitNode(node, hashMap, array);
+        } else {
+            for(var i = node.children.length - 1; i >= 0; i--) {
+                stack.push(node.children[i]);
+            }
+        }
+    }
+
+    return array;
+}
+
+function visitNode(node, hashMap, array) {
+    if(!hashMap[node.data]) {
+        hashMap[node.data] = true;
+        array.push(node);
+    }
+}
+
+var tree = {
+    data: null,   // non-leaf node
+    children: [
+        {
+            data: 'A',   // leaf node
+            children: null
+        },
+        {
+            data: 'B',   // leaf node
+            children: null
+        },
+        {
+    				data: null,   // non-leaf node
+    				children: [
+       	 				{
+            				data: 'C',   // leaf node
+            				children: null
+        				},
+        				{
+            				data: 'D',   // leaf node
+            				children: null
+        				},
+                {
+            				data: 'E',   // leaf node
+            				children: null
+        				}
+    				]
+				}
+    ]
+}
+
+// intial tree has leaf nodes A, B, C, D, A
+console.log(tree);
+
+// do conversion
+var array = convertTreeToList(tree);
+
+// converts to list of A, B, C, D
+// removes duplicates and preserves order
+console.log(array);
+
+</script>
+</head>
+<body>
+<table>
+	<tbody>
+		<tr>
+			<td>Rafael Reyes Bermudez</td>
+			<td>1</td>
+		</tr>
+		<tbody>
+		<tr>
+		<td>2</td>
+		<td>Rafael Reyes Bermudez</td>
+	</tr>
+	</tbody>
+	</tbody>
+</table>
+</body>
+</html>
