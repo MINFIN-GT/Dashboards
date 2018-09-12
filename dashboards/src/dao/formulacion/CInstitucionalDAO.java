@@ -70,8 +70,8 @@ public class CInstitucionalDAO {
 						if(rs_mem.getDouble("entidad")==rs.getInt("entidad"))
 							ejecutado_dos_antes = rs_mem.getDouble("total");
 					}
-					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), 
-							ejecutado_dos_antes, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"));
+					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null, 
+							ejecutado_dos_antes, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"), null, null);
 					ret.add(entidad);
 				}
 			}
@@ -301,5 +301,171 @@ public class CInstitucionalDAO {
 			CDatabase.close(conn_mem);
 		}
 		return ret;
+	}
+	
+	public static ArrayList<CInstitucionalTotal> getInstitucionalTotalDetalle(int ejercicio){
+		ArrayList<CInstitucionalTotal> ret = new ArrayList<CInstitucionalTotal>();
+		Connection conn = null;
+		Connection conn_mem = null;
+		try{
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				conn_mem = CDatabase.connect();
+				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio,     " + 
+						"     p.entidad,     " + 
+						"     e.nombre_completo  entidad_nombre,     " + 
+						"     p.unidad_ejecutora,     " + 
+						"     ue.nombre unidad_ejecutora_nombre,     " + 
+						"     p.programa,     " + 
+						"     pr.nom_estructura programa_nombre,     " + 
+						"     p.renglon,     " + 
+						"     r.nombre renglon_nombre,     " + 
+						"     (   SELECT SUM (pa.aprobado)     " + 
+						"          FROM fp_p6_partidas pa     " + 
+						"         WHERE pa.ejercicio = p.ejercicio - 1     " + 
+						"         AND pa.entidad = p.entidad     " + 
+						"         AND pa.unidad_ejecutora = p.unidad_ejecutora     " + 
+						"         AND pa.programa = p.programa     " + 
+						"         AND pa.renglon = p.renglon     " + 
+						"         ) aprobado_anterior,     " + 
+						"       (SELECT SUM (pa.aprobado)     " + 
+						"          FROM fp_p6_partidas pa     " + 
+						"         WHERE pa.ejercicio = p.ejercicio - 1     " + 
+						"         AND pa.entidad = p.entidad     " + 
+						"         AND pa.unidad_ejecutora = p.unidad_ejecutora     " + 
+						"         AND pa.programa = p.programa     " + 
+						"         and pa.renglon = p.renglon     " + 
+						"       )     " + 
+						"     + NVL (     " + 
+						"          (SELECT SUM (ad.monto_aprobado)     " + 
+						"             FROM eg_modificaciones_hoja am, eg_modificaciones_detalle ad     " + 
+						"            WHERE     am.ejercicio = p.ejercicio - 1     " + 
+						"                  AND am.entidad = p.entidad     " + 
+						"                  AND am.clase_registro = 'AMP'     " + 
+						"                  AND am.estado = 'APROBADO'     " + 
+						"                  AND am.fec_disposicion <= TO_DATE ( (p.ejercicio - 1) || '/07/15','YYYY/MM/DD')     " + 
+						"                  AND am.unidad_ejecutora = p.unidad_ejecutora     " + 
+						"                  AND ad.ejercicio = am.ejercicio     " + 
+						"                  and ad.entidad = am.entidad     " + 
+						"                  AND ad.programa = p.programa     " + 
+						"                  and ad.unidad_ejecutora = am.unidad_ejecutora     " + 
+						"                  and ad.no_cur = am.no_cur     " + 
+						"                  AND ad.renglon = p.renglon),     " + 
+						"          0)     " + 
+						"        aprobado_anterior_mas_amp,     " + 
+						"     SUM (p.recomendado) recomendado     " + 
+						"FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e, cg_entidades ue, cp_estructuras pr, cp_objetos_gasto r     " + 
+						"WHERE     p.ejercicio = ?     " + 
+						"     AND p.entidad = e.entidad     " + 
+						"     AND ue.ejercicio = p.ejercicio     " + 
+						"     AND ue.entidad = e.entidad     " + 
+						"     AND ue.unidad_ejecutora = p.unidad_ejecutora     " + 
+						"     AND pr.ejercicio = p.ejercicio     " + 
+						"     AND pr.entidad = p.entidad     " + 
+						"     AND pr.unidad_ejecutora = p.unidad_ejecutora     " + 
+						"     AND pr.programa = p.programa     " + 
+						"     AND pr.nivel_estructura = 2     " + 
+						"     AND r.ejercicio = p.ejercicio     " + 
+						"     and r.renglon = p.renglon     " + 
+						"GROUP BY p.ejercicio, p.entidad,e.nombre_completo, p.unidad_ejecutora, ue.nombre,     " + 
+						"p.programa, pr.nom_estructura, p.renglon, r.nombre     " + 
+						"ORDER BY p.entidad, p.unidad_ejecutora, p.programa, p.renglon");
+				pstm.setInt(1, ejercicio);
+				ResultSet rs = pstm.executeQuery();
+				PreparedStatement pstm_mem = conn_mem.prepareStatement("select entidad,sum(ano_actual) total " + 
+						"from mv_ejecucion_presupuestaria " + 
+						"where ejercicio = ? " + 
+						"group by entidad " + 
+						"order by entidad");
+				pstm_mem.setInt(1, ejercicio-2);
+				ResultSet rs_mem = pstm_mem.executeQuery();
+				rs_mem.next();
+				CInstitucionalTotal papa = null;
+				CInstitucionalTotal nodoEntidad = null;
+				int pos=0;
+				while(rs.next()) {					
+					if(ret.isEmpty() || !ret.isEmpty() && rs.getInt("entidad") != ret.get(pos-1).getEntidad()) {
+						papa = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null, null, null,null,null, 0, new ArrayList<CInstitucionalTotal>());										
+						
+						CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3,null);						
+						
+						CInstitucionalTotal nodoPrograma = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), null, null, null, null,null,null, 2, new ArrayList<CInstitucionalTotal>());
+						nodoPrograma.getChildren().add(nodoRenglon);
+						
+						CInstitucionalTotal nodoUnidadEjecutora = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null,null,null, 1, new ArrayList<CInstitucionalTotal>());
+						nodoUnidadEjecutora.getChildren().add(nodoPrograma);
+						
+						papa.getChildren().add(nodoUnidadEjecutora);
+						ret.add(papa);
+						pos++;
+					}else {
+						nodoEntidad = EvaluarUE(ejercicio, rs, ret.get(pos-1));
+						ret.set(pos-1, nodoEntidad);
+					}
+				}
+			}
+		}
+		catch(Exception e){
+			CLogger.write("5", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+			CDatabase.close(conn_mem);
+		}
+		return ret;
+	}
+	
+	private static CInstitucionalTotal EvaluarUE(int ejercicio, ResultSet rs, CInstitucionalTotal nodoPapa){
+		try {
+			CInstitucionalTotal nodoHijoUE = nodoPapa.getChildren().get(nodoPapa.getChildren().size()-1);
+			if(nodoHijoUE.getChildren() != null && nodoHijoUE.getUnidad_ejecutora().equals(rs.getInt("unidad_ejecutora"))) {
+				return nodoHijoUE.getChildren().set(nodoHijoUE.getChildren().size()-1, EvaluarPrograma(ejercicio, rs, nodoHijoUE));
+				
+			}
+			else {
+				CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3, null);						
+				
+				CInstitucionalTotal nodoPrograma = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), null, null, null, null,null,null, 2, new ArrayList<CInstitucionalTotal>());
+				nodoPrograma.getChildren().add(nodoRenglon);
+				
+				CInstitucionalTotal UE = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null,null,null, 1, new ArrayList<CInstitucionalTotal>());
+				UE.getChildren().add(nodoPrograma);
+				nodoPapa.getChildren().add(UE);
+			}
+				
+		}catch(Exception e) {
+			CLogger.write("6", CInstitucionalDAO.class, e);
+		}
+		return nodoPapa;
+	}
+	
+	private static CInstitucionalTotal EvaluarPrograma(int ejercicio, ResultSet rs, CInstitucionalTotal nodoPapa){
+		try {
+			CInstitucionalTotal nodoHijoPrograma = nodoPapa.getChildren().get(nodoPapa.getChildren().size()-1);
+			if(nodoHijoPrograma.getChildren() != null && nodoHijoPrograma.getPrograma().equals(rs.getInt("programa"))) {
+				return nodoHijoPrograma.getChildren().set(nodoHijoPrograma.getChildren().size()-1, EvaluarRenglon(ejercicio, rs, nodoHijoPrograma));
+			}
+			else {
+				
+				CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3, null);						
+				
+				CInstitucionalTotal nodoPrograma = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null,null,null, 1, new ArrayList<CInstitucionalTotal>());
+				nodoPrograma.getChildren().add(nodoRenglon);
+				nodoPapa.getChildren().add(nodoPrograma);
+			}
+		}catch(Exception e) {
+			CLogger.write("7", CInstitucionalDAO.class, e);
+		}
+		return nodoPapa;
+	}
+	
+	private static CInstitucionalTotal EvaluarRenglon(int ejercicio, ResultSet rs, CInstitucionalTotal nodoPapa){
+		try {
+			CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3, null);
+			nodoPapa.getChildren().add(nodoRenglon);
+		}catch(Exception e) {
+			CLogger.write("8", CInstitucionalDAO.class, e);
+		}
+		return nodoPapa;
 	}
 }

@@ -23,7 +23,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	}
 	
 	
-	$http.post('/SInstitucional',  { action: 'getInstitucionalTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+	$http.post('/SInstitucional',  { action: 'getInstitucionalTotalDetalle', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 	    if(response.data.success){
 	    	me.entidades=response.data.entidades;
 	    	for(var i=0; i<me.entidades.length; i++){
