@@ -12,6 +12,7 @@ import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
+import pojo.formulacion.CInstitucionalTotalDetalle;
 import utilities.CLogger;
 
 public class CInstitucionalDAO {
@@ -70,8 +71,8 @@ public class CInstitucionalDAO {
 						if(rs_mem.getDouble("entidad")==rs.getInt("entidad"))
 							ejecutado_dos_antes = rs_mem.getDouble("total");
 					}
-					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null, 
-							ejecutado_dos_antes, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"), null, null);
+					CInstitucionalTotal entidad = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"),  
+							ejecutado_dos_antes, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"));
 					ret.add(entidad);
 				}
 			}
@@ -303,8 +304,8 @@ public class CInstitucionalDAO {
 		return ret;
 	}
 	
-	public static ArrayList<CInstitucionalTotal> getInstitucionalTotalDetalle(int ejercicio){
-		ArrayList<CInstitucionalTotal> ret = new ArrayList<CInstitucionalTotal>();
+	public static ArrayList<CInstitucionalTotalDetalle> getInstitucionalTotalDetalle(int ejercicio){
+		ArrayList<CInstitucionalTotalDetalle> ret = new ArrayList<CInstitucionalTotalDetalle>();
 		Connection conn = null;
 		Connection conn_mem = null;
 		try{
@@ -372,37 +373,138 @@ public class CInstitucionalDAO {
 						"ORDER BY p.entidad, p.unidad_ejecutora, p.programa, p.renglon");
 				pstm.setInt(1, ejercicio);
 				ResultSet rs = pstm.executeQuery();
-				PreparedStatement pstm_mem = conn_mem.prepareStatement("select entidad,sum(ano_actual) total " + 
+				PreparedStatement pstm_mem = conn_mem.prepareStatement("select entidad, unidad_ejecutora, programa, renglon, sum(ano_actual) total " + 
 						"from mv_ejecucion_presupuestaria " + 
 						"where ejercicio = ? " + 
-						"group by entidad " + 
-						"order by entidad");
+						"group by entidad, unidad_ejecutora, programa, renglon " + 
+						"order by entidad, unidad_ejecutora, programa, renglon");
 				pstm_mem.setInt(1, ejercicio-2);
 				ResultSet rs_mem = pstm_mem.executeQuery();
 				rs_mem.next();
-				CInstitucionalTotal papa = null;
-				CInstitucionalTotal nodoEntidad = null;
-				int pos=0;
-				while(rs.next()) {					
-					if(ret.isEmpty() || !ret.isEmpty() && rs.getInt("entidad") != ret.get(pos-1).getEntidad()) {
-						papa = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), null, null, null, null, null, null, null, null,null,null, 0, new ArrayList<CInstitucionalTotal>());										
-						
-						CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3,null);						
-						
-						CInstitucionalTotal nodoPrograma = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), null, null, null, null,null,null, 2, new ArrayList<CInstitucionalTotal>());
-						nodoPrograma.getChildren().add(nodoRenglon);
-						
-						CInstitucionalTotal nodoUnidadEjecutora = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null,null,null, 1, new ArrayList<CInstitucionalTotal>());
-						nodoUnidadEjecutora.getChildren().add(nodoPrograma);
-						
-						papa.getChildren().add(nodoUnidadEjecutora);
-						ret.add(papa);
-						pos++;
-					}else {
-						nodoEntidad = EvaluarUE(ejercicio, rs, ret.get(pos-1));
-						ret.set(pos-1, nodoEntidad);
+				CInstitucionalTotalDetalle entidad=null;
+				CInstitucionalTotalDetalle ue=null;
+				CInstitucionalTotalDetalle programa=null;
+				int entidad_actual=-1;
+				int ue_actual=-1;
+				int programa_actual=-1;
+				while(rs.next()) {
+					CInstitucionalTotalDetalle renglon = new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), 
+							rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"),0.0,
+							rs.getDouble("aprobado_anterior"), rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"), 4, null);
+					boolean exit = false;
+					while(rs_mem.next()&&!exit) {
+						if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
+								rs_mem.getInt("programa")==renglon.getPrograma() && rs_mem.getInt("renglon")==renglon.getRenglon()) 
+							renglon.setEjecutado_dos_antes(rs_mem.getDouble("total"));
+						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
+								rs_mem.getInt("programa")==renglon.getPrograma() && rs_mem.getInt("renglon")<renglon.getRenglon())
+							rs_mem.next();
+						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
+								rs_mem.getInt("programa")==renglon.getPrograma() && rs_mem.getInt("renglon")>renglon.getRenglon()) {
+							exit=true;
+							if(!rs_mem.isLast())
+								rs_mem.previous();
+						}
+						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
+								rs_mem.getInt("programa")<renglon.getPrograma()) {
+							rs_mem.next();
+						}
+						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
+								rs_mem.getInt("programa")<renglon.getPrograma()) {
+							exit=true;
+							if(!rs_mem.isLast())
+								rs_mem.previous();
+						}
+						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")<renglon.getUnidad_ejecutora() ) {
+							rs_mem.next();
+						}
+						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")<renglon.getUnidad_ejecutora() ) {
+							exit=true;
+							if(!rs_mem.isLast())
+								rs_mem.previous();
+						}
+						else if(rs_mem.getInt("entidad")<renglon.getEntidad() ) {
+							rs_mem.next();
+						}
+						else if(rs_mem.getInt("entidad")>renglon.getEntidad() ) {
+							exit=true;
+							if(!rs_mem.isLast())
+								rs_mem.previous();
+						}
+					};
+					if(renglon.getEntidad()!=entidad_actual) {
+						if(entidad!=null) {
+							for(int i=0; i<entidad.getChildren().size(); i++) {
+								entidad.setEjecutado_dos_antes(entidad.getEjecutado_dos_antes()+entidad.getChildren().get(i).getEjecutado_dos_antes());
+								entidad.setAprboado_anterior(entidad.getAproobado_anterior()+entidad.getChildren().get(i).getAproobado_anterior());
+								entidad.setAprboado_anterior_mas_ampliaciones(entidad.getAproobado_anterior_mas_ampliaciones()+entidad.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
+								entidad.setRecomendado(entidad.getRecomendado()+entidad.getChildren().get(i).getRecomendado());
+							}
+							ret.add(entidad);
+						}
+						entidad=new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), 0, 
+								null, 0, null, 0, null,0.0,0.0, 0.0, 0.0, 1, new ArrayList<CInstitucionalTotalDetalle>());
+						entidad_actual = entidad.getEntidad();
 					}
+					if(renglon.getUnidad_ejecutora()!=ue_actual) {
+						if(ue!=null) {
+							for(int i=0; i<ue.getChildren().size(); i++) {
+								ue.setEjecutado_dos_antes(ue.getEjecutado_dos_antes()+ue.getChildren().get(i).getEjecutado_dos_antes());
+								ue.setAprboado_anterior(ue.getAproobado_anterior()+ue.getChildren().get(i).getAproobado_anterior());
+								ue.setAprboado_anterior_mas_ampliaciones(ue.getAproobado_anterior_mas_ampliaciones()+ue.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
+								ue.setRecomendado(ue.getRecomendado()+ue.getChildren().get(i).getRecomendado());
+							}
+							entidad.getChildren().add(ue);
+						}
+						ue=new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), 
+								rs.getString("unidad_ejecutora_nombre"), 0, null, 0, null,0.0,0.0, 0.0, 0.0, 1, new ArrayList<CInstitucionalTotalDetalle>());
+						ue_actual = ue.getUnidad_ejecutora();
+					}
+					if(renglon.getPrograma()!=programa_actual) {
+						if(programa!=null) {
+							for(int i=0; i<programa.getChildren().size(); i++) {
+								programa.setEjecutado_dos_antes(programa.getEjecutado_dos_antes()+programa.getChildren().get(i).getEjecutado_dos_antes());
+								programa.setAprboado_anterior(programa.getAproobado_anterior()+programa.getChildren().get(i).getAproobado_anterior());
+								programa.setAprboado_anterior_mas_ampliaciones(programa.getAproobado_anterior_mas_ampliaciones()+programa.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
+								programa.setRecomendado(programa.getRecomendado()+programa.getChildren().get(i).getRecomendado());
+							}
+							ue.getChildren().add(programa);
+						}
+						programa = new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), 
+								rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), 
+								0, null,0.0,0.0, 0.0, 0.0, 1, new ArrayList<CInstitucionalTotalDetalle>());
+						programa_actual = programa.getPrograma();
+					}
+					programa.getChildren().add(renglon);
 				}
+				if(programa!=null) {
+					for(int i=0; i<programa.getChildren().size(); i++) {
+						programa.setEjecutado_dos_antes(programa.getEjecutado_dos_antes()+programa.getChildren().get(i).getEjecutado_dos_antes());
+						programa.setAprboado_anterior(programa.getAproobado_anterior()+programa.getChildren().get(i).getAproobado_anterior());
+						programa.setAprboado_anterior_mas_ampliaciones(programa.getAproobado_anterior_mas_ampliaciones()+programa.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
+						programa.setRecomendado(programa.getRecomendado()+programa.getChildren().get(i).getRecomendado());
+					}
+					ue.getChildren().add(programa);
+				}
+				if(ue!=null) {
+					for(int i=0; i<ue.getChildren().size(); i++) {
+						ue.setEjecutado_dos_antes(ue.getEjecutado_dos_antes()+ue.getChildren().get(i).getEjecutado_dos_antes());
+						ue.setAprboado_anterior(ue.getAproobado_anterior()+ue.getChildren().get(i).getAproobado_anterior());
+						ue.setAprboado_anterior_mas_ampliaciones(ue.getAproobado_anterior_mas_ampliaciones()+ue.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
+						ue.setRecomendado(ue.getRecomendado()+ue.getChildren().get(i).getRecomendado());
+					}
+					entidad.getChildren().add(ue);
+				}
+				if(entidad!=null) {
+					for(int i=0; i<entidad.getChildren().size(); i++) {
+						entidad.setEjecutado_dos_antes(entidad.getEjecutado_dos_antes()+entidad.getChildren().get(i).getEjecutado_dos_antes());
+						entidad.setAprboado_anterior(entidad.getAproobado_anterior()+entidad.getChildren().get(i).getAproobado_anterior());
+						entidad.setAprboado_anterior_mas_ampliaciones(entidad.getAproobado_anterior_mas_ampliaciones()+entidad.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
+						entidad.setRecomendado(entidad.getRecomendado()+entidad.getChildren().get(i).getRecomendado());
+					}
+					ret.add(entidad);
+				}
+					
 			}
 		}
 		catch(Exception e){
@@ -415,57 +517,5 @@ public class CInstitucionalDAO {
 		return ret;
 	}
 	
-	private static CInstitucionalTotal EvaluarUE(int ejercicio, ResultSet rs, CInstitucionalTotal nodoPapa){
-		try {
-			CInstitucionalTotal nodoHijoUE = nodoPapa.getChildren().get(nodoPapa.getChildren().size()-1);
-			if(nodoHijoUE.getChildren() != null && nodoHijoUE.getUnidad_ejecutora().equals(rs.getInt("unidad_ejecutora"))) {
-				return nodoHijoUE.getChildren().set(nodoHijoUE.getChildren().size()-1, EvaluarPrograma(ejercicio, rs, nodoHijoUE));
-				
-			}
-			else {
-				CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3, null);						
-				
-				CInstitucionalTotal nodoPrograma = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), null, null, null, null,null,null, 2, new ArrayList<CInstitucionalTotal>());
-				nodoPrograma.getChildren().add(nodoRenglon);
-				
-				CInstitucionalTotal UE = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null,null,null, 1, new ArrayList<CInstitucionalTotal>());
-				UE.getChildren().add(nodoPrograma);
-				nodoPapa.getChildren().add(UE);
-			}
-				
-		}catch(Exception e) {
-			CLogger.write("6", CInstitucionalDAO.class, e);
-		}
-		return nodoPapa;
-	}
 	
-	private static CInstitucionalTotal EvaluarPrograma(int ejercicio, ResultSet rs, CInstitucionalTotal nodoPapa){
-		try {
-			CInstitucionalTotal nodoHijoPrograma = nodoPapa.getChildren().get(nodoPapa.getChildren().size()-1);
-			if(nodoHijoPrograma.getChildren() != null && nodoHijoPrograma.getPrograma().equals(rs.getInt("programa"))) {
-				return nodoHijoPrograma.getChildren().set(nodoHijoPrograma.getChildren().size()-1, EvaluarRenglon(ejercicio, rs, nodoHijoPrograma));
-			}
-			else {
-				
-				CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3, null);						
-				
-				CInstitucionalTotal nodoPrograma = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), null, null, null, null, null, null,null,null, 1, new ArrayList<CInstitucionalTotal>());
-				nodoPrograma.getChildren().add(nodoRenglon);
-				nodoPapa.getChildren().add(nodoPrograma);
-			}
-		}catch(Exception e) {
-			CLogger.write("7", CInstitucionalDAO.class, e);
-		}
-		return nodoPapa;
-	}
-	
-	private static CInstitucionalTotal EvaluarRenglon(int ejercicio, ResultSet rs, CInstitucionalTotal nodoPapa){
-		try {
-			CInstitucionalTotal nodoRenglon = new CInstitucionalTotal(ejercicio, rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"), null, rs.getDouble("aprobado_anterior"),rs.getDouble("aprobado_anterior_mas_amp"),rs.getDouble("recomendado"), 3, null);
-			nodoPapa.getChildren().add(nodoRenglon);
-		}catch(Exception e) {
-			CLogger.write("8", CInstitucionalDAO.class, e);
-		}
-		return nodoPapa;
-	}
 }

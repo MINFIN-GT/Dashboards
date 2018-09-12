@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <link rel="stylesheet" type="text/css" href="/assets/css/main_cuadros.css" />
-<div ng-controller="cuadro5Controller as ctrl" class="maincontainer" id="title" class="all_page">
+<div ng-controller="cuadro5detalleController as ctrl" class="maincontainer" id="title" class="all_page">
 <h4>Cuadros Globales</h4>
 <div class="row" style="margin-bottom: 10px;">
 </div>

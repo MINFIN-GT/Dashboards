@@ -30,6 +30,7 @@ import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoRegion;
 import pojo.formulacion.CInstitucionalTotal;
+import pojo.formulacion.CInstitucionalTotalDetalle;
 import pojo.formulacion.CRecursoEconomico;
 import utilities.Utils;
 
@@ -182,9 +183,9 @@ public class SInstitucional extends HttpServlet {
 		}
 		else if(action.equals("getInstitucionalTotalDetalle")) {
 			if(ejercicio>0) {
-				ArrayList<CInstitucionalTotal> entidades = CInstitucionalDAO.getInstitucionalTotalDetalle(ejercicio);
+				ArrayList<CInstitucionalTotalDetalle> entidades = CInstitucionalDAO.getInstitucionalTotalDetalle(ejercicio);
 				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
-	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "\"arbol\":",response_text);
 	            response_text = String.join("", "{\"success\":true,", response_text,"}");
 			}
 			else {
