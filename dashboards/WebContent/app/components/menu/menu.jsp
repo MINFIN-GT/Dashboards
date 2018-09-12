@@ -26,6 +26,7 @@
 	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_ingresos">Pronósticos de Ingresos</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/proyeccion_egresos">Pronósticos de Egresos</a></li>
 	                     	<li role="menuitem"><a href="#!/dashboards/flujocaja">Flujo de Caja</a></li>
+	                     	<li role="menuitem"><a href="#!/dashboards/deuda/ejecucion">Ejecución de Deuda</a></li>
 	                    </ul>
 	                </li>
 	                <li uib-dropdown>

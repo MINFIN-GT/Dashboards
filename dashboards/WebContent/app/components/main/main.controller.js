@@ -131,6 +131,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/maparecomendado',{
             	template: '<div load-on-demand="\'maparecomendadoModule\'" class="all_page"></div>'
             })
+            .when('/dashboards/deuda/ejecucion',{
+            	template: '<div load-on-demand="\'ejecuciondeudaController\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -353,6 +356,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'maparecomendadoModule',
 	    	   script: '/app/components/formulacion/mapas/formulacionGeografico.controller.js',
 	    	   template: '/app/components/formulacion/mapas/formulacionGeografico.jsp'
+	       },
+	       {
+	    	   name: 'ejecuciondeudaController',
+	    	   script: '/app/components/deuda/ejecucion.controller.js',
+	    	   template: '/app/components/deuda/ejecucion.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

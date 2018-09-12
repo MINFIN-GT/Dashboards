@@ -29,23 +29,6 @@
 		border-bottom: 1px solid #c3c3c3;
 		border-right: 1px solid #c3c3c3;
 	}
-	
-	.tab1{
-		padding-left: 10px;
-	}
-	
-	.tab2{
-		padding-left: 20px;
-	}
-	
-	.tab3{
-		padding-left: 30px;
-	}
-	
-	.tab4{
-		padding-left: 40px;
-	}
-
 </style>    
     
 <div ng-controller="ingresosController as ingreso" class="maincontainer" id="title" class="all_page">
