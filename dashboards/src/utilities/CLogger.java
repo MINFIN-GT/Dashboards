@@ -1,6 +1,9 @@
 package utilities;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class CLogger {
 
@@ -19,4 +22,10 @@ public class CLogger {
 		log=Logger.getLogger(obj.getClass());
 		log.error(String.join(" ",obj.toString(), error_num,"\n"+error));		
 	}	
+	
+	static public void writeConsole(String mensaje) {
+		DateTime date= new DateTime();
+		DateTimeFormatter fmt = DateTimeFormat.forPattern("d/M/y k:m:s.S");
+		System.out.println(fmt.print(date)+" "+mensaje);
+	}
 }

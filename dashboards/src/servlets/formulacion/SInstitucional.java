@@ -183,9 +183,14 @@ public class SInstitucional extends HttpServlet {
 		}
 		else if(action.equals("getInstitucionalTotalDetalle")) {
 			if(ejercicio>0) {
-				ArrayList<CInstitucionalTotalDetalle> entidades = CInstitucionalDAO.getInstitucionalTotalDetalle(ejercicio);
+				int entidad = Utils.String2Int(map.get("entidad"), -1);
+				int unidad_ejecutora = Utils.String2Int(map.get("unidad_ejecutora"), -1);
+				int programa = Utils.String2Int(map.get("programa"), -1);
+				int grupo = Utils.String2Int(map.get("grupo"), -1);
+				int subgrupo = Utils.String2Int(map.get("subgrupo"), -1);
+				ArrayList<CInstitucionalTotalDetalle> entidades = CInstitucionalDAO.getInstitucionalTotalDetalle(ejercicio,entidad, unidad_ejecutora, programa, grupo, subgrupo);
 				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
-	            response_text = String.join("", "\"arbol\":",response_text);
+	            response_text = String.join("", "\"entidades\":",response_text);
 	            response_text = String.join("", "{\"success\":true,", response_text,"}");
 			}
 			else {

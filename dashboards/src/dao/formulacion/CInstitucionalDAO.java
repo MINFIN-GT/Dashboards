@@ -296,7 +296,7 @@ public class CInstitucionalDAO {
 			
 		}
 		catch(Exception e){
-			CLogger.write("5", CInstitucionalDAO.class, e);
+			CLogger.write("6", CInstitucionalDAO.class, e);
 		}
 		finally{
 			CDatabase.close(conn_mem);
@@ -304,217 +304,188 @@ public class CInstitucionalDAO {
 		return ret;
 	}
 	
-	public static ArrayList<CInstitucionalTotalDetalle> getInstitucionalTotalDetalle(int ejercicio){
+	private static String customSelector(String selector, String tabla) {
+		return selector.replace("$", tabla);
+	}
+	
+	private static String customCondicion(String condicion, String tabla) {
+		return condicion.replace("$", tabla);
+	}
+	
+	public static ArrayList<CInstitucionalTotalDetalle> getInstitucionalTotalDetalle(int ejercicio, int entidad, int unidad_ejecutora, int programa, int grupo, int subgrupo){
 		ArrayList<CInstitucionalTotalDetalle> ret = new ArrayList<CInstitucionalTotalDetalle>();
 		Connection conn = null;
 		Connection conn_mem = null;
+		String sql;
 		try{
 			conn = CDatabaseOracle.connect();
 			if(!conn.isClosed()){
 				conn_mem = CDatabase.connect();
-				PreparedStatement pstm =  conn.prepareStatement("SELECT p.ejercicio,     " + 
-						"     p.entidad,     " + 
-						"     e.nombre_completo  entidad_nombre,     " + 
-						"     p.unidad_ejecutora,     " + 
-						"     ue.nombre unidad_ejecutora_nombre,     " + 
-						"     p.programa,     " + 
-						"     pr.nom_estructura programa_nombre,     " + 
-						"     p.renglon,     " + 
-						"     r.nombre renglon_nombre,     " + 
-						"     (   SELECT SUM (pa.aprobado)     " + 
-						"          FROM fp_p6_partidas pa     " + 
-						"         WHERE pa.ejercicio = p.ejercicio - 1     " + 
-						"         AND pa.entidad = p.entidad     " + 
-						"         AND pa.unidad_ejecutora = p.unidad_ejecutora     " + 
-						"         AND pa.programa = p.programa     " + 
-						"         AND pa.renglon = p.renglon     " + 
-						"         ) aprobado_anterior,     " + 
-						"       (SELECT SUM (pa.aprobado)     " + 
-						"          FROM fp_p6_partidas pa     " + 
-						"         WHERE pa.ejercicio = p.ejercicio - 1     " + 
-						"         AND pa.entidad = p.entidad     " + 
-						"         AND pa.unidad_ejecutora = p.unidad_ejecutora     " + 
-						"         AND pa.programa = p.programa     " + 
-						"         and pa.renglon = p.renglon     " + 
-						"       )     " + 
-						"     + NVL (     " + 
-						"          (SELECT SUM (ad.monto_aprobado)     " + 
-						"             FROM eg_modificaciones_hoja am, eg_modificaciones_detalle ad     " + 
-						"            WHERE     am.ejercicio = p.ejercicio - 1     " + 
-						"                  AND am.entidad = p.entidad     " + 
-						"                  AND am.clase_registro = 'AMP'     " + 
-						"                  AND am.estado = 'APROBADO'     " + 
-						"                  AND am.fec_disposicion <= TO_DATE ( (p.ejercicio - 1) || '/07/15','YYYY/MM/DD')     " + 
-						"                  AND am.unidad_ejecutora = p.unidad_ejecutora     " + 
-						"                  AND ad.ejercicio = am.ejercicio     " + 
-						"                  and ad.entidad = am.entidad     " + 
-						"                  AND ad.programa = p.programa     " + 
-						"                  and ad.unidad_ejecutora = am.unidad_ejecutora     " + 
-						"                  and ad.no_cur = am.no_cur     " + 
-						"                  AND ad.renglon = p.renglon),     " + 
-						"          0)     " + 
-						"        aprobado_anterior_mas_amp,     " + 
-						"     SUM (p.recomendado) recomendado     " + 
-						"FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e, cg_entidades ue, cp_estructuras pr, cp_objetos_gasto r     " + 
-						"WHERE     p.ejercicio = ?     " + 
-						"     AND p.entidad = e.entidad     " + 
-						"     AND ue.ejercicio = p.ejercicio     " + 
-						"     AND ue.entidad = e.entidad     " + 
-						"     AND ue.unidad_ejecutora = p.unidad_ejecutora     " + 
-						"     AND pr.ejercicio = p.ejercicio     " + 
-						"     AND pr.entidad = p.entidad     " + 
-						"     AND pr.unidad_ejecutora = p.unidad_ejecutora     " + 
-						"     AND pr.programa = p.programa     " + 
-						"     AND pr.nivel_estructura = 2     " + 
-						"     AND r.ejercicio = p.ejercicio     " + 
-						"     and r.renglon = p.renglon     " + 
-						"GROUP BY p.ejercicio, p.entidad,e.nombre_completo, p.unidad_ejecutora, ue.nombre,     " + 
-						"p.programa, pr.nom_estructura, p.renglon, r.nombre     " + 
-						"ORDER BY p.entidad, p.unidad_ejecutora, p.programa, p.renglon");
-				pstm.setInt(1, ejercicio);
-				ResultSet rs = pstm.executeQuery();
-				PreparedStatement pstm_mem = conn_mem.prepareStatement("select entidad, unidad_ejecutora, programa, renglon, sum(ano_actual) total " + 
-						"from mv_ejecucion_presupuestaria " + 
+				String selector_padre="";
+				if(entidad==-1)
+					selector_padre = "t1.entidad codigo, e.nombre ";
+				else if(unidad_ejecutora==-1)
+					selector_padre = "t1.unidad_ejecutora codigo, ue.nombre ";
+				else if(programa==-1)
+					selector_padre = "t1.programa codigo, p.nom_estructura nombre ";
+				else if(grupo ==-1)
+					selector_padre = "t1.grupo codigo, g.nombre ";
+				else if(subgrupo==-1)
+					selector_padre = "t1.subgrupo codigo, sg.nombre ";
+				else if(subgrupo>-1)
+					selector_padre = "t1.renglon codigo, r.nombre ";
+				String selector="";
+				if(entidad==-1)
+					selector = "$.entidad";
+				else if(unidad_ejecutora==-1)
+					selector = "$.unidad_ejecutora";
+				else if(programa==-1)
+					selector = "$.programa";
+				else if(grupo ==-1)
+					selector = "($.renglon-mod($.renglon,100))/100 grupo";
+				else if(subgrupo==-1)
+					selector = "($.renglon-mod($.renglon,10))/10 subgrupo";
+				else if(subgrupo>-1)
+					selector = "$.renglon";
+				String grupo_padre="";
+				if(entidad==-1)
+					grupo_padre = "t1.entidad, e.nombre ";
+				else if(unidad_ejecutora==-1)
+					grupo_padre = "t1.unidad_ejecutora, ue.nombre ";
+				else if(programa==-1)
+					grupo_padre = "t1.programa, p.nom_estructura ";
+				else if(grupo ==-1)
+					grupo_padre = "t1.grupo, g.nombre ";
+				else if(subgrupo==-1)
+					grupo_padre = "t1.subgrupo, sg.nombre ";
+				else if(subgrupo>-1)
+					grupo_padre = "t1.renglon, r.nombre ";
+				String agrupador="";
+				if(entidad==-1)
+					agrupador = "$.entidad";
+				else if(unidad_ejecutora==-1)
+					agrupador = "$.unidad_ejecutora";
+				else if(programa==-1)
+					agrupador = "$.programa";
+				else if(grupo ==-1)
+					agrupador = "(($.renglon-mod($.renglon,100))/100)";
+				else if(subgrupo==-1)
+					agrupador = "(($.renglon-mod($.renglon,10))/10)";
+				else if(subgrupo>-1)
+					agrupador = "$.renglon";
+				String condicion_entidad = (entidad>-1) ? " and $.entidad = " + entidad : "";
+				String condicion_unidad_ejecutora = (unidad_ejecutora>-1) ? " and $.unidad_ejecutora = " + unidad_ejecutora : "";
+				String condicion_programa = (programa>-1) ? " and $.programa = " + programa : "";
+				String condicion_grupo = (grupo>-1) ? " and (($.renglon-mod($.renglon,100))/100)= " + grupo : "";
+				String condicion_subgrupo = (subgrupo>-1) ? " and (($.renglon-mod($.renglon,10))/10)= " + subgrupo : "";
+				String condicion=String.join(" ", (entidad>-1) ? condicion_entidad : "",(unidad_ejecutora>-1) ? condicion_unidad_ejecutora : "",(programa>-1) ? condicion_programa : "",
+						grupo>-1 ? condicion_grupo : "", subgrupo>-1 ? condicion_subgrupo : "");
+				sql = "select " + selector_padre +
+						", sum(ejecutado_dos_antes) ejecutado_dos_antes, " + 
+						"sum(aprobado_anterior) aprobado_anterior, sum(aprobado_anterior + aprobado_anterior_amp) aprobado_anterior_mas_amp, " + 
+						"sum(recomendado) recomendado " + 
+						"from ( " + 
+						"select " + customSelector(selector,"gd") + "," +
+						"sum(gd.monto_renglon) ejecutado_dos_antes, 0.0 aprobado_anterior, 0.0 aprobado_anterior_amp, 0.0 recomendado " + 
+						"from sicoinprod.eg_gastos_detalle gd, sicoinprod.eg_gastos_hoja gh  " + 
+						"where gh.ejercicio = ? " + 
+						"and gd.ejercicio = gh.ejercicio " + 
+						"and gd.entidad = gh.entidad " + 
+						"and gd.unidad_ejecutora = gh.unidad_ejecutora " + 
+						"and gd.unidad_desconcentrada = gh.unidad_desconcentrada " + 
+						"and gd.no_cur = gh.no_cur " + 
+						"and gh.clase_registro IN ('DEV', 'CYD', 'RDP', 'REG') " + 
+						"and gh.estado = 'APROBADO' " + 
+						customCondicion(condicion,"gd") +
+						" group by " + 
+						customSelector(agrupador,"gd") +
+						
+						" union " + 
+						
+						"select  " + 
+						customSelector(selector,"p")  + 
+						", 0.0,sum(p.asignado), 0.0, 0.0 " + 
+						"from sicoinprod.eg_f6_partidas p " + 
+						"where p.ejercicio = ? " +
+						customCondicion(condicion,"p") +
+						((entidad==-1) ? "and ((p.entidad in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and p.unidad_ejecutora=0) or  " + 
+						"        (p.entidad not in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and p.unidad_ejecutora>0)) " : "") +
+						" group by "+ 
+						customSelector(agrupador,"p")  + 
+						
+						" union " + 
+						
+						"SELECT " + 
+						customSelector(selector,"ad")  + 
+						", 0.0, 0.0, SUM (ad.monto_aprobado) , 0.0    " + 
+						"	 FROM eg_modificaciones_hoja am, eg_modificaciones_detalle ad      " + 
+						"	 WHERE     am.ejercicio = ?     " + 
+						"	AND am.clase_registro = 'AMP'      " + 
+						"	AND am.estado = 'APROBADO'      " + 
+						"	AND am.fec_disposicion <= TO_DATE ( ? || '/07/15','YYYY/MM/DD')      " + 
+						"	AND ad.ejercicio = am.ejercicio      " + 
+						"	and ad.entidad = am.entidad      " + 
+						"	and ad.unidad_ejecutora = am.unidad_ejecutora   " + 
+						"   and ad.unidad_desconcentrada = am.unidad_desconcentrada " + 
+						"	and ad.no_cur = am.no_cur      " + 
+						customCondicion(condicion,"ad") +
+						((entidad==-1) ? "and ((ad.entidad in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and ad.unidad_ejecutora=0) or  " + 
+								"        (ad.entidad not in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and ad.unidad_ejecutora>0)) " : "") +
+						"	group by " + 
+						customSelector(agrupador,"ad")  + 
+						
+						" union " + 
+						
+						"select  " + 
+						customSelector(selector,"p")  + 
+						", 0.0, 0.0,0.0, sum(recomendado) " + 
+						"from sicoinprod.fp_p6_partidas p " + 
 						"where ejercicio = ? " + 
-						"group by entidad, unidad_ejecutora, programa, renglon " + 
-						"order by entidad, unidad_ejecutora, programa, renglon");
-				pstm_mem.setInt(1, ejercicio-2);
-				ResultSet rs_mem = pstm_mem.executeQuery();
-				rs_mem.next();
-				CInstitucionalTotalDetalle entidad=null;
-				CInstitucionalTotalDetalle ue=null;
-				CInstitucionalTotalDetalle programa=null;
-				int entidad_actual=-1;
-				int ue_actual=-1;
-				int programa_actual=-1;
+						customCondicion(condicion,"p") +
+						" group by " + 
+						customSelector(agrupador,"p")  + 
+						 ") t1 " + 
+						(entidad==-1 ? ", cg_entidades e " : (unidad_ejecutora==-1 ? ", cg_entidades ue " : (programa==-1 ? ", cp_estructuras p " : (grupo==-1 ? ", cp_objetos_gasto g " : 
+							(subgrupo==-1 ? ", cp_objetos_gasto sg " : ", cp_objetos_gasto r " )))) ) +
+						" where " +
+						(entidad==-1 ? "e.ejercicio="+ejercicio+" and e.entidad=t1.entidad and e.unidad_ejecutora=0 " : 
+						(unidad_ejecutora==-1 ? "ue.ejercicio="+ejercicio+" and ue.entidad="+entidad+" and ue.unidad_ejecutora=t1.unidad_ejecutora " : 
+						(programa==-1 ? "p.ejercicio="+ejercicio+" and p.entidad="+entidad+" and p.unidad_ejecutora="+unidad_ejecutora+" and p.programa=t1.programa and p.nivel_estructura=2 " : 
+						(grupo==-1 ? "g.ejercicio="+ejercicio+" and g.renglon=t1.grupo*100 " : 
+						(subgrupo==-1 ? "sg.ejercicio="+ejercicio+" and sg.renglon=t1.subgrupo*10 " : 
+						(subgrupo>-1 ? "r.ejercicio="+ejercicio+" and r.renglon=t1.renglon" : "")))))) +
+						" group by " + 
+						grupo_padre +
+						" order by " + 
+						((entidad==-1) ? "t1.entidad" : 
+						((unidad_ejecutora==-1) ? "t1.unidad_ejecutora" : 
+						((programa==-1) ? "t1.programa" : 
+						((grupo==-1) ? "t1.grupo" : ((subgrupo==-1) ? "t1.subgrupo" : ((subgrupo>-1) ? "t1.renglon" : ""))))));
+				PreparedStatement pstm =  conn.prepareStatement(sql);
+				pstm.setInt(1, ejercicio-2);
+				pstm.setInt(2, ejercicio-1);
+				pstm.setInt(3, ejercicio-1);
+				pstm.setInt(4, ejercicio-1);
+				pstm.setInt(5, ejercicio);
+				ResultSet rs = pstm.executeQuery();
+				int nivel = subgrupo>-1 ? 6 : (grupo>-1 ?  5 : (programa>-1 ? 4 : (unidad_ejecutora>-1 ? 3 : (entidad>-1 ? 2 : 1))));
 				while(rs.next()) {
-					CInstitucionalTotalDetalle renglon = new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), 
-							rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), rs.getInt("renglon"), rs.getString("renglon_nombre"),0.0,
-							rs.getDouble("aprobado_anterior"), rs.getDouble("aprobado_anterior_mas_amp"), rs.getDouble("recomendado"), 4, null);
-					boolean exit = false;
-					while(rs_mem.next()&&!exit) {
-						if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
-								rs_mem.getInt("programa")==renglon.getPrograma() && rs_mem.getInt("renglon")==renglon.getRenglon()) 
-							renglon.setEjecutado_dos_antes(rs_mem.getDouble("total"));
-						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
-								rs_mem.getInt("programa")==renglon.getPrograma() && rs_mem.getInt("renglon")<renglon.getRenglon())
-							rs_mem.next();
-						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
-								rs_mem.getInt("programa")==renglon.getPrograma() && rs_mem.getInt("renglon")>renglon.getRenglon()) {
-							exit=true;
-							if(!rs_mem.isLast())
-								rs_mem.previous();
-						}
-						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
-								rs_mem.getInt("programa")<renglon.getPrograma()) {
-							rs_mem.next();
-						}
-						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")==renglon.getUnidad_ejecutora() &&
-								rs_mem.getInt("programa")<renglon.getPrograma()) {
-							exit=true;
-							if(!rs_mem.isLast())
-								rs_mem.previous();
-						}
-						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")<renglon.getUnidad_ejecutora() ) {
-							rs_mem.next();
-						}
-						else if(rs_mem.getInt("entidad")==renglon.getEntidad() && rs_mem.getInt("unidad_ejecutora")<renglon.getUnidad_ejecutora() ) {
-							exit=true;
-							if(!rs_mem.isLast())
-								rs_mem.previous();
-						}
-						else if(rs_mem.getInt("entidad")<renglon.getEntidad() ) {
-							rs_mem.next();
-						}
-						else if(rs_mem.getInt("entidad")>renglon.getEntidad() ) {
-							exit=true;
-							if(!rs_mem.isLast())
-								rs_mem.previous();
-						}
-					};
-					if(renglon.getEntidad()!=entidad_actual) {
-						if(entidad!=null) {
-							for(int i=0; i<entidad.getChildren().size(); i++) {
-								entidad.setEjecutado_dos_antes(entidad.getEjecutado_dos_antes()+entidad.getChildren().get(i).getEjecutado_dos_antes());
-								entidad.setAprboado_anterior(entidad.getAproobado_anterior()+entidad.getChildren().get(i).getAproobado_anterior());
-								entidad.setAprboado_anterior_mas_ampliaciones(entidad.getAproobado_anterior_mas_ampliaciones()+entidad.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
-								entidad.setRecomendado(entidad.getRecomendado()+entidad.getChildren().get(i).getRecomendado());
-							}
-							ret.add(entidad);
-						}
-						entidad=new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), 0, 
-								null, 0, null, 0, null,0.0,0.0, 0.0, 0.0, 1, new ArrayList<CInstitucionalTotalDetalle>());
-						entidad_actual = entidad.getEntidad();
-					}
-					if(renglon.getUnidad_ejecutora()!=ue_actual) {
-						if(ue!=null) {
-							for(int i=0; i<ue.getChildren().size(); i++) {
-								ue.setEjecutado_dos_antes(ue.getEjecutado_dos_antes()+ue.getChildren().get(i).getEjecutado_dos_antes());
-								ue.setAprboado_anterior(ue.getAproobado_anterior()+ue.getChildren().get(i).getAproobado_anterior());
-								ue.setAprboado_anterior_mas_ampliaciones(ue.getAproobado_anterior_mas_ampliaciones()+ue.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
-								ue.setRecomendado(ue.getRecomendado()+ue.getChildren().get(i).getRecomendado());
-							}
-							entidad.getChildren().add(ue);
-						}
-						ue=new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), 
-								rs.getString("unidad_ejecutora_nombre"), 0, null, 0, null,0.0,0.0, 0.0, 0.0, 1, new ArrayList<CInstitucionalTotalDetalle>());
-						ue_actual = ue.getUnidad_ejecutora();
-					}
-					if(renglon.getPrograma()!=programa_actual) {
-						if(programa!=null) {
-							for(int i=0; i<programa.getChildren().size(); i++) {
-								programa.setEjecutado_dos_antes(programa.getEjecutado_dos_antes()+programa.getChildren().get(i).getEjecutado_dos_antes());
-								programa.setAprboado_anterior(programa.getAproobado_anterior()+programa.getChildren().get(i).getAproobado_anterior());
-								programa.setAprboado_anterior_mas_ampliaciones(programa.getAproobado_anterior_mas_ampliaciones()+programa.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
-								programa.setRecomendado(programa.getRecomendado()+programa.getChildren().get(i).getRecomendado());
-							}
-							ue.getChildren().add(programa);
-						}
-						programa = new CInstitucionalTotalDetalle(ejercicio,rs.getInt("entidad"), rs.getString("entidad_nombre"), rs.getInt("unidad_ejecutora"), 
-								rs.getString("unidad_ejecutora_nombre"), rs.getInt("programa"), rs.getString("programa_nombre"), 
-								0, null,0.0,0.0, 0.0, 0.0, 1, new ArrayList<CInstitucionalTotalDetalle>());
-						programa_actual = programa.getPrograma();
-					}
-					programa.getChildren().add(renglon);
-				}
-				if(programa!=null) {
-					for(int i=0; i<programa.getChildren().size(); i++) {
-						programa.setEjecutado_dos_antes(programa.getEjecutado_dos_antes()+programa.getChildren().get(i).getEjecutado_dos_antes());
-						programa.setAprboado_anterior(programa.getAproobado_anterior()+programa.getChildren().get(i).getAproobado_anterior());
-						programa.setAprboado_anterior_mas_ampliaciones(programa.getAproobado_anterior_mas_ampliaciones()+programa.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
-						programa.setRecomendado(programa.getRecomendado()+programa.getChildren().get(i).getRecomendado());
-					}
-					ue.getChildren().add(programa);
-				}
-				if(ue!=null) {
-					for(int i=0; i<ue.getChildren().size(); i++) {
-						ue.setEjecutado_dos_antes(ue.getEjecutado_dos_antes()+ue.getChildren().get(i).getEjecutado_dos_antes());
-						ue.setAprboado_anterior(ue.getAproobado_anterior()+ue.getChildren().get(i).getAproobado_anterior());
-						ue.setAprboado_anterior_mas_ampliaciones(ue.getAproobado_anterior_mas_ampliaciones()+ue.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
-						ue.setRecomendado(ue.getRecomendado()+ue.getChildren().get(i).getRecomendado());
-					}
-					entidad.getChildren().add(ue);
-				}
-				if(entidad!=null) {
-					for(int i=0; i<entidad.getChildren().size(); i++) {
-						entidad.setEjecutado_dos_antes(entidad.getEjecutado_dos_antes()+entidad.getChildren().get(i).getEjecutado_dos_antes());
-						entidad.setAprboado_anterior(entidad.getAproobado_anterior()+entidad.getChildren().get(i).getAproobado_anterior());
-						entidad.setAprboado_anterior_mas_ampliaciones(entidad.getAproobado_anterior_mas_ampliaciones()+entidad.getChildren().get(i).getAproobado_anterior_mas_ampliaciones());
-						entidad.setRecomendado(entidad.getRecomendado()+entidad.getChildren().get(i).getRecomendado());
-					}
-					ret.add(entidad);
+					CInstitucionalTotalDetalle temp = new CInstitucionalTotalDetalle(rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), 
+							rs.getDouble("ejecutado_dos_antes"), rs.getDouble("aprobado_anterior"), rs.getDouble("aprobado_anterior_mas_amp"), 
+							rs.getDouble("recomendado"), nivel);
+					ret.add(temp);
 				}
 					
 			}
 		}
 		catch(Exception e){
-			CLogger.write("5", CInstitucionalDAO.class, e);
+			CLogger.write("7", CInstitucionalDAO.class, e);
 		}
 		finally{
 			CDatabaseOracle.close(conn);
 			CDatabase.close(conn_mem);
 		}
-		return ret;
+		return ret.size()>0 ? ret : null;
 	}
 	
 	
