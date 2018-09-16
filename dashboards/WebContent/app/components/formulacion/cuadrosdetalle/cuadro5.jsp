@@ -67,7 +67,19 @@
 					</tfoot>
 				</table>
 				<div class="nota" ng-show="ctrl.viewMillones"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
-				<div id="chart_div" style=" height: 300px; margin-top: 30px;" class="chart"></div>
+				<div>
+					<div class="grid_loading_chart" ng-hide="!ctrl.showChartLoading">
+					  	<div class="msg">
+					      <span><i class="fa fa-spinner fa-spin fa-4x"></i>
+							  <br /><br />
+							  <b>Cargando, por favor espere...</b>
+						  </span>
+						</div>
+					</div>
+					<div class="chart-title" ng-click="ctrl.returnByChartTitle()">{{ ctrl.chartTitle }}</div>
+					<div id="chart_div" style="margin-top: 10px;"></div>
+					<div class="chart-return">Para regresar a un nivel anterior presione el titulo de la gráfica</div>
+				</div>
 			</div>
 	   
 </div>

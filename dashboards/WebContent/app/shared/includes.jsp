@@ -54,7 +54,9 @@
 <script type="text/javascript" src="/assets/libs/angular-flash.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/ivh-treeview.min.js"></script> 
 <script type="text/javascript" src="/assets/libs/tree-grid-directive.js"></script> 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="/assets/libs/d3.min.js"></script>
+<script type="text/javascript" src="/assets/libs/d3plus.js"></script>
+<script type="text/javascript" src="/assets/libs/d3plus.full.min.js"></script>
 
 <script type="text/javascript" src="/assets/libs/utilities.js"></script> 
 <script type="text/javascript" src="/assets/libs/Utilidades.js"></script> 
