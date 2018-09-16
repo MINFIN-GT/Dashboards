@@ -9,8 +9,6 @@
 	.table>tbody>tr>td:first-child{
 		text-align: left;
 		border-top: none; 
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 	
 	.table>tbody>tr>td{
@@ -91,8 +89,7 @@
 	}
 	
 	.grid_loading_cuadros .msg {
-	  opacity: 1;
-	  background-color: rgba(238,238,238,0.85);
+	  background-color: rgba(248,248,248,0.75);
 	  text-align: center;
 	  width: 100%;
 	  height: 100%;
@@ -108,14 +105,61 @@
 		background-color: #f2f2f2;
 	}
 	
-	g>text{
+	#chart_div{
+		height: 300px;
+		width: 100%;
+		margin: 0 auto;
+		position: absolute;
+	}
+	
+	#chart_div>svg>g>g>g>g>text{
 		text-transform: capitalize;
 	}
 	
-	.goog-tooltip div{
+	.chart-title{
+		width: 100%;
+		text-align: center;
+		margin-top: 20px;
 		text-transform: capitalize;
+		font-weight: bold;
+		cursor: pointer;
 	}
 	
-	.chart>div>div{
-		margin:0 auto;
+	.chart-return{
+		margin: 5px 0px 0px 2px;
+		font-size: 10px;
+	}
+	
+	.tooltip-table {
+	  width: 100%;
+	  text-align: left;
+	}
+	
+	.tooltip-table .data {
+	  text-align: right;
+	}
+	
+	.tooltip-title {
+	  text-transform: capitalize;
+	}
+	
+	.grid_loading_chart{
+		position: absolute;
+	    z-index: 1000;
+	    width: 100%;
+	    height: 340px;
+	}
+	
+	.grid_loading_chart .msg {
+	  opacity: 1;
+	  background-color: rgba(248,248,248,0.75);
+	  text-align: center;
+	  width: 100%;
+	  height: 100%;
+	  display: table;
+	}
+	
+	.grid_loading_chart .msg span {
+	  display: table-cell;
+	  vertical-align: middle;
 	}
