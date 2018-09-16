@@ -9,6 +9,8 @@
 	.table>tbody>tr>td:first-child{
 		text-align: left;
 		border-top: none; 
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	
 	.table>tbody>tr>td{

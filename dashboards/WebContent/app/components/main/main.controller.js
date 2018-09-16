@@ -137,6 +137,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/cuadrosdetalle/cuadro5',{
             	template: '<div load-on-demand="\'cuadro5detalleController\'" class="all_page"></div>'
             })
+            .when('/formulacion/cuadrosdetalle/cuadro6',{
+            	template: '<div load-on-demand="\'cuadro6detalleController\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -369,6 +372,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'cuadro5detalleController',
 	    	   script: '/app/components/formulacion/cuadrosdetalle/cuadro5.controller.js',
 	    	   template: '/app/components/formulacion/cuadrosdetalle/cuadro5.jsp'
+	       },
+	       {
+	    	   name: 'cuadro6detalleController',
+	    	   script: '/app/components/formulacion/cuadrosdetalle/cuadro6.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosdetalle/cuadro6.jsp'
 	       },
 	   ];
 	   $loadOnDemandProvider.config(modules);
