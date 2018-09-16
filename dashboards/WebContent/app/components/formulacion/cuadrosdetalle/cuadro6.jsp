@@ -17,7 +17,6 @@
 					</div>
 				</div>
 	    		<div class="div_titulo">
-			    	<div style="font-size: 16px; font-weight: bold;">Cuadro 6</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Administración Central</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Presupuesto por Institución y Subgrupo de Tipo de Gasto</div>
 			    	<div style="font-size: 12px; font-weight: bold;">Presupuesto Recomendado {{ ctrl.anio }}</div>
@@ -41,22 +40,29 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr>
-						<td style="font-weight: bold; text-align: center;">Total</td>
-						<td style="font-weight: bold; text-align: right;"
-						ng-repeat="row in ctrl.total_tp">{{ ctrl.filtroMillones(row, ctrl.viewMillones) }}</td>
-					</tr>
-					<tr ng-repeat="row in ctrl.entidades_tipo_gasto track by $index" ng-click="ctrl.clickRow(row,$index)" ng-show="row.show">
-						<td style="white-space: nowrap; text-transform: capitalize">
-							<span class="{{ 'tab'+row.nivel }}"></span>
-								<span style="font-size: 8px; margin-right: 15px;"class="{{ row.nivel<6 ? (row.showChildren==false ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-up') : '' }}"></span>
-									{{ row.nivel>1 ? (row.nivel==5 ? (row.codigo+'').padStart(2,'0') : row.codigo) +' - '+row.nombre : row.nombre }}
-								<span ng-show="row.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span>
-						</td>						
-						<td>{{ ctrl.filtroMillones(row.recomendado, ctrl.viewMillones) }}</td>
-						<td	ng-repeat="tps in ctrl.tipos_gasto_codigos">{{ ctrl.filtroMillones(row['tp'+tps+'_monto'], ctrl.viewMillones) }}</td>
-					</tr>
+						<tr>
+							<td style="font-weight: bold; text-align: center;">Total</td>
+							<td style="font-weight: bold; text-align: right;"
+							ng-repeat="row in ctrl.total_tp">{{ ctrl.filtroMillones(row, ctrl.viewMillones) }}</td>
+						</tr>
+						<tr ng-repeat="row in ctrl.entidades_tipo_gasto track by $index" ng-click="ctrl.clickRow(row,$index)" ng-show="row.show">
+							<td style="white-space: nowrap; text-transform: capitalize">
+								<span class="{{ 'tab'+row.nivel }}"></span>
+									<span style="font-size: 8px; margin-right: 15px;"class="{{ row.nivel<6 ? (row.showChildren==false ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-up') : '' }}"></span>
+										{{ row.nivel>1 ? (row.nivel==5 ? (row.codigo+'').padStart(2,'0') : row.codigo) +' - '+row.nombre : row.nombre }}
+									<span ng-show="row.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span>
+							</td>						
+							<td>{{ ctrl.filtroMillones(row.recomendado, ctrl.viewMillones) }}</td>
+							<td	ng-repeat="tps in ctrl.tipos_gasto_codigos">{{ ctrl.filtroMillones(row['tp'+tps+'_monto'], ctrl.viewMillones) }}</td>
+						</tr>
 					</tbody>
+					<tfoot>
+						<tr>
+							<td style="font-weight: bold; text-align: center;">Total</td>
+							<td style="font-weight: bold; text-align: right;"
+							ng-repeat="row in ctrl.total_tp">{{ ctrl.filtroMillones(row, ctrl.viewMillones) }}</td>
+						</tr>
+					</tfoot>
 				</table>
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 			</div>

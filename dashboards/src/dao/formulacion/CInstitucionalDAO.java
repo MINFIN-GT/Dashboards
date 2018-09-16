@@ -514,7 +514,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				int nivel = 1;
 				while(rs.next()) {
-					CInstitucionalTipoGastoDetalle entidad = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre"), rs.getDouble("recomendado_total"),
+					CInstitucionalTipoGastoDetalle entidad = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado_total"),
 							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"), nivel);
 					ret.add(entidad);
 				}
@@ -562,7 +562,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				int nivel = 2;
 				while(rs.next()) {
-					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre"), rs.getDouble("recomendado_total"),
+					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado_total"),
 							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"), nivel);
 					ret.add(entidadObt);
 				}
@@ -613,7 +613,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				int nivel = 3;
 				while(rs.next()) {
-					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre"), rs.getDouble("recomendado_total"),
+					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado_total"),
 							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"), nivel);
 					ret.add(entidadObt);
 				}
@@ -664,7 +664,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				int nivel = 4;
 				while(rs.next()) {
-					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre"), rs.getDouble("recomendado_total"),
+					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado_total"),
 							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"), nivel);
 					ret.add(entidadObt);
 				}
@@ -717,7 +717,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				int nivel = 5;
 				while(rs.next()) {
-					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre"), rs.getDouble("recomendado_total"),
+					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado_total"),
 							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"), nivel);
 					ret.add(entidadObt);
 				}
@@ -772,7 +772,7 @@ public class CInstitucionalDAO {
 				ResultSet rs = pstm.executeQuery();
 				int nivel = 6;
 				while(rs.next()) {
-					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre"), rs.getDouble("recomendado_total"),
+					CInstitucionalTipoGastoDetalle entidadObt = new CInstitucionalTipoGastoDetalle(ejercicio, rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado_total"),
 							rs.getDouble("tp11"),rs.getDouble("tp12"),rs.getDouble("tp13"),rs.getDouble("tp21"),rs.getDouble("tp22"),rs.getDouble("tp23"),rs.getDouble("tp31"), nivel);
 					ret.add(entidadObt);
 				}

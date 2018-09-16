@@ -21,12 +21,13 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	
 	
 	me.filtroMillones=function(value, transform){
+		var millones = value;
+		var fixed=2;
 		if(transform){
-			var millones = value/1000000;
-			return (value>0) ?  $filter('currency')(millones.toFixed(1), '', 1) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(1), '', 1).substring(1) + ')' : null)  ;
+			millones = value/1000000;
+			fixed=1;
 		}
-		else 
-			return value;
+		return (value>0) ?  $filter('currency')(millones.toFixed(fixed), '', fixed) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(fixed), '', fixed).substring(1) + ')' : null)  ;
 	}
 	
 	
@@ -55,8 +56,8 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		me.clickRow=function(row,index){
 			if(row.showChildren==false && row.nivel<6){ //Mostrar hijos
 				row.showChildren=true;
-				if((index+1 < me.entidades_tipo_gasto.length) && me.entidades_tipo_gasto[index+1].nivel>row.nivel){
-		    		while(index<me.entidades_tipo_gasto.length && me.entidades_tipo_gasto[index+1].nivel>row.nivel){
+				if(((index+1) < me.entidades_tipo_gasto.length) && me.entidades_tipo_gasto[index+1].nivel>row.nivel){
+		    		while((index+1) < me.entidades_tipo_gasto.length && me.entidades_tipo_gasto[index+1].nivel>row.nivel){
 		    			if(me.entidades_tipo_gasto[index+1].nivel==row.nivel+1)
 		    				me.entidades_tipo_gasto[index+1].show=true;
 		    			index++;
@@ -115,7 +116,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 			else{ //Borrar hijos
 				row.showChildren=false;
 				var pos=index+1;
-				while(pos<me.entidades_tipo_gasto.length && me.entidades_tipo_gasto[pos].nivel>row.nivel){
+				while((pos<me.entidades_tipo_gasto.length) && me.entidades_tipo_gasto[pos].nivel>row.nivel){
 					me.entidades_tipo_gasto[pos].show=false;
 					me.entidades_tipo_gasto[pos].showChildren=false;
 					pos++;
