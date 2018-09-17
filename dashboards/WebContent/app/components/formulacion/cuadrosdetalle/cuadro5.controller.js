@@ -55,7 +55,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		if(row.showChildren==false && row.nivel<6){ //Mostrar hijos
 			row.showChildren=true;
 			if((index+1)<me.entidades.length && me.entidades[index+1].nivel>row.nivel){
-	    		while(index<me.entidades.length && me.entidades[index+1].nivel>row.nivel){
+	    		while((index+1)<me.entidades.length && me.entidades[index+1].nivel>row.nivel){
 	    			if(me.entidades[index+1].nivel==row.nivel+1)
 	    				me.entidades[index+1].show=true;
 	    			index++;
@@ -173,13 +173,19 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		  })
 		  .on("mousedown", function(d){
 			  switch(event.button){
-			  	case 0:
+			  	/*case 0:
 			  		me.clickChart(d,'forward');
-			  		break;
+			  		break;*/
 			  	case 2:
 			  		me.clickChart(d,'backward');
 			  		break;
 			  }
+		   })
+		   .on("click",function(d){
+			   me.clickChart(d,'forward');
+		   })
+		   .on("touchstart",function(d){
+			   me.clickChart(d,'forward');
 		   })
 		  .render();
 	}
