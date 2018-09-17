@@ -130,7 +130,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		me.drawFirstChart=function(data){
 			me.chartData=[];
 			for(var i=0; i<me.tipos_gasto_codigos.length; i++){
-				for(var j=0; j<data.length; j++){
+				for(var j=data.length-1; j>=0; j--){
 					me.chartData.push({
 						id: me.tipos_gasto[i],
 						x:data[j].nombre,
@@ -153,16 +153,21 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 			  }) 
 			  .tooltipConfig({
 				    body: function(d) {
-				      var table = "<table class='tooltip-table'>";
-				      table += "<tr><td>Recomendado "+(me.anio)+":</td><td class='data'>"+ (me.viewMillones ? 'Q ' : '') + me.filtroMillones(d.y*1000000, true) + "</td></tr>";
-				      table += "</table>";
-				       return table;
+				      if(!Array.isArray(d.x)){
+					      var table = "<table class='tooltip-table'>";
+					      table += "<tr><td>Recomendado "+(me.anio)+":</td><td class='data'>"+ (me.viewMillones ? 'Q ' : '') + me.filtroMillones(d.y*1000000, true) + "</td></tr>";
+					      table += "</table>";
+					      return table;
+				      }
+				      else
+				    	  return d.id;
 				    },
 				    footer: function(d) {
 				      return "<sub class='tooltip-footer'></sub>";
 				    },
 				    title: function(d) {
-				      return '<div><span class="tooltip-title">'+d.x+'</span></div><div class="tooltip-subtitle">'+d.id+'</div>';
+				    	if(!Array.isArray(d.x))
+				    		return '<div><span class="tooltip-title">'+d.x+'</span></div><div class="tooltip-subtitle">'+d.id+'</div>';
 				    }
 				  })
 			  .shapeConfig({

@@ -68,7 +68,15 @@
 						</table>
 					</div>			     	
 				</div>
+				<br/>
+				<br/>
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
+				<br/>
+				<br/>
+				<div>
+					<div class="chart-title"></div>
+					<div id="chart_div" style="height: 500px; margin-top: 10px;"></div>
+				</div>
 			</div>
 	    
 </div>

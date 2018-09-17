@@ -79,6 +79,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		me.entidades_finalidades[i].show=true;
 		    		me.entidades_finalidades[i].parent=null; 
 		    	}
+		    	me.drawFirstChart(me.entidades_finalidades);
 		    }
 		    me.showloading=false;
 		});
@@ -152,6 +153,57 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 					pos++;
 				}
 			}
+		}
+		
+		me.drawFirstChart=function(data){
+			me.chartData=[];
+			for(var i=0; i<me.finalidades_codigos.length; i++){
+				for(var j=data.length-1; j>=0; j--){
+					me.chartData.push({
+						id: me.finalidades[i],
+						x:data[j].nombre,
+						y: (data[j]['f'+me.finalidades_codigos[i]+'_monto']!=null) ? (data[j]['f'+me.finalidades_codigos[i]+'_monto']/1000000) : 0
+					});
+				}
+			}
+			me.chart=new d3plus.BarChart()
+			  .data(me.chartData)
+			  .stacked(true)
+			  .select("#chart_div")
+			  .x("y")
+			  .y("x")
+			  .discrete("y")
+			  .xConfig({
+			    title: "Miles de Millones de Quetzales"
+			  })
+			  .yConfig({
+			    gridConfig:  {stroke: "#fff"}
+			  }) 
+			  .tooltipConfig({
+				    body: function(d) {
+				    	if(!Array.isArray(d.x)){
+					      var table = "<table class='tooltip-table'>";
+					      table += "<tr><td>Recomendado "+(me.anio)+":</td><td class='data'>"+ (me.viewMillones ? 'Q ' : '') + me.filtroMillones(d.y*1000000, true) + "</td></tr>";
+					      table += "</table>";
+					       return table;
+				    	}
+				    	else
+				    		return d.id;
+				    },
+				    footer: function(d) {
+				      return "<sub class='tooltip-footer'></sub>";
+				    },
+				    title: function(d) {
+				    	if(!Array.isArray(d.x))
+				    		return '<div><span class="tooltip-title">'+d.x+'</span></div><div class="tooltip-subtitle">'+d.id+'</div>';
+				    }
+				  })
+			  .shapeConfig({
+			    labelConfig: {
+			      fontMax: 14
+			    }
+			  })
+			  .render();
 		}
 }
 ]);
