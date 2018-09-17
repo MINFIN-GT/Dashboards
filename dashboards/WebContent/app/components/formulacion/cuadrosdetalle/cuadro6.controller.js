@@ -18,6 +18,8 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	me.tipos_gasto_codigos=[11,12,13,21,22,23,31];
 	me.total_tp = [];
 	
+	me.chartData=[];
+	
 	
 	
 	me.filtroMillones=function(value, transform){
@@ -49,6 +51,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		    		me.entidades_tipo_gasto[i].show=true;
 		    		me.entidades_tipo_gasto[i].parent=null; 
 		    	}
+		    	me.drawFirstChart(me.entidades_tipo_gasto);
 		    }
 		    me.showloading=false;
 		});
@@ -122,6 +125,52 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 					pos++;
 				}
 			}
+		}
+		
+		me.drawFirstChart=function(data){
+			me.chartData=[];
+			for(var i=0; i<me.tipos_gasto_codigos.length; i++){
+				for(var j=0; j<data.length; j++){
+					me.chartData.push({
+						id: me.tipos_gasto[i],
+						x:data[j].nombre,
+						y: (data[j]['tp'+me.tipos_gasto_codigos[i]+'_monto']!=null) ? (data[j]['tp'+me.tipos_gasto_codigos[i]+'_monto']/1000000) : 0
+					});
+				}
+			}
+			me.chart=new d3plus.BarChart()
+			  .data(me.chartData)
+			  .stacked(true)
+			  .select("#chart_div")
+			  .x("y")
+			  .y("x")
+			  .discrete("y")
+			  .xConfig({
+			    title: "Miles de Millones de Quetzales"
+			  })
+			  .yConfig({
+			    gridConfig:  {stroke: "#fff"}
+			  }) 
+			  .tooltipConfig({
+				    body: function(d) {
+				      var table = "<table class='tooltip-table'>";
+				      table += "<tr><td>Recomendado "+(me.anio)+":</td><td class='data'>"+ (me.viewMillones ? 'Q ' : '') + me.filtroMillones(d.y*1000000, true) + "</td></tr>";
+				      table += "</table>";
+				       return table;
+				    },
+				    footer: function(d) {
+				      return "<sub class='tooltip-footer'></sub>";
+				    },
+				    title: function(d) {
+				      return '<div><span class="tooltip-title">'+d.x+'</span></div><div class="tooltip-subtitle">'+d.id+'</div>';
+				    }
+				  })
+			  .shapeConfig({
+			    labelConfig: {
+			      fontMax: 14
+			    }
+			  })
+			  .render();
 		}
 }
 ]);

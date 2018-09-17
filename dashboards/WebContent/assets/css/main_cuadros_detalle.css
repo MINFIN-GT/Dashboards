@@ -116,6 +116,10 @@
 		text-transform: capitalize;
 	}
 	
+	#chart_div>svg>g>g>g>g>g>g>text{
+		text-transform: capitalize;
+	}
+	
 	.chart-title{
 		width: 100%;
 		text-align: center;
@@ -141,6 +145,13 @@
 	
 	.tooltip-title {
 	  text-transform: capitalize;
+	  font-size: 12px;
+	}
+	
+	.tooltip-subtitle {
+	  text-transform: capitalize;
+	  font-size: 10px;
+	  font-weight: normal;
 	}
 	
 	.grid_loading_chart{
