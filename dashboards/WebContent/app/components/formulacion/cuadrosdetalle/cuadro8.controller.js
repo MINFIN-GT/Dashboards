@@ -1,5 +1,5 @@
 
-angular.module('cuadro8detalleController',['dashboards','ui.bootstrap.contextMenu']).controller('cuadro8Controller',['$scope','$routeParams','$http','$interval',
+angular.module('cuadro8detalleController',['dashboards','ui.bootstrap.contextMenu']).controller('cuadro8detalleController',['$scope','$routeParams','$http','$interval',
 '$location','$timeout','$filter',
 function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	var me=this;

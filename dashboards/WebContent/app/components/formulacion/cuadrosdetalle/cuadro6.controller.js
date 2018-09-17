@@ -1,5 +1,5 @@
 
-angular.module('cuadro6detalleController',['dashboards','ui.bootstrap.contextMenu']).controller('cuadro6Controller',['$scope','$routeParams','$http','$interval',
+angular.module('cuadro6detalleController',['dashboards','ui.bootstrap.contextMenu']).controller('cuadro6detalleController',['$scope','$routeParams','$http','$interval',
 '$location','$timeout','$filter',
 function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	var me=this;

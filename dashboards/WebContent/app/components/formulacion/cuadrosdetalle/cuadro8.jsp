@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <link rel="stylesheet" type="text/css" href="/assets/css/main_cuadros_detalle.css" />
-<div ng-controller="cuadro8Controller as ctrl" class="maincontainer" id="title" class="all_page">
+<div ng-controller="cuadro8detalleController as ctrl" class="maincontainer" id="title" class="all_page">
 <h4>Cuadros Globales</h4>
 <div class="row" style="margin-bottom: 10px;">
 </div>
@@ -66,7 +66,6 @@
 						</table>
 					</div>			     	
 				</div>
-				<br/>
 				<br/>
 				<div class="nota"><span style="font-weight: bold;">Nota:</span> Pueden existir diferencias por redondeo.</div>
 				<br/>

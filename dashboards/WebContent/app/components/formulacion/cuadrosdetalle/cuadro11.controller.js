@@ -1,5 +1,5 @@
 
-angular.module('cuadro9detalleController',['dashboards','ui.bootstrap.contextMenu']).controller('cuadro9detalleController',['$scope','$routeParams','$http','$interval',
+angular.module('cuadro11detalleController',['dashboards','ui.bootstrap.contextMenu']).controller('cuadro11detalleController',['$scope','$routeParams','$http','$interval',
 '$location','$timeout','$filter',
 function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	var me=this;
@@ -57,28 +57,24 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 			millones = value/1000000;
 			fixed=1;
 		}
-		return (value>0) ?  $filter('currency')(millones.toFixed(fixed), '', fixed) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(fixed), '', fixed).substring(1) + ')' : null)  ;
+		return (value>0) ?  $filter('currency')(millones.toFixed(fixed), '', fixed) : ( value<0 ? '(' + $filter('currency')(millones.toFixed(fixed), '', fixed).substring(1) + ')' : null);
 	}
 	
-	
-		
-	$http.post('/SInstitucional',  { action: 'getFinalidadEconomico', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+	$http.post('/SInstitucional',  { action: 'getFinalidadRegion', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 	    if(response.data.success){
-	    	me.finalidades_economico=response.data.finalidades;
-	    	for(var i=1; i<10; i++)
-	    		me.economicos.push(me.finalidades_economico[0]['e'+i+'_nombre']);
-	    	for(var i=0; i<10; i++)
-	    		me.total_finalidad_economico.push(0.0);
-	    	for(var i=0; i<me.finalidades_economico.length; i++){
-	    		me.total_finalidad_economico[0] += me.finalidades_economico[i].recomendado_total;
-	    		for(var j=1; j<10; j++){
-	    			me.total_finalidad_economico[j]+=me.finalidades_economico[i]['e'+(j)+'_monto'];
+	    	me.finalidades_region=response.data.finalidades;
+	    	for(var i=1; i<12; i++)
+	    		me.regiones.push(me.finalidades_region[0]['r'+i+'_nombre']);
+	    	for(var i=0; i<12; i++)
+	    		me.total_finalidad_region.push(0.0);
+	    	for(var i=0; i<me.finalidades_region.length; i++){
+	    		me.total_finalidad_region[0] += me.finalidades_region[i].recomendado_total;
+	    		for(var j=0; j<11; j++){
+	    			me.total_finalidad_region[j+1]+=me.finalidades_region[i]['r'+(j+1)+'_monto'];
 	    		}
 	    	}
 	    }
 	    me.showloading=false;
 	});
-		
-		
 }
 ]);
