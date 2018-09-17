@@ -1139,8 +1139,8 @@ public class CInstitucionalDAO {
 		return ret.size()>0 ? ret : null;
 	}
 	
-	public static String getTotalesInstitucional(int ejercicio){
-		String ret = "";
+	public static Double[] getTotalesInstitucional(int ejercicio){
+		Double[] ret = new Double[3];
 		Connection conn = null;
 		Connection conn_mem = null;
 		try{
@@ -1152,36 +1152,33 @@ public class CInstitucionalDAO {
 						"    , sum(aprobado_anterior + aprobado_anterior_amp) aprobado_anterior_mas_amp " + 
 						"    , sum(recomendado) recomendado  " + 
 						"from (  " + 
-						"    select gd.entidad " + 
-						"        ,sum(gd.monto_renglon) ejecutado_dos_antes, 0.0 aprobado_anterior, 0.0 aprobado_anterior_amp, 0.0 recomendado  " + 
+						"    select sum(gd.monto_renglon) ejecutado_dos_antes, 0.0 aprobado_anterior, 0.0 aprobado_anterior_amp, 0.0 recomendado  " + 
 						"    from sicoinprod.eg_gastos_detalle gd, sicoinprod.eg_gastos_hoja gh   " + 
 						"    where gh.ejercicio = " + (ejercicio-2) + " and gd.ejercicio = gh.ejercicio and gd.entidad = gh.entidad  " + 
 						"        and gd.unidad_ejecutora = gh.unidad_ejecutora and gd.unidad_desconcentrada = gh.unidad_desconcentrada  " + 
 						"        and gd.no_cur = gh.no_cur and gh.clase_registro IN ('DEV', 'CYD', 'RDP', 'REG') and gh.estado = 'APROBADO'       " + 
-						"    group by gd.entidad  " + 
 						"    union  " + 
-						"    select  p.entidad, 0.0,sum(p.asignado), 0.0, 0.0 from sicoinprod.eg_f6_partidas p where p.ejercicio = " + (ejercicio-1) +  
+						"    select  0.0,sum(p.asignado), 0.0, 0.0 from sicoinprod.eg_f6_partidas p where p.ejercicio = " + (ejercicio-1) +  
 						"        and ((p.entidad in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and p.unidad_ejecutora=0) or  " + 
 						"            (p.entidad not in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and p.unidad_ejecutora>0))   " + 
-						"    group by p.entidad  " + 
 						"    union  " + 
-						"    SELECT ad.entidad, 0.0, 0.0, SUM (ad.monto_aprobado) , 0.0    	  " + 
+						"    SELECT 0.0, 0.0, SUM (ad.monto_aprobado) , 0.0    	  " + 
 						"    FROM eg_modificaciones_hoja am, eg_modificaciones_detalle ad      	  " + 
-						"    WHERE     am.ejercicio = " + ejercicio + "  	AND am.clase_registro = 'AMP'      	AND am.estado = 'APROBADO'      	 " + 
+						"    WHERE     am.ejercicio = " + (ejercicio-1) + "  	AND am.clase_registro = 'AMP'      	AND am.estado = 'APROBADO'      	 " + 
 						"        AND am.fec_disposicion <= TO_DATE ( " + (ejercicio-1) + " || '/07/15','YYYY/MM/DD')      	AND ad.ejercicio = am.ejercicio      	 " + 
 						"        and ad.entidad = am.entidad      	and ad.unidad_ejecutora = am.unidad_ejecutora       " + 
 						"        and ad.unidad_desconcentrada = am.unidad_desconcentrada 	and ad.no_cur = am.no_cur           " + 
 						"        and ((ad.entidad in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and ad.unidad_ejecutora=0) or " + 
 						"            (ad.entidad not in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and ad.unidad_ejecutora>0)) " + 
-						"  	group by ad.entidad  " + 
 						"  	union  " + 
-						"  	select  p.entidad, 0.0, 0.0,0.0, sum(recomendado)  " + 
+						"  	select  0.0, 0.0,0.0, sum(recomendado)  " + 
 						"  	from sicoinprod.fp_p6_partidas p where ejercicio = " + ejercicio + 
-						"  	group by p.entidad) t1 , cg_entidades e   " + 
-						" where e.ejercicio=" + ejercicio + " and e.entidad=t1.entidad and e.unidad_ejecutora=0 ");
+						"  	) t1   ");
 				ResultSet rs = pstm.executeQuery();		
-				while(rs.next()){
-					ret = "\"ejecutado_dos_antes\" : " + rs.getDouble("ejecutado_dos_antes") + ", \"aprobado_anterior_mas_amp\" : " + rs.getDouble("aprobado_anterior_mas_amp")+ ", \"recomendado\" : " + rs.getDouble("recomendado");
+				if(rs.next()){
+					ret[0] = rs.getDouble("ejecutado_dos_antes");
+					ret[1] = rs.getDouble("aprobado_anterior_mas_amp");
+					ret[2] = rs.getDouble("recomendado");
 				}
 			}
 		}

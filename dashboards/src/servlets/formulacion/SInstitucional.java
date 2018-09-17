@@ -263,7 +263,14 @@ public class SInstitucional extends HttpServlet {
 		}
 		else if(action.equals("getTotales")) {
 			if(ejercicio>0) {
-				response_text = String.join("", "{\"success\":true,", CInstitucionalDAO.getTotalesInstitucional(ejercicio),"}");
+				Double[] results = CInstitucionalDAO.getTotalesInstitucional(ejercicio);
+				if(results!=null && results.length==3) {
+					String ret = "\"ejecutado_dos_antes\" : " + results[0] + ", \"aprobado_anterior_mas_amp\" : " + results[1]+ ", \"recomendado\" : " + results[2];
+					response_text = String.join(" ", "{\"success\":true,", ret ,"}");
+				}
+				else {
+					response_text = String.join("", "{\"success\":false }");
+				}
 			}
 		}
 		OutputStream output = response.getOutputStream();
