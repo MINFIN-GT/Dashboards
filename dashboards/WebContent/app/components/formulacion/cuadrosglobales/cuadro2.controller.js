@@ -31,19 +31,9 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 		var columnas=['ejecutado_dos_antes','aprobado_anterior_mas_amp', 'recomendado'];  
 		if(response.data.success){
 			   me.recursos=response.data.recursos;
-			   /*for(var i=0; i<me.recursos.length;i++){
-				   me.recursos[i].ejecutado_dos_antes = me.recursos[i].ejecutado_dos_antes/1000000.00;
-				   me.recursos[i].aprobado_anterior_mas_amp = me.recursos[i].aprobado_anterior_mas_amp/1000000.00;
-				   me.recursos[i].recomendado = me.recursos[i].recomendado/1000000.00;
-			   }*/
-		       $http.post('/SInstitucional',  { action: 'getGastosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
+			   $http.post('/SInstitucional',  { action: 'getGastosTotal', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 				   if(response.data.success){
 					   me.gastos=response.data.gastos;
-					   /*for(var i=0; i<me.gastos.length;i++){
-						   me.gastos[i].ejecutado_dos_antes = me.gastos[i].ejecutado_dos_antes/1000000.00;
-						   me.gastos[i].aprobado_anterior_mas_amp = me.gastos[i].aprobado_anterior_mas_amp/1000000.00;
-						   me.gastos[i].recomendado = me.gastos[i].recomendado/1000000.00;
-					   }*/
 					   $http.post('/SSituacion',  { action: 'getReporte', ejercicio: me.anio, t: (new Date()).getTime()   }).then(function(response){
 						   if(response.data.success){
 							   me.lineas=response.data.lineas;
