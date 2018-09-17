@@ -22,13 +22,11 @@
 			    	<div style="font-size: 12px; font-weight: bold;">(Montos en Millones de Quetzales)</div>
 		    	</div>
 		    	<div>
-			    	<div class="row">
-						<div class="col-sm-12" style="text-align: right;">
-							<div class="btn-group">
-						        <label class="btn btn-default" ng-model="ctrl.viewMillones" uib-btn-radio="true" uncheckable tooltip-placement="bottom" uib-tooltip="Ver en millones">MQ</label>
-						        <label class="btn btn-default" ng-model="ctrl.viewMillones" uib-btn-radio="false" uncheckable tooltip-placement="bottom" uib-tooltip="Ver en quetzales">Q</label>
-						    </div>
-						</div>
+			    	<div class="col-sm-12" style="text-align: right;">
+						<div class="btn-group">
+					        <label class="btn btn-default" ng-model="ctrl.viewMillones" uib-btn-radio="true" uncheckable tooltip-placement="bottom" uib-tooltip="Ver en millones">MQ</label>
+					        <label class="btn btn-default" ng-model="ctrl.viewMillones" uib-btn-radio="false" uncheckable tooltip-placement="bottom" uib-tooltip="Ver en quetzales">Q</label>
+					    </div>
 					</div>
 					<div class="row" style="width: 100%;overflow-x: auto;">
 						<table st-table="ctrl.entidades_finalidades" class="table">
