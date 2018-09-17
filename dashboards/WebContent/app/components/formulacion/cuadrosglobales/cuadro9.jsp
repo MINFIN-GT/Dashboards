@@ -26,7 +26,7 @@
 		    	<table st-table="ctrl.finalidades_economico" class="table">
 					<thead>
 					<tr>
-						<th style="text-align: center">Institución</th>
+						<th style="text-align: center">Finalidad</th>
 						<th style="text-align: center; width: 150px;border-right: 1px solid gray; border-left: 1px solid gray;">Total</th>
 						<th style="text-align: center; width: 150px;border-right: 1px solid gray; border-left: 1px solid gray;" 
 						ng-repeat="row_e in ctrl.economicos">{{ row_e }}</th>

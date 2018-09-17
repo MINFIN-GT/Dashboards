@@ -26,6 +26,7 @@ import pojo.formulacion.CFinalidadEconomico;
 import pojo.formulacion.CFinalidadRegion;
 import pojo.formulacion.CGastoEconomico;
 import pojo.formulacion.CInstitucionalFinalidad;
+import pojo.formulacion.CInstitucionalFinalidadDetalle;
 import pojo.formulacion.CInstitucionalTipoGasto;
 import pojo.formulacion.CInstitucionalTipoGastoDetalle;
 import pojo.formulacion.CInstitucionalTipoGastoGrupoGasto;
@@ -229,7 +230,37 @@ public class SInstitucional extends HttpServlet {
 				response_text = String.join("", "{\"success\":false }");
 			}
 		}
-		
+		else if(action.equals("getInstitucionalFinalidadDetalle")) {
+			if(ejercicio>0) {
+				int entidad = Utils.String2Int(map.get("entidad"), -1);
+				int unidad_ejecutora = Utils.String2Int(map.get("unidad_ejecutora"), -1);
+				int programa = Utils.String2Int(map.get("programa"), -1);
+				int grupo = Utils.String2Int(map.get("grupo"), -1);
+				int subgrupo = Utils.String2Int(map.get("subgrupo"), -1);
+				
+				ArrayList<CInstitucionalFinalidadDetalle> entidades = null;
+				
+				if(entidad==-1 && unidad_ejecutora==-1 && programa==-1 && grupo==-1 && subgrupo==-1)
+					entidades = CInstitucionalDAO.getInstitucionalFinalidadDetalleEntidad(ejercicio);
+				else if(entidad>0 && unidad_ejecutora==-1 && programa==-1 && grupo==-1 && subgrupo==-1)
+					entidades = CInstitucionalDAO.getInstitucionalFinalidadDetalleUE(ejercicio, entidad);
+				else if(entidad>0 && unidad_ejecutora>-1 && programa==-1 && grupo==-1 && subgrupo==-1)
+					entidades = CInstitucionalDAO.getInstitucionalFinalidadDetallePrograma(ejercicio, entidad, unidad_ejecutora);
+				else if(entidad>0 && unidad_ejecutora>-1 && programa>-1 && grupo==-1 && subgrupo==-1)
+					entidades = CInstitucionalDAO.getInstitucionalFinalidadDetalleGrupo(ejercicio, entidad, unidad_ejecutora, programa);
+				else if(entidad>0 && unidad_ejecutora>-1 && programa>-1 && grupo>-1 && subgrupo==-1)
+					entidades = CInstitucionalDAO.getInstitucionalFinalidadDetalleSubGrupo(ejercicio, entidad, unidad_ejecutora, programa, grupo);
+				else if(entidad>0 && unidad_ejecutora>-1 && programa>-1 && grupo>-1 && subgrupo>-1)
+					entidades = CInstitucionalDAO.getInstitucionalFinalidadDetalleRenglon(ejercicio, entidad, unidad_ejecutora, programa, grupo, subgrupo);
+				
+				response_text=new GsonBuilder().serializeNulls().create().toJson(entidades);
+	            response_text = String.join("", "\"entidades\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
+			}
+			else {
+				response_text = String.join("", "{\"success\":false }");
+			}
+		}
 		OutputStream output = response.getOutputStream();
 		GZIPOutputStream gz = new GZIPOutputStream(output);
 	    gz.write(response_text.getBytes("UTF-8"));
