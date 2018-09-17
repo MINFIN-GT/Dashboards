@@ -261,6 +261,11 @@ public class SInstitucional extends HttpServlet {
 				response_text = String.join("", "{\"success\":false }");
 			}
 		}
+		else if(action.equals("getTotales")) {
+			if(ejercicio>0) {
+				response_text = String.join("", "{\"success\":true,", CInstitucionalDAO.getTotalesInstitucional(ejercicio),"}");
+			}
+		}
 		OutputStream output = response.getOutputStream();
 		GZIPOutputStream gz = new GZIPOutputStream(output);
 	    gz.write(response_text.getBytes("UTF-8"));

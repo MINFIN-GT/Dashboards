@@ -1181,7 +1181,7 @@ public class CInstitucionalDAO {
 						" where e.ejercicio=" + ejercicio + " and e.entidad=t1.entidad and e.unidad_ejecutora=0 ");
 				ResultSet rs = pstm.executeQuery();		
 				while(rs.next()){
-					ret = " { \"ejecutado_dos_antes\" : " + rs.getDouble("ejecutado_dos_antes") + ", \"aprobado_mas_amp\" : " + rs.getDouble("aprobado_anterior_mas_amp")+ ", \"recomendado\" : " + rs.getDouble("recomendado") + "} ";
+					ret = "\"ejecutado_dos_antes\" : " + rs.getDouble("ejecutado_dos_antes") + ", \"aprobado_anterior_mas_amp\" : " + rs.getDouble("aprobado_anterior_mas_amp")+ ", \"recomendado\" : " + rs.getDouble("recomendado");
 				}
 			}
 		}
