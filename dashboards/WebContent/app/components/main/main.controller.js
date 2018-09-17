@@ -143,8 +143,8 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/cuadrosdetalle/cuadro8',{
             	template: '<div load-on-demand="\'cuadro8detalleController\'" class="all_page"></div>'
             })
-            .when('/formulacion/cuadrosdetalle/cuadro9',{
-            	template: '<div load-on-demand="\'cuadro9detalleController\'" class="all_page"></div>'
+            .when('/formulacion/cuadrosdetalle/proyecto',{
+            	template: '<div load-on-demand="\'proyectodetalleController\'" class="all_page"></div>'
             })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
@@ -390,9 +390,9 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   template: '/app/components/formulacion/cuadrosdetalle/cuadro8.jsp'
 	       },
 	       {
-	    	   name: 'cuadro9detalleController',
-	    	   script: '/app/components/formulacion/cuadrosdetalle/cuadro9.controller.js',
-	    	   template: '/app/components/formulacion/cuadrosdetalle/cuadro9.jsp'
+	    	   name: 'proyectodetalleController',
+	    	   script: '/app/components/formulacion/cuadrosdetalle/proyecto.controller.js',
+	    	   template: '/app/components/formulacion/cuadrosdetalle/proyecto.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

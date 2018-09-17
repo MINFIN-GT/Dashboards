@@ -174,3 +174,41 @@
 	  display: table-cell;
 	  vertical-align: middle;
 	}
+	
+	.menu-title{
+		text-align:center;
+		font-size: 18px;
+		font-weight: bold;
+	}
+	
+	.menu-subtitle-money{
+		text-align: center;
+		font-weight: bold;
+		margin-top: 20px;
+	}
+	
+	.menu-subtitle{
+		text-align: center;
+		font-weight: bold;
+		margin-top: 20px;
+	}
+	
+	.menu-detalle{
+		margin-top: 40px;
+	}
+	
+	.menu-detalle-item{
+		margin-top: 10px;
+		text-align: center;
+		padding: 10px;
+		background-color: #ebf0fa;
+		cursor: pointer;
+	}
+	
+	.menu-detalle-item:hover{
+		background-color: #d6e0f5;
+	}
+	
+	.menu-detalle a{
+		color: black;
+	}
