@@ -496,7 +496,7 @@ public class CInstitucionalDAO {
 			if(!conn.isClosed()){
 				sql = "SELECT p.ejercicio,  " + 
 						"     p.entidad codigo,  " + 
-						"     e.nombre_completo  nombre,    " + 
+						"     e.nombre  nombre,    " + 
 						"     SUM (p.recomendado) recomendado_total,  " + 
 						"     sum(case when p.tipo_presupuesto=11 then p.recomendado end) tp11,  " + 
 						"     sum(case when p.tipo_presupuesto=12 then p.recomendado end) tp12,  " + 
@@ -505,10 +505,12 @@ public class CInstitucionalDAO {
 						"     sum(case when p.tipo_presupuesto=22 then p.recomendado end) tp22,  " + 
 						"     sum(case when p.tipo_presupuesto=23 then p.recomendado end) tp23,  " + 
 						"     sum(case when p.tipo_presupuesto=31 then p.recomendado end) tp31  " + 
-						"FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e " + 
+						"FROM fp_p6_partidas p, cg_entidades e " + 
 						"WHERE     p.ejercicio = ?  " + 
 						"     AND p.entidad = e.entidad " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre_completo " + 
+						"     AND e.ejercicio = p.ejercicio " + 
+						"     AND e.unidad_ejecutora=0 " +
+						"GROUP BY p.ejercicio, p.entidad, e.nombre " + 
 						"ORDER BY p.entidad";
 				PreparedStatement pstm =  conn.prepareStatement(sql);
 				pstm.setInt(1, ejercicio);
@@ -797,7 +799,7 @@ public class CInstitucionalDAO {
 			if(!conn.isClosed()){
 				sql = "SELECT p.ejercicio,  " + 
 						"    p.entidad codigo , " + 
-						"    e.nombre_corto nombre,  " + 
+						"    e.nombre nombre,  " + 
 						"    SUM (p.recomendado) recomendado_total,  " + 
 						"    sum(case when p.funcion between 10000 and 19999 then p.recomendado end) f01,  " + 
 						"    sum(case when p.funcion between 20000 and 29999 then p.recomendado end) f02,  " + 
@@ -811,10 +813,12 @@ public class CInstitucionalDAO {
 						"    sum(case when p.funcion between 100000 and 109999 then p.recomendado end) f10,  " + 
 						"    sum(case when p.funcion between 110000 and 119999 then p.recomendado end) f11,  " + 
 						"sum(case when p.funcion between 120000 and 129999 then p.recomendado end) f12  " + 
-						"FROM fp_p6_partidas p, sicoinp_hreyes.cg_entidades_custom e  " + 
+						"FROM fp_p6_partidas p, cg_entidades e  " + 
 						"WHERE     p.ejercicio = ?  " + 
-						"AND p.entidad = e.entidad  " + 
-						"GROUP BY p.ejercicio, p.entidad, e.nombre_corto  " + 
+						"     AND e.entidad = p.entidad " + 
+						"     AND e.ejercicio = p.ejercicio " + 
+						"     AND e.unidad_ejecutora=0 " +
+						"GROUP BY p.ejercicio, p.entidad, e.nombre  " + 
 						"ORDER BY p.entidad";
 				PreparedStatement pstm =  conn.prepareStatement(sql);
 				pstm.setInt(1, ejercicio);
@@ -1133,5 +1137,61 @@ public class CInstitucionalDAO {
 			CDatabaseOracle.close(conn);
 		}
 		return ret.size()>0 ? ret : null;
+	}
+	
+	public static String getTotalesInstitucional(int ejercicio){
+		String ret = "";
+		Connection conn = null;
+		Connection conn_mem = null;
+		try{
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				conn_mem = CDatabase.connect();
+				PreparedStatement pstm =  conn.prepareStatement("select sum(ejecutado_dos_antes) ejecutado_dos_antes " + 
+						"    , sum(aprobado_anterior) aprobado_anterior " + 
+						"    , sum(aprobado_anterior + aprobado_anterior_amp) aprobado_anterior_mas_amp " + 
+						"    , sum(recomendado) recomendado  " + 
+						"from (  " + 
+						"    select gd.entidad " + 
+						"        ,sum(gd.monto_renglon) ejecutado_dos_antes, 0.0 aprobado_anterior, 0.0 aprobado_anterior_amp, 0.0 recomendado  " + 
+						"    from sicoinprod.eg_gastos_detalle gd, sicoinprod.eg_gastos_hoja gh   " + 
+						"    where gh.ejercicio = " + (ejercicio-2) + " and gd.ejercicio = gh.ejercicio and gd.entidad = gh.entidad  " + 
+						"        and gd.unidad_ejecutora = gh.unidad_ejecutora and gd.unidad_desconcentrada = gh.unidad_desconcentrada  " + 
+						"        and gd.no_cur = gh.no_cur and gh.clase_registro IN ('DEV', 'CYD', 'RDP', 'REG') and gh.estado = 'APROBADO'       " + 
+						"    group by gd.entidad  " + 
+						"    union  " + 
+						"    select  p.entidad, 0.0,sum(p.asignado), 0.0, 0.0 from sicoinprod.eg_f6_partidas p where p.ejercicio = " + (ejercicio-1) +  
+						"        and ((p.entidad in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and p.unidad_ejecutora=0) or  " + 
+						"            (p.entidad not in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and p.unidad_ejecutora>0))   " + 
+						"    group by p.entidad  " + 
+						"    union  " + 
+						"    SELECT ad.entidad, 0.0, 0.0, SUM (ad.monto_aprobado) , 0.0    	  " + 
+						"    FROM eg_modificaciones_hoja am, eg_modificaciones_detalle ad      	  " + 
+						"    WHERE     am.ejercicio = " + ejercicio + "  	AND am.clase_registro = 'AMP'      	AND am.estado = 'APROBADO'      	 " + 
+						"        AND am.fec_disposicion <= TO_DATE ( " + (ejercicio-1) + " || '/07/15','YYYY/MM/DD')      	AND ad.ejercicio = am.ejercicio      	 " + 
+						"        and ad.entidad = am.entidad      	and ad.unidad_ejecutora = am.unidad_ejecutora       " + 
+						"        and ad.unidad_desconcentrada = am.unidad_desconcentrada 	and ad.no_cur = am.no_cur           " + 
+						"        and ((ad.entidad in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and ad.unidad_ejecutora=0) or " + 
+						"            (ad.entidad not in (11130004,11130010,11130014,11130017,11130018,11130019,11140021) and ad.unidad_ejecutora>0)) " + 
+						"  	group by ad.entidad  " + 
+						"  	union  " + 
+						"  	select  p.entidad, 0.0, 0.0,0.0, sum(recomendado)  " + 
+						"  	from sicoinprod.fp_p6_partidas p where ejercicio = " + ejercicio + 
+						"  	group by p.entidad) t1 , cg_entidades e   " + 
+						" where e.ejercicio=" + ejercicio + " and e.entidad=t1.entidad and e.unidad_ejecutora=0 ");
+				ResultSet rs = pstm.executeQuery();		
+				while(rs.next()){
+					ret = " { \"ejecutado_dos_antes\" : " + rs.getDouble("ejecutado_dos_antes") + ", \"aprobado_mas_amp\" : " + rs.getDouble("aprobado_anterior_mas_amp")+ ", \"recomendado\" : " + rs.getDouble("recomendado") + "} ";
+				}
+			}
+		}
+		catch(Exception e){
+			CLogger.write("1", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+			CDatabase.close(conn_mem);
+		}
+		return ret;
 	}
 }
