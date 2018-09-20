@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import db.utilities.CDatabase;
 import db.utilities.CDatabaseOracle;
+import pojo.formulacion.CDepartamento;
 import pojo.formulacion.CInstitucionalFinalidad;
 import pojo.formulacion.CInstitucionalFinalidadDetalle;
 import pojo.formulacion.CInstitucionalTipoGasto;
@@ -982,12 +983,18 @@ public class CInstitucionalDAO {
 						"sum(case when p.funcion between 120000 and 129999 then p.recomendado end) f12  " + 
 						"FROM fp_p6_partidas p " + 
 						"    , cp_objetos_gasto g " + 
+						"    , cp_estructuras pr " +
 						"WHERE     p.ejercicio = ?  " + 
 						"AND p.entidad = ? " + 
 						"AND p.unidad_ejecutora = ? " + 
 						"AND p.programa = ? " + 
 						"AND g.renglon = ((p.renglon-mod(p.renglon,100))/100) * 100 " + 
 						"AND g.ejercicio = p.ejercicio " + 
+						"AND pr.entidad = p.entidad " + 
+						"AND pr.unidad_ejecutora = p.unidad_ejecutora " + 
+						"AND pr.programa = p.programa " + 
+						"AND pr.ejercicio = p.ejercicio  " +
+						"AND pr.nivel_estructura = 2 " +
 						"GROUP BY p.ejercicio, ((p.renglon-mod(p.renglon,100))/100), g.nombre " + 
 						"ORDER BY ((p.renglon-mod(p.renglon,100))/100)";
 				PreparedStatement pstm =  conn.prepareStatement(sql);
@@ -1142,11 +1149,9 @@ public class CInstitucionalDAO {
 	public static Double[] getTotalesInstitucional(int ejercicio){
 		Double[] ret = new Double[3];
 		Connection conn = null;
-		Connection conn_mem = null;
 		try{
 			conn = CDatabaseOracle.connect();
 			if(!conn.isClosed()){
-				conn_mem = CDatabase.connect();
 				PreparedStatement pstm =  conn.prepareStatement("select sum(ejecutado_dos_antes) ejecutado_dos_antes " + 
 						"    , sum(aprobado_anterior) aprobado_anterior " + 
 						"    , sum(aprobado_anterior + aprobado_anterior_amp) aprobado_anterior_mas_amp " + 
@@ -1183,11 +1188,155 @@ public class CInstitucionalDAO {
 			}
 		}
 		catch(Exception e){
-			CLogger.write("1", CInstitucionalDAO.class, e);
+			CLogger.write("19", CInstitucionalDAO.class, e);
 		}
 		finally{
 			CDatabaseOracle.close(conn);
-			CDatabase.close(conn_mem);
+		}
+		return ret;
+	}
+	
+	public static ArrayList<CDepartamento> getPresupuestoRecomendadoDepartamentalDetalle(int ejercicio, int departamento, int geografico, 
+			int entidad, int unidad_ejecutora, int programa, int grupo, int subgrupo){
+		ArrayList<CDepartamento> ret = new ArrayList<CDepartamento>();
+		Connection conn = null;
+		String sql;
+		try {
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				String selector = "";
+				String selectorFrom = "";
+				String selectorWhere = "";
+				String selectorGroupBy = "";
+				String selectorOrderBy = "";
+				
+				if(departamento==-1 && geografico==-1 && entidad==-1 && unidad_ejecutora==-1 && programa==-1 && grupo==-1 && subgrupo==-1) {
+					selector = "cd.codigo_departamento codigo, NVL(cd.nombre_departamento, 'MULTIDEPARTAMENTAL') nombre ";
+					selectorWhere = String.join(" ", "and p.geografico = cg.geografico", "and p.ejercicio = cg.ejercicio");
+					selectorGroupBy = "cd.codigo_departamento, cd.nombre_departamento";
+					selectorOrderBy = "cd.codigo_departamento";
+				}
+				else if(departamento>-1 && geografico==-1 && entidad==-1 && unidad_ejecutora==-1 && programa==-1 && grupo==-1 && subgrupo==-1) {
+					selector = "cg.geografico codigo, cg.nombre nombre ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"));
+					selectorGroupBy = "cg.geografico, cg.nombre";
+					selectorOrderBy = "cg.geografico";
+				}
+				else if(departamento>-1 && geografico>-1 && entidad==-1 && unidad_ejecutora==-1 && programa==-1 && grupo==-1 && subgrupo==-1) {
+					selector = "p.entidad codigo, e.nombre nombre ";
+					selectorFrom = ", cg_entidades e ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"), "and cg.geografico=?", "and e.entidad = p.entidad", "and e.ejercicio = p.ejercicio", 
+							"and e.unidad_ejecutora=0");
+					selectorGroupBy = "p.entidad, e.nombre";
+					selectorOrderBy = "p.entidad";
+				}
+				else if(departamento>-1 && geografico>-1 && entidad>-1 && unidad_ejecutora==-1 && programa==-1 && grupo==-1 && subgrupo==-1) {
+					selector = "p.unidad_ejecutora codigo, ue.nombre nombre ";
+					selectorFrom = ",   cg_entidades ue ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"), "and cg.geografico=?","and p.entidad = ?", "and ue.entidad = p.entidad", 
+							"and ue.unidad_ejecutora = p.unidad_ejecutora", "and ue.ejercicio = p.ejercicio");
+					selectorGroupBy = "p.unidad_ejecutora, ue.nombre";
+					selectorOrderBy = "p.unidad_ejecutora";
+				}
+				else if(departamento>-1 && geografico>-1 && entidad>-1 && unidad_ejecutora>-1 && programa==-1 && grupo==-1 && subgrupo==-1) {
+					selector = "p.programa codigo, pr.nom_estructura nombre ";
+					selectorFrom = ",   cp_estructuras pr ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"), "and cg.geografico=?","and p.entidad = ?", "and p.unidad_ejecutora = ?", 
+							"and pr.entidad = p.entidad", "and pr.unidad_ejecutora = p.unidad_ejecutora", "and pr.programa = p.programa", "and pr.nivel_estructura = 2",
+							"and pr.ejercicio = p.ejercicio");
+					selectorGroupBy = "p.programa, pr.nom_estructura";
+					selectorOrderBy = "p.programa";
+				}
+				else if(departamento>-1 && geografico>-1 && entidad>-1 && unidad_ejecutora>-1 && programa>-1 && grupo==-1 && subgrupo==-1) {
+					selector = "(p.renglon-mod(p.renglon,100))/100 codigo, g.nombre nombre ";
+					selectorFrom = ",   cp_grupos_gasto g ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"), "and cg.geografico=?","and p.entidad = ?", "and p.unidad_ejecutora = ?", 
+							"and p.programa = ?", "and g.grupo_gasto = ((p.renglon-mod(p.renglon,100))/100) * 100", "and g.ejercicio = p.ejercicio");
+					selectorGroupBy = "(p.renglon-mod(p.renglon,100))/100, g.nombre";
+					selectorOrderBy = "(p.renglon-mod(p.renglon,100))/100";
+				}
+				else if(departamento>-1 && geografico>-1 && entidad>-1 && unidad_ejecutora>-1 && programa>-1 && grupo>-1 && subgrupo==-1) {
+					selector = "(p.renglon-mod(p.renglon,10))/10 codigo, g.nombre nombre ";
+					selectorFrom = ",   cp_objetos_gasto g ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"), "and cg.geografico=?","and p.entidad = ?", "and p.unidad_ejecutora = ?", 
+							"and p.programa = ?", "and g.grupo_gasto = ?*100", "and g.renglon = ((p.renglon-mod(p.renglon,10))/10) * 10", "and g.ejercicio = p.ejercicio");
+					selectorGroupBy = "((p.renglon-mod(p.renglon,10))/10), g.nombre";
+					selectorOrderBy = "((p.renglon-mod(p.renglon,10))/10)";
+				}
+				else if(departamento>-1 && geografico>-1 && entidad>-1 && unidad_ejecutora>-1 && programa>-1 && grupo>-1 && subgrupo>-1) {
+					selector = "p.renglon codigo, g.nombre nombre ";
+					selectorFrom = ",   cp_objetos_gasto g ";
+					selectorWhere = String.join(" ", (departamento==0 ? "and cd.codigo_departamento is null" : "and cd.codigo_departamento=?"), "and cg.geografico=?","and p.entidad = ?", "and p.unidad_ejecutora = ?", 
+							"and p.programa = ?", "and ((p.renglon-mod(p.renglon,100))/100)= ?", "and ((p.renglon-mod(p.renglon,10))/10)= ?", 
+							"and g.renglon = p.renglon", "and g.ejercicio = p.ejercicio");
+					selectorGroupBy = "p.renglon, g.nombre";
+					selectorOrderBy = "p.renglon";
+				}
+				
+				sql = "select " + selector +
+					"    , sum(p.recomendado) recomendado " + 
+					"from fp_p6_partidas p " + 
+					"left outer join cg_geograficos cg on cg.ejercicio = p.ejercicio and cg.geografico = p.geografico " + 
+					"left outer join cg_departamentos cd on cd.codigo_departamento = (cg.geografico-mod(cg.geografico,100))/100 " + 
+					selectorFrom +
+					"where p.ejercicio=? " + selectorWhere + 
+					" group by " + selectorGroupBy + 
+					" order by " + selectorOrderBy;
+				
+				PreparedStatement pstm =  conn.prepareStatement(sql);
+				int pos = 1;
+				pstm.setInt(pos, ejercicio);
+				int nivel = 1;
+				if(departamento>-1) {					
+					if(departamento != 0) {
+						pos++;
+						pstm.setInt(pos, departamento);
+					}
+					nivel = 2;
+				}				
+				if(geografico>-1) {
+					pos++;
+					pstm.setInt(pos, geografico);
+					nivel = 3;
+				}
+				if(entidad>-1) {
+					pos++;
+					pstm.setInt(pos, entidad);
+					nivel = 4;
+				}
+				if(unidad_ejecutora>-1) {
+					pos++;
+					pstm.setInt(pos, unidad_ejecutora);
+					nivel = 5;
+				}
+				if(programa>-1) {
+					pos++;
+					pstm.setInt(pos, programa);
+					nivel = 6;
+				}
+				if(grupo>-1) {
+					pos++;
+					pstm.setInt(pos, grupo);
+					nivel = 7;
+				}
+				if(subgrupo>-1) {
+					pos++;
+					pstm.setInt(pos, subgrupo);
+					nivel = 8;
+				}
+				
+				ResultSet rs = pstm.executeQuery();
+				
+				while(rs.next()){
+					CDepartamento temp = new CDepartamento(rs.getInt("codigo"), rs.getString("nombre").toLowerCase(), rs.getDouble("recomendado"), nivel);
+					ret.add(temp);
+				}
+			}
+		}catch(Exception e) {
+			CLogger.write("20", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
 		}
 		return ret;
 	}

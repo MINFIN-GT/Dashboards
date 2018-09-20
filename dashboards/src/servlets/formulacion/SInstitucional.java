@@ -22,6 +22,7 @@ import dao.formulacion.CFinalidadDAO;
 import dao.formulacion.CGastoDAO;
 import dao.formulacion.CInstitucionalDAO;
 import dao.formulacion.CRecursoDAO;
+import pojo.formulacion.CDepartamento;
 import pojo.formulacion.CFinalidadEconomico;
 import pojo.formulacion.CFinalidadRegion;
 import pojo.formulacion.CGastoEconomico;
@@ -271,6 +272,25 @@ public class SInstitucional extends HttpServlet {
 				else {
 					response_text = String.join("", "{\"success\":false }");
 				}
+			}
+		}
+		else if(action.equals("getDepartamento")) {
+			if(ejercicio>0) {
+				int departamento = Utils.String2Int(map.get("departamento"), -1);
+				int municipio = Utils.String2Int(map.get("municipio"), -1);
+				int entidad = Utils.String2Int(map.get("entidad"), -1);
+				int unidad_ejecutora = Utils.String2Int(map.get("unidad_ejecutora"), -1);
+				int programa = Utils.String2Int(map.get("programa"), -1);
+				int grupo = Utils.String2Int(map.get("grupo"), -1);
+				int subgrupo = Utils.String2Int(map.get("subgrupo"), -1);
+				
+				ArrayList<CDepartamento> depto = null;
+				
+				depto = CInstitucionalDAO.getPresupuestoRecomendadoDepartamentalDetalle(ejercicio, departamento, municipio, entidad, unidad_ejecutora, programa, grupo, subgrupo);
+				
+				response_text=new GsonBuilder().serializeNulls().create().toJson(depto);
+	            response_text = String.join("", "\"departamentos\":",response_text);
+	            response_text = String.join("", "{\"success\":true,", response_text,"}");
 			}
 		}
 		OutputStream output = response.getOutputStream();
