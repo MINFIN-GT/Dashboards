@@ -21,19 +21,30 @@
 	<div style="position: relative; height: 100%;" id="title">
 		<ng-map zoom="{{ control.map_options.zoom }}" styles="{{ control.map_options.styles }}" map-type-id="ROADMAP" style="height: 100%;"
 			center="{{ control.map_options.center }}" map-initialized="control.mapLoaded(map)">
+			<custom-control id="show_scale" position="BOTTOM_LEFT" index="1" style="z-index: 0; position: absolute; left: 75px; bottom: 0px;">
+			      <div class="panel ng-scope" style="margin-top: 10px;">
+			      	<table style="padding: 5px;">
+			      		<tbody><tr>
+			      			<td style="padding-left: 5px;">0.0 % - 1.0 %</td><td style="padding: 3px 5px 0px 10px;"><i class="fas fa-circle" style="color: #d6f5d6; font-family: FontAwesome"></i></td>
+			      		</tr>
+			      		<tr>
+			      			<td style="padding-left: 5px;">1.0 % - 1.5 %</td><td style="padding: 3px 5px 0px 10px;"><i class="fas fa-circle" style="color: #adebad; font-family: FontAwesome"></i></td>
+			      		</tr>
+			      		<tr>
+			      			<td style="padding-left: 5px;">1.5 % - 2.0 %</td><td style="padding: 3px 5px 0px 10px;"><i class="fas fa-circle" style="color: #85e085; font-family: FontAwesome"></i></td>
+			      		</tr>
+			      		<tr>
+			      			<td style="padding-left: 5px;">2.0 % - 2.5 %</td><td style="padding: 3px 5px 0px 10px;"><i class="fas fa-circle" style="color: #5cd65c; font-family: FontAwesome"></i></td>
+			      		</tr>
+			      		<tr>
+			      			<td style="padding-left: 5px;">Mayor a 2.5 %</td><td style="padding: 3px 5px 0px 10px;"><i class="fas fa-circle" style="color: #47d147; font-family: FontAwesome"></i></td>
+			      		</tr>
+			      	</tbody></table>
+				  </div>
+			  </custom-control>
 		</ng-map>
 	</div>
 	<br/>
-	<div style="text-align: center;">
-		<p>
-			<span tooltip-placement="top" uib-tooltip=" 0 - 1 por millar" class="glyphicon glyphicon-certificate" style="color: #d6f5d6"></span> Bajo  |  
-			<span tooltip-placement="top" uib-tooltip=" 1 - 3 por millar" class="glyphicon glyphicon-certificate" style="color: #adebad"></span> Medio Bajo  |  
-			<span tooltip-placement="top" uib-tooltip=" 3 - 5 por millar" class="glyphicon glyphicon-certificate" style="color: #85e085"></span> Medio  |  
-			<span tooltip-placement="top" uib-tooltip=" 5 - 10 por millar" class="glyphicon glyphicon-certificate" style="color: #5cd65c"></span> Medio Alto  |  
-			<span tooltip-placement="top" uib-tooltip=" mayor a 1 por ciento" class="glyphicon glyphicon-certificate" style="color: #47d147"></span> Alto
-		</p>
-	</div>
-	
 	<div class="row">
 			<div class="col-sm-6">Última actualización: {{ control.lastupdate }}</div>
 		</div>

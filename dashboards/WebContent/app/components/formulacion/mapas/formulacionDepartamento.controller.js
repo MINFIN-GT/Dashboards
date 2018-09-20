@@ -112,15 +112,15 @@ function maparecomendadoController($uibModal, $http,NgMap) {
 	
 	function getGrupo(porcentaje) {
 
-		if (porcentaje >= 0 && porcentaje < 0.1) {
+		if (porcentaje >= 0 && porcentaje < 1) {
 			return "r";
-		} else if (porcentaje >= 0.1 && porcentaje < 0.3) {
+		} else if (porcentaje >= 1 && porcentaje < 1.5) {
 			return "ar";
-		} else if (porcentaje >= 0.3 && porcentaje < 0.5) {
+		} else if (porcentaje >= 1.5 && porcentaje < 2) {
 			return "a";
-		} else if (porcentaje >= 0.5 && porcentaje < 1) {
+		} else if (porcentaje >= 2 && porcentaje < 2.5) {
 			return "va";
-		} else if (porcentaje >= 1) {
+		} else if (porcentaje >= 2.5) {
 			return "v";
 		} else {
 			return "r";
@@ -212,35 +212,35 @@ function maparecomendadoController($uibModal, $http,NgMap) {
 		    styles:[{
 	    		where: 'departamento IN ('+me.grupos['v'].join(',')+')',
 		        polygonOptions: {
-		          fillColor: '#000',//'#47d147',
+		          fillColor: '#47d147',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
 	    		where: 'departamento IN ('+ me.grupos['va'].join(',') +')',
 		        polygonOptions: {
-		          fillColor: '#000',//'#5cd65c',
+		          fillColor: '#5cd65c',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ me.grupos['a'].join(',') +')',
+	    		where: 'departamento IN ('+ (me.grupos['a'].length>0 ? me.grupos['a'].join(',') : '0') +')',
 		        polygonOptions: {
-		          fillColor: '#000',//'#85e085',
+		          fillColor: '#85e085',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ me.grupos['ar'].join(',') +')',
+	    		where: 'departamento IN ('+ (me.grupos['ar'].length>0 ? me.grupos['ar'].join(',') : '0') +')',
 		        polygonOptions: {
-		          fillColor: '#000',//'#adebad',
+		          fillColor: '#adebad',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ me.grupos['r'].join(',') +')',
+	    		where: 'departamento IN ('+ (me.grupos['r'].length>0 ? me.grupos['r'].join(',') : '0') +')',
 		        polygonOptions: {
-		          fillColor: '#000',//'#d6f5d6',
+		          fillColor: '#d6f5d6',
 		          fillOpacity: 0.75
 		        }
 	        }
