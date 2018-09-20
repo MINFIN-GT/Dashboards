@@ -14,11 +14,6 @@
 </style>
 
 <div ng-controller="maparecomendadoController as control" class="maincontainer" id="gastogeograficomap" class="all_page">
-
-	<script type="text/ng-template" id="infoGastoGeneral.jsp">
-		<%@ include file="/app/components/formulacion/mapas/infoFormulacionGeografico.jsp"%>
-    </script>
-    
     <h4>Recomendado por Geográfico</h4>
 	
 	<br />

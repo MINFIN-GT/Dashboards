@@ -161,6 +161,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/cuadrosdetalle/departamento',{
             	template: '<div load-on-demand="\'departamentodetalleController\'" class="all_page"></div>'
             })
+            .when('/formulacion/departamento',{
+            	template: '<div load-on-demand="\'maparecomendadoDepartamentoController\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -433,6 +436,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'departamentodetalleController',
 	    	   script: '/app/components/formulacion/cuadrosdetalle/departamento.controller.js',
 	    	   template: '/app/components/formulacion/cuadrosdetalle/departamento.jsp'
+	       },
+	       {
+	    	   name: 'maparecomendadoDepartamentoController',
+	    	   script: '/app/components/formulacion/mapas/formulacionDepartamento.controller.js',
+	    	   template: '/app/components/formulacion/mapas/formulacionDepartamento.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
