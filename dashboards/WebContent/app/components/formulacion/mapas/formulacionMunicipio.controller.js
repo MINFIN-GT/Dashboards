@@ -1,10 +1,19 @@
-var modGastoGeneral = angular.module('maparecomendadoDepartamentoController', [ 'dashboards', 'ngAnimate', 'ngSanitize', 'ui.bootstrap', 'ngMap']);
+var modGastoGeneral = angular.module('maparecomendadoMunicipioController', [ 'dashboards',
+		'ngAnimate', 'ngSanitize', 'ui.bootstrap', 'ngMap']);
 
-modGastoGeneral.controller('maparecomendadoDepartamentoController', ['$uibModal', '$http','NgMap','$location','$rootScope' , maparecomendadoDepartamentoController]);
- 
-function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,$rootScope){
+// Control principal
+modGastoGeneral.controller('maparecomendadoMunicipioController',
+		maparecomendadoController);
+
+function maparecomendadoController($uibModal, $http,NgMap,$routeParams) {
 	var me = this;
-
+	
+	me.departamentoid = $routeParams.codigo;
+	me.centros=['14.629663, -90.443145', '14.908733, -90.034269', '14.571474, -90.722444', '14.677114, -90.922238', '14.150978, -90.987703',
+		'14.166351, -90.295015', '14.724621, -91.241382', '15.022623, -91.385171', '14.781806, -91.703437', '14.439285, -91.380534', 
+		'14.458797, -91.778005', '14.978071, -91.934749', '15.687077, -91.548037', '15.488247, -90.967115', '15.068791, -90.445816',
+		'15.619779, -90.096447', '16.904906, -90.049813', '15.565821, -89.000093', '15.037612, -89.451070', '14.691688, -89.412665',
+		'14.617443, -89.911675', '14.213508, -89.852187'];
 	me.showloading = false;
 	me.ejercicio = moment().year()+1;
 
@@ -24,8 +33,8 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 	
 	me.map_options={
 			map: null,
-			center: [15.605009229644448, -89.8793818359375],
-			zoom: 7,
+			center: [Number(me.centros[me.departamentoid-1].split(',')[0]), Number(me.centros[me.departamentoid-1].split(',')[1])],
+			zoom: 9,
 			options: {
 				   streetViewControl: false,
 				   scrollwheel: false,
@@ -200,38 +209,39 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 		var layer = new google.maps.FusionTablesLayer({
 			query: {
 		      select: 'geometry',
-		      from: '1gQ_6l10l2RV8Ps_u8G9JWU_K42-Y9al-9jqx1EVl'
+		      from: '1N_9GQ5_zJYwZGmzW2UMDfKAjGc6F4QVct1E7qgny',
+		      where: 'Cod_Dep IN ('+me.departamentoid+')',		      
 		    },
 		    styles:[{
-	    		where: 'departamento IN ('+me.grupos['v'].join(',')+')',
+	    		where: 'Codigo IN ('+me.grupos['v'].join(',')+')',
 		        polygonOptions: {
 		          fillColor: '#47d147',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ me.grupos['va'].join(',') +')',
+	    		where: 'Codigo IN ('+ me.grupos['va'].join(',') +')',
 		        polygonOptions: {
 		          fillColor: '#5cd65c',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ (me.grupos['a'].length>0 ? me.grupos['a'].join(',') : '0') +')',
+	    		where: 'Codigo IN ('+ (me.grupos['a'].length>0 ? me.grupos['a'].join(',') : '0') +')',
 		        polygonOptions: {
 		          fillColor: '#85e085',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ (me.grupos['ar'].length>0 ? me.grupos['ar'].join(',') : '0') +')',
+	    		where: 'Codigo IN ('+ (me.grupos['ar'].length>0 ? me.grupos['ar'].join(',') : '0') +')',
 		        polygonOptions: {
 		          fillColor: '#adebad',
 		          fillOpacity: 0.75
 		        }
 	        },
 	        {
-	    		where: 'departamento IN ('+ (me.grupos['r'].length>0 ? me.grupos['r'].join(',') : '0') +')',
+	    		where: 'Codigo IN ('+ (me.grupos['r'].length>0 ? me.grupos['r'].join(',') : '0') +')',
 		        polygonOptions: {
 		          fillColor: '#d6f5d6',
 		          fillOpacity: 0.75
@@ -252,30 +262,6 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 		me.departamentos_loaded=true;
 	}
 	
-	function obtenerMunicipio(codigo){
-		$rootScope.$apply(function() {
-			$location.path('/formulacion/mapamunicipio/' + Number(codigo) );
-	    });
-	}
-
-	function obtenerGastoDepartamento(data, status, headers, config) {
-		$uibModal.open({
-			animation : 'true',
-			ariaLabelledBy : 'modal-title',
-			ariaDescribedBy : 'modal-body',
-			templateUrl : 'infoGastoGeneral.jsp',
-			controller : 'modalInfoGastoGeneralController',
-			controllerAs : 'infoCtrl',
-			backdrop : 'static',
-			resolve : {
-				param : config.data,
-				ejercicio: me.ejercicio,
-				info : JSON.parse(config.data.gasto),
-				gasto : data
-			}
-		});
-	}
-	
 	me.mapLoaded=function(map){
 		//Belice
 		var belice = new google.maps.FusionTablesLayer({
@@ -294,102 +280,4 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 	}
 	
 	me.cargarGastos();
-};
-
-
-
-//function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location) {
-//	
-//}
-
-//Control modal Info
-modGastoGeneral.controller('modalInfoGastoGeneralController',
-		modalInfoGastoGeneralController);
-function modalInfoGastoGeneralController($uibModalInstance, $http, param,ejercicio,
-		info, gasto) {
-	var me = this;
-
-	me.mes = param.mes;
-	me.fuentes = param.fuentes;
-	me.grupos = param.grupos;
-
-	me.info = info;
-	me.gasto = gasto.gasto;
-	me.ejercicio = ejercicio;
-
-	me.nivel = 1;
-
-	// nivel por omision para cargar todas las entidades
-	me.niveles = [ 0 ];
-
-	me.getGasto = function(codigo) {
-
-		me.niveles.push(codigo);
-
-		me.nivel = me.niveles.length;
-
-		loadGastos();
-	};
-
-	function loadGastos() {
-		var newData = {
-			action : "gastomunicipio",
-			mes : me.mes,
-			ejercicio : me.ejercicio,
-			fuentes : me.fuentes,
-			grupos : me.grupos,
-			geografico : me.info.geografico,
-			nivel : me.nivel,
-			entidad : 0,
-			unidad_ejecutora : 0,
-			programa : 0,
-			subprograma : 0,
-			proyecto : 0
-		};
-
-		for (var i = 0; i < me.niveles.length; i++) {
-			switch (i) {
-			case 0:
-				break;
-			case 1:
-				newData.entidad = me.niveles[i];
-				break;
-			case 2:
-				newData.unidad_ejecutora = me.niveles[i];
-				break;
-			case 3:
-				newData.programa = me.niveles[i];
-				break;
-			case 4:
-				newData.subprograma = me.niveles[i];
-				break;
-			case 5:
-				newData.proyecto = me.niveles[i];
-				break;
-			default:
-				break;
-			}
-		}
-
-		$http.post('/SGastoGeneral', newData).success(obtenerGastoMunicipio);
-	}
-
-	function obtenerGastoMunicipio(data, status, headers, config) {
-		me.gasto = data.gasto;
-	}
-
-	me.back = function() {
-		me.niveles.pop();
-		me.nivel = me.niveles.length;
-
-		loadGastos();
-	}
-
-	me.ok = function() {
-		$uibModalInstance.close('ok');
-	};
-
-	me.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
 }

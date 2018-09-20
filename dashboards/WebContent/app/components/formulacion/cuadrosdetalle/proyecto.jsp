@@ -22,6 +22,7 @@
 	    	<div class="menu-detalle-item" ng-click="ctrl.goTo('/formulacion/cuadrosdetalle/cuadro6')"><a href="#!/formulacion/cuadrosdetalle/cuadro6">Por Tipo de Gasto</a></div>
 	    	<div class="menu-detalle-item" ng-click="ctrl.goTo('/formulacion/cuadrosdetalle/cuadro8')"><a href="#!/formulacion/cuadrosdetalle/cuadro8">Por Finalidad</a></div>
 	    	<div class="menu-detalle-item" ng-click="ctrl.goTo('/formulacion/maparecomendado')"><a href="#!/formulacion/maparecomendado">Mapa de Calor</a></div>	
+	    	<div class="menu-detalle-item" ng-click="ctrl.goTo('/formulacion/cuadrosdetalle/departamento')"><a href="#!/formulacion/cuadrosdetalle/departamento">Por Departamentos</a></div>
 	    </div>
 	</div>
 </div>

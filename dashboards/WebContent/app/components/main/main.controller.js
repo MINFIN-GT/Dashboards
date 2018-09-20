@@ -128,9 +128,6 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/cuadrosglobales',{
             	template: '<div load-on-demand="\'cuadrosglobalesController\'" class="all_page"></div>'
             })
-            .when('/formulacion/maparecomendado',{
-            	template: '<div load-on-demand="\'maparecomendadoModule\'" class="all_page"></div>'
-            })
             .when('/dashboards/deuda/ejecucion',{
             	template: '<div load-on-demand="\'ejecuciondeudaController\'" class="all_page"></div>'
             })
@@ -161,7 +158,10 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/cuadrosdetalle/departamento',{
             	template: '<div load-on-demand="\'departamentodetalleController\'" class="all_page"></div>'
             })
-            .when('/formulacion/departamento',{
+            .when('/formulacion/mapamunicipio/:codigo',{
+            	template: '<div load-on-demand="\'maparecomendadoMunicipioController\'" class="all_page"></div>'
+            })
+            .when('/formulacion/maparecomendado',{
             	template: '<div load-on-demand="\'maparecomendadoDepartamentoController\'" class="all_page"></div>'
             })
             /*.when('/salir',{
@@ -441,6 +441,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'maparecomendadoDepartamentoController',
 	    	   script: '/app/components/formulacion/mapas/formulacionDepartamento.controller.js',
 	    	   template: '/app/components/formulacion/mapas/formulacionDepartamento.jsp'
+	       },
+	       {
+	    	   name: 'maparecomendadoMunicipioController',
+	    	   script: '/app/components/formulacion/mapas/formulacionMunicipio.controller.js',
+	    	   template: '/app/components/formulacion/mapas/formulacionMunicipio.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);
