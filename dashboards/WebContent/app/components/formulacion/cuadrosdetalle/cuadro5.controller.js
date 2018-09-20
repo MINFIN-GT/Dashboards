@@ -53,6 +53,7 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	
 	me.clickRow=function(row,index){
 		if(row.showChildren==false && row.nivel<6){ //Mostrar hijos
+			var indexClick = index;
 			row.showChildren=true;
 			if((index+1)<me.entidades.length && me.entidades[index+1].nivel>row.nivel){
 	    		while((index+1)<me.entidades.length && me.entidades[index+1].nivel>row.nivel){
@@ -60,6 +61,15 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 	    				me.entidades[index+1].show=true;
 	    			index++;
 	    		}
+	    		
+	    		me.clickChart({ 
+					id: row.nombre,
+	    			entidad: (row.nivel==1) ? row.codigo : row.entidad, 
+					unidad_ejecutora: (row.nivel==2) ? row.codigo : row.unidad_ejecutora,
+	    			programa: (row.nivel==3) ? row.codigo : row.programa,
+	    			grupo: (row.nivel==4) ? row.codigo : row.grupo,
+	    			subgrupo: (row.nivel==5) ? row.codigo : row.subgrupo,
+	    			nivel: me.entidades[indexClick].nivel}, "forward");
 	    	}
 			else{
 				row.showloading=true;
@@ -109,6 +119,14 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 				    		}
 				    	}
 				    	me.entidades.splice.apply(me.entidades,[index+1,0].concat(response.data.entidades));
+			    		me.clickChart({ 
+							id: row.nombre,
+			    			entidad: (row.nivel==1) ? row.codigo : row.entidad, 
+							unidad_ejecutora: (row.nivel==2) ? row.codigo : row.unidad_ejecutora,
+			    			programa: (row.nivel==3) ? row.codigo : row.programa,
+			    			grupo: (row.nivel==4) ? row.codigo : row.grupo,
+			    			subgrupo: (row.nivel==5) ? row.codigo : row.subgrupo,
+			    			nivel: me.entidades[index].nivel}, "forward");
 				    }
 				    row.showloading=false;
 				});
@@ -197,7 +215,11 @@ function($scope,$routeParams,$http, $interval, $location, $timeout, $filter){
 				me.chartPath.pop();
 				row.nivel = row.nivel-2;
 			}
-			else{
+			else{				
+				while(row.nivel-1 < me.chartPath.length){
+					me.chartPath.pop();
+				}
+				
 				me.chartPath.push({nombre: row.id, entidad: row.entidad, unidad_ejecutora: row.unidad_ejecutora, programa: row.programa, 
 					grupo: row.grupo, subgrupo: row.subgrupo, nivel: row.nivel+1});
 			}
