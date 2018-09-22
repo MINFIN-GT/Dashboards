@@ -70,7 +70,7 @@
 	<br />
 		
 	<div style="position: relative; height: 700px;" id="title">
-		<ng-map zoom="{{ control.map_options.zoom }}" styles="{{ control.map_options.styles }}" map-type-id="ROADMAP" style="height: 100%;"
+		<ng-map zoom="{{ control.map_options.zoom }}" styles="{{ control.map_options.styles }}" map-type-id="ROADMAP" style="height: 100%;" id="Codedes"
 			center="{{ control.map_options.center }}" map-initialized="control.mapLoaded(map)">
 		</ng-map>
 	</div>

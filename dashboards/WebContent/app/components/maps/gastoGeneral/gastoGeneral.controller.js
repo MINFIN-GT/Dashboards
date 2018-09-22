@@ -359,17 +359,10 @@ function mapsGastoGeneralController($uibModal, $http,NgMap) {
 				me.grupos[grupo].push(me.geograficos[j].geografico)
 		}
 		
-		if(me.map_options.map==null){
-			NgMap.getMap().then(function(map){
-	    		me.map_options.map = map;
-	    		dibujarLayerMunicipios();
-	    	});
-		}
-		else{
-			dibujarLayerMunicipios();
-		}
-		
-		
+		NgMap.getMap({id : 'gastoGeneral'}).then(function(map){
+    		me.map_options.map = map;
+    		dibujarLayerMunicipios();
+    	});
 	}
 	
 	function dibujarLayerMunicipios(){

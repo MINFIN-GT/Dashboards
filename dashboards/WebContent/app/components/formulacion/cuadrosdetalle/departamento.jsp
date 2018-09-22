@@ -28,7 +28,7 @@
 					    </div>
 					</div>
 				</div>
-		    	<table st-table="ctrl.entidades" class="table">
+		    	<table st-table="ctrl.departamentos" class="table">
 					<thead>
 					<tr>
 						<th style="text-align: center;">Departamento</th>

@@ -75,7 +75,6 @@
 			                	<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro10">10. Inst. Tipo de G. y Renglón</a></li>
 			                	<li role="menuitem"><a href="#!/formulacion/cuadrosglobales/cuadro11">11. Gasto según Renglón y Finalidad</a></li>
 			                	<li role="menuitem"><a href="#!/formulacion/cuadrosglobales">Todos los cuadros</a></li>
-			                	<li role="menuitem"><a href="#!/formulacion/maparecomendado">Mapa de Calor (Recomendado)</a></li>
 			                	<li role="menuitem"><a href="#!/formulacion/cuadrosdetalle/proyecto">Proyecto</a></li>
 			            </ul>
 	                </li>

@@ -247,17 +247,10 @@ function mapsGastoCodedesMunisController($uibModal, $http,
 				me.grupos[grupo].push(me.geograficos[j].geografico)
 		}
 		
-		if(me.map_options.map==null){
-			NgMap.getMap().then(function(map){
-	    		me.map_options.map = map;
-	    		dibujarLayerMunicipios();
-	    	});
-		}
-		else{
-			dibujarLayerMunicipios();
-		}
-		
-		
+		NgMap.getMap({id: 'Codedes'}).then(function(map){
+    		me.map_options.map = map;
+    		dibujarLayerMunicipios();
+    	});
 	}
 	
 	function dibujarLayerMunicipios(){

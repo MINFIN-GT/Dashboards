@@ -178,17 +178,10 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 			}
 		}
 		
-		if(me.map_options.map==null){
-			NgMap.getMap().then(function(map){
-	    		me.map_options.map = map;
-	    		dibujarLayerDepartamentos();
-	    	});
-		}
-		else{
-			dibujarLayerDepartamentos();
-		}
-		
-		
+		NgMap.getMap({id: 'Departamentos'}).then(function(map){
+    		me.map_options.map = map;
+    		dibujarLayerDepartamentos();
+    	});
 	}
 	
 	function dibujarLayerDepartamentos(){
@@ -295,101 +288,3 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 	
 	me.cargarGastos();
 };
-
-
-
-//function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location) {
-//	
-//}
-
-//Control modal Info
-modGastoGeneral.controller('modalInfoGastoGeneralController',
-		modalInfoGastoGeneralController);
-function modalInfoGastoGeneralController($uibModalInstance, $http, param,ejercicio,
-		info, gasto) {
-	var me = this;
-
-	me.mes = param.mes;
-	me.fuentes = param.fuentes;
-	me.grupos = param.grupos;
-
-	me.info = info;
-	me.gasto = gasto.gasto;
-	me.ejercicio = ejercicio;
-
-	me.nivel = 1;
-
-	// nivel por omision para cargar todas las entidades
-	me.niveles = [ 0 ];
-
-	me.getGasto = function(codigo) {
-
-		me.niveles.push(codigo);
-
-		me.nivel = me.niveles.length;
-
-		loadGastos();
-	};
-
-	function loadGastos() {
-		var newData = {
-			action : "gastomunicipio",
-			mes : me.mes,
-			ejercicio : me.ejercicio,
-			fuentes : me.fuentes,
-			grupos : me.grupos,
-			geografico : me.info.geografico,
-			nivel : me.nivel,
-			entidad : 0,
-			unidad_ejecutora : 0,
-			programa : 0,
-			subprograma : 0,
-			proyecto : 0
-		};
-
-		for (var i = 0; i < me.niveles.length; i++) {
-			switch (i) {
-			case 0:
-				break;
-			case 1:
-				newData.entidad = me.niveles[i];
-				break;
-			case 2:
-				newData.unidad_ejecutora = me.niveles[i];
-				break;
-			case 3:
-				newData.programa = me.niveles[i];
-				break;
-			case 4:
-				newData.subprograma = me.niveles[i];
-				break;
-			case 5:
-				newData.proyecto = me.niveles[i];
-				break;
-			default:
-				break;
-			}
-		}
-
-		$http.post('/SGastoGeneral', newData).success(obtenerGastoMunicipio);
-	}
-
-	function obtenerGastoMunicipio(data, status, headers, config) {
-		me.gasto = data.gasto;
-	}
-
-	me.back = function() {
-		me.niveles.pop();
-		me.nivel = me.niveles.length;
-
-		loadGastos();
-	}
-
-	me.ok = function() {
-		$uibModalInstance.close('ok');
-	};
-
-	me.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-}
