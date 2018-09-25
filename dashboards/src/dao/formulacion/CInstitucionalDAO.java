@@ -1340,4 +1340,30 @@ public class CInstitucionalDAO {
 		}
 		return ret;
 	}
+	
+	public static String getNombreDepartamento(int departamento){
+		String ret = "";
+		Connection conn = null;
+		String sql;
+		try {
+			conn = CDatabaseOracle.connect();
+			if(!conn.isClosed()){
+				sql = "select nombre_departamento from cg_departamentos where codigo_departamento= ?";
+				PreparedStatement pstm =  conn.prepareStatement(sql);
+				pstm.setInt(1, departamento);
+				
+				ResultSet rs = pstm.executeQuery();
+				while(rs.next()){
+					ret = rs.getString("nombre_departamento").toLowerCase();
+				}
+			}
+		}
+		catch(Exception e) {
+			CLogger.write("20", CInstitucionalDAO.class, e);
+		}
+		finally{
+			CDatabaseOracle.close(conn);
+		}
+		return ret;
+	}
 }

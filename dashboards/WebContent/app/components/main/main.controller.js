@@ -164,6 +164,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             .when('/formulacion/maparecomendado',{
             	template: '<div load-on-demand="\'maparecomendadoDepartamentoController\'" class="all_page"></div>'
             })
+            .when('/formulacion/mapageografico/:codigo',{
+            	template: '<div load-on-demand="\'mapaGeograficoRecomendadoController\'" class="all_page"></div>'
+            })
             /*.when('/salir',{
             	templateUrl : '<div></div>',
             	resolve:{
@@ -446,6 +449,11 @@ app.config(['$loadOnDemandProvider', function ($loadOnDemandProvider) {
 	    	   name: 'maparecomendadoMunicipioController',
 	    	   script: '/app/components/formulacion/mapas/formulacionMunicipio.controller.js',
 	    	   template: '/app/components/formulacion/mapas/formulacionMunicipio.jsp'
+	       },
+	       {
+	    	   name: 'mapaGeograficoRecomendadoController',
+	    	   script: '/app/components/formulacion/mapas/formulacionGeografico.controller.js',
+	    	   template: '/app/components/formulacion/mapas/formulacionGeografico.jsp'
 	       }
 	   ];
 	   $loadOnDemandProvider.config(modules);

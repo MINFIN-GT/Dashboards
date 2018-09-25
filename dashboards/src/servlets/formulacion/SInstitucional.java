@@ -293,6 +293,13 @@ public class SInstitucional extends HttpServlet {
 	            response_text = String.join("", "{\"success\":true,", response_text,"}");
 			}
 		}
+		else if(action.equals("getNombreDepartamento")) {
+			int departamento = Utils.String2Int(map.get("departamento"), -1);
+			String nombre = CInstitucionalDAO.getNombreDepartamento(departamento);
+			
+            response_text = String.join("", "\"nombreDepartamento\": \"" + nombre + "\"");
+            response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}
 		OutputStream output = response.getOutputStream();
 		GZIPOutputStream gz = new GZIPOutputStream(output);
 	    gz.write(response_text.getBytes("UTF-8"));
