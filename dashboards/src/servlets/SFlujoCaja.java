@@ -89,14 +89,13 @@ public class SFlujoCaja extends HttpServlet {
 		else if(action.equals("getPronosticosIngresos")){
 			Type typea = new TypeToken<Map<String, Integer[]>>(){}.getType();
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
-			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
+			boolean fecha_real = map.get("fecha_real")!=null ? Integer.parseInt(map.get("fecha_real"))==1 : false; 
 			String[] recursosIds = map.get("recursosIds")!=null && map.get("recursosIds").length()>2 ?  map.get("recursosIds").substring(1,map.get("recursosIds").length()-2).split(",") : null;
 			Map<String,Integer[]> auxiliaresIds = map.get("auxiliaresIds")!=null && map.get("auxiliaresIds").length()>0 ? gson.fromJson(map.get("auxiliaresIds"), typea) : null;
-			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
-			Double[] pronosticos = CRecursoDAO.getPronosticos(ejercicio, mes,recursosIds, auxiliaresIds, ajustado, numero);
-			Double[] historicos = CRecursoDAO.getHistoricos(ejercicio, mes, recursosIds, auxiliaresIds, 12);
-			Double[][] data_historia = CRecursoDAO.getTodaHistoria(recursosIds, auxiliaresIds);
+			Double[] pronosticos = CRecursoDAO.getPronosticos(ejercicio, recursosIds, auxiliaresIds, ajustado, fecha_real);
+			Double[] historicos = CRecursoDAO.getHistoricos(ejercicio, recursosIds, auxiliaresIds, fecha_real);
+			Double[][] data_historia = CRecursoDAO.getTodaHistoria(recursosIds, auxiliaresIds, fecha_real);
 			
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
 			String response_text_historicos = new GsonBuilder().serializeNulls().create().toJson(historicos);
@@ -108,10 +107,11 @@ public class SFlujoCaja extends HttpServlet {
 			Type typea = new TypeToken<Map<String, Integer[]>>(){}.getType();
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
 			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
+			boolean fecha_real = map.get("fecha_real")!=null ? Integer.parseInt(map.get("fecha_real"))==1 : false; 
 			String[] recursosIds = map.get("recursosIds")!=null && map.get("recursosIds").length()>2 ?  map.get("recursosIds").substring(1,map.get("recursosIds").length()-2).split(",") : null;
 			Map<String,Integer[]> auxiliaresIds = map.get("auxiliaresIds")!=null && map.get("auxiliaresIds").length()>0 ? gson.fromJson(map.get("auxiliaresIds"), typea) : null;
 			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
-			ArrayList<CRecurso> recursos = CRecursoDAO.getPronosticosDetalle(ejercicio, mes, numero, recursosIds, auxiliaresIds);
+			ArrayList<CRecurso> recursos = CRecursoDAO.getPronosticosDetalle(ejercicio, mes, numero, recursosIds, auxiliaresIds, fecha_real);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(recursos);
 			response_text = String.join("", "\"pronosticos\":",response_text);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
@@ -133,16 +133,14 @@ public class SFlujoCaja extends HttpServlet {
 		}
 		else if(action.equals("getPronosticosEgresos")){
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
-			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
 			int entidad = map.get("entidadId")!=null ? Integer.parseInt(map.get("entidadId")) : 0;
 			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
-			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
 			int con_regularizaciones = map.get("con_regularizaciones")!=null ? Integer.parseInt(map.get("con_regularizaciones")) : 0;
-			Double[] pronosticos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresos(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero) :
-				CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero) ;
-			Double[] historicos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, mes, entidad,unidad_ejecutora, 12) : 
-				CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, mes, entidad,unidad_ejecutora, 12);
+			Double[] pronosticos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresos(ejercicio, entidad, unidad_ejecutora, ajustado) :
+				CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, entidad, unidad_ejecutora, ajustado) ;
+			Double[] historicos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, entidad,unidad_ejecutora) : 
+				CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, entidad,unidad_ejecutora);
 			Double[][] data_historia = (con_regularizaciones==1) ? CEntidadDAO.getTodaHistoria(entidad,unidad_ejecutora) : 
 				CEntidadDAO.getTodaHistoriaSinRegularizaciones(entidad,unidad_ejecutora);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
@@ -153,28 +151,27 @@ public class SFlujoCaja extends HttpServlet {
 		}
 		else if(action.equals("getPronosticosEgresosTree")){
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
-			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
 			int entidad = map.get("entidadId")!=null ? Integer.parseInt(map.get("entidadId")) : 0;
 			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
-			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
 			int con_regularizaciones = map.get("con_regularizaciones")!=null ? Integer.parseInt(map.get("con_regularizaciones")) : 0;
-			ArrayList<CGasto> arbol = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresosTree(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero) :
-				CEntidadDAO.getPronosticosEgresosTreeSinRegularizaciones(ejercicio, mes,entidad, unidad_ejecutora, ajustado, numero);
+			ArrayList<CGasto> arbol = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresosTree(ejercicio, entidad, unidad_ejecutora, ajustado) :
+				CEntidadDAO.getPronosticosEgresosTreeSinRegularizaciones(ejercicio, entidad, unidad_ejecutora, ajustado);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(arbol);
 			response_text = String.join("", "\"arbol\":",response_text);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
 		}
 		else if(action.equals("getPronosticosFlujo")){
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
+			boolean fecha_real = map.get("fecha_real")!=null ? Integer.parseInt(map.get("fecha_real"))==1 : false; 
 			DateTime now = DateTime.now();
 			int mes = (ejercicio < now.getYear()) ? 1 : now.getMonthOfYear();
-			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, mes,0, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, mes, 0, 0, (ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
-			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, mes, null, null, 0,(ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, mes, null, null,(ejercicio<now.getYear() ? 12 : mes - 1)) : new Double[0];
-			Double[] pronosticos_egresos_contables =  CEjecucionDAO.getPronosticosEgresosContables(ejercicio, mes, null, 0, 0, (ejercicio<now.getYear() ? 0 : 12 - mes + 1));
-			Double[] historicos_egresos_contables = CEjecucionDAO.getPronosticosHistoricosEgresosContables(ejercicio, mes, null, (ejercicio<now.getYear() ? 12 : mes - 1));
+			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, 0, 0, 0);
+			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio,  0, 0) : new Double[0];
+			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, null, null,0, fecha_real);
+			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, null, null, fecha_real) : new Double[0];
+			Double[] pronosticos_egresos_contables =  CEjecucionDAO.getPronosticosEgresosContables(ejercicio, null, 0, 0);
+			Double[] historicos_egresos_contables = CEjecucionDAO.getPronosticosHistoricosEgresosContables(ejercicio, null);
 			ArrayList<CTesoreriaCuenta> cuentas= CTesoreria.getSaldoInicialCuentas(ejercicio);
 			String response_pronosticos_egresos = new GsonBuilder().serializeNulls().create().toJson(pronosticos_egresos);
 			String response_historicos_egresos = new GsonBuilder().serializeNulls().create().toJson(historicos_egresos);
@@ -197,11 +194,10 @@ public class SFlujoCaja extends HttpServlet {
 		}
 		else if(action.equals("getPronosticosIngresosPorRecurso")) {
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
-			int mes = map.get("mes")!=null ? Integer.parseInt(map.get("mes")) : DateTime.now().getMonthOfYear();
 			String[] recursosIds = map.get("recursosIds")!=null && map.get("recursosIds").length()>2 ?  map.get("recursosIds").substring(1,map.get("recursosIds").length()-2).split(",") : null;
-			int numero = map.get("numero")!=null ? Integer.parseInt(map.get("numero")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
-			ArrayList<CRecurso> pronosticos = CRecursoDAO.getPronosticosPorRecurso(ejercicio, mes,recursosIds, ajustado, numero);
+			boolean fecha_real = map.get("fecha_real")!=null ? Integer.parseInt(map.get("fecha_real"))==1 : false; 
+			ArrayList<CRecurso> pronosticos = CRecursoDAO.getPronosticosPorRecurso(ejercicio, recursosIds, ajustado, fecha_real);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
 			response_text = String.join("", "\"pronosticos\":",response_text);
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");

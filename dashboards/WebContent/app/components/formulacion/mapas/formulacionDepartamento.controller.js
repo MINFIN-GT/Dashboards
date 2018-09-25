@@ -179,7 +179,7 @@ function maparecomendadoDepartamentoController($uibModal, $http,NgMap,$location,
 		}
 		
 		if(me.map_options.map==null){
-			NgMap.getMap().then(function(map){
+			NgMap.getMap({id: 'departamentos'}).then(function(map){
 	    		me.map_options.map = map;
 	    		dibujarLayerDepartamentos();
 	    	});

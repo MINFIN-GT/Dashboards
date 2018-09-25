@@ -21,7 +21,7 @@
 	<div style="position: relative; height: 100%;" id="title">
 			<div class="col-sm-6" style="height: 100%">
 				<ng-map style="height: 80%;" zoom="{{ control.map_options.zoom }}" styles="{{ control.map_options.styles }}" map-type-id="ROADMAP" style="height: 100%;"
-					center="{{ control.map_options.center }}" map-initialized="control.mapLoaded(map)">
+					center="{{ control.map_options.center }}" map-initialized="control.mapLoaded(map)" id="municipios">
 					<custom-control id="show_scale" position="BOTTOM_LEFT" index="1" style="z-index: 0; position: absolute; left: 75px; bottom: 0px;">
 					      <div class="panel ng-scope" style="margin-top: 10px;">
 					      	<table style="padding: 5px;">

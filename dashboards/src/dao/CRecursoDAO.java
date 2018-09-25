@@ -70,7 +70,7 @@ public class CRecursoDAO {
 		return auxiliares.size()>0 ? auxiliares : null;
 	}
 
-	public static Double[] getPronosticos(int ejercicio, int mes, String[] recursosIds, Map<String,Integer[]> auxiliaresIds, int ajustado, int numero) {
+	public static Double[] getPronosticos(int ejercicio, String[] recursosIds, Map<String,Integer[]> auxiliaresIds, int ajustado, boolean fecha_real) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		Connection conn = CDatabase.connect();
 		try{
@@ -92,18 +92,16 @@ public class CRecursoDAO {
 				}
 				PreparedStatement pstm1=null;
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_ingreso_recurso_auxiliar "
-							+ "WHERE ((ejercicio=? AND mes>=?) OR (ejercicio>?)) " + 
+							+ "WHERE ejercicio=?  " + 
 							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " AND ("  : "") + 
 							(srecursosIds.length()>0 ? "recurso IN ("+srecursosIds.substring(1)+")" : "") + 
 							(srecursosIds.length()>0 ? sauxiliaresIds  : (sauxiliaresIds.length()>0 ? sauxiliaresIds.substring(3) : "")) + 
 							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " ) "  : "") +
 							(recursosIds==null && auxiliaresIds==null ? " AND auxiliar>0 " : "") +
-							" AND ajustado = ? AND recurso>=10000 GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
+							" AND ajustado = ? AND fecha_referencia=? AND recurso>=10000 GROUP BY ejercicio, mes ORDER BY ejercicio, mes ");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, mes);
-					pstm1.setInt(3, ejercicio);
-					pstm1.setInt(4, ajustado);
-					pstm1.setInt(5, numero);
+					pstm1.setInt(2, ajustado);
+					pstm1.setString(3, fecha_real ? "Fecha Real" : "Fecha Aprobado");
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					ret.add(results.getDouble("monto"));
@@ -121,10 +119,8 @@ public class CRecursoDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 
-	public static Double[] getHistoricos(int ejercicio, int mes, String[] recursosIds, Map<String,Integer[]> auxiliaresIds, int numero) {
+	public static Double[] getHistoricos(int ejercicio, String[] recursosIds, Map<String,Integer[]> auxiliaresIds, boolean fecha_real) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
-		date = date.minusMonths(numero);
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
@@ -146,7 +142,7 @@ public class CRecursoDAO {
 				String query = "SELECT ejercicio, sum(m1) m1, sum(m2) m2,sum(m3) m3,sum(m4) m4, sum(m5) m5, sum(m6) m6, sum(m7) m7, sum(m8) m8, sum(m9) m9, "
 							+ "sum(m10) m10, sum(m11) m11, sum(m12) m12 "
 							+ " FROM mv_ingreso_recurso_auxiliar " 
-							+ " WHERE ejercicio between ? and ? " 
+							+ " WHERE ejercicio = ? AND fecha_referencia=? " 
 							+ (srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " AND ("  : "") + 
 							(srecursosIds.length()>0 ? " recurso IN ("+srecursosIds.substring(1)+")" : "" ) 
 							+ ( srecursosIds.length()>0 ? sauxiliaresIds  : (sauxiliaresIds.length()>0 ? sauxiliaresIds.substring(3) : "") ) 
@@ -154,18 +150,16 @@ public class CRecursoDAO {
 							+ " GROUP BY ejercicio ORDER BY ejercicio";
 				
 				PreparedStatement pstm1 =  conn.prepareStatement(query);	
-				pstm1.setInt(1, date.getYear());
-				pstm1.setInt(2, ejercicio);
+				pstm1.setInt(1, ejercicio);
+				pstm1.setString(2, fecha_real ? "Fecha Real" : "Fecha Aprobado");
 				ResultSet results = pstm1.executeQuery();
 				double año = 0;
 				int num_datos=0;
 				while (results.next()){
 					for(int i=1; i<=12; i++){
-						if(((results.getInt("ejercicio")==date.getYear() && i>=date.getMonthOfYear()) || results.getInt("ejercicio")>date.getYear()) && num_datos<numero){
-							ret.add(results.getDouble("m"+i));
-							año = num_datos==0 ? results.getInt("ejercicio") : año;
-							num_datos++;
-						}
+						ret.add(results.getDouble("m"+i));
+						año = num_datos==0 ? results.getInt("ejercicio") : año;
+						num_datos++;
 					}
 				}
 				ret.add(0, año);
@@ -182,7 +176,7 @@ public class CRecursoDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static Double[][] getTodaHistoria(String[] recursosIds, Map<String,Integer[]> auxiliaresIds) {
+	public static Double[][] getTodaHistoria(String[] recursosIds, Map<String,Integer[]> auxiliaresIds, boolean fecha_real) {
 		ArrayList<ArrayList<Double>> ret=new ArrayList<ArrayList<Double>>();
 		Double[][] ret_array=null;
 		Connection conn = CDatabase.connect();
@@ -206,12 +200,14 @@ public class CRecursoDAO {
 				String query= "SELECT ejercicio, sum(m1) m1, sum(m2) m2, sum(m3) m3, sum(m4) m4, sum(m5) m5, sum(m6) m6, " + 
 							"sum(m7) m7, sum(m8) m8, sum(m9) m9, sum(m10) m10, sum(m11) m11, sum(m12) m12 " +
 							" FROM mv_ingreso_recurso_auxiliar " +
-							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " WHERE ("  : "") + 
+							" WHERE fecha_referencia = ? " +
+							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " AND ("  : "") + 
 							(srecursosIds.length()>0 ? " recurso IN ("+srecursosIds.substring(1)+")" : "") +
 							(srecursosIds.length()>0 ? sauxiliaresIds : (sauxiliaresIds.length()>0 ? sauxiliaresIds.substring(3) : "") ) +
 							(srecursosIds.length()>0 || sauxiliaresIds.length()>0 ? " ) "  : "") +
 							" GROUP BY ejercicio ORDER BY ejercicio";
 				PreparedStatement pstm1 =  conn.prepareStatement(query);	
+				pstm1.setString(1, fecha_real ? "Fecha Real" : "Fecha Aprobado");
 				ResultSet results = pstm1.executeQuery();
 				while (results.next()){
 					ArrayList<Double> temp = new ArrayList<Double>();
@@ -317,7 +313,7 @@ public class CRecursoDAO {
 		return ret;
 	}
 	
-	public static ArrayList<CRecurso> getPronosticosDetalle(Integer ejercicio, Integer mes, Integer num_pronosticos,String[] recursosIds, Map<String,Integer[]> auxiliaresIds){
+	public static ArrayList<CRecurso> getPronosticosDetalle(Integer ejercicio, Integer mes, Integer num_pronosticos,String[] recursosIds, Map<String,Integer[]> auxiliaresIds, boolean fecha_real){
 		ArrayList<CRecurso> ret = new ArrayList<CRecurso>();
 		Connection conn = CDatabase.connect();
 		try{
@@ -376,6 +372,7 @@ public class CRecursoDAO {
 						"	from mvp_ingreso_recurso_auxiliar  " + 
 						"	where ejercicio between ? and ? " + 
 						"	AND ajustado = 0 "+
+						"   AND fecha_referencia = " + (fecha_real ? "Fecha Real" : "Fecha Aprobado") +" " +
 						"	group by ejercicio, mes, recurso, auxiliar " + 
 						") t3 " + 
 						"on (t2.recurso = t3.recurso and t2.auxiliar=t3.auxiliar) "+
@@ -491,14 +488,12 @@ public class CRecursoDAO {
 		return ret;
 	} 
 	
-	public static ArrayList<CRecurso> getPronosticosPorRecurso(int ejercicio, int mes, String[] recursosIds, int ajustado, int numero) {
+	public static ArrayList<CRecurso> getPronosticosPorRecurso(int ejercicio, String[] recursosIds, int ajustado, boolean fecha_real) {
 		ArrayList<CRecurso> ret=new ArrayList<CRecurso>();
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
 				String srecursosIds="";
-				DateTime inicio = new DateTime(ejercicio, mes, 1, 0, 0);
-				DateTime fin = inicio.plusMonths(numero);
 				for(int i=0; recursosIds!=null && i<recursosIds.length; i++){
 					srecursosIds+=","+recursosIds[i];
 				}
@@ -519,25 +514,18 @@ public class CRecursoDAO {
 						"and pi.recurso = r.recurso " + 
 						"and pi.auxiliar > 0 " + 
 						"and pi.fuente = 0 " + 
+						"and pi.fecha_referencia = ? " +
 						") " + 
 						"where r.ejercicio = ? " + 
-						"and ((pi.ejercicio=? and pi.mes>=?) or  " + 
-						"		(pi.ejercicio=? and pi.mes<=?) or " + 
-						"		(pi.ejercicio>? and pi.ejercicio<?) or " + 
-						"		pi.ejercicio is null) " + 
+						"and (pi.ejercicio=r.ejercicio OR pi.ejercicio is null) " + 
 						"and (pi.ajustado=? OR pi.ajustado is null) " +
 						"and r.recurso IN (" + srecursosIds.substring(1) + ") " +
 						"and r.recurso >= 10000 " +
 						"group by pi.ejercicio, pi.mes, pi.recurso, r.nombre " + 
 						"order by r.recurso, pi.ejercicio, pi.mes");		
-					pstm1.setInt(1, ejercicio);
+					pstm1.setString(1, fecha_real ? "Fecha Real" : "Fecha Aprobado");
 					pstm1.setInt(2, ejercicio);
-					pstm1.setInt(3, mes);
-					pstm1.setInt(4, fin.getYear());
-					pstm1.setInt(5, fin.getMonthOfYear());
-					pstm1.setInt(6, ejercicio);
-					pstm1.setInt(7, fin.getYear());
-					pstm1.setInt(8, ajustado);
+					pstm1.setInt(3, ajustado);
 				ResultSet results = pstm1.executeQuery();
 				int recurso_actual = 0;
 				CRecurso recurso=null;
@@ -547,7 +535,7 @@ public class CRecursoDAO {
 						if(recurso!=null)
 							ret.add(recurso);
 						recurso = new CRecurso(results.getInt("ejercicio"), results.getInt("recurso"), results.getString("nombre"), 0, 
-							0, 0, 0, null, null, null, results.getInt("nivel"), new Double[numero]);
+							0, 0, 0, null, null, null, results.getInt("nivel"), new Double[12]);
 						pronostico_posicion = 0;
 						recurso_actual=results.getInt("recurso");
 					}

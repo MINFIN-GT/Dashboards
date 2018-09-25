@@ -48,6 +48,12 @@
 	        <li role="menuitem"><a href ng-click="flujo.anoClick(2018)">2018</a></li>
 	      </ul>
 	    </div>
+	    <br/>
+	    <br/>
+	    <div class="btn-group">
+	        <label class="btn btn-default" ng-model="flujo.fecha_referencia" uib-btn-radio="'Fecha Real'" uncheckable ng-change="flujo.cambioFechaReal()">Fecha Real + 3</label>
+	        <label class="btn btn-default" ng-model="flujo.fecha_referencia" uib-btn-radio="'Fecha Aprobado'" uncheckable ng-change="flujo.cambioFechaReal()">Fecha Aprobado</label>
+	    </div>
 	    <span ng-show="flujo.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
     </div>
 </div>
@@ -107,6 +113,19 @@
 					<td align="right">{{ flujo.filtroQuetzales(flujo.total_ingresos.toFixed(2), flujo.viewQuetzales) }}</td>
 				</tr>
 				<tr class="tr_egresos">
+					<td align="left">Egresos Totales</td>
+					<td align="right" ng-repeat="dato in flujo.egresos_contables track by $index">{{ flujo.filtroQuetzales((dato+flujo.egresos[$index]).toFixed(2), flujo.viewQuetzales) }}</td>
+					<td align="right">{{ flujo.filtroQuetzales((flujo.total_egresos_contables+flujo.total_egresos).toFixed(2), flujo.viewQuetzales) }}</td>
+				</tr>
+				<tr class="tr_caja">
+					<td align="left">Caja</td>
+					<td align="right" ng-repeat="dato in flujo.caja track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
+					<td align="right">{{ flujo.filtroQuetzales(flujo.caja[11], flujo.viewQuetzales) }}</td>
+				</tr>
+				<tr>
+					<td colspan="14">&nbsp;</td>
+				</tr>
+				<tr class="tr_egresos">
 					<td align="left">Egresos</td>
 					<td align="right" ng-repeat="dato in flujo.egresos track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
 					<td align="right">{{ flujo.filtroQuetzales(flujo.total_egresos.toFixed(2), flujo.viewQuetzales) }}</td>
@@ -116,11 +135,7 @@
 					<td align="right" ng-repeat="dato in flujo.egresos_contables track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
 					<td align="right">{{ flujo.filtroQuetzales(flujo.total_egresos_contables.toFixed(2), flujo.viewQuetzales) }}</td>
 				</tr>
-				<tr class="tr_caja">
-					<td align="left">Caja</td>
-					<td align="right" ng-repeat="dato in flujo.caja track by $index">{{ flujo.filtroQuetzales(dato.toFixed(2), flujo.viewQuetzales) }}</td>
-					<td align="right">{{ flujo.filtroQuetzales(flujo.caja[11], flujo.viewQuetzales) }}</td>
-				</tr>
+				
 			</tbody>
 		</table>
 	</div>

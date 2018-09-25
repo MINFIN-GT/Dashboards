@@ -10,10 +10,13 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			me = this;
 			me.recursos=null;
 			
+			me.fecha_referencia='Fecha Real';
+			
 			
 			me.showloading = false;
 			me.anio = moment().year();
-			me.mes = moment().month()+1;
+			me.anio_actual = moment().year();
+			me.mes_actual = moment().month();
 			
 			me.chartLoaded=false;
 			me.panel_recursos=false;
@@ -49,7 +52,6 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			
 			me.sindatos=false;
 			
-			me.numero_pronosticos=12;
 			me.total_ejercicio=[];
 			me.total_pronosticos=0.0;
 			me.totales=[];
@@ -64,6 +66,8 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			me.hide_tabla_recursos_blanks = true;
 			
 			me.stack_sum = [];
+			
+			me.tablePronosticos=[];
 			
 			me.chartOptions= {
 					animation: {
@@ -185,37 +189,35 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 			    	});
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresos', ejercicio: me.anio, 
 							recursosIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.recursos_selected),
-							auxiliaresIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.auxiliares_selected), numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-							mes: me.mes  }).then(function(response){
+							auxiliaresIds: (num_recursos==me.recursos_selected.length) ? null : JSON.stringify(me.auxiliares_selected), 
+							fecha_real: me.fecha_referencia=='Fecha Real' ? 1 : 0 }).then(function(response){
 					    if(response.data.success){
-					    	var date = moment([me.anio, me.mes-1, 1]);
-					    	date = date.subtract(12,'months');
 					    	me.chartData=[];
 					    	me.chartLabels=[];
 					    	var historicos = [];
 					    	var pronosticos=[];
 					    	me.total_pronosticos=0.0;
 					    	if(response.data.historicos.length>0){
-					    		var historicos_año = response.data.historicos[0];
-						    	for(var i=1; i<response.data.historicos.length; i++){
-						    		historicos.push(response.data.historicos[i]);
-						    		me.chartLabels.push(me.meses[date.month()]+" "+date.year());
-						    		date=date.add(1,'months');
-						    	}
+					    		historicos = response.data.historicos.slice(1);
+						    	for(var i=0; i<12; i++)
+						    		me.chartLabels.push(me.meses[i]+" "+me.anio);
 						    }
-					    	if(response.data.pronosticos.length>0){
-					    		for(var i=0; i<historicos.length-1; i++)
-					    			pronosticos.push(null);
-					    		pronosticos.push(historicos[historicos.length-1]);
-					    		for(var i=0; i<response.data.pronosticos.length; i++){
-					    			pronosticos.push(response.data.pronosticos[i]);
-					    			me.chartLabels.push(me.meses[date.month()]+" "+date.year());
-					    			date=date.add(1,'months');
-					    			me.total_pronosticos+=response.data.pronosticos[i];
+					    	pronosticos=response.data.pronosticos;
+					    	var anio_actual = moment().year();
+					    	var historicos_grafica=[];
+					    	var pronosticos_grafica=[];
+					    	me.tablePronosticos=[];
+					    	if(me.anio==anio_actual){
+					    		var mes_actual = moment().month();
+					    		for(var i=0;i<12; i++){
+					    			historicos_grafica.push((i<mes_actual) ? historicos[i] : null);
+					    			pronosticos_grafica.push((i>=mes_actual) ? pronosticos[i] : null); 
+					    			me.tablePronosticos.push((i>=mes_actual) ? pronosticos[i] : historicos[i]);
 					    		}
+					    		pronosticos_grafica[mes_actual-1]=historicos_grafica[mes_actual-1];
 					    	}
-					    	me.chartData.push(historicos);
-					    	me.chartData.push(pronosticos);
+					    	me.chartData.push(historicos_grafica);
+					    	me.chartData.push(pronosticos_grafica);
 					    	if(pronosticos.length>0){
 					    		me.sindatos=false;
 					    		me.chartLoaded=true;
@@ -225,8 +227,8 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    		me.chartLoaded=false;
 					    	}
 					    	me.total_pronosticos=0.0;
-					    	for(var i=0; i<pronosticos.length; i++)
-					    		me.total_pronosticos+=pronosticos[i];
+					    	for(var i=0; i<12; i++)
+					    		me.total_pronosticos+=me.tablePronosticos[i];
 					    	me.historia = response.data.historia;
 					    	me.total_ejercicio=[];
 					    	for(var i=0; i<me.historia.length; i++){
@@ -242,12 +244,11 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresosPorRecurso', ejercicio: me.anio, 
 						recursosIds: JSON.stringify(me.recursos_selected_a),
-						mes: me.mes,   
-						numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12
+						fecha_real: me.fecha_referencia=='Fecha Real' ? 1 : 0 
 					}).then(function(response){
 							if(response.data.success){
 								me.totales=[];
-								for(var i=0; i<me.numero_pronosticos; i++)
+								for(var i=0; i<12; i++)
 									me.totales.push(0.0);
 								me.pronosticos_por_recurso = response.data.pronosticos; 
 								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
@@ -256,7 +257,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 								}
 								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
 									if(me.pronosticos_por_recurso[i].nivel==1){
-										var sum=me.sumChildren(me.pronosticos_por_recurso,i, me.numero_pronosticos);
+										var sum=me.sumChildren(me.pronosticos_por_recurso,i, 12);
 										me.pronosticos_por_recurso[i].pronosticos = sum;
 									}
 									var blank = true;
@@ -324,30 +325,8 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					return value;
 			}
 			
-			me.mesClick=function(mes, load){
-				switch(mes){
-					case 1: me.nmes="Enero"; break;
-					case 2: me.nmes="Febrero"; break;
-					case 3: me.nmes="Marzo"; break;
-					case 4: me.nmes="Abril"; break;
-					case 5: me.nmes="Mayo"; break;
-					case 6: me.nmes="Junio"; break;
-					case 7: me.nmes="Julio"; break;
-					case 8: me.nmes="Agosto"; break;
-					case 9: me.nmes="Septiembre"; break;
-					case 10: me.nmes="Octubre"; break;
-					case 11: me.nmes="Noviembre"; break;
-					case 12: me.nmes="Diciembre"; break;
-				}
-				
-				this.mes = mes;
-			}
-			
-			me.mesClick(me.mes, false);
-			
 			me.anoClick=function(ano){
 				me.anio=ano;
-				
 			}
 			
 			me.checkAll=function(selected){
@@ -357,7 +336,16 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					ivhTreeviewMgr.deselectAll(me.recursos);
 			}
 			
+			me.cambioFechaReal=function(){
+				me.getPronosticos();
+			}
 			
+			me.getEstiloDato=function(index){
+				if(me.anio==me.anio_actual && index<me.mes_actual){
+					return false;
+				}
+				return true;
+			}
 			
 		}
 	]);

@@ -15,6 +15,9 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			me.anio = moment().year();
 			me.mes = moment().month()+1;
 			
+			me.anio_actual = me.anio;
+			me.mes_actual = me.mes-1;
+			
 			me.chartLoaded=false;
 			
 			me.entidades = null;
@@ -27,7 +30,6 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			me.chartColors = [ '#4D4D4D', '#FF0000', '#5DA5DA'];
 			me.meses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 			me.chartSeries = ["Histórico","Pronósticos"];
-			me.numero = 12;
 			me.chartLabels = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 			
 			me.viewQuetzales=true;
@@ -166,32 +168,39 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 						$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, entidadId: 0, unidad_ejecutoraId: 0, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
 								mes: me.mes, ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0 }).then(function(response){
 						    if(response.data.success){
-						    	var date = moment([me.anio, me.mes-1, 1]);
-						    	date = date.subtract(12,'months');
 						    	me.chartData=[];
 						    	me.chartLabels=[];
 						    	var historicos = [];
 						    	var pronosticos=[];
 						    	me.total_pronosticos=0.0;
+						    	historicos = response.data.historicos.slice(1);
 						    	if(response.data.historicos.length>0){
-						    		var historicos_año = response.data.historicos[0];
-							    	for(var i=1; i<response.data.historicos.length; i++){
-							    		historicos.push(response.data.historicos[i]);
-							    		me.chartLabels.push(me.meses[date.month()]+" "+date.year());
-							    		date=date.add(1,'months');
-							    	}
+						    		for(var i=0; i<12; i++)
+							    		me.chartLabels.push(me.meses[i]+" "+me.anio);
 							    }
+						    	pronosticos = response.data.pronosticos;
+						    	
 						    	if(response.data.pronosticos.length>0){
-						    		for(var i=0; i<historicos.length-1; i++)
-						    			pronosticos.push(null);
-						    		pronosticos.push(historicos[historicos.length-1]);
 						    		for(var i=0; i<response.data.pronosticos.length; i++){
-						    			pronosticos.push(response.data.pronosticos[i]);
-						    			me.chartLabels.push(me.meses[date.month()]+" "+date.year());
-						    			date=date.add(1,'months');
 						    			me.total_pronosticos+=response.data.pronosticos[i];
 						    		}
 						    	}
+						    	me.tableData=[];
+						    	if(me.anio==me.anio_actual){
+						    		for(var i=0; i<12; i++){
+						    			if(i>=me.mes_actual){
+						    				historicos[i]=null;
+						    				me.tableData[i] = pronosticos[i];
+						    			}
+						    			else{
+						    				pronosticos[i]=null;
+						    				me.tableData[i] = historicos[i];
+						    			}
+						    		}
+						    		pronosticos[me.mes_actual-1]=historicos[me.mes_actual-1];
+						    	}
+						    	else
+						    		me.tableData=pronosticos;
 						    	me.chartData.push(historicos);
 						    	me.chartData.push(pronosticos);
 						    	if(pronosticos.length>0){
@@ -321,8 +330,8 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					    			total += me.historia[i][j];
 					    		me.total_ejercicio.push(total);
 					    	}
-					    	$http.post('/SFlujoCaja', { action: 'getPronosticosEgresosTree', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-									mes: me.mes, ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0  }).then(function(response){
+					    	$http.post('/SFlujoCaja', { action: 'getPronosticosEgresosTree', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, 
+									ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0  }).then(function(response){
 										if(response.data.success){
 											me.tree_data=response.data.arbol;
 											if(me.tree_cols.length=2){
@@ -430,6 +439,13 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			me.cambiarData=function(){
 				me.titulo_detalle = (me.con_regularizaciones) ? "con regularizaciones" : "sin regularizaciones";
 				me.mesClick(me.mes,true);
+			}
+			
+			me.getEstiloDato=function(index){
+				if(me.anio==me.anio_actual && index<me.mes_actual){
+					return false;
+				}
+				return true;
 			}
 		}
 	]);

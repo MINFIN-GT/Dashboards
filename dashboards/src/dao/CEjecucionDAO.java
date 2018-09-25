@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.joda.time.DateTime;
-
 import db.utilities.CDatabase;
 import pojo.CEjecucion;
 import utilities.CLogger;
@@ -853,7 +851,7 @@ public class CEjecucionDAO {
 		return lista.size()>0 ? lista : null;
 	}
 	
-	public static Double[] getPronosticosEgresosContables(int ejercicio, int mes, String clase_registro, int unidad_ejecutora, int ajustado, int numero) {
+	public static Double[] getPronosticosEgresosContables(int ejercicio, String clase_registro, int unidad_ejecutora, int ajustado) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		Connection conn = CDatabase.connect();
 		try{
@@ -861,15 +859,12 @@ public class CEjecucionDAO {
 				PreparedStatement pstm1=null;
 				
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_anticipo_contable "
-							+ "WHERE ((ejercicio=? AND mes>=?) OR (ejercicio>?)) AND ajustado = ? " + (clase_registro!=null ? " AND clase_registro=? " : "") + 
-							" GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
+							+ "WHERE ejercicio=? AND ajustado = ? " + (clase_registro!=null ? " AND clase_registro=? " : "") + 
+							" GROUP BY ejercicio, mes ORDER BY ejercicio, mes ");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, mes);
-					pstm1.setInt(3, ejercicio);
-					pstm1.setInt(4, ajustado);
+					pstm1.setInt(2, ajustado);
 					if(clase_registro!=null)
-						pstm1.setString(5, clase_registro);
-					pstm1.setInt(clase_registro!=null ? 6 : 5, numero);
+						pstm1.setString(3, clase_registro);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					ret.add(results.getDouble("monto"));
@@ -887,30 +882,25 @@ public class CEjecucionDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static Double[] getPronosticosHistoricosEgresosContables(int ejercicio, int mes, String clase_registro, int numero) {
+	public static Double[] getPronosticosHistoricosEgresosContables(int ejercicio, String clase_registro) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
-		date = date.minusMonths(numero);
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
-				String query="select ejercicio, mes, sum(monto) monto from mv_anticipo_contable where (ejercicio between ? and ?) "+(clase_registro!=null ? " and clase_registro=? " : "") +
+				String query="select ejercicio, mes, sum(monto) monto from mv_anticipo_contable where ejercicio = ? "+(clase_registro!=null ? " and clase_registro=? " : "") +
 						" group by ejercicio, mes "+
 						" order by ejercicio, mes";
 				PreparedStatement pstm1 =  conn.prepareStatement(query);	
-				pstm1.setInt(1, date.getYear());
-				pstm1.setInt(2, ejercicio);
+				pstm1.setInt(1, ejercicio);
 				if(clase_registro!=null)
-					pstm1.setString(3, clase_registro);
+					pstm1.setString(2, clase_registro);
 				ResultSet results = pstm1.executeQuery();
 				double año = 0;
 				int num_datos=0;
 				while (results.next()){
-					if(((results.getInt("ejercicio")==date.getYear() && results.getInt("mes")>=date.getMonthOfYear()) || results.getInt("ejercicio")>date.getYear()) && num_datos<numero){
-							ret.add(results.getDouble("monto"));
-							año = num_datos==0 ? results.getInt("ejercicio") : año;
-							num_datos++;
-					}
+					ret.add(results.getDouble("monto"));
+					año = num_datos==0 ? results.getInt("ejercicio") : año;
+					num_datos++;
 				}
 				ret.add(0, año);
 				results.close();

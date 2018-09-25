@@ -188,7 +188,7 @@ function maparecomendadoController($uibModal, $http,NgMap,$routeParams) {
 		}
 		
 		if(me.map_options.map==null){
-			NgMap.getMap().then(function(map){
+			NgMap.getMap({ id: 'municipios' }).then(function(map){
 	    		me.map_options.map = map;
 	    		dibujarLayerDepartamentos();
 	    	});

@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.joda.time.DateTime;
-
 import db.utilities.CDatabase;
 import pojo.CEntidad;
 import pojo.CGasto;
@@ -72,7 +70,7 @@ public class CEntidadDAO {
 	
 	}
 	
-	public static Double[] getPronosticosEgresos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+	public static Double[] getPronosticosEgresos(int ejercicio, int entidad, int unidad_ejecutora, int ajustado) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		Connection conn = CDatabase.connect();
 		try{
@@ -80,15 +78,12 @@ public class CEntidadDAO {
 				PreparedStatement pstm1=null;
 				
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_egreso "
-							+ "WHERE ((ejercicio=? AND mes>=?) OR (ejercicio>?)) " + (entidad>0 ? " AND entidad=? " : " AND entidad>? ") + 
-							" AND unidad_ejecutora=? AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
+							+ "WHERE ejercicio=? " + (entidad>0 ? " AND entidad=? " : " AND entidad>? ") + 
+							" AND unidad_ejecutora=? AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes ");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, mes);
-					pstm1.setInt(3, ejercicio);
-					pstm1.setInt(4, entidad);
-					pstm1.setInt(5, unidad_ejecutora);
-					pstm1.setInt(6, ajustado);
-					pstm1.setInt(7, numero);
+					pstm1.setInt(2, entidad);
+					pstm1.setInt(3, unidad_ejecutora);
+					pstm1.setInt(4, ajustado);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					ret.add(results.getDouble("monto"));
@@ -106,10 +101,8 @@ public class CEntidadDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static Double[] getPronosticosHistoricosEgresos(int ejercicio, int mes, int entidad, int unidad_ejecutora, int numero) {
+	public static Double[] getPronosticosHistoricosEgresos(int ejercicio,int entidad, int unidad_ejecutora) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
-		date = date.minusMonths(numero);
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
@@ -124,10 +117,9 @@ public class CEntidadDAO {
 				else
 					query = "SELECT ejercicio, sum(m1) m1, sum(m2) m2, sum(m3) m3, sum(m4) m4, sum(m5) m5, sum(m6) m6, "
 							+ "sum(m7) m7, sum(m8) m8, sum(m9) m9, sum(m10) m10, sum(m11) m11, sum(m12) m12 FROM mv_ejecucion_presupuestaria_mensualizada "
-							+ "WHERE ejercicio between ? and ? GROUP BY ejercicio ORDER BY ejercicio";
+							+ "WHERE ejercicio = ? GROUP BY ejercicio ORDER BY ejercicio";
 				PreparedStatement pstm1 =  conn.prepareStatement(query);	
-				pstm1.setInt(1, date.getYear());
-				pstm1.setInt(2, ejercicio);
+				pstm1.setInt(1, ejercicio);
 				if(entidad>0)
 					pstm1.setInt(3, entidad);
 				if(unidad_ejecutora>0)
@@ -137,11 +129,9 @@ public class CEntidadDAO {
 				int num_datos=0;
 				while (results.next()){
 					for(int i=1; i<=12; i++){
-						if(((results.getInt("ejercicio")==date.getYear() && i>=date.getMonthOfYear()) || results.getInt("ejercicio")>date.getYear()) && num_datos<numero){
-							ret.add(results.getDouble("m"+i));
-							año = num_datos==0 ? results.getInt("ejercicio") : año;
-							num_datos++;
-						}
+						ret.add(results.getDouble("m"+i));
+						año = num_datos==0 ? results.getInt("ejercicio") : año;
+						num_datos++;
 					}
 				}
 				ret.add(0, año);
@@ -207,7 +197,7 @@ public class CEntidadDAO {
 		return ret_array;
 	}
 	
-	public static Double[] getPronosticosEgresosSinRegularizaciones(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+	public static Double[] getPronosticosEgresosSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora, int ajustado) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		Connection conn = CDatabase.connect();
 		try{
@@ -215,15 +205,12 @@ public class CEntidadDAO {
 				PreparedStatement pstm1=null;
 				
 				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_egreso_sin_regularizaciones "
-							+ "WHERE ((ejercicio=? AND mes>=?) OR (ejercicio>?)) " + (entidad>0 ? " AND entidad=? " : " AND entidad>? ") + 
-							" AND unidad_ejecutora=? AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes LIMIT ? ");		
+							+ "WHERE ejercicio=?  " + (entidad>0 ? " AND entidad=? " : " AND entidad>? ") + 
+							" AND unidad_ejecutora=? AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, mes);
-					pstm1.setInt(3, ejercicio);
-					pstm1.setInt(4, entidad);
-					pstm1.setInt(5, unidad_ejecutora);
-					pstm1.setInt(6, ajustado);
-					pstm1.setInt(7, numero);
+					pstm1.setInt(2, entidad);
+					pstm1.setInt(3, unidad_ejecutora);
+					pstm1.setInt(4, ajustado);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					ret.add(results.getDouble("monto"));
@@ -241,10 +228,8 @@ public class CEntidadDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static Double[] getPronosticosHistoricosEgresosSinRegularizaciones(int ejercicio, int mes, int entidad, int unidad_ejecutora, int numero) {
+	public static Double[] getPronosticosHistoricosEgresosSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora) {
 		ArrayList<Double> ret=new ArrayList<Double>();
-		DateTime date=new DateTime(ejercicio, mes, 1, 0, 0);
-		date = date.minusMonths(numero);
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
@@ -264,7 +249,7 @@ public class CEntidadDAO {
 							"	sum(case when mes = 11 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m11,  " + 
 							"	sum(case when mes = 12 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m12  " + 
 							"	from minfin.mv_gasto_sin_regularizaciones " + 
-							"	where ejercicio between ? and ? " +
+							"	where ejercicio = ? " +
 							(entidad>0 ? " AND entidad=? " : "") +
 							(unidad_ejecutora>0 ? " AND unidad_ejecutora=? " : "") +
 							" GROUP BY ejercicio ORDER BY ejercicio";
@@ -283,25 +268,22 @@ public class CEntidadDAO {
 							"	sum(case when mes = 11 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m11,  " + 
 							"	sum(case when mes = 12 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m12  " + 
 							"	from minfin.mv_gasto_sin_regularizaciones " + 
-							"	where ejercicio between ? and ? " +
+							"	where ejercicio = ? " +
 							" GROUP BY ejercicio ORDER BY ejercicio";
 				PreparedStatement pstm1 =  conn.prepareStatement(query);	
-				pstm1.setInt(1, date.getYear());
-				pstm1.setInt(2, ejercicio);
+				pstm1.setInt(1, ejercicio);
 				if(entidad>0)
-					pstm1.setInt(3, entidad);
+					pstm1.setInt(2, entidad);
 				if(unidad_ejecutora>0)
-					pstm1.setInt(4, unidad_ejecutora);
+					pstm1.setInt(3, unidad_ejecutora);
 				ResultSet results = pstm1.executeQuery();
 				double año = 0;
 				int num_datos=0;
 				while (results.next()){
 					for(int i=1; i<=12; i++){
-						if(((results.getInt("ejercicio")==date.getYear() && i>=date.getMonthOfYear()) || results.getInt("ejercicio")>date.getYear()) && num_datos<numero){
-							ret.add(results.getDouble("m"+i));
-							año = num_datos==0 ? results.getInt("ejercicio") : año;
-							num_datos++;
-						}
+						ret.add(results.getDouble("m"+i));
+						año = num_datos==0 ? results.getInt("ejercicio") : año;
+						num_datos++;
 					}
 				}
 				ret.add(0, año);
@@ -318,33 +300,23 @@ public class CEntidadDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static ArrayList<CGasto> getPronosticosEgresosTree(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+	public static ArrayList<CGasto> getPronosticosEgresosTree(int ejercicio, int entidad, int unidad_ejecutora, int ajustado) {
 		ArrayList<CGasto> ret=new ArrayList<CGasto>();
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
-				DateTime inicio = new DateTime(ejercicio, mes, 1, 0, 0);
-				DateTime fin = inicio.plusMonths(numero);
 				PreparedStatement pstm1=null;
 				pstm1 =  conn.prepareStatement("SELECT eg.ejercicio, eg.mes, e.entidad, e.unidad_ejecutora, e.nombre, e.ues, sum(monto) monto  " + 
 						"FROM cg_entidades e left outer join mvp_egreso eg  " + 
 						"on (e.entidad = eg.entidad and e.unidad_ejecutora = eg.unidad_ejecutora) " + 
 						"WHERE e.ejercicio = ? " + 
-						"and ((eg.ejercicio=? AND eg.mes>=?)  " + 
-						"OR (eg.ejercicio=? and eg.mes<?)  " + 
-						"OR (eg.ejercicio>? and eg.ejercicio<?))  " + 
+						"and eg.ejercicio = e.ejercicio " + 
 						"AND eg.entidad>0  " + 
 						"AND eg.ajustado = ?  " + 
 						"GROUP BY e.entidad, e.unidad_ejecutora, eg.ejercicio, eg.mes, e.nombre, e.ues " + 
 						"ORDER BY e.entidad, e.unidad_ejecutora, eg.ejercicio, eg.mes");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, ejercicio);
-					pstm1.setInt(3, mes);
-					pstm1.setInt(4, fin.getYear());
-					pstm1.setInt(5, fin.getMonthOfYear());
-					pstm1.setInt(6, ejercicio);
-					pstm1.setInt(7, fin.getYear());
-					pstm1.setInt(8, ajustado);
+					pstm1.setInt(2, ajustado);
 				ResultSet results = pstm1.executeQuery();	
 				CGasto papa=null;
 				CGasto nodo=null;
@@ -356,12 +328,12 @@ public class CEntidadDAO {
 							papa=null;
 						}
 						papa = new CGasto(results.getInt("ejercicio"),results.getInt("entidad"),results.getString("nombre"),
-							   new Double[numero], new ArrayList<CGasto>());
+							   new Double[12], new ArrayList<CGasto>());
 						while(results.next()&&results.getInt("entidad")==papa.getCodigo()&&results.getInt("unidad_ejecutora")==0);
 					}
 					else if(results.getInt("unidad_ejecutora")==0 && results.getInt("ues")==0) { //entidad sin hijos
 						nodo = new CGasto(results.getInt("ejercicio"),results.getInt("entidad"),results.getString("nombre"),
-								new Double[numero], new ArrayList<CGasto>());
+								new Double[12], new ArrayList<CGasto>());
 						nodo.getPronosticos()[0]=results.getDouble("monto");
 						pos=1;
 						while(results.next()&&results.getInt("entidad")==nodo.getCodigo()) {
@@ -376,7 +348,7 @@ public class CEntidadDAO {
 					}
 					else if(results.getInt("unidad_ejecutora")>0) { //hijo
 						nodo = new CGasto(results.getInt("ejercicio"),results.getInt("unidad_ejecutora"),results.getString("nombre"),
-								new Double[numero], new ArrayList<CGasto>());
+								new Double[12], new ArrayList<CGasto>());
 						nodo.getPronosticos()[0]=results.getDouble("monto");
 						pos=1;
 						while(results.next()&&results.getInt("unidad_ejecutora")==nodo.getCodigo()) {
@@ -477,33 +449,23 @@ public class CEntidadDAO {
 		return ret_array;
 	}
 	
-	public static ArrayList<CGasto> getPronosticosEgresosTreeSinRegularizaciones(int ejercicio, int mes, int entidad, int unidad_ejecutora, int ajustado, int numero) {
+	public static ArrayList<CGasto> getPronosticosEgresosTreeSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora, int ajustado) {
 		ArrayList<CGasto> ret=new ArrayList<CGasto>();
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
-				DateTime inicio = new DateTime(ejercicio, mes, 1, 0, 0);
-				DateTime fin = inicio.plusMonths(numero);
 				PreparedStatement pstm1=null;
 				pstm1 =  conn.prepareStatement("SELECT eg.ejercicio, eg.mes, e.entidad, e.unidad_ejecutora, e.nombre, e.ues, sum(monto) monto  " + 
 						"FROM cg_entidades e left outer join mvp_egreso_sin_regularizaciones eg  " + 
 						"on (e.entidad = eg.entidad and e.unidad_ejecutora = eg.unidad_ejecutora) " + 
 						"WHERE e.ejercicio = ? " + 
-						"and ((eg.ejercicio=? AND eg.mes>=?)  " + 
-						"OR (eg.ejercicio=? and eg.mes<?)  " + 
-						"OR (eg.ejercicio>? and eg.ejercicio<?))  " + 
+						"and eg.ejercicio =  e.ejercicio  " + 
 						"AND eg.entidad>0  " + 
 						"AND eg.ajustado = ?  " + 
 						"GROUP BY e.entidad, e.unidad_ejecutora, eg.ejercicio, eg.mes, e.nombre, e.ues " + 
 						"ORDER BY e.entidad, e.unidad_ejecutora, eg.ejercicio, eg.mes");		
 					pstm1.setInt(1, ejercicio);
-					pstm1.setInt(2, ejercicio);
-					pstm1.setInt(3, mes);
-					pstm1.setInt(4, fin.getYear());
-					pstm1.setInt(5, fin.getMonthOfYear());
-					pstm1.setInt(6, ejercicio);
-					pstm1.setInt(7, fin.getYear());
-					pstm1.setInt(8, ajustado);
+					pstm1.setInt(2, ajustado);
 				ResultSet results = pstm1.executeQuery();	
 				CGasto papa=null;
 				CGasto nodo=null;
@@ -515,12 +477,12 @@ public class CEntidadDAO {
 							papa=null;
 						}
 						papa = new CGasto(results.getInt("ejercicio"),results.getInt("entidad"),results.getString("nombre"),
-							   new Double[numero], new ArrayList<CGasto>());
+							   new Double[12], new ArrayList<CGasto>());
 						while(results.next()&&results.getInt("entidad")==papa.getCodigo()&&results.getInt("unidad_ejecutora")==0);
 					}
 					else if(results.getInt("unidad_ejecutora")==0 && results.getInt("ues")==0) { //entidad sin hijos
 						nodo = new CGasto(results.getInt("ejercicio"),results.getInt("entidad"),results.getString("nombre"),
-								new Double[numero], new ArrayList<CGasto>());
+								new Double[12], new ArrayList<CGasto>());
 						nodo.getPronosticos()[0]=results.getDouble("monto");
 						pos=1;
 						while(results.next()&&results.getInt("entidad")==nodo.getCodigo()) {
@@ -535,7 +497,7 @@ public class CEntidadDAO {
 					}
 					else if(results.getInt("unidad_ejecutora")>0) { //hijo
 						nodo = new CGasto(results.getInt("ejercicio"),results.getInt("unidad_ejecutora"),results.getString("nombre"),
-								new Double[numero], new ArrayList<CGasto>());
+								new Double[12], new ArrayList<CGasto>());
 						nodo.getPronosticos()[0]=results.getDouble("monto");
 						pos=1;
 						while(results.next()&&results.getInt("unidad_ejecutora")==nodo.getCodigo()) {

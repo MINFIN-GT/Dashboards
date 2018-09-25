@@ -29,6 +29,16 @@
 		border-bottom: 1px solid #c3c3c3;
 		border-right: 1px solid #c3c3c3;
 	}
+	
+	.dato-pronostico{
+		color: #008000;
+	}
+	
+	.dato-historico{
+		color: #000;
+	}
+	
+
 </style>    
     
 <div ng-controller="ingresosController as ingreso" class="maincontainer" id="title" class="all_page">
@@ -38,25 +48,6 @@
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12" style="padding-left: 0px;">
 		<div class="btn-group" uib-dropdown>
-	      <button id="single-button" type="button" class="btn btn-default no-border" ng-disabled="ingreso.showloading"  uib-dropdown-toggle style="width: 150px; text-align: left; font-size: 24px;">
-	        {{ ingreso.nmes }} <span class="caret"></span>
-	      </button>
-	      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button" >
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(1, true)">Enero</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(2, true)">Febrero</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(3, true)">Marzo</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(4, true)">Abril</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(5, true)">Mayo</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(6, true)">Junio</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(7, true)">Julio</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(8, true)">Agosto</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(9, true)">Septiembre</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(10, true)">Octubre</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(11, true)">Noviembre</a></li>
-	        <li role="menuitem"><a href ng-click="ingreso.mesClick(12, true)">Diciembre</a></li>
-	      </ul>
-	    </div>
-	    <div class="btn-group" uib-dropdown>
 	      <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="ingreso.showloading" style="width: 100px; text-align: left; font-size: 24px;">
 	        {{ ingreso.anio }} <span class="caret"></span>
 	      </button>
@@ -70,9 +61,10 @@
 </div>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
-	<div class="col-sm-12">Número de meses a proyectar:
-		<input type="number" ng-model="ingreso.numero_pronosticos" min="1" max="24" style="text-align: right;" ng-disabled="ingreso.showloading"/>
-	</div>
+	<div class="btn-group">
+	        <label class="btn btn-default" ng-model="ingreso.fecha_referencia" uib-btn-radio="'Fecha Real'" uncheckable ng-change="ingreso.cambioFechaReal()">Fecha Real + 3</label>
+	        <label class="btn btn-default" ng-model="ingreso.fecha_referencia" uib-btn-radio="'Fecha Aprobado'" uncheckable ng-change="ingreso.cambioFechaReal()">Fecha Aprobado</label>
+	    </div>
 </div>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
@@ -125,13 +117,13 @@
 				<table class="table_pronosticos">
 					<thead>
 						<tr>
-							<td align="center" ng-repeat="label in ingreso.chartLabels.slice(12) track by $index">{{ label }}</td>
+							<td align="center" ng-repeat="label in ingreso.chartLabels track by $index" style="{{ingreso.getEstiloDato($index) ? 'color: #008000;' : 'color: #000;' }}">{{ label }}</td>
 							<td align="center">Total</td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td align="right" ng-repeat="dato_pronostico in ingreso.chartData[1].slice(12) track by $index">{{ ingreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
+							<td align="right" ng-repeat="dato_pronostico in ingreso.tablePronosticos track by $index" style="{{ingreso.getEstiloDato($index) ? 'color: #008000;' : 'color: #000;' }}">{{ ingreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
 							<td align="right">{{ ingreso.filtroQuetzalesP(ingreso.total_pronosticos.toFixed(2)) }}</td>
 						</tr>
 					</tbody>
@@ -184,25 +176,32 @@
 				<thead>
 					<tr>
 						<th>Recurso</th>
-						<th style="text-align: center;"ng-repeat="label in ingreso.chartLabels.slice(12) track by $index">{{ label }}</th>
+						<th style="text-align: center;" ng-repeat="label in ingreso.chartLabels track by $index">{{ label }}</th>
+						<th style="text-align: center;">Total</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="ingreso.hide_tabla_recursos_blanks && row.blank">
+					<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="ingreso.hide_tabla_recursos_blanks && row.blank" ng-init="row.total=0.0">
 						<td style="padding-left: {{ row.nivel*10 }}px; font-weight: {{ row.nivel<4 ? 'bold' : 'normal'}};">{{ row.recurso + ' ' + row.nombre }}</td>
-						<td style="text-align: right;" ng-repeat="dato in row.pronosticos track by $index">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) : null }}</td>
+						<td style="text-align: right;" class="dato-pronostico" ng-repeat="dato in row.pronosticos track by $index" ng-init="row.total=row.total+dato">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) : null }}</td>
+						<td style="text-align: right; font-weight: bold;">{{ row.total>0 ? ingreso.filtroQuetzalesR(row.total.toFixed(2)) : null }}</td>
 					</tr>
 				</tbody>
 				<tfoot>
 					<tr style="text-align: right; font-weight: bold;">
-						<td>Total</td>
-						<td ng-repeat="dato in ingreso.totales track by $index">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) :  null}}</td>
+						<td ng-init="ingreso.total_totales=0.0">Total</td>
+						<td style="text-align: right;" class="dato-pronostico"ng-repeat="dato in ingreso.totales track by $index" ng-init="ingreso.total_totales=ingreso.total_totales+dato">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) :  null}}</td>
+						<td>{{ ingreso.total_totales>0 ? ingreso.filtroQuetzalesR(ingreso.total_totales.toFixed(2)) :  null}}</td>
 					</tr>
 				</tfoot>
 			</table>
+			<br/>
+			<br/>
 		</div>
 	</uib-tab>
 </uib-tabset>
+<br/>
+<div><span style="font-weight: bold;">Nota:</span> Los números en color verde son pronósticos, los datos en color negro son históricos</div>
 <br/>
 <br/>
 <br/>
