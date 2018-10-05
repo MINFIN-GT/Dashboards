@@ -17,7 +17,7 @@ public class CTesoreria {
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
-				PreparedStatement pstm1 =  conn.prepareStatement("select ejercicio, cuenta_monetaria, monto_transaccion from te_estado_cuentas where ejercicio=? ");
+				PreparedStatement pstm1 =  conn.prepareStatement("select ejercicio, cuenta_monetaria, monto_transaccion from te_estado_cuentas where ejercicio=? order by cuenta_monetaria ");
 				pstm1.setInt(1, ejercicio);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){

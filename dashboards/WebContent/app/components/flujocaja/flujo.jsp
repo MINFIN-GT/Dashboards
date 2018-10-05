@@ -87,11 +87,11 @@
    			<tbody>
 	   			<tr class="tr_ingresos" ng-repeat="dato in flujo.cuentas_saldo track by $index">
 	   				<td>{{ dato.cuenta }}</td>
-	   				<td>{{ flujo.filtroQuetzales(dato.saldo_inicial,flujo.viewQuetzales) }}</td>
+	   				<td style="text-align: right;">{{ flujo.filtroQuetzales(dato.saldo_inicial,flujo.viewQuetzales) }}</td>
 	   			</tr>
 	   			<tr class="tr_ingresos" >
 	   				<td style="text-align: right; font-weight: bold;">Total</td>
-	   				<td>{{ flujo.filtroQuetzales(flujo.cuentas_saldo_total,flujo.viewQuetzales) }}</td>
+	   				<td style="text-align: right; font-weight: bold;">{{ flujo.filtroQuetzales(flujo.cuentas_saldo_total,flujo.viewQuetzales) }}</td>
 	   			</tr>
    			</tbody>
    		</table>	
