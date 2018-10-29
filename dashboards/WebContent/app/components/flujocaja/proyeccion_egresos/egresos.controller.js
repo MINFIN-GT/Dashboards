@@ -180,27 +180,27 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 							    }
 						    	pronosticos = response.data.pronosticos;
 						    	
-						    	if(response.data.pronosticos.length>0){
-						    		for(var i=0; i<response.data.pronosticos.length; i++){
-						    			me.total_pronosticos+=response.data.pronosticos[i];
-						    		}
-						    	}
 						    	me.tableData=[];
 						    	if(me.anio==me.anio_actual){
 						    		for(var i=0; i<12; i++){
 						    			if(i>=me.mes_actual){
 						    				historicos[i]=null;
 						    				me.tableData[i] = pronosticos[i];
+						    				me.total_pronosticos=pronosticos[i];
 						    			}
 						    			else{
 						    				pronosticos[i]=null;
 						    				me.tableData[i] = historicos[i];
+						    				me.total_pronosticos=historicos[i];
 						    			}
 						    		}
 						    		pronosticos[me.mes_actual-1]=historicos[me.mes_actual-1];
 						    	}
-						    	else
+						    	else{
 						    		me.tableData=pronosticos;
+						    		for(var i=0; i<pronosticos.length; i++)
+						    			me.total_pronosticos+=pronosticos[i];
+						    	}
 						    	me.chartData.push(historicos);
 						    	me.chartData.push(pronosticos);
 						    	if(pronosticos.length>0){

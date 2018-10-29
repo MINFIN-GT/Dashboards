@@ -164,7 +164,7 @@
 					<tbody>
 						<tr>
 							<td align="right" ng-repeat="dato_pronostico in egreso.tableData track by $index" style="{{egreso.getEstiloDato($index) ? 'color: #FF0000;' : 'color: #000;' }}">{{ egreso.filtroQuetzalesP(dato_pronostico.toFixed(2)) }}</td>
-							<td align="right">{{ egreso.filtroQuetzales(egreso.total_pronosticos.toFixed(2)) }}</td>
+							<td align="right">{{ egreso.filtroQuetzalesP(egreso.total_pronosticos.toFixed(2)) }}</td>
 						</tr>
 					</tbody>
 				</table>
