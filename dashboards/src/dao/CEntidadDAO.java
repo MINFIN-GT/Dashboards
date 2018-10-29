@@ -77,13 +77,18 @@ public class CEntidadDAO {
 			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1=null;
 				
-				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_egreso "
-							+ "WHERE ejercicio=? " + (entidad>0 ? " AND entidad=? " : " AND entidad>? ") + 
-							" AND unidad_ejecutora=? AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes ");		
+				pstm1 =  conn.prepareStatement("SELECT p.ejercicio, p.mes, sum(p.monto) monto FROM mvp_egreso p, cg_entidades e  "
+							+ "WHERE p.ejercicio=? " + "  AND p.ejercicio=e.ejercicio AND e.entidad=p.entidad "
+							+ "AND e.unidad_ejecutora=p.unidad_ejecutora AND " +
+							(entidad>0 ? " p.entidad=? " : " p.entidad>? ") +  " AND p.ajustado = ? " +
+							(unidad_ejecutora==0 ? " AND (p.unidad_ejecutora>0 OR p.entidad IN (11140021,11130019,11130018, 11130017,11130014,11130010,11130004)) " 
+									: " AND p.unidad_ejecutora = ?" ) 
+							+"  GROUP BY p.ejercicio, p.mes ORDER BY p.ejercicio, p.mes ");		
 					pstm1.setInt(1, ejercicio);
 					pstm1.setInt(2, entidad);
-					pstm1.setInt(3, unidad_ejecutora);
-					pstm1.setInt(4, ajustado);
+					pstm1.setInt(3, ajustado);
+					if(unidad_ejecutora>0)
+						pstm1.setInt(4, unidad_ejecutora);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					ret.add(results.getDouble("monto"));
@@ -197,20 +202,25 @@ public class CEntidadDAO {
 		return ret_array;
 	}
 	
-	public static Double[] getPronosticosEgresosSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora, int ajustado) {
+	public static Double[] getPronosticosEgresosSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora, int ajustado, boolean fecha_devengado) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		Connection conn = CDatabase.connect();
 		try{
 			if(conn!=null && !conn.isClosed()){
 				PreparedStatement pstm1=null;
 				
-				pstm1 =  conn.prepareStatement("SELECT ejercicio, mes, sum(monto) monto FROM mvp_egreso_sin_regularizaciones "
-							+ "WHERE ejercicio=?  " + (entidad>0 ? " AND entidad=? " : " AND entidad>? ") + 
-							" AND unidad_ejecutora=? AND ajustado = ? GROUP BY ejercicio, mes ORDER BY ejercicio, mes");		
+				pstm1 =  conn.prepareStatement("SELECT p.ejercicio, p.mes, sum(p.monto) monto FROM mvp_egreso_sin_regularizaciones p, cg_entidades e  "
+						+ "WHERE p.ejercicio=? " + "  AND p.ejercicio=e.ejercicio AND e.entidad=p.entidad "
+						+ "AND e.unidad_ejecutora=p.unidad_ejecutora AND " +
+						(entidad>0 ? " p.entidad=? " : " p.entidad>? ") +  " AND p.ajustado = ? " +
+						(unidad_ejecutora==0 ? " AND (p.unidad_ejecutora>0 OR p.entidad IN (11140021,11130019,11130018, 11130017,11130014,11130010,11130004)) " 
+								: " AND p.unidad_ejecutora = ?" ) 
+						+"  GROUP BY p.ejercicio, p.mes ORDER BY p.ejercicio, p.mes ");				
 					pstm1.setInt(1, ejercicio);
 					pstm1.setInt(2, entidad);
-					pstm1.setInt(3, unidad_ejecutora);
-					pstm1.setInt(4, ajustado);
+					pstm1.setInt(3, ajustado);
+					if(unidad_ejecutora>0)
+						pstm1.setInt(4, unidad_ejecutora);
 				ResultSet results = pstm1.executeQuery();	
 				while (results.next()){
 					ret.add(results.getDouble("monto"));
@@ -228,7 +238,7 @@ public class CEntidadDAO {
 		return ret.toArray(new Double[ret.size()]);
 	}
 	
-	public static Double[] getPronosticosHistoricosEgresosSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora) {
+	public static Double[] getPronosticosHistoricosEgresosSinRegularizaciones(int ejercicio, int entidad, int unidad_ejecutora, boolean fecha_devengado) {
 		ArrayList<Double> ret=new ArrayList<Double>();
 		Connection conn = CDatabase.connect();
 		try{
@@ -248,7 +258,8 @@ public class CEntidadDAO {
 							"	sum(case when mes = 10 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m10,  " + 
 							"	sum(case when mes = 11 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m11,  " + 
 							"	sum(case when mes = 12 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m12  " + 
-							"	from minfin.mv_gasto_sin_regularizaciones " + 
+							"	from minfin.mv_gasto_sin_regularizaciones" + 
+							(fecha_devengado==false ? "_fecha_pagado_total" : "") + " " +
 							"	where ejercicio = ? " +
 							(entidad>0 ? " AND entidad=? " : "") +
 							(unidad_ejecutora>0 ? " AND unidad_ejecutora=? " : "") +
@@ -267,7 +278,8 @@ public class CEntidadDAO {
 							"	sum(case when mes = 10 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m10,  " + 
 							"	sum(case when mes = 11 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m11,  " + 
 							"	sum(case when mes = 12 then (ifnull(gasto,0)-ifnull(deducciones,0)) else 0 end) m12  " + 
-							"	from minfin.mv_gasto_sin_regularizaciones " + 
+							"	from minfin.mv_gasto_sin_regularizaciones" + 
+							(fecha_devengado==false ? "_fecha_pagado_total" : "") + " " +
 							"	where ejercicio = ? " +
 							" GROUP BY ejercicio ORDER BY ejercicio";
 				PreparedStatement pstm1 =  conn.prepareStatement(query);	

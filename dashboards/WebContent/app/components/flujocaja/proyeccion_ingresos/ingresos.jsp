@@ -181,10 +181,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="ingreso.hide_tabla_recursos_blanks && row.blank" ng-init="row.total=0.0">
+					<tr ng-repeat="row in ingreso.pronosticos_por_recurso track by $index" ng-hide="ingreso.hide_tabla_recursos_blanks && row.blank">
 						<td style="padding-left: {{ row.nivel*10 }}px; font-weight: {{ row.nivel<4 ? 'bold' : 'normal'}};">{{ row.recurso + ' ' + row.nombre }}</td>
-						<td style="text-align: right;" class="dato-pronostico" ng-repeat="dato in row.pronosticos track by $index" ng-init="row.total=row.total+dato">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) : null }}</td>
-						<td style="text-align: right; font-weight: bold;">{{ row.total>0 ? ingreso.filtroQuetzalesR(row.total.toFixed(2)) : null }}</td>
+						<td style="text-align: right;" class="dato-pronostico" ng-repeat="dato in row.pronosticos track by $index">{{ dato>0 ? ingreso.filtroQuetzalesR(dato.toFixed(2)) : null }}</td>
+						<td style="text-align: right; font-weight: bold;">{{ row.total >0 ? ingreso.filtroQuetzalesR(row.total.toFixed(2)) : null }}</td>
 					</tr>
 				</tbody>
 				<tfoot>

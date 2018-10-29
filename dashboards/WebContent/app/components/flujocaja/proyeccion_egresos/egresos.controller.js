@@ -8,8 +8,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 	
 			me = this;
 			
-			me.titulo_detalle="con regularizaciones";
-			me.con_regularizaciones=true;
+			me.con_regularizaciones="Con Regularizaciones";
 			
 			me.showloading = false;
 			me.anio = moment().year();
@@ -42,6 +41,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			
 			me.total_ejercicio=[];
 			me.total_pronosticos=0.0;
+			me.total_columnas=new Array(13);
 			
 			me.tree_data_original=[];
 			me.tree_data=[];
@@ -166,7 +166,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 						me.showloading = true;
 						$scope.$broadcast('angucomplete-alt:clearInput','unidad_ejecutora');
 						$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, entidadId: 0, unidad_ejecutoraId: 0, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-								mes: me.mes, ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0 }).then(function(response){
+								mes: me.mes, ejercicio: me.anio, con_regularizaciones: (me.con_regularizaciones=='Con Regularizaciones') ? 1 : 0 }).then(function(response){
 						    if(response.data.success){
 						    	me.chartData=[];
 						    	me.chartLabels=[];
@@ -220,17 +220,22 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 						    		me.total_ejercicio.push(total);
 						    	}
 						    	$http.post('/SFlujoCaja', { action: 'getPronosticosEgresosTree', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-										mes: me.mes, ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0 }).then(function(response){
+										mes: me.mes, ejercicio: me.anio, con_regularizaciones: (me.con_regularizaciones=='Con Regularizaciones') ? 1 : 0 }).then(function(response){
 											if(response.data.success){
 												me.tree_data=response.data.arbol;
 												if(me.tree_cols.length=2){
-													for(var labels=12; labels<me.chartLabels.length; labels++){
+													for(var labels=0; labels<me.chartLabels.length; labels++){
 														me.tree_cols.push({
 															field: 'pronosticos',
 															displayName: me.chartLabels[labels]
 														});
 													}
+													me.tree_cols.push({
+														field: 'pronosticos',
+														displayName: 'Total'
+													})
 												}
+												var total=0;
 												for(var i=0; i<me.tree_data.length; i++){
 													if(me.tree_data[i].children!=null){
 														for(var j=0; j<me.tree_data[i].children.length; j++){
@@ -238,6 +243,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 																$filter('currency')(me.tree_data[i].children[j].pronosticos[k], 'Q ', 2);
 																me.tree_data[i].pronosticos[k]+=me.tree_data[i].children[j].pronosticos[k];
 															}
+															me.tree_data[i].pronosticos.push(me.tree_data[i].pronosticos[k]);
 														}
 													}
 												}
@@ -261,19 +267,50 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			
 			me.aplicarFormatoDetalle=function(){
 				var data_formateada = JSON.parse(JSON.stringify(me.tree_data_original));
+				var total=0;
+				for(var i=0; i<me.total_columnas.length; i++)
+					me.total_columnas[i]=0;
 				for(var i=0; i<data_formateada.length; i++){
 					for(var j=0; j<data_formateada[i].children.length; j++){
-						for(var k=0; k<data_formateada[i].children[j].pronosticos.length; k++)
+						total=0;
+						for(var k=0; k<data_formateada[i].children[j].pronosticos.length; k++){
+							total+=(data_formateada[i].children[j].pronosticos[k] !=null ? data_formateada[i].children[j].pronosticos[k] : 0);
 							data_formateada[i].children[j].pronosticos[k]= (me.viewQuetzales_d) ? 
 									$filter('currency')(data_formateada[i].children[j].pronosticos[k], 'Q ', 2) :
 										(data_formateada[i].children[j].pronosticos[k] !=null ? data_formateada[i].children[j].pronosticos[k].toFixed(2) : null);
-						
+						}
+						data_formateada[i].children[j].pronosticos[data_formateada[i].children[j].pronosticos.length]=((me.viewQuetzales_d) ? 
+								$filter('currency')(total.toFixed(2), 'Q ', 2) : total.toFixed(2));
 					}
-					for(var k=0; k<data_formateada[i].pronosticos.length; k++)
+					total=0;
+					for(var k=0; k<data_formateada[i].pronosticos.length; k++){
+						total+=(data_formateada[i].pronosticos[k] !=null ? data_formateada[i].pronosticos[k] : 0);
+						me.total_columnas[k]+=data_formateada[i].pronosticos[k];
 						data_formateada[i].pronosticos[k]= (me.viewQuetzales_d) ? 
 								$filter('currency')(data_formateada[i].pronosticos[k], 'Q ', 2) :
-									(data_formateada[i].pronosticos[k].toFixed(2)!=null ? data_formateada[i].pronosticos[k].toFixed(2) : null);
+									(data_formateada[i].pronosticos[k]!=null ? data_formateada[i].pronosticos[k].toFixed(2) : null);
+					}
+					data_formateada[i].pronosticos = data_formateada[i].pronosticos.splice(0,12);
+					data_formateada[i].pronosticos[data_formateada[i].pronosticos.length]=((me.viewQuetzales_d) ? 
+							$filter('currency')(total.toFixed(2), 'Q ', 2) : total.toFixed(2));
 				}
+				total=0;
+				var i=0;
+				me.total_columnas = me.total_columnas.splice(0,data_formateada[0].pronosticos.length);
+				for(i=0; i<me.total_columnas.length-1; i++){
+					total+= me.total_columnas[i];
+					me.total_columnas[i] = (me.viewQuetzales_d) ?  $filter('currency')(me.total_columnas[i].toFixed(2), 'Q ', 2) : 
+						me.total_columnas[i].toFixed(2);
+				}
+				me.total_columnas[i]=(me.viewQuetzales_d) ?  $filter('currency')(total.toFixed(2), 'Q ', 2) : 
+						total.toFixed(2);
+				data_formateada.push({
+					children:[],
+					pronosticos: me.total_columnas,
+					ejercicio: 2018,
+					nombre: 'Total',
+					codigo: ""
+				});
 				me.tree_data = data_formateada;
 			}
 			
@@ -283,7 +320,7 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					me.sindatos=true;
 					me.unidad_ejecutora = selected.originalObject.unidad_ejecutora;
 					$http.post('/SFlujoCaja', { action: 'getPronosticosEgresos', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, numero: me.numero_pronosticos!=null && me.numero_pronosticos!='' && me.numero_pronosticos>0 ? me.numero_pronosticos : 12,
-							mes: me.mes, ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0  }).then(function(response){
+							mes: me.mes, ejercicio: me.anio, con_regularizaciones: (me.con_regularizaciones=='Con Regularizaciones') ? 1 : 0  }).then(function(response){
 						if(response.data.success){
 					    	var date = moment([me.anio, me.mes-1, 1]);
 					    	date = date.subtract(12,'months');
@@ -331,11 +368,11 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 					    		me.total_ejercicio.push(total);
 					    	}
 					    	$http.post('/SFlujoCaja', { action: 'getPronosticosEgresosTree', ejercicio: me.anio, entidadId: me.entidad, unidad_ejecutoraId: me.unidad_ejecutora, 
-									ejercicio: me.anio, con_regularizaciones: me.con_regularizaciones ? 1 : 0  }).then(function(response){
+									ejercicio: me.anio, con_regularizaciones: (me.con_regularizaciones=='Con Regularizaciones') ? 1 : 0  }).then(function(response){
 										if(response.data.success){
 											me.tree_data=response.data.arbol;
 											if(me.tree_cols.length=2){
-												for(var labels=12; labels<me.chartLabels.length; labels++){
+												for(var labels=0; labels<me.chartLabels.length; labels++){
 													me.tree_cols.push({
 														field: 'pronosticos',
 														displayName: me.chartLabels[labels]
@@ -437,7 +474,6 @@ angular.module('egresosController',['dashboards','ui.bootstrap.contextMenu','ang
 			}
 			
 			me.cambiarData=function(){
-				me.titulo_detalle = (me.con_regularizaciones) ? "con regularizaciones" : "sin regularizaciones";
 				me.mesClick(me.mes,true);
 			}
 			

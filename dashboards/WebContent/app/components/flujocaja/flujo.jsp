@@ -51,8 +51,14 @@
 	    <br/>
 	    <br/>
 	    <div class="btn-group">
+	        <div>Ingresos</div>
 	        <label class="btn btn-default" ng-model="flujo.fecha_referencia" uib-btn-radio="'Fecha Real'" uncheckable ng-change="flujo.cambioFechaReal()">Fecha Real + 3</label>
 	        <label class="btn btn-default" ng-model="flujo.fecha_referencia" uib-btn-radio="'Fecha Aprobado'" uncheckable ng-change="flujo.cambioFechaReal()">Fecha Aprobado</label>
+	    </div>
+	    <div class="btn-group">
+	    	<div>Egresos</div>
+	        <label class="btn btn-default" ng-model="flujo.fecha_referencia_egresos" uib-btn-radio="'Fecha Devengado'" uncheckable ng-change="flujo.cambioFechaEgresos()">Fecha Devengado</label>
+	        <label class="btn btn-default" ng-model="flujo.fecha_referencia_egresos" uib-btn-radio="'Fecha Pagado'" uncheckable ng-change="flujo.cambioFechaEgresos()">Fecha Pagado</label>
 	    </div>
 	    <span ng-show="flujo.showloading">&nbsp;<i class="fa fa-spinner fa-spin fa-lg"></i></span> 
     </div>
@@ -142,6 +148,7 @@
 	<br/>
 </div>
 <div style="text-align: center;" ng-show="flujo.sindatos">Sin datos históricos suficientes para generar los prónosticos</div>
+<div ng-show="!flujo.sindatos"><span style="font-weight: bold;">Nota:</span> Para los meses anteriores al mes actual los datos son cifras históricas</div>
 <br/>
 <br/>
 <br/>

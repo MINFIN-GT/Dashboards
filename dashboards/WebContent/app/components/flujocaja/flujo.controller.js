@@ -20,6 +20,7 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			me.caja = [];
 			
 			me.fecha_referencia='Fecha Real';
+			me.fecha_referencia_egresos='Fecha Pagado';
 			
 			me.chartLoaded=false;
 			
@@ -131,7 +132,7 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			
 			me.loadFlujo=function(){
 				$http.post('/SFlujoCaja',  { action: 'getPronosticosFlujo', ejercicio: me.anio,
-					fecha_real: me.fecha_referencia=='Fecha Real' ? 1 : 0 }).then(function(response){
+					fecha_real: me.fecha_referencia=='Fecha Real' ? 1 : 0, fecha_egresos: me.fecha_referencia_egresos=='Fecha Devengado' ? 1 : 0 }).then(function(response){
 				    if(response.data.success){
 				    	var mes=moment().month;
 				    	pronosticos_egresos_totales = [];
@@ -220,6 +221,10 @@ angular.module('flujoController',['dashboards','ui.bootstrap.contextMenu','anguc
 			}
 			
 			me.cambioFechaReal=function(){
+				me.loadFlujo();
+			}
+			
+			me.cambioFechaEgresos=function(){
 				me.loadFlujo();
 			}
 			

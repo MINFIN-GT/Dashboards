@@ -239,7 +239,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 					    	}
 					    }
 					    
-					    me.panel_recursos=false;
+
 					});
 					
 					$http.post('/SFlujoCaja', { action: 'getPronosticosIngresosPorRecurso', ejercicio: me.anio, 
@@ -252,10 +252,12 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 									me.totales.push(0.0);
 								me.pronosticos_por_recurso = response.data.pronosticos; 
 								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
-									for(var j=0; j<me.pronosticos_por_recurso[i].pronosticos.length; j++)
+									for(var j=0; j<me.pronosticos_por_recurso[i].pronosticos.length; j++){
 										me.totales[j] += (me.pronosticos_por_recurso[i].pronosticos[j]!=null) ? me.pronosticos_por_recurso[i].pronosticos[j] : 0.0;
+									}
 								}
 								for(var i=0; i<me.pronosticos_por_recurso.length; i++){
+									me.pronosticos_por_recurso[i].total = 0;
 									if(me.pronosticos_por_recurso[i].nivel==1){
 										var sum=me.sumChildren(me.pronosticos_por_recurso,i, 12);
 										me.pronosticos_por_recurso[i].pronosticos = sum;
@@ -263,6 +265,7 @@ angular.module('ingresosController',['dashboards','ui.bootstrap.contextMenu','an
 									var blank = true;
 									for(var j=0; j<me.pronosticos_por_recurso[i].pronosticos.length; j++){
 										blank = blank && (me.pronosticos_por_recurso[i].pronosticos[j]==null || me.pronosticos_por_recurso[i].pronosticos[j]==0);
+										me.pronosticos_por_recurso[i].total += me.pronosticos_por_recurso[i].pronosticos[j];
 									}
 									me.pronosticos_por_recurso[i].blank = blank;
 								}

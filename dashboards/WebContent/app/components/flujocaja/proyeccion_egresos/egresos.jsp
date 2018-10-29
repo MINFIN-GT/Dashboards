@@ -52,27 +52,29 @@
      <tr>
        <th><a ng-if="expandingProperty.sortable" ng-click="sortBy(expandingProperty)">{{expandingProperty.displayName || expandingProperty.field || expandingProperty}}</a><span ng-if="!expandingProperty.sortable">{{expandingProperty.displayName || expandingProperty.field || expandingProperty}}</span><i ng-if="expandingProperty.sorted" class="{{expandingProperty.sortingIcon}} pull-right"></i></th>
        <th ng-repeat="col in colDefinitions"><a ng-if="col.sortable" ng-click="sortBy(col)">{{col.displayName || col.field}}</a><span ng-if="!col.sortable">{{col.displayName || col.field}}</span><i ng-if="col.sorted" class="{{col.sortingIcon}} pull-right"></i></th>
-     </tr>
+	 </tr>
    </thead>
    <tbody>
      <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions:true track by row.branch.uid"
        ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
        <td style="width: 10px;"><a ng-click="user_clicks_branch(row.branch)"><i ng-class="row.tree_icon"
-              ng-click="row.branch.expanded = !row.branch.expanded"
+              ng-click="row.branch.expanded = !row.branch.expanded" ng-show="!$last"
               class="indented tree-icon"></i></a><span class="indented tree-label" ng-click="on_user_click(row.branch)">
              {{row.branch[expandingProperty.field] || row.branch[expandingProperty]}}</span>
        </td>
-       <td ng-repeat="col in colDefinitions track by $index" style="{{ $index!=1 ? 'text-align: right; width:10px;' : ''}}">
+       <td ng-repeat="col in colDefinitions track by $index" 
+		style="{{ $index>1 && ($last || $parent.$last) ? 'text-align: right; width:10px; color: #FF0000; font-weight: bold;'  : 
+			($index>1 ? 'text-align: right; width:10px; color: #FF0000;' : '')}}">
          <div ng-if="col.cellTemplate" compile="col.cellTemplate" cell-template-scope="col.cellTemplateScope"></div>
          <div ng-if="!col.cellTemplate">{{$index>1 ? row.branch[col.field][$index-2] : row.branch[col.field]}}</div>
        </td>
-     </tr>
+	 </tr>
    </tbody>
  </table>
 </div>
 </script>
 <h4>Egresos</h4>
-<h5>Pronósticos ({{ egreso.titulo_detalle }})</h5>
+<h5>Pronósticos</h5>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
 	<div class="col-sm-12" style="padding-left: 0px;">
@@ -90,8 +92,10 @@
 </div>
 <br/>
 <div class="row" style="margin-bottom: 10px;">
-	<div class="col-sm-12">
-		<input type="checkbox" ng-model="egreso.con_regularizaciones" ng-click="egreso.cambiarData()" ng-disabled="egreso.showloading">Con Regularizaciones
+	<div class="btn-group">
+		<label class="btn btn-default" ng-model="egreso.con_regularizaciones" uib-btn-radio="'Con Regularizaciones'" uncheckable ng-change="egreso.cambiarData()">Con Regularizaciones</label>
+	    <label class="btn btn-default" ng-model="egreso.con_regularizaciones" uib-btn-radio="'Sin Regularizaciones'" uncheckable ng-change="egreso.cambiarData()">Sin Regularizaciones</label>
+		<!-- <input type="checkbox" ng-model="egreso.con_regularizaciones" ng-click="egreso.cambiarData()" ng-disabled="egreso.showloading">Con Regularizaciones  -->
     </div>
 </div>
 <br/>

@@ -137,10 +137,11 @@ public class SFlujoCaja extends HttpServlet {
 			int unidad_ejecutora = map.get("unidad_ejecutoraId")!=null ? Integer.parseInt(map.get("unidad_ejecutoraId")) : 0;
 			int ajustado = map.get("ajustado")!=null ? Integer.parseInt(map.get("ajustado")) : 0;
 			int con_regularizaciones = map.get("con_regularizaciones")!=null ? Integer.parseInt(map.get("con_regularizaciones")) : 0;
+			boolean fecha_egresos_devengado = map.get("fecha_egresos")!=null ? Integer.parseInt(map.get("fecha_egresos"))==1 : false; 
 			Double[] pronosticos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosEgresos(ejercicio, entidad, unidad_ejecutora, ajustado) :
-				CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, entidad, unidad_ejecutora, ajustado) ;
+				CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, entidad, unidad_ejecutora, ajustado, fecha_egresos_devengado) ;
 			Double[] historicos = (con_regularizaciones==1) ? CEntidadDAO.getPronosticosHistoricosEgresos(ejercicio, entidad,unidad_ejecutora) : 
-				CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, entidad,unidad_ejecutora);
+				CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio, entidad,unidad_ejecutora, fecha_egresos_devengado);
 			Double[][] data_historia = (con_regularizaciones==1) ? CEntidadDAO.getTodaHistoria(entidad,unidad_ejecutora) : 
 				CEntidadDAO.getTodaHistoriaSinRegularizaciones(entidad,unidad_ejecutora);
 			response_text=new GsonBuilder().serializeNulls().create().toJson(pronosticos);
@@ -164,10 +165,11 @@ public class SFlujoCaja extends HttpServlet {
 		else if(action.equals("getPronosticosFlujo")){
 			int ejercicio = map.get("ejercicio")!=null ? Integer.parseInt(map.get("ejercicio")) : DateTime.now().getYear();
 			boolean fecha_real = map.get("fecha_real")!=null ? Integer.parseInt(map.get("fecha_real"))==1 : false; 
+			boolean fecha_egresos_devengado = map.get("fecha_egresos")!=null ? Integer.parseInt(map.get("fecha_egresos"))==1 : false; 
 			DateTime now = DateTime.now();
 			int mes = (ejercicio < now.getYear()) ? 1 : now.getMonthOfYear();
-			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, 0, 0, 0);
-			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio,  0, 0) : new Double[0];
+			Double[] pronosticos_egresos = CEntidadDAO.getPronosticosEgresosSinRegularizaciones(ejercicio, 0, 0, 0, fecha_egresos_devengado);
+			Double[] historicos_egresos = (mes-1>0) ? CEntidadDAO.getPronosticosHistoricosEgresosSinRegularizaciones(ejercicio,  0, 0, fecha_egresos_devengado) : new Double[0];
 			Double[] pronosticos_ingresos = CRecursoDAO.getPronosticos(ejercicio, null, null,0, fecha_real);
 			Double[] historicos_ingresos = (mes-1>0) ? CRecursoDAO.getHistoricos(ejercicio, null, null, fecha_real) : new Double[0];
 			Double[] pronosticos_egresos_contables =  CEjecucionDAO.getPronosticosEgresosContables(ejercicio, null, 0, 0);
